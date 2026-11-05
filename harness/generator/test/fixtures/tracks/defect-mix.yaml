@@ -1,0 +1,16 @@
+id: defect-mix
+number: "7.7"
+title: Defect-mix fixture track
+brief: { mode: exploratory, wall_time_s: 120 }
+apps:
+  - { app: alpha, mutations: [alpha.three, alpha.four], changes: '*' }
+  - { app: beta, mutations: '*' }
+  - { app: delta, mutations: '*' }
+episodes:
+  count: 12
+  seed: 20261107
+  mutations_per_episode: { min: 2, max: 3 }
+  changes_per_episode: { min: 0, max: 1 }
+  clean_episodes: 1
+  twin_episodes: 1
+  max_blatant_per_episode: 1

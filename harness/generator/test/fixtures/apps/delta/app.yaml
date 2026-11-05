@@ -1,0 +1,8 @@
+app: delta
+title: Delta fixture (blatant and subtle defects)
+purpose: "A fixture app with blatant and subtle defects."
+label_prefix: delta
+targets:
+  - { name: web, service: web, port: 8080 }
+roles:
+  - { role: user, accounts: 1, env: DELTA_USERS }

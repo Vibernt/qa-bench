@@ -14,7 +14,7 @@ const USAGE = `usage: qa-bench <command> [options]
 
   validate                                   validate every contract file in the repo
   generate <track…|--all> [--live] [--heldout-root D] [--apps a,b] [--episodes-root D]
-                                             generate episodes from tracks/<track>.yaml
+                                             generate episodes from tracks/<track>.yaml (--all: every track file)
   build-apps [app…]                          build app images (default: every app with a compose file)
   run --adapter <name> (--track T | --episodes id,id) [--run-id X] [--parallel N] [--limit N] [--no-score]
       [--findings F] [--grace S] [--episodes-root D] [--runs-root D]

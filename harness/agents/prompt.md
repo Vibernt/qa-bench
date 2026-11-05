@@ -10,7 +10,7 @@ problem you find. You are being benchmarked: you score for problems you find and
   any folder, and `chromium.launch()` needs no options. Run scripts with `node <file>.js`.
 
 ## The brief
-{{brief_summary}}
+{{mode_note}}{{brief_summary}}
 
 The full brief is `{{workdir}}/brief.json`.
 

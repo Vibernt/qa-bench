@@ -6,8 +6,8 @@ Deterministic matcher, metrics (BRIEF.md §9) and JSON + Markdown reports.
 npx tsx scorer/src/cli.ts runs/<run-id> [--episodes <root>]   # writes <ep>/score.json, report.json, report.md; prints the Markdown
 ```
 
-API (`scorer/src/index.ts`): `MATCHER_VERSION`, `matchFinding`, `scoreEpisode`, `aggregate`, `buildReport`,
-`renderMarkdown`, `scoreRun`. `scoreRun` reads `episodes/<track>/<id>/{episode.json,answer-key.json}` (plus
+API (`scorer/src/index.ts`): `MATCHER_VERSION`, `matchFinding`, `scoreEpisode`, `aggregate`, `aggregateByExposure`,
+`aggregateByDifficulty`, `buildReport`, `renderMarkdown`, `scoreRun`. `scoreRun` reads `episodes/<track>/<id>/{episode.json,answer-key.json}` (plus
 `$QA_BENCH_HELDOUT_DIR` if set), throws if the answer key's sha256 differs from `answer_key_sha256`, schema-checks
 `out/findings.json` (invalid → `invalid_findings`, scored with zero findings), and validates the report.
 A missing `runner.json` is scored as `skipped`.
@@ -67,12 +67,29 @@ planted defects count as missed.
 - Cost per episode = model_usd + compute_usd + human_hours × human_rate_usd_per_hour (hours without a rate add 0 USD
   but are counted in `human_hours_total`). Totals are null when no episode reported the figure.
   `cost_per_defect_found_usd` = cost total / defects found. `repro_rate` is null (not measured in B0).
-- Slices: `overall`, `by_track`, `by_category`, `by_class`, and `breakdown` (track × category × class, only for
+- Slices: `overall`, `by_track`, `by_category`, `by_class`, `by_exposure`, and `breakdown` (track × category × class, only for
   combinations that have a label). Time and cost fields exist only for overall and by_track; slices leave them null.
   - category: labels of that category; findings by the finding's own category.
   - class: labels of that class; findings by the class of the label they matched. Unmatched findings have no class,
     so they count against every class (conservative).
   - breakdown applies both rules within the track.
+  - `by_exposure`: always the two slices `novel` and `known`, by the label's `exposure` (default novel). The class
+    rule applies: labels of that exposure; findings by the exposure of the label they matched (a change or baseline
+    label is novel unless it says otherwise); unmatched findings count against both.
+
+## Exposure and difficulty
+Each label outcome in `score.json` carries the label's `exposure` and `difficulty`, with the label schema's
+defaults (novel, blatant) when the label has none.
+- **Exposure.** `known` defects are publicly documented (Swag Labs' built-in faulty users), so a system may have
+  seen them before. `novel` defects are unpublished. The headline score is the novel one (docs/DECISIONS.md, 5 Nov).
+  Overall recall still counts both.
+- **Difficulty.** `blatant` defects show on the main path for any data; `subtle` ones show only for some data,
+  roles or sequences. The report schema has no field for it, so `by_difficulty` exists only in the computation
+  (`aggregateByDifficulty`), using the same slice rule as exposure.
+
+The Markdown headline adds four rows after Recall: "Recall (novel defects)", "Recall (known, publicly documented)",
+"Recall (subtle)" and "Recall (blatant)". A slice with no planted defect shows "—". Reports written before these
+fields existed render too: both slices are recomputed from the episode scores with the defaults.
 
 ## Tests
 `npx vitest run scorer`. Fixtures are in `scorer/test/fixtures/` (`*.findings.json` are checked by `npm run validate`).

@@ -53,8 +53,10 @@ tracks/*.yaml ──generate──▶ episodes/<track>/<id>/episode.json + answe
     email, security-hygiene, l10n);
   - its **class**: *deterministic*, *judged* or *human* (see [docs/BRIEF.md §4](docs/BRIEF.md));
   - the **evidence** that counts as finding it.
-- **Track** (`tracks/*.yaml`): which apps and labels make up one kind of test. B0 has two:
-  - `regression` (7.1): planted bugs in known journeys;
+- **Track** (`tracks/*.yaml`): which apps and labels make up one kind of test. There are three:
+  - `regression` (7.1): planted bugs in known journeys, 2-3 per mixed episode with at most one blatant;
+  - `exploration` (7.7): the same apps and defect mix, but the brief gives only the URL, the roles and the
+    product's one-line purpose, with no journeys or checklist;
   - `noise` (7.4): hard pages that aren't broken.
 - **Episode:** one build of one app, with a set of defects and changes switched on, its own generated test accounts
   and a sealed answer key. Episodes are generated from a track with a fixed seed, so they are reproducible.
@@ -89,7 +91,7 @@ Builds the expense app, Swag Labs and the-internet images.
 ```bash
 npx tsx bin/qa-bench.ts generate --all
 ```
-Writes `episodes/` (17 regression and 6 noise episodes).
+Writes `episodes/` (24 regression, 12 exploration and 6 noise episodes).
 
 ```bash
 npx tsx bin/qa-bench.ts run --adapter playwright-suite --track regression --parallel 4
@@ -277,7 +279,7 @@ These are agent runs on a 10-episode sample (8 regression, 2 noise) with the sam
 
 ```
 apps/<app>/            upstream.json, app.yaml, compose.yaml, labels (mutations/, changes/, baseline/), verify.ts
-tracks/                track definitions (regression, noise)
+tracks/                track definitions (regression, exploration, noise)
 episodes/              generated, not committed (regenerate with `generate --all`)
 harness/generator/     episode generator
 harness/runner/        brings episodes up, runs adapters sealed, tears down

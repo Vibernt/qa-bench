@@ -18,7 +18,8 @@ import { scoreRun } from '../../../scorer/src/index.ts';
 import { DEFAULT_RUNS_ROOT, downEpisode, runEpisodes, upEpisode, type RunnerOptions } from '../../runner/src/index.ts';
 
 export const AGENTS_ROOT = join(REPO_ROOT, 'harness', 'agents');
-export const HARNESS_VERSION = '0.2.0'; // 0.2.0: the prompt asks for each finding's severity
+// 0.2.0: the prompt asks for each finding's severity. 0.3.0: exploratory briefs (no checklist) and the product purpose.
+export const HARNESS_VERSION = '0.3.0';
 
 export interface AgentConfig {
   id: string;
@@ -77,10 +78,19 @@ export function loadSet(id: string, root = AGENTS_ROOT): EpisodeSet {
   return readData<EpisodeSet>(file);
 }
 
+/** The line an exploratory prompt opens its brief with. */
+export const EXPLORATORY_NOTE = 'No checklist is given: find what is broken before release.';
+
+/** The prompt's mode note: empty for regression briefs, so their prompts are unchanged. */
+export function modeNote(b: Brief): string {
+  return b.mode === 'exploratory' ? `${EXPLORATORY_NOTE}\n\n` : '';
+}
+
 /** A readable summary of the brief for the prompt. Only brief fields; never anything sealed. */
 export function briefSummary(b: Brief): string {
   const out: string[] = [];
   out.push(`- App: ${b.app} (track ${b.track}, episode ${b.episode_id})`);
+  if (b.purpose) out.push(`- What it is: ${b.purpose}`);
   for (const t of b.targets) out.push(`- Open: ${t.url}`);
   for (const r of b.roles) for (const a of r.accounts) out.push(`- Sign in as **${r.role}**: username \`${a.username}\`, password \`${a.password}\``);
   if (!b.roles.length) out.push('- No sign-in is needed.');
@@ -130,7 +140,7 @@ export async function prepareSession(configId: string, setId: string, opts: Prep
     const budget = opts.budgetS ?? brief.budget.wall_time_s;
     const findings = join(workdir, 'findings.json');
     const prompt = renderPrompt(template, {
-      workdir, findings, episode_id: id, brief_summary: briefSummary(brief), budget_minutes: String(Math.max(1, Math.round(budget / 60))),
+      workdir, findings, episode_id: id, mode_note: modeNote(brief), brief_summary: briefSummary(brief), budget_minutes: String(Math.max(1, Math.round(budget / 60))),
       system_name: config.id, system_version: `${config.model}${config.effort ? `@${config.effort}` : ''}`,
     });
     writeFileSync(join(workdir, 'prompt.md'), prompt);

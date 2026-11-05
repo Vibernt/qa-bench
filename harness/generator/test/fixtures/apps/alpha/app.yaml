@@ -1,5 +1,6 @@
 app: alpha
 title: Alpha fixture
+purpose: "A list of things: viewers read it, editors change it."
 label_prefix: alpha
 targets:
   - { name: web, service: web, port: 8080, path: /home, health_path: /health }

@@ -89,11 +89,47 @@ function compute(scores: EpisodeScore[], s: Slice): Metrics {
 
 const all: Slice = { label: () => true, decision: () => true, episodeLevel: true };
 
+/** Label defaults (label.schema.json): exposure novel, difficulty blatant. Older score files may lack both. */
+export const exposureOf = (l: LabelOutcome): string => l.exposure ?? 'novel';
+export const difficultyOf = (l: LabelOutcome): string => l.difficulty ?? 'blatant';
+
+/**
+ * A slice by a label attribute (class, exposure, difficulty): labels with that value; findings by the value of the
+ * label they matched. Unmatched findings have no label, so they count against every value (conservative).
+ */
+function labelAttrSlice(attr: (l: LabelOutcome) => string, k: string): Slice {
+  return {
+    label: (l) => attr(l) === k,
+    decision: (d, by) => {
+      const l = d.label_id ? by.get(d.label_id) : undefined;
+      return l === undefined || attr(l) === k;
+    },
+    episodeLevel: false,
+  };
+}
+
+export const EXPOSURES = ['novel', 'known'] as const;
+export const DIFFICULTIES = ['subtle', 'blatant'] as const;
+
+/** Metrics per label exposure (novel, known): `metrics.by_exposure` in the report. */
+export function aggregateByExposure(scores: EpisodeScore[]): Record<string, Metrics> {
+  return Object.fromEntries(EXPOSURES.map((k) => [k, compute(scores, labelAttrSlice(exposureOf, k))]));
+}
+
+/**
+ * Metrics per label difficulty (subtle, blatant). Not a report field (the schema has none); the Markdown headline
+ * computes it from the episode scores.
+ */
+export function aggregateByDifficulty(scores: EpisodeScore[]): Record<string, Metrics> {
+  return Object.fromEntries(DIFFICULTIES.map((k) => [k, compute(scores, labelAttrSlice(difficultyOf, k))]));
+}
+
 /**
  * Slice rules (see scorer/README.md):
  * - category: labels of that category; findings by the finding's own category.
  * - class: labels of that class; findings by the class of the label they matched; unmatched findings have no class,
  *   so they count against every class.
+ * - exposure (novel, known): the same rule as class, by the label's exposure (default novel).
  * - track x category x class: both of the above.
  */
 export function aggregate(scores: EpisodeScore[]): Report['metrics']['overall'] {
@@ -113,10 +149,7 @@ export function aggregateAll(scores: EpisodeScore[]): Report['metrics'] {
   const catSlice = (c: string): Slice => ({
     label: (l) => l.category === c, decision: (d) => d.category === c, episodeLevel: false,
   });
-  const classOf = (d: FindingDecision, by: Map<string, LabelOutcome>) => (d.label_id ? by.get(d.label_id)?.class : undefined);
-  const classSlice = (k: string): Slice => ({
-    label: (l) => l.class === k, decision: (d, by) => { const c = classOf(d, by); return c === undefined || c === k; }, episodeLevel: false,
-  });
+  const classSlice = (k: string): Slice => labelAttrSlice((l) => l.class, k);
 
   const by_track: Record<string, Metrics> = {};
   for (const t of tracks) by_track[t] = compute(scores.filter((s) => s.track === t), all);
@@ -137,5 +170,5 @@ export function aggregateAll(scores: EpisodeScore[]): Report['metrics'] {
         }),
       };
     });
-  return { overall: compute(scores, all), by_track, by_category, by_class, breakdown };
+  return { overall: compute(scores, all), by_track, by_category, by_class, by_exposure: aggregateByExposure(scores), breakdown };
 }

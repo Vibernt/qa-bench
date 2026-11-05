@@ -1,0 +1,14 @@
+id: delta.s2
+app: delta
+title: "Fixture delta.s2"
+kind: defect
+category: functional
+class: deterministic
+severity: minor
+difficulty: subtle
+where: { route: /home }
+switch:
+  env: { DELTA_DEFECT: zq_s2 }
+found_by:
+  - kind: text
+split: public

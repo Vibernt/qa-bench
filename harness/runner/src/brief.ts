@@ -1,6 +1,11 @@
 // The brief: the only thing an adapter is told about an episode (BRIEF §6.4). Built from app.yaml, the track and
 // the episode's generated accounts. It never contains anything from the answer key, episode.active or the
 // episode's env (switch keys or values).
+//
+// Two modes (track brief.mode, default regression):
+// - regression: purpose, targets, roles, budget, journeys (when the track asks), pages, goal, rules, categories.
+// - exploratory: purpose, targets, roles, budget, goal (only when the track sets one), rules and categories. No
+//   journeys and no pages: the system decides what to test (docs/DECISIONS.md, 5 Nov).
 import type { AppConfig, Brief, Category, Episode, Track } from '../../../lib/contracts.ts';
 import { assertValid } from '../../../lib/schemas.ts';
 import { BENCH_EVIDENCE_DIR, BENCH_FINDINGS_FILE } from './docker.ts';
@@ -26,21 +31,24 @@ export function buildBrief(input: BriefInput): Brief {
     role: r.role,
     accounts: episode.accounts.filter((a) => a.role === r.role).map((a) => ({ username: a.username, password: a.password })),
   }));
+  const mode = tb.mode ?? 'regression';
   const brief: Brief = {
     episode_id: episode.id,
     bench_version: episode.bench_version,
     app: episode.app,
     track: episode.track,
+    mode,
+    ...(app?.purpose ? { purpose: app.purpose } : {}),
     targets: input.targets,
     roles,
     budget: { wall_time_s: tb.wall_time_s ?? DEFAULT_WALL_TIME_S, ...(tb.money_usd !== undefined ? { money_usd: tb.money_usd } : {}) },
   };
-  if (tb.journeys && app?.journeys?.length) {
+  if (mode === 'regression' && tb.journeys && app?.journeys?.length) {
     brief.journeys = app.journeys.map((j) => ({ id: j.id, title: j.title, role: j.role, ...(j.start ? { start: j.start } : {}), steps: [...j.steps] }));
   }
   if (tb.goal) brief.goal = tb.goal;
   const pages = episode.live ? episode.live.pages : app?.pages;
-  if (pages?.length) brief.pages = [...pages];
+  if (mode === 'regression' && pages?.length) brief.pages = [...pages];
   if (episode.live) brief.rules = { ...episode.live.rules };
   if (input.categories?.length) brief.categories = [...input.categories];
   brief.out = { findings: BENCH_FINDINGS_FILE, evidence_dir: BENCH_EVIDENCE_DIR };

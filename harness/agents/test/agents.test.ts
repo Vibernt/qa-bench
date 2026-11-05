@@ -3,10 +3,11 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import type { Brief } from '../../../lib/contracts.ts';
 import { check } from '../../../lib/schemas.ts';
-import { AGENTS_ROOT, briefSummary, estimateCost, loadConfigs, loadSet, renderPrompt, sanitiseFindings } from '../src/index.ts';
+import { AGENTS_ROOT, EXPLORATORY_NOTE, HARNESS_VERSION, briefSummary, estimateCost, loadConfigs, loadSet, modeNote, renderPrompt, sanitiseFindings } from '../src/index.ts';
 
 const brief: Brief = {
-  episode_id: 'regression-003', bench_version: '0.1.0-b0', app: 'expense-app', track: 'regression',
+  episode_id: 'regression-003', bench_version: '0.1.0-b0', app: 'expense-app', track: 'regression', mode: 'regression',
+  purpose: 'An expense tracker for a small team.',
   targets: [{ name: 'expense-app', url: 'http://127.0.0.1:40001/expenses' }],
   roles: [{ role: 'viewer', accounts: [{ username: 'viewer-1a2b', password: 'pw-test-only' }] }],
   budget: { wall_time_s: 600 },
@@ -32,16 +33,36 @@ describe('configs and sets', () => {
 });
 
 describe('prompt', () => {
+  const tpl = readFileSync(join(AGENTS_ROOT, 'prompt.md'), 'utf8');
+  const render = (b: Brief) => renderPrompt(tpl, {
+    workdir: '/tmp/w', findings: '/tmp/w/findings.json', episode_id: b.episode_id, mode_note: modeNote(b), brief_summary: briefSummary(b),
+    budget_minutes: '10', system_name: sys.name, system_version: sys.version,
+  });
+
   it('renders every placeholder and carries only brief facts', () => {
-    const tpl = readFileSync(join(AGENTS_ROOT, 'prompt.md'), 'utf8');
-    const out = renderPrompt(tpl, {
-      workdir: '/tmp/w', findings: '/tmp/w/findings.json', episode_id: brief.episode_id, brief_summary: briefSummary(brief),
-      budget_minutes: '10', system_name: sys.name, system_version: sys.version,
-    });
+    const out = render(brief);
     expect(out).not.toMatch(/\{\{\w+\}\}/);
     expect(out).toContain('viewer-1a2b');
     expect(out).toContain('http://127.0.0.1:40001/expenses');
     expect(out).not.toMatch(/mutations\/|label\.yaml|answer-key|DEFECT=/);
+  });
+
+  it('regression prompts list the journeys and the purpose, with no exploratory note', () => {
+    const out = render(brief);
+    expect(out).toContain('- What it is: An expense tracker for a small team.');
+    expect(out).toContain('Journeys to cover');
+    expect(out).not.toContain(EXPLORATORY_NOTE);
+    expect(out).toContain('## The brief\n- App: expense-app');
+  });
+
+  it('exploratory prompts say there is no checklist and show the purpose', () => {
+    const { journeys: _j, ...rest } = brief;
+    const out = render({ ...rest, mode: 'exploratory', episode_id: 'exploration-001', track: 'exploration' });
+    expect(out).not.toMatch(/\{\{\w+\}\}/);
+    expect(out).toContain('No checklist is given: find what is broken before release');
+    expect(out).toContain('- What it is: An expense tracker for a small team.');
+    expect(out).not.toContain('Journeys to cover');
+    expect(HARNESS_VERSION).toBe('0.3.0');
   });
 });
 

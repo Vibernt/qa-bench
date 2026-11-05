@@ -1,0 +1,14 @@
+id: delta.b3
+app: delta
+title: "Fixture delta.b3"
+kind: defect
+category: functional
+class: deterministic
+severity: minor
+difficulty: blatant
+where: { route: /home }
+switch:
+  env: { DELTA_DEFECT: zq_b3 }
+found_by:
+  - kind: text
+split: public

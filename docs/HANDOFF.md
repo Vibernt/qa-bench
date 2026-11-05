@@ -26,7 +26,7 @@ also been scored on a 10-episode sample, and their runs fed the first quality ro
 | Adapters | `harness/adapters/{playwright-suite,http-api,human,noop}` | See each README |
 | Agent runs | `harness/agents` (configs, episode sets, one prompt, `agents prepare/finish`) | Haiku 5.5 and Sonnet 5.5 at low and high effort on `b0-sample-10`: `leaderboard/b0-agents/` |
 | Natural defects | `apps/*/natural/` | 5 verified real bugs found by the agent runs, each with a `verify.ts` check |
-| Tracks | `tracks/regression.yaml` (17 episodes), `tracks/noise.yaml` (6 + 2 live sites, generated only with `--live`) | Every defect and change is planted at least once (unit test) |
+| Tracks | `tracks/regression.yaml` (24 episodes, 2-3 bugs per mixed episode), `tracks/noise.yaml` (6 + 2 live sites, generated only with `--live`), `tracks/exploration.yaml` (12, exploratory briefs) | Every defect and change is planted at least once (unit test) |
 | CLI | `bin/qa-bench.ts` | `validate`, `generate`, `build-apps`, `run`, `up`, `down`, `score`, `report` |
 | CI | `.github/workflows/ci.yml` | Lint and typecheck, validate, unit tests (142). No Docker or browsers in CI |
 

@@ -8,7 +8,7 @@ its findings go through the same scorer as every other system's.
 |---|---|
 | [`configs.yaml`](configs.yaml) | Agent configurations: `id`, `driver`, `model`, `effort`, and `price` (USD per million tokens) |
 | [`sets/*.yaml`](sets/) | Named episode sets, e.g. `b0-sample-10` (8 regression episodes and 2 noise episodes) |
-| [`prompt.md`](prompt.md) | The one prompt every agent gets. It is built from the brief only |
+| [`prompt.md`](prompt.md) | The one prompt every agent gets. It is built from the brief only. Exploratory briefs (track 7.7) add "No checklist is given: find what is broken before release"; every prompt shows the app's purpose |
 | [`src/index.ts`](src/index.ts) | `prepareSession`, `finishSession`, `sanitiseFindings`, `estimateCost` |
 
 ## Run a configuration
@@ -53,8 +53,9 @@ The prompt, brief, raw findings and usage of each agent are kept under `runs/<se
 ## Sealing, honestly
 Container adapters can't reach the answer key, because only the brief and an output folder are mounted. Agents
 driven this way run on the orchestrator's machine, so sealing rests on three things:
-1. **The prompt.** Agents get only the brief, are told to work only in their workspace, and must not read other
-   files or run docker. The workspace is outside the repository.
+1. **The prompt and the agent definition.** Agents get only the brief, are told to work only in their workspace,
+   and must not read other files or run docker. The workspace is outside the repository. The `qa-tester` subagent
+   type has only shell and file tools.
 2. **An audit.** The orchestrator scans every tool input in each agent's transcript for sealed paths: labels,
    `mutations/`, `changes/`, `baseline/`, `episodes/`, answer keys, `verify.ts` and the repository path. It
    reports the count as `audit.sealed_path_hits`.
@@ -65,8 +66,10 @@ be sealed like every other adapter, with exact per-call cost. Prefer it for publ
 
 ## Drivers
 - **`claude-code-subagent`:** a Claude Code session is the orchestrator. For each episode it starts a subagent with
-  the configuration's `model` and `effort` and the episode's `prompt.md`. The subagent drives Chromium through
-  Playwright from its workspace. The session then takes `total_tokens` and duration from the subagent's
+  `subagent_type: qa-tester`, the configuration's `model` and `effort`, and the episode's `prompt.md`. The
+  `qa-tester` definition ([`.claude/agents/qa-tester.md`](../../.claude/agents/qa-tester.md)) limits the subagent
+  to shell and file tools (`Bash, Read, Write, Edit, Glob`: no messaging, docs or session tools) and tells it to
+  work only in the workspace the task names. The subagent drives Chromium through Playwright from its workspace. The session then takes `total_tokens` and duration from the subagent's
   completion notice, and audits its transcript.
 - **Adding a driver** (another vendor's agent CLI, a hosted agent): add configurations with a new `driver` value.
   The driver must give each agent its `prompt.md`, let it write `findings.json` and record usage. `prepare` and
