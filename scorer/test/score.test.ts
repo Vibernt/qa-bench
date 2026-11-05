@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { EpisodeScore } from '../../lib/contracts.ts';
+import { BENCH_VERSION, type EpisodeScore } from '../../lib/contracts.ts';
 import { assertValid } from '../../lib/schemas.ts';
 import { aggregate, aggregateByDifficulty, aggregateByExposure, buildReport, renderMarkdown, scoreEpisode } from '../src/index.ts';
 import { episode, finding, label, loadFindings } from './helpers.ts';
@@ -154,7 +154,7 @@ describe('report', () => {
   });
   it('renders the key Markdown rows', () => {
     const md = renderMarkdown(report);
-    expect(md).toContain('# QA Bench report: hand-written 1 (bench 0.1.0-b0)');
+    expect(md).toContain(`# QA Bench report: hand-written 1 (bench ${BENCH_VERSION})`);
     expect(md).toContain('| Recall | 50.0% (1/2 defects) |');
     expect(md).toContain('| Precision | 33.3% |'); // 2 matched / (7 findings - 1 excused)
     expect(md).toContain('| Mean time to first detection | 30.0 s |');
