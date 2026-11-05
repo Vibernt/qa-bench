@@ -1,10 +1,9 @@
 # QA Bench: full brief
 
-Written 4–5 Nov 2026 from Touchstone's `docs/BENCH.md` and `docs/QA_PARITY.md` (private repo `Vibernt/touchstone`).
-This file is self-contained: you shouldn't need the Touchstone repo to build the bench. You need it only for the
-Touchstone adapter.
+Written 4–5 Nov 2026. This file is the design; [HANDOFF.md](HANDOFF.md) says what is built.
 
-**Status: plan. Nothing is built. Open decisions are in [DECISIONS.md](DECISIONS.md).**
+**Status: B0 (skeleton) is built and scored end to end; B1–B5 are plan. Open decisions are in
+[DECISIONS.md](DECISIONS.md).**
 
 ## 1. Intent
 
@@ -14,23 +13,24 @@ Touchstone adapter.
 > raise on changes made on purpose, how long does it take, and what does it cost?
 
 **Who it serves:**
-1. **Touchstone**, which uses it to prove, category by category, where it matches or beats a strong human QA team and
-   where it doesn't. Its spikes SP34–SP46 (section 11) run here.
-2. **The field.** It's published at B5 as a public benchmark with a leaderboard, so other agents, scripted suites
-   and human vendors can be compared on the same footing.
+1. **Builders of QA systems** (agents, scripted suites, QA services), who need to know, category by category,
+   where their system matches or beats a strong human QA team and where it doesn't. The research questions in
+   section 11 run here.
+2. **Buyers and the field.** It's published at B5 as a public benchmark with a leaderboard, so agents, scripted
+   suites and human vendors can be compared on the same footing.
 
 **What success looks like at v1.0:**
 - About 12 apps across the 10 tracks.
 - At least 5 public planted defects and at least 3 deliberate changes for every category.
 - A private held-out split.
 - A scorer anyone can run locally with `docker compose`.
-- Published scores for Touchstone, at least one other agent, one scripted suite and a paid human baseline.
+- Published scores for at least two agents, one scripted suite and a paid human baseline.
 
 **What it isn't:**
 - **Not a load-testing or penetration-testing benchmark.** Security coverage is limited to hygiene and access
   control, the things a QA team checks.
 - **Not a mobile-native benchmark.** Mobile here means mobile viewports in a browser. Real iOS Safari is a later
-  spike (SP46).
+  question (RQ12).
 - **Not a model benchmark.** It scores whole QA systems, including their cost.
 
 ## 2. What no existing benchmark gives us
@@ -104,8 +104,8 @@ Every label carries a **class**.
 masked screenshot diff, a text change or a change from a stable baseline. The bench scores detectors and judges
 separately, so we can see which layer missed.
 
-Touchstone's judging stage, which the bench calibrates:
-- **Order:** a cheap judge model (JEV) first, then an LLM, then a person.
+The judging stage the bench calibrates (a common design; any system's judges can be scored the same way):
+- **Order:** a cheap judge model first, then an LLM, then a person.
 - **Confidence:** each step escalates when its confidence is low.
 - **Earned autonomy:**
   - *shadow*: the judge runs, but its call isn't used;
@@ -130,7 +130,7 @@ qa-bench/
   tracks/<track>.yaml    which apps, mutations and changes make up a track
   episodes/              generated: a build = app + mutations + changes, with a sealed answer key
   harness/
-    adapters/            touchstone, playwright-suite, browsergym-agent, human
+    adapters/            playwright-suite, http-api, human, noop (built); browsergym-agent (planned)
     runner/              brings up an episode, hands the adapter a brief, collects findings, tears down
   scorer/                matches findings to the answer key; writes the report
   judge-sets/            labelled screenshot, copy and accessible-name items for judge calibration
@@ -141,8 +141,8 @@ qa-bench/
 The held-out split lives in a separate private repo (`qa-bench-heldout`, name to confirm) and is mounted at run
 time.
 
-**Language and tooling** (recommended, not yet decided):
-- **Harness and scorer:** TypeScript on Node 22 LTS. This matches Touchstone's stack, so its adapter is thin.
+**Language and tooling** (as built in B0):
+- **Harness and scorer:** TypeScript on Node 22 LTS.
 - **App runtime:** docker compose.
 - **Contracts:** JSON Schema, validated in CI.
 - **Tests:** vitest for unit tests. Browser tests run natively, never in a sandbox (see [AGENTS.md](../AGENTS.md)).
@@ -216,10 +216,11 @@ The adapter also reports `cost` and `wall_time` when it can. **An adapter never 
 
 | Adapter | Description |
 |---|---|
-| `touchstone` | Calls Touchstone's run API. Touchstone owns its own cost metering |
+| `http-api` | For any QA system that serves the bench's run API (start, status, findings). The system meters its own cost |
 | `playwright-suite` | Runs a fixed scripted suite per app; the floor a scripted QA team would reach |
 | `browsergym-agent` | Wraps any BrowserGym agent |
-| `human` | Gives a tester the same brief and a form to file findings in the same schema |
+| `human` | Gives a tester the same brief (`qa-bench up`) and a template to file findings in the same schema |
+| `noop` | Reports nothing: the zero floor and the runner's smoke test |
 
 ### 6.5 Report
 - **Run metadata:**
@@ -232,18 +233,18 @@ The adapter also reports `cost` and `wall_time` when it can. **An adapter never 
 
 ## 7. Tracks
 
-| # | Track | Apps | What it measures | Feeds (Touchstone spikes and cards) |
+| # | Track | Apps | What it measures | Research questions |
 |---|---|---|---|---|
-| 7.1 | **Regression** | Expense app, Conduit, ParaBank, Swag Labs | Planted functional, consistency and permission bugs in known journeys, plus a deliberate-change twin for false alarms | Replay credibility; SP37, SP39 |
-| 7.2 | **Natural defects** | WebTestBench apps (adopted) | Finding real defects with no checklist given | SP43 |
-| 7.3 | **Visual, copy and design** | Expense app, Ghost theme, Saleor dashboard, Swag Labs `visual_user` | Planted visual and copy faults against deliberate redesigns and content changes | SP34, SP36 |
-| 7.4 | **Noise** | fragmatic.ai and opensenselabs.com (read-only, by existing permission), the-internet, UI Testing Playground, Excalidraw | How often detectors and judges fire when nothing is wrong | SP35 |
-| 7.5 | **Accessibility** | ACT test cases (adopted), plus planted keyboard, zoom and focus faults in the expense app and Conduit | Accessibility per rule and across whole journeys | SP38 |
-| 7.6 | **Email and sign-in** | Ghost, Cal.com, Keycloak, Mailpit | Verification links, receipts, magic links, one-time codes, timezones in emails | SP40 |
-| 7.7 | **Exploration** | Juice Shop, Medusa admin, Cal.com | Unknown bugs with no journeys given: permission leaks, double submits, concurrency, error handling under injected faults | SP41, SP43 |
-| 7.8 | **Usability** | WebArena and VisualWebArena (run only), plus agent-inserted usability defects in the expense app and Conduit | Goal-only agents: whether step counts are stable, and whether defects move them | SP42 |
-| 7.9 | **Judge calibration** | `judge-sets/` built from 7.3 and 7.5, plus UI-UX UXBench (run only) | Precision, recall and calibration per judge kind; agreement between JEV and the LLM | SP34 |
-| 7.10 | **Human baseline** | A fixed episode set drawn from 7.1, 7.3, 7.6 and 7.7 | Paid testers against Touchstone on the same builds | SP45 |
+| 7.1 | **Regression** | Expense app, Conduit, ParaBank, Swag Labs | Planted functional, consistency and permission bugs in known journeys, plus a deliberate-change twin for false alarms | Replay credibility; RQ4, RQ6 |
+| 7.2 | **Natural defects** | WebTestBench apps (adopted) | Finding real defects with no checklist given | RQ10 |
+| 7.3 | **Visual, copy and design** | Expense app, Ghost theme, Saleor dashboard, Swag Labs `visual_user` | Planted visual and copy faults against deliberate redesigns and content changes | RQ1, RQ3 |
+| 7.4 | **Noise** | fragmatic.ai and opensenselabs.com (read-only, by existing permission), the-internet, UI Testing Playground, Excalidraw | How often detectors and judges fire when nothing is wrong | RQ2 |
+| 7.5 | **Accessibility** | ACT test cases (adopted), plus planted keyboard, zoom and focus faults in the expense app and Conduit | Accessibility per rule and across whole journeys | RQ5 |
+| 7.6 | **Email and sign-in** | Ghost, Cal.com, Keycloak, Mailpit | Verification links, receipts, magic links, one-time codes, timezones in emails | RQ7 |
+| 7.7 | **Exploration** | Juice Shop, Medusa admin, Cal.com | Unknown bugs with no journeys given: permission leaks, double submits, concurrency, error handling under injected faults | RQ8, RQ10 |
+| 7.8 | **Usability** | WebArena and VisualWebArena (run only), plus agent-inserted usability defects in the expense app and Conduit | Goal-only agents: whether step counts are stable, and whether defects move them | RQ9 |
+| 7.9 | **Judge calibration** | `judge-sets/` built from 7.3 and 7.5, plus UI-UX UXBench (run only) | Precision, recall and calibration per judge kind; agreement between a cheap judge and an LLM | RQ1 |
+| 7.10 | **Human baseline** | A fixed episode set drawn from 7.1, 7.3, 7.6 and 7.7 | Paid testers against automated systems on the same builds | RQ11 |
 
 **Noise-set rules (7.4), which can't be broken:**
 - **fragmatic.ai:** read-only. The one exception is the tagged test contact form, at most 5 submissions per run.
@@ -308,7 +309,7 @@ Per system, track, category and class:
 - **Judges** (track 7.9):
   - precision and recall per kind;
   - a reliability curve (confidence against accuracy);
-  - agreement between JEV and the LLM.
+  - agreement between a cheap judge and an LLM.
 
 Reports are versioned: `bench vX.Y`, upstream digests, system version and seed. Outside leaderboard entries are
 accepted only with the full run record.
@@ -324,11 +325,11 @@ The matcher's own agreement with people is published.
 ## 10. Infrastructure
 
 - **Local:** `docker compose` per app. A full track runs on one machine.
-- **Hosted episodes** (for Touchstone and human testers):
-  - exact-named `touchstone-bench-*` resources in our Fly organisation or Northflank project;
+- **Hosted episodes** (for systems that run as remote services, and for human testers):
+  - exact-named `qa-bench-*` resources on a container host (BD4);
   - one app per episode, reset from the seed, torn down by exact name;
   - spend capped and metered;
-  - provider details are kept in Touchstone's private docs, not here.
+  - provider account details are kept out of this repo.
 - **Inbox:** one Mailpit per episode, reachable only from the episode's network.
 - **Identity:** Keycloak with test realms, plus test accounts generated per episode. These are never real
   credentials and are recorded only in the episode's seed.
@@ -337,48 +338,42 @@ The matcher's own agreement with people is published.
   - their findings go through the same scorer;
   - the vendor and budget are an owner decision (BD5).
 
-## 11. Spikes the bench serves (Touchstone's SP34–SP46)
+## 11. Research questions the bench answers
 
-| Spike | Question | Track |
+| # | Question | Track |
 |---|---|---|
-| SP34 | How do JEV, the LLM and a person compare on labelled screenshot and copy items, including deliberate changes? | 7.9 |
-| SP35 | How often do detectors and the judge fire on unchanged real sites, and what is the cache hit rate? | 7.4 |
-| SP36 | Does judging against the approved baseline beat judging a single screenshot? | 7.3 |
-| SP37 | WebKit and Firefox against Chromium: image size, boot time, run time, flakiness, and whether verdicts match | 7.1 |
-| SP38 | What share of journeys can be replayed by keyboard alone, and how accurate is focus detection on the ACT cases? | 7.5 |
-| SP39 | Of the rules agents propose from the survey and docs, how many are true, and do they catch planted calculation bugs? | 7.1 |
-| SP40 | Test inbox: latency, reliability, link extraction | 7.6 |
-| SP41 | Which injected faults expose planted error-handling bugs, and how many false alarms do they cause? | 7.7 |
-| SP42 | Are goal-only agents' step counts stable, and do planted usability defects move them beyond the noise? | 7.8 |
-| SP43 | Touchstone's bug hunt, with clean-replay confirmation, against WebTestBench's published < 30% F1 | 7.2 |
-| SP44 | Can cri-ci's page-audit pack run inside Touchstone's runner? | not the bench |
-| SP45 | Paid human testers against Touchstone on the same builds | 7.10 |
-| SP46 | Real iOS Safari through a device cloud | not the bench (later) |
+| RQ1 | How do a cheap judge model, an LLM and a person compare on labelled screenshot and copy items, including deliberate changes? | 7.9 |
+| RQ2 | How often do detectors and judges fire on unchanged real sites, and how much does caching save? | 7.4 |
+| RQ3 | Does judging against an approved baseline beat judging a single screenshot? | 7.3 |
+| RQ4 | WebKit and Firefox against Chromium: image size, boot time, run time, flakiness, and whether verdicts match | 7.1 |
+| RQ5 | What share of journeys can be replayed by keyboard alone, and how accurate is focus detection on the ACT cases? | 7.5 |
+| RQ6 | Of the rules agents propose from docs, how many are true, and do they catch planted calculation bugs? | 7.1 |
+| RQ7 | Test inbox: latency, reliability, link extraction | 7.6 |
+| RQ8 | Which injected faults expose planted error-handling bugs, and how many false alarms do they cause? | 7.7 |
+| RQ9 | Are goal-only agents' step counts stable, and do planted usability defects move them beyond the noise? | 7.8 |
+| RQ10 | Bug hunts with clean-replay confirmation against WebTestBench's published < 30% F1 | 7.2 |
+| RQ11 | Paid human testers against automated systems on the same builds, by category and with cost | 7.10 |
+| RQ12 | Real iOS Safari through a device cloud | later |
 
 ## 12. Phases
 
 | Phase | Scope | Exit |
 |---|---|---|
-| **B0 Skeleton** | Schemas, runner, scorer, episode generator; tracks 7.1 and 7.4 with the expense app, Swag Labs and the-internet; the `touchstone` and `playwright-suite` adapters | Touchstone scored end to end on 20 episodes; the deliberate-change twin produces a false-alarm number |
+| **B0 Skeleton** | Schemas, runner, scorer, episode generator; tracks 7.1 and 7.4 with the expense app, Swag Labs and the-internet; the `playwright-suite`, `http-api`, `human` and `noop` adapters | Two systems scored end to end on ≥ 20 episodes; the deliberate-change twin produces a false-alarm number (**done 5 Nov**, see `leaderboard/`) |
 | **B1 Breadth** | Conduit, ParaBank, Ghost, Mailpit, Keycloak; tracks 7.3, 7.5 and 7.6; WebTestBench imported (7.2) | Every category has ≥ 5 public mutations and ≥ 3 deliberate changes |
-| **B2 Judges** | `judge-sets/` with ≥ 300 labelled items; track 7.9; SP34 and SP36 | Calibration curves per judge kind |
-| **B3 Exploration and usability** | Juice Shop, Medusa admin, Cal.com, WebArena (run only); tracks 7.7 and 7.8; fault injection | SP41, SP42 and SP43 results |
-| **B4 Human baseline** | Fixed episode set, testers, track 7.10 | SP45: humans against Touchstone by category, with cost |
+| **B2 Judges** | `judge-sets/` with ≥ 300 labelled items; track 7.9; RQ1 and RQ3 | Calibration curves per judge kind |
+| **B3 Exploration and usability** | Juice Shop, Medusa admin, Cal.com, WebArena (run only); tracks 7.7 and 7.8; fault injection | RQ8, RQ9 and RQ10 results |
+| **B4 Human baseline** | Fixed episode set, testers, track 7.10 | RQ11: humans against automated systems by category, with cost |
 | **B5 Public release** | Public split, docs, leaderboard, citation, outside submissions; held-out split stays private | `qa-bench v1.0` tagged; licences rechecked |
 
-**B0 in detail** (the next work):
-1. `schemas/` for every contract in section 6, with a CI job that validates every YAML and JSON file in the repo.
-2. `apps/swag-labs/` and `apps/the-internet/`: `upstream.json`, `compose.yaml` and a seed or reset script.
-3. `apps/expense-app/`: the code is in `apps/expense-app/app` (BD2, 5 Nov).
-   - Its 7 switchable defects map directly to labels: `permission_bypass`, `stale_state`, `ignored_filter`,
-     `wrong_total`, `missing_persistence`, `duplicate_write` and `misleading_success`.
-   - Its `VARIANT=relabel` mode is the first deliberate change. It renames buttons and titles but leaves behaviour
-     the same.
-4. Swag Labs' built-in faulty users become labelled defects. A deliberate-change twin is written for each app.
-5. `harness/runner`: bring up an episode, issue the brief, collect findings and tear down. Local docker only.
-6. `scorer/`: the deterministic matcher, the metrics in section 9, and a JSON and Markdown report.
-7. Adapters: `playwright-suite` first (cheap and deterministic, so it validates the scorer), then `touchstone`.
-8. Generate 20 episodes and score both adapters.
+**B0 as built** (5 Nov 2026; [HANDOFF.md](HANDOFF.md) has the detail):
+1. `schemas/` for every contract in section 6, and `npm run validate` in CI over every YAML and JSON file.
+2. Apps: `expense-app` (ours; 7 defects, 1 change), `swag-labs` (vendored; 5 faulty-user defects, 4 changes) and
+   `the-internet` (run-only noise; 10 baseline labels, 1 change), each with a `verify.ts` that proves every label.
+3. `harness/generator` (seeded, reproducible episodes with clean and twin episodes), `harness/runner` (sealed
+   container adapters, `up`/`down` for people) and `scorer/` (deterministic matcher, JSON and Markdown reports).
+4. Adapters: `playwright-suite`, `http-api`, `human` and `noop`.
+5. Exit check: 23 episodes (17 regression, 6 noise), scored for `playwright-suite` and `noop`.
 
 **Upkeep:**
 - Every quarter: bump upstream pins and rebase mutations. A mutation that no longer applies is fixed or retired,

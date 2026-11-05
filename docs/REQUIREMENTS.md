@@ -13,7 +13,7 @@
 |---|---|---|
 | Local episode runner | B0 | docker compose; one network per episode |
 | CI | B0 | GitHub Actions: schema validation, unit tests, scorer tests on recorded findings. No live apps in CI until B1 |
-| Hosted episodes for Touchstone's cloud runners and human testers | B0 (Touchstone adapter), B4 (humans) | Exact-named `touchstone-bench-*` on our Fly org, with its own spend cap (BD4) |
+| Hosted episodes for systems that run as remote services, and for human testers | B1 (remote systems), B4 (humans) | Exact-named `qa-bench-*` on a container host, with its own spend cap (BD4) |
 | Test inbox | B1 | Mailpit per episode |
 | Identity provider | B1 | Keycloak test realms per episode |
 | Held-out split | B1 | A separate private repo, mounted at run time |
@@ -21,18 +21,18 @@
 
 ## Accounts and access
 - GitHub: the `Vibernt` org. This repo is private until B5.
-- Fly / Northflank: only for hosted episodes, under Touchstone's ownership rules (exact names, caps, metering).
+- A container host: only for hosted episodes (exact names, caps, metering; AGENTS.md rule 5).
 - **No real credentials anywhere in this repo.** Test accounts are generated for each episode and recorded in its
-  seed. Any real secret comes from the macOS Keychain and is never printed or committed.
+  seed. Any real secret comes from a secret store or the environment at run time and is never printed or committed.
 
 ## Money
 | Item | Estimate | Decision |
 |---|---|---|
 | Hosted episodes | Small: one Fly machine per episode for minutes | BD4 cap |
-| Model spend for judge calibration (B2) and agent runs | Metered per run; reported in each run record | Within Touchstone's caps |
+| Model spend for judge calibration (B2) and agent runs | Metered per run; reported in each run record | Within the system owner's caps |
 | Human baseline (B4) | About 3 testers × 2 time-boxed sessions on 20 episodes | BD5 |
 
 ## People and decisions
-- **vid (owner):** decisions BD1–BD8; reviews a sample of agent-generated mutations; signs off licence rechecks
+- **The maintainer (owner):** decisions BD1–BD8; reviews a sample of agent-generated mutations; signs off licence rechecks
   before B5.
 - **Paid testers:** B4 only.
