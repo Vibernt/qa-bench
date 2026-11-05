@@ -1,0 +1,17 @@
+id: swag.not-found-item-page
+app: swag-labs
+title: "A missing product's page offers a working Add to cart button"
+description: "/inventory-item.html?id=99 (any unknown id) shows 'ITEM NOT FOUND' with placeholder copy and a nonsense price, but still offers Add to cart. Upstream behaviour, found by an agent in the B0 sample runs; not planted."
+track: regression
+kind: natural
+category: error-handling
+class: deterministic
+severity: minor
+where: { route: /inventory-item.html, role: customer }
+found_by:
+  - kind: behaviour
+    also_categories: [copy]
+    note: "The not-found product page has a live Add to cart button and placeholder text"
+tolerance: { route: exact, role: any }
+split: public
+upstream_ref: "apps/swag-labs/upstream/src/pages/InventoryItem.jsx (fallback item for unknown ids); checked by apps/swag-labs/verify.ts"

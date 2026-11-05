@@ -6,7 +6,7 @@
 // Builds the image unless --image is given. There is one check per found_by entry, in the same order; the script
 // fails if a label's found_by count and its checks disagree.
 import { execFileSync } from 'node:child_process';
-import { readdirSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import YAML from 'yaml';
@@ -322,6 +322,35 @@ const checks: Record<string, Check[]> = {
       return shown.some((p, i) => i > 0 && p < shown[i - 1]!);
     },
   ],
+  // Natural defects: real bugs present on every build (they must show on the clean build).
+  'swag.unrounded-item-total': [
+    async (s) => {
+      await login(s);
+      await s.page.click(dt('add-to-cart-sauce-labs-bike-light'));
+      await s.page.click(dt('add-to-cart-sauce-labs-fleece-jacket'));
+      await open(s, '/checkout-step-one.html');
+      await s.page.fill(dt('firstName'), 'Ada');
+      await s.page.fill(dt('lastName'), 'Lovelace');
+      await s.page.fill(dt('postalCode'), '10001');
+      await s.page.click(dt('continue'));
+      return (await text(s, dt('subtotal-label'))).includes('59.980000000000004');
+    },
+  ],
+  'swag.not-found-item-page': [
+    async (s) => {
+      await login(s);
+      await open(s, '/inventory-item.html?id=99');
+      return (await text(s, dt('inventory-item-name'))).includes('ITEM NOT FOUND') && (await count(s, dt('add-to-cart'))) === 1;
+    },
+  ],
+  'swag.cart-count-grammar': [
+    async (s) => {
+      await login(s);
+      await s.page.click(dt('add-to-cart-sauce-labs-backpack'));
+      await pause(200);
+      return (await s.page.locator(dt('shopping-cart-link')).getAttribute('aria-label')) === 'Cart, 1 items';
+    },
+  ],
   'swag.performance-glitch-user': [
     async (s) => {
       await login(s);
@@ -433,12 +462,13 @@ async function fullCheckout(base: string): Promise<string[]> {
 }
 
 // ---- run ---------------------------------------------------------------------------------------------------------
-function labels(): { id: string; entries: number; env: Record<string, string> }[] {
+function labels(): { id: string; entries: number; env: Record<string, string>; natural?: boolean }[] {
   const out = [];
-  for (const kind of ['mutations', 'changes']) {
+  for (const kind of ['mutations', 'changes', 'natural']) {
+    if (!existsSync(join(here, kind))) continue;
     for (const dir of readdirSync(join(here, kind))) {
       const l = YAML.parse(readFileSync(join(here, kind, dir, 'label.yaml'), 'utf8'));
-      out.push({ id: l.id as string, entries: (l.found_by as unknown[]).length, env: l.switch.env as Record<string, string> });
+      out.push({ id: l.id as string, entries: (l.found_by as unknown[]).length, env: (l.switch?.env ?? {}) as Record<string, string>, natural: kind === 'natural' });
     }
   }
   return out.filter((l) => !only || l.id === only);
@@ -477,6 +507,7 @@ try {
       report(false, `${l.id}: ${l.entries} found_by entries but ${list?.length ?? 0} checks`);
       continue;
     }
+    if (l.natural) { await runChecks(clean.base, l.id, true); continue; }
     await runChecks(clean.base, l.id, false);
     const app = start(l.env);
     try {

@@ -1,0 +1,19 @@
+id: expense.huge-amount-breaks-list
+app: expense-app
+title: "A very large amount is accepted, then the expense list returns 500 for everyone"
+description: "Saving an amount like 99999999999999 succeeds (303 'Expense saved'), but the stored cents exceed what SQLite returns as a safe JavaScript number, so every unfiltered list view (and any filter that includes the row) answers 500 until the row is removed. Found by agents in the B0 sample runs; not planted."
+track: regression
+kind: natural
+category: error-handling
+class: deterministic
+severity: critical
+where: { route: /expenses, role: editor }
+found_by:
+  - kind: status
+    note: "/expenses returns 500 after an expense with a huge amount is saved"
+  - kind: behaviour
+    route: /expenses/new
+    note: "The add form accepts an amount far beyond any real expense with no upper bound"
+tolerance: { route: prefix, role: any }
+split: public
+upstream_ref: "apps/expense-app/app/src/server.ts (parseAmount has no upper bound; node:sqlite throws on unsafe integers); checked by apps/expense-app/verify.ts"

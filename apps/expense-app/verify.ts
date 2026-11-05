@@ -111,6 +111,21 @@ const probes: Record<string, (app: App) => Promise<boolean>> = {
   },
 };
 
+// Natural defects: real bugs present on every build, so they must show on the clean build.
+const naturalProbes: Record<string, (app: App) => Promise<boolean>> = {
+  'expense.huge-amount-breaks-list': async (app) => {
+    const c = await login(app, EDITOR);
+    const saved = await post(app, c, '/expenses', { title: 'Huge', category: 'office', amount: '99999999999999' });
+    return saved.status === 303 && (await get(app, c, '/expenses')).status === 500;
+  },
+  'expense.rejected-form-loses-input': async (app) => {
+    const c = await login(app, EDITOR);
+    const res = await fetch(app.base + '/expenses', { method: 'POST', headers: { cookie: c }, redirect: 'manual', body: new URLSearchParams({ title: '   ', category: 'office', amount: '5.00' }) });
+    const html = await res.text();
+    return res.status === 400 && !/role="alert"/.test(html) && !html.includes('value="5.00"');
+  },
+};
+
 const switches: Record<string, Record<string, string>> = {
   'expense.wrong-total': { DEFECT: 'wrong_total' },
   'expense.ignored-filter': { DEFECT: 'ignored_filter' },
@@ -145,6 +160,16 @@ for (const [id, env] of Object.entries(switches)) {
     await waitUp(app);
     const present = await probes[id]!(app);
     console.log(`${present ? 'ok  ' : 'FAIL'} ${id} shows with ${Object.entries(env).map(([k, v]) => `${k}=${v}`).join(' ')}`);
+    if (!present) failures++;
+  } finally { app.stop(); }
+}
+
+for (const [id, probe] of Object.entries(naturalProbes)) {
+  const app = start({});
+  try {
+    await waitUp(app);
+    const present = await probe(app);
+    console.log(`${present ? 'ok  ' : 'FAIL'} natural ${id} shows on the clean build`);
     if (!present) failures++;
   } finally { app.stop(); }
 }

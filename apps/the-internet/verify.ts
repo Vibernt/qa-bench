@@ -149,6 +149,12 @@ const checks: Record<string, Check[]> = {
     async (s) => seenAll(30, ['fail'], flashProbe(s.base)),
     async (s) => seenAll(30, ['fail', 'ok'], flashProbe(s.base)),
   ],
+  'internet.notification-typo': [
+    async (s) => seenAll(30, ['fail'], flashProbe(s.base)),
+  ],
+  'internet.shifting-menu-typo': [
+    async (s) => { await go(s, '/shifting_content/menu'); return (await s.page.locator('.example').innerText()).includes('differant numbor'); },
+  ],
   'internet.slow-resource': [
     async (s) => { const t0 = Date.now(); await status(s.base, '/slow_external'); return Date.now() - t0 >= 25000; },
     async (s) => {

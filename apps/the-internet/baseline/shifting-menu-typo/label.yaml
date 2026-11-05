@@ -1,0 +1,16 @@
+id: internet.shifting-menu-typo
+app: the-internet
+title: "Shifting content menu page misspells 'different number'"
+description: "/shifting_content/menu says 'To specify a differant numbor of pixels'. Upstream copy, outside the /typos demo; excused on the noise track."
+track: noise
+kind: baseline
+category: copy
+class: deterministic
+severity: minor
+where: { route: /shifting_content/menu }
+found_by:
+  - kind: text
+    note: "'differant numbor' in the instructions"
+tolerance: { route: exact, role: any }
+split: public
+upstream_ref: "upstream views/shifting_content (menu); checked by apps/the-internet/verify.ts"
