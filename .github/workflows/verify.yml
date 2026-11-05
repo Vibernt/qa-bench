@@ -1,0 +1,31 @@
+name: verify
+# Proves every label against the running apps: each planted defect and deliberate change shows with its switch on
+# and not on the clean build; baselines and natural defects show on the clean build (apps/*/verify.ts).
+# Needs Docker and a browser, so it is kept out of the fast `ci` workflow.
+on:
+  schedule:
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'apps/**'
+      - '.github/workflows/verify.yml'
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        app: [expense-app, swag-labs, the-internet]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Install Chromium for Playwright
+        run: npx playwright install --with-deps chromium
+      - name: Verify ${{ matrix.app }} (builds its image, then checks every label)
+        run: npx tsx apps/${{ matrix.app }}/verify.ts
