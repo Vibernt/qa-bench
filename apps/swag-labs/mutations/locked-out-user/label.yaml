@@ -1,0 +1,31 @@
+id: swag.locked-out-user
+app: swag-labs
+title: "locked_out_user behaviour: the customer account given in the brief cannot sign in"
+description: >-
+  Upstream's locked_out_user, applied to the generated customer account. Login with the brief's valid username and
+  password shows "Epic sadface: Sorry, this user has been locked out." and stays on the login page; opening any app
+  page directly sends the user back to the login page.
+track: regression
+kind: defect
+category: functional
+class: deterministic
+severity: critical
+where: { route: /, role: customer }
+switch:
+  env: { QA_BENCH_MUTATIONS: locked_out_user }
+  exclusive: swag-user   # faulty users mask each other (if/else in upstream; locked out hides everything)
+found_by:
+  - kind: text
+    selector: "[data-test=error]"
+    note: "Valid credentials are refused with 'Epic sadface: Sorry, this user has been locked out.'"
+  - kind: behaviour
+    selector: "[data-test=login-button]"
+    note: "Login with the brief's account does not reach the product list"
+  - kind: behaviour
+    route: /inventory.html
+    note: "Opening /inventory.html (or any app page) redirects to the login page: 'You can only access ... when you are logged in.'"
+  - kind: behaviour
+    category: permission
+    note: "The customer is denied access although the account is valid"
+split: public
+upstream_ref: "apps/swag-labs/upstream/src/pages/Login.jsx and utils/Credentials.js (isLockedOutUser, isLoggedIn); checked by apps/swag-labs/verify.ts"

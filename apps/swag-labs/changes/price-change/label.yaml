@@ -1,0 +1,42 @@
+id: swag.price-change
+app: swag-labs
+title: "Backpack price lowered to $24.99 (deliberate)"
+description: >-
+  QA_BENCH_CHANGES=price-change lowers the Sauce Labs Backpack from $29.99 to $24.99 everywhere it is shown (list,
+  detail, cart, checkout and the long catalogue). Item total, tax (8%) and total follow from the new price and stay
+  consistent. Reporting the new price as wrong is a false alarm.
+track: regression
+kind: change
+category: consistency
+class: judged
+severity: minor
+where: { route: /inventory.html, role: customer }
+switch:
+  env: { QA_BENCH_CHANGES: price-change }
+found_by:
+  - kind: value
+    selector: "[data-test=inventory-item-price]"
+    note: "Reports the Backpack's $24.99 on the product list as a wrong price"
+  - kind: value
+    route: /inventory-item.html
+    selector: "[data-test=inventory-item-price]"
+    note: "Reports the detail page's $24.99 as a wrong price"
+  - kind: value
+    route: /cart.html
+    selector: "[data-test=inventory-item-price]"
+    note: "Reports the cart's $24.99 as a wrong price"
+  - kind: value
+    route: /checkout-step-two.html
+    selector: "[data-test=subtotal-label]"
+    note: "Reports the item total as wrong against the old price"
+  - kind: value
+    route: /checkout-step-two.html
+    selector: "[data-test=total-label]"
+    note: "Reports the total or tax as wrong against the old price"
+  - kind: value
+    category: functional
+    selector: "[data-test=inventory-item-price]"
+    note: "Reports the changed price as a functional fault"
+tolerance: { route: exact, role: any }
+split: public
+upstream_ref: "apps/swag-labs/upstream/src/utils/QaBench.js (benchPrices), utils/InventoryData.js, InventoryDataLong.js; checked by apps/swag-labs/verify.ts"

@@ -1,0 +1,21 @@
+{
+  "app": "swag-labs",
+  "repo": "https://github.com/saucelabs/sample-app-web",
+  "pin": { "commit": "ad62bb2d7950bc5747af46a75aa1fb1bd6b8622a", "ref": "main" },
+  "licence": "MIT",
+  "licence_checked": "2026-11-05",
+  "licence_file": "LICENSE",
+  "use": "adopt",
+  "vendored_at": "upstream",
+  "tracks": ["regression", "visual"],
+  "changes_from_upstream": [
+    "Vendored the app source only. Dropped: .git, .github (CI), .husky, .storybook, src/storybook, test/ (WebdriverIO e2e suite), every __tests__ and __mocks__ folder, jest and babel configs, src/setupTests.js, src/jest.setupTextEncoder.js, the unused CRA service worker (src/service-worker.js, src/serviceWorkerRegistration.js), scripts/postbuild.sh, upstream's Dockerfile (Node 14 + Sauce Connect), .backtracejsrc, .env, .dockerignore, .gitignore, src/img/.DS_Store, and the GitHub Pages files public/CNAME, public/404.html and the leftover CRA public/index.html.",
+    "package.json: removed test, storybook, lint and husky dependencies and scripts; added @fontsource/dm-sans and @fontsource/dm-mono 5.3.0 (OFL-1.1). package-lock.json pruned to match with npm; every kept package stays at upstream's locked version.",
+    "QA-BENCH patches (marked 'QA-BENCH:'): src/utils/QaBench.js (new) reads window.__SL_RUNTIME__ from public/runtime-config.js, which the container rewrites at start from QA_BENCH_ACCOUNTS, QA_BENCH_MUTATIONS and QA_BENCH_CHANGES.",
+    "src/utils/Credentials.js: in bench mode only the generated accounts sign in (built-in usernames are refused), and each isXxxUser() check is true for a generated account when that faulty user is listed in QA_BENCH_MUTATIONS.",
+    "src/pages/Login.jsx: in bench mode the 'Accepted usernames' and 'Password for all users' hints are replaced with neutral text.",
+    "Deliberate changes (QA_BENCH_CHANGES): relabel (cart to basket wording; components/HeaderContainer.jsx, InventoryListItem.jsx, CartButton.jsx, pages/InventoryItem.jsx), seasonal-banner (pages/Inventory.jsx), checkout-copy (pages/Finish.jsx and page titles), price-change (utils/InventoryData.js, InventoryDataLong.js). data-test ids never change.",
+    "index.html and src/index.jsx: fonts self-hosted instead of Google Fonts; Backtrace error reports go to a local endpoint (/backtrace/submit, answered 204 by bench/nginx.conf) with metrics off, never to a third party."
+  ],
+  "notes": "Built-in faulty users problem_user, error_user, visual_user, performance_glitch_user and locked_out_user become switchable defects for the generated customer account (QA_BENCH_MUTATIONS); standard_user behaviour is the clean control. Builds with Node 24 (engines >=24.9.0) and Vite 8."
+}

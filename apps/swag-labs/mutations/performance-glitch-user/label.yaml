@@ -1,0 +1,29 @@
+id: swag.performance-glitch-user
+app: swag-labs
+title: "performance_glitch_user behaviour: the product list blocks the page for about 5 seconds"
+description: >-
+  Upstream's performance_glitch_user, applied to the generated customer account. Every render of the product list
+  busy-waits 5 seconds on the main thread: after Login the page hangs before the products appear, and the same happens
+  when sorting or returning to the list (Back to products, Continue Shopping, All Items). Slow by design; a speed
+  defect.
+track: regression
+kind: defect
+category: perf
+class: deterministic
+severity: major
+where: { route: /inventory.html, role: customer }
+switch:
+  env: { QA_BENCH_MUTATIONS: performance_glitch_user }
+  exclusive: swag-user   # faulty users mask each other (if/else in upstream; locked out hides everything)
+found_by:
+  - kind: timing
+    note: "Product list takes about 5 s to appear (main thread blocked; long task of ~5000 ms)"
+  - kind: timing
+    route: /
+    selector: "[data-test=login-button]"
+    note: "Login hangs about 5 s before the products appear"
+  - kind: timing
+    selector: "[data-test=product-sort-container]"
+    note: "Changing the sort order freezes the page for about 5 s"
+split: public
+upstream_ref: "apps/swag-labs/upstream/src/pages/Inventory.jsx (isPerformanceGlitchUser, startPerformanceGlitch(5000)); checked by apps/swag-labs/verify.ts"

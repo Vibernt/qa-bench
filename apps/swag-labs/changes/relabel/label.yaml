@@ -1,0 +1,46 @@
+id: swag.relabel
+app: swag-labs
+title: "Cart renamed to basket (deliberate)"
+description: >-
+  QA_BENCH_CHANGES=relabel renames the cart to a basket: "Add to cart" becomes "Add to basket" on the product list and
+  detail pages, the cart page title "Your Cart" becomes "Your Basket", and the cart icon's accessible name says
+  "Basket". data-test ids and behaviour are unchanged. Reporting it is a false alarm.
+track: regression
+kind: change
+category: copy
+class: judged
+severity: minor
+where: { route: /inventory.html, role: customer }
+switch:
+  env: { QA_BENCH_CHANGES: relabel }
+found_by:
+  - kind: text
+    note: "Reports 'Add to basket' (instead of 'Add to cart') as a copy fault"
+  - kind: element
+    category: functional
+    note: "Reports the Add to cart button as missing because its text changed"
+  - kind: text
+    route: /inventory-item.html
+    note: "Reports 'Add to basket' on the detail page as a copy fault"
+  - kind: element
+    route: /inventory-item.html
+    category: functional
+    note: "Reports the detail page's Add to cart button as missing"
+  - kind: text
+    route: /cart.html
+    selector: "[data-test=title]"
+    note: "Reports the 'Your Basket' title as a copy fault or a wrong page"
+  - kind: element
+    route: /cart.html
+    category: functional
+    note: "Reports the cart page as missing or wrong because the title changed"
+  - kind: a11y
+    category: a11y
+    selector: "[data-test=shopping-cart-link]"
+    note: "Reports the cart icon's accessible name 'Basket, N items' as wrong"
+  - kind: text
+    category: usability
+    note: "Reports the basket wording as confusing or inconsistent"
+tolerance: { route: exact, role: any }
+split: public
+upstream_ref: "apps/swag-labs/upstream/src/utils/QaBench.js (COPY.relabel), components/CartButton.jsx; checked by apps/swag-labs/verify.ts"

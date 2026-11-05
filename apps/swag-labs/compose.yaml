@@ -1,0 +1,17 @@
+# Swag Labs. A fresh container is a fresh state: the cart and session live in the browser, and
+# bench/runtime-config.sh rewrites the episode config at every start. No volumes, no published ports.
+services:
+  app:
+    image: qa-bench-app-swag-labs:local
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      QA_BENCH_ACCOUNTS: ${QA_BENCH_ACCOUNTS:-}
+      QA_BENCH_MUTATIONS: ${QA_BENCH_MUTATIONS:-}
+      QA_BENCH_CHANGES: ${QA_BENCH_CHANGES:-}
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1/runtime-config.js"]
+      interval: 2s
+      timeout: 3s
+      retries: 30

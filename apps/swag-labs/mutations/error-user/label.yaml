@@ -1,0 +1,77 @@
+id: swag.error-user
+app: swag-labs
+title: "error_user behaviour: uncaught errors on add/remove, sort alert, broken description, Finish does nothing"
+description: >-
+  Upstream's error_user, applied to the generated customer account. Add to cart throws (uncaught Error) for the
+  odd-id products and Remove throws for the even-id ones, so the button does not change; choosing a sort order shows
+  the alert "Sorting is broken! This error has been reported to Backtrace." and does not sort; product detail pages
+  render no description (the description component throws "This component failed to render!"); the Last Name field throws a TypeError on every key
+  and stays empty; on the overview, Finish throws a TypeError and the order never completes.
+track: regression
+kind: defect
+category: error-handling
+class: deterministic
+severity: critical
+where: { route: /inventory.html, role: customer }
+switch:
+  env: { QA_BENCH_MUTATIONS: error_user }
+  exclusive: swag-user   # faulty users mask each other (if/else in upstream; locked out hides everything)
+found_by:
+  - kind: console
+    note: "Uncaught Error 'Failed to add item to the cart.' / 'Failed to remove item from cart.' in the console"
+  - kind: behaviour
+    category: functional
+    selector: "[data-test=add-to-cart-sauce-labs-bolt-t-shirt]"
+    note: "Add to cart does nothing visible (an error is thrown)"
+  - kind: behaviour
+    category: functional
+    selector: "[data-test=add-to-cart-sauce-labs-fleece-jacket]"
+    note: "Add to cart does nothing visible"
+  - kind: behaviour
+    category: functional
+    selector: "[data-test=add-to-cart-test.allthethings()-t-shirt-(red)]"
+    note: "Add to cart does nothing visible"
+  - kind: behaviour
+    category: functional
+    selector: "[data-test=remove-sauce-labs-backpack]"
+    note: "Remove does nothing visible on the product list (an error is thrown)"
+  - kind: behaviour
+    category: functional
+    selector: "[data-test=remove-sauce-labs-bike-light]"
+    note: "Remove does nothing visible on the product list"
+  - kind: behaviour
+    category: functional
+    selector: "[data-test=remove-sauce-labs-onesie]"
+    note: "Remove does nothing visible on the product list"
+  - kind: text
+    selector: "[data-test=product-sort-container]"
+    note: "Choosing a sort order raises the alert 'Sorting is broken! This error has been reported to Backtrace.'"
+  - kind: behaviour
+    category: functional
+    selector: "[data-test=product-sort-container]"
+    note: "The list is not re-sorted"
+  - kind: console
+    route: /inventory-item.html
+    note: "'Error: This component failed to render!' logged when a product detail page opens"
+  - kind: element
+    route: /inventory-item.html
+    category: functional
+    note: "Product description is missing on the detail page (blank where the text should be)"
+  - kind: console
+    route: /checkout-step-one.html
+    note: "TypeError on every key typed in Last Name"
+  - kind: behaviour
+    route: /checkout-step-one.html
+    category: functional
+    selector: "[data-test=lastName]"
+    note: "Last Name field cannot be typed into; it stays empty"
+  - kind: console
+    route: /checkout-step-two.html
+    note: "TypeError (ShoppingCart.cesetRart is not a function) when Finish is clicked"
+  - kind: behaviour
+    route: /checkout-step-two.html
+    category: functional
+    selector: "[data-test=finish]"
+    note: "Finish does nothing: the page stays on the overview and the order never completes"
+split: public
+upstream_ref: "apps/swag-labs/upstream/src (isErrorUser in components/InventoryListItem.jsx; pages/Inventory.jsx, InventoryItem.jsx, CheckOutStepOne.jsx, CheckOutStepTwo.jsx); checked by apps/swag-labs/verify.ts"

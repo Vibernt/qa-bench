@@ -1,0 +1,85 @@
+id: swag.problem-user
+app: swag-labs
+title: "problem_user behaviour: broken images, dead cart buttons, wrong product links, checkout blocked"
+description: >-
+  Upstream's problem_user, applied to the generated customer account. Every product image is the same placeholder
+  photo; Add to cart does nothing for the odd-id products (Bolt T-Shirt, Fleece Jacket, Test.allTheThings() T-Shirt)
+  and Remove does nothing for the even-id ones (Bike Light, Onesie, Backpack); sorting is ignored; product links open
+  the next product's page (the Fleece Jacket's opens ITEM NOT FOUND); typing a last name at checkout overwrites the
+  first name, so checkout stops at "Error: Last Name is required"; the overview (reached directly) doubles the item
+  total; Finish leaves the cart full; the menu's About link points at a 404 page.
+track: regression
+kind: defect
+category: functional
+class: deterministic
+severity: critical
+where: { route: /inventory.html, role: customer }
+switch:
+  env: { QA_BENCH_MUTATIONS: problem_user }
+  exclusive: swag-user   # faulty users mask each other (if/else in upstream; locked out hides everything)
+found_by:
+  - kind: visual
+    category: visual
+    note: "Every product image on the list is the same placeholder photo (sl-404), not the product"
+  - kind: behaviour
+    selector: "[data-test=add-to-cart-sauce-labs-bolt-t-shirt]"
+    note: "Add to cart does nothing: button stays 'Add to cart', cart badge does not change"
+  - kind: behaviour
+    selector: "[data-test=add-to-cart-sauce-labs-fleece-jacket]"
+    note: "Add to cart does nothing"
+  - kind: behaviour
+    selector: "[data-test=add-to-cart-test.allthethings()-t-shirt-(red)]"
+    note: "Add to cart does nothing"
+  - kind: behaviour
+    selector: "[data-test=remove-sauce-labs-backpack]"
+    note: "Remove does nothing on the product list: button stays 'Remove', item stays in the cart"
+  - kind: behaviour
+    selector: "[data-test=remove-sauce-labs-bike-light]"
+    note: "Remove does nothing on the product list"
+  - kind: behaviour
+    selector: "[data-test=remove-sauce-labs-onesie]"
+    note: "Remove does nothing on the product list"
+  - kind: behaviour
+    selector: "[data-test=product-sort-container]"
+    note: "Choosing a sort order (Z to A, price) leaves the list in A to Z order"
+  - kind: behaviour
+    note: "Clicking a product's name or image opens a different product (Backpack opens Fleece Jacket)"
+  - kind: text
+    route: /inventory-item.html
+    selector: "[data-test=inventory-item-name]"
+    note: "Detail page shows a different product from the one clicked, or ITEM NOT FOUND (√-1 price) for the Fleece Jacket"
+  - kind: behaviour
+    route: /inventory-item.html
+    selector: "[data-test=add-to-cart]"
+    note: "On an odd-id product's detail page Add to cart does nothing"
+  - kind: behaviour
+    route: /cart.html
+    note: "Cart item links open the next product's page instead of the item's own"
+  - kind: behaviour
+    route: /checkout-step-one.html
+    selector: "[data-test=lastName]"
+    note: "Typing in Last Name replaces the First Name value; Last Name stays empty"
+  - kind: text
+    route: /checkout-step-one.html
+    selector: "[data-test=error]"
+    note: "Continue with every field filled shows 'Error: Last Name is required'; checkout cannot proceed"
+  - kind: value
+    route: /checkout-step-two.html
+    category: consistency
+    selector: "[data-test=subtotal-label]"
+    note: "Item total is twice the sum of the listed prices (overview opened directly, since step one blocks)"
+  - kind: value
+    route: /checkout-step-two.html
+    category: consistency
+    selector: "[data-test=total-label]"
+    note: "Total and tax are computed from the doubled item total"
+  - kind: value
+    route: /checkout-complete.html
+    category: consistency
+    selector: "[data-test=shopping-cart-badge]"
+    note: "After Finish the cart badge still shows the ordered items; the cart was not emptied"
+  - kind: element
+    selector: "[data-test=about-sidebar-link]"
+    note: "Menu About link points to https://saucelabs.com/error/404"
+split: public
+upstream_ref: "apps/swag-labs/upstream/src (isProblemUser in components/InventoryListItem.jsx, CartItem.jsx, DrawerMenu.jsx; pages/Inventory.jsx, InventoryItem.jsx, CheckOutStepOne.jsx, CheckOutStepTwo.jsx); checked by apps/swag-labs/verify.ts"

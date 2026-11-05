@@ -1,0 +1,95 @@
+# Swag Labs (saucelabs/sample-app-web, MIT), vendored in upstream/ with QA-BENCH patches. A static React build served
+# by nginx; bench/runtime-config.sh writes the episode's accounts, mutations and changes at container start. The cart
+# and session live in the browser (localStorage and a cookie), so a fresh container plus a fresh browser is a reset.
+app: swag-labs
+title: Swag Labs (small shop; upstream's faulty users as switchable defects)
+label_prefix: swag
+targets:
+  - name: swag-labs
+    service: app
+    port: 80
+    path: /
+    health_path: /runtime-config.js
+roles:
+  - role: customer
+    accounts: 1
+    username_prefix: customer
+    env: QA_BENCH_ACCOUNTS
+journeys:
+  - id: swag.login
+    title: Sign in
+    role: customer
+    start: /
+    steps:
+      - Open the login page
+      - Enter the customer's username and password and choose Login
+      - Check that the product list (/inventory.html) opens and shows six products
+  - id: swag.browse
+    title: Browse the product list
+    role: customer
+    start: /inventory.html
+    steps:
+      - Sign in as the customer
+      - Check that every product shows its own photo, name, description, price and an Add to cart button
+      - Check that the layout is tidy (header, cart icon, cards and buttons in place)
+  - id: swag.product-detail
+    title: Open a product
+    role: customer
+    start: /inventory.html
+    steps:
+      - Sign in as the customer
+      - Choose a product's name
+      - Check that its detail page shows the same product, description and price as the list
+      - Choose Back to products and check that the list returns
+  - id: swag.cart-add-remove
+    title: Add and remove products
+    role: customer
+    start: /inventory.html
+    steps:
+      - Sign in as the customer
+      - Choose Add to cart on two products and check that each button turns into Remove and the cart badge counts 2
+      - Choose Remove on one of them and check that the button returns and the badge counts 1
+      - Repeat Add and Remove on a product's detail page
+  - id: swag.sort
+    title: Sort the product list
+    role: customer
+    start: /inventory.html
+    steps:
+      - Sign in as the customer
+      - Choose each sort order (Name A to Z, Name Z to A, Price low to high, Price high to low)
+      - Check that the list is re-ordered accordingly each time
+  - id: swag.cart
+    title: Review the cart
+    role: customer
+    start: /cart.html
+    steps:
+      - Sign in as the customer and add two products
+      - Open the cart from the cart icon
+      - Check that both products are listed with quantity 1 and the same prices as the list
+      - Remove one, then choose Continue Shopping and check that the product list returns
+  - id: swag.checkout
+    title: Check out
+    role: customer
+    start: /cart.html
+    steps:
+      - Sign in as the customer, add two products and open the cart
+      - Choose Checkout, fill in First Name, Last Name and Zip/Postal Code, and choose Continue
+      - On the overview, check that the item total is the sum of the prices, tax is 8% of it, and total is item total plus tax
+      - Choose Finish and check the confirmation page and that the cart is now empty
+      - Choose Back Home and check that the product list returns
+  - id: swag.logout
+    title: Sign out
+    role: customer
+    start: /inventory.html
+    steps:
+      - Sign in as the customer
+      - Open the menu and choose Logout
+      - Check that the login page returns and that /inventory.html now redirects to the login page
+pages:
+  - /
+  - /inventory.html
+  - /inventory-item.html?id=4
+  - /cart.html
+  - /checkout-step-one.html
+  - /checkout-step-two.html
+  - /checkout-complete.html
