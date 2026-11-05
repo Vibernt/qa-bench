@@ -1,0 +1,11 @@
+app: beta
+title: Beta fixture
+label_prefix: beta
+available: { requires_env: [QA_BENCH_FIXTURE_BETA_NEVER_SET] }
+targets:
+  - { name: shop, service: shop, port: 3000 }
+roles:
+  - role: customer
+    accounts: 0
+    fixed:
+      - { username: shopper, password: test_only_pw }

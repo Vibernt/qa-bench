@@ -1,0 +1,14 @@
+id: alpha.one
+app: alpha
+title: "Fixture alpha.one"
+kind: defect
+category: functional
+class: deterministic
+severity: minor
+where: { route: /home }
+switch:
+  env: { ALPHA_DEFECT: zq_defect_one }
+  exclusive: alpha-defect
+found_by:
+  - kind: text
+split: public

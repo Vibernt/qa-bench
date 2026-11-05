@@ -1,0 +1,14 @@
+id: alpha.banner
+app: alpha
+title: "Fixture alpha.banner"
+kind: change
+category: visual
+class: deterministic
+severity: minor
+where: { route: /home }
+switch:
+  env: { ALPHA_VARIANT: zq_variant_banner }
+  exclusive: alpha-variant
+found_by:
+  - kind: text
+split: public

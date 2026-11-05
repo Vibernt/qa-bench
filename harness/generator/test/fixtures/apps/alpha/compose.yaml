@@ -1,0 +1,5 @@
+# Fixture only: never brought up (runner unit tests use a fake docker).
+services:
+  web:
+    image: qa-bench-app-alpha:local
+    build: { context: . }

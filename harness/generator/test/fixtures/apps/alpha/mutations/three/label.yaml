@@ -1,0 +1,14 @@
+id: alpha.three
+app: alpha
+title: "Fixture alpha.three"
+kind: defect
+category: copy
+class: deterministic
+severity: minor
+where: { route: /home }
+switch:
+  env: { ALPHA_FLAGS: zq_flag_three }
+
+found_by:
+  - kind: text
+split: public

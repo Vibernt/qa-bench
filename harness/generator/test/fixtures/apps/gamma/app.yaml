@@ -1,0 +1,8 @@
+app: gamma
+title: Gamma fixture (noise only)
+label_prefix: gamma
+noise_only: true
+targets:
+  - { name: site, service: site, port: 80 }
+roles: []
+pages: [/, /tricky]

@@ -1,0 +1,13 @@
+id: alpha.quirk
+app: alpha
+title: "Fixture alpha.quirk"
+kind: baseline
+category: visual
+class: deterministic
+severity: minor
+where: { route: /home }
+
+
+found_by:
+  - kind: text
+split: public

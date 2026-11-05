@@ -1,0 +1,12 @@
+app: alpha
+title: Alpha fixture
+label_prefix: alpha
+targets:
+  - { name: web, service: web, port: 8080, path: /home, health_path: /health }
+roles:
+  - { role: viewer, accounts: 1, username_prefix: viewer, env: ALPHA_VIEWERS }
+  - { role: editor, accounts: 2, env: ALPHA_EDITORS }
+seed_env: { ALPHA_SEED: "42", ALPHA_MODE: plain }
+journeys:
+  - { id: alpha.list, title: List things, role: viewer, start: /home, steps: [Open the list, Check the total] }
+pages: [/home, /about]

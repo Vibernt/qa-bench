@@ -1,0 +1,1 @@
+{ "app": "alpha", "repo": "https://example.invalid/alpha", "pin": { "commit": "0123456789abcdef0123456789abcdef01234567" }, "licence": "MIT", "licence_checked": "2026-11-05", "use": "mutate" }

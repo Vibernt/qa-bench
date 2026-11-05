@@ -1,0 +1,14 @@
+id: alpha.rename
+app: alpha
+title: "Fixture alpha.rename"
+kind: change
+category: copy
+class: deterministic
+severity: minor
+where: { route: /home }
+switch:
+  env: { ALPHA_VARIANT: zq_variant_rename }
+  exclusive: alpha-variant
+found_by:
+  - kind: text
+split: public

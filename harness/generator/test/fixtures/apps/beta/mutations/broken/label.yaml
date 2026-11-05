@@ -1,0 +1,14 @@
+id: beta.broken
+app: beta
+title: "Fixture beta.broken"
+kind: defect
+category: functional
+class: deterministic
+severity: minor
+where: { route: /home }
+switch:
+  env: { BETA_USER: zq_beta_broken }
+
+found_by:
+  - kind: text
+split: public

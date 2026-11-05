@@ -1,0 +1,14 @@
+id: alpha.four
+app: alpha
+title: "Fixture alpha.four"
+kind: defect
+category: visual
+class: deterministic
+severity: minor
+where: { route: /home }
+switch:
+  env: { ALPHA_FLAGS: zq_flag_four }
+
+found_by:
+  - kind: text
+split: public
