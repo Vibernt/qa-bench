@@ -53,13 +53,13 @@ We may run these unmodified if one becomes useful (BD7).
 
   | Toggle | What goes wrong | Category | Class |
   |---|---|---|---|
-  | `permission_bypass` | Viewer can edit | permission | deterministic |
+  | `permission_bypass` | Viewer can open the edit form and save, though no Edit link is shown | permission | deterministic |
   | `stale_state` | List served from a 60-second cache after a write | consistency | deterministic |
   | `ignored_filter` | Category filter ignored | functional | deterministic |
   | `wrong_total` | Total omits the last row | consistency | deterministic |
   | `missing_persistence` | Save shows success but nothing is written | functional | deterministic |
   | `duplicate_write` | One save writes two rows | functional | deterministic |
-  | `misleading_success` | Wrong success message | copy/functional | deterministic |
+  | `misleading_success` | Edit says "Expense updated" but nothing is saved | functional (copy) | deterministic |
 
 - **Deliberate change already built:** `VARIANT=relabel` changes the visible labels. Title becomes "Expense title",
   Save becomes "Save expense" and "Add expense" becomes "New expense". Behaviour stays the same.
