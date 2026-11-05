@@ -33,6 +33,6 @@ found_by:
     category: functional
     selector: "[data-test=complete-header]"
     note: "Reports the order confirmation as missing because 'Thank you for your order!' is not shown"
-tolerance: { route: exact, role: any }
+tolerance: { route: exact, role: any, require_locator: true }
 split: public
 upstream_ref: "apps/swag-labs/upstream/src/utils/QaBench.js (COPY[\"checkout-copy\"]), pages/Finish.jsx; checked by apps/swag-labs/verify.ts"

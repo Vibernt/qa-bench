@@ -79,7 +79,17 @@ describe('category', () => {
   it('must be equal', () => {
     const r = m(finding('f', '/inventory.html', 'visual'), label('swag.x'));
     expect(r.ok).toBe(false);
-    expect(r.reason).toBe('category visual ≠ functional for swag.x');
+    expect(r.reason).toBe('category visual ≠ functional (family presentation ≠ behaviour) for swag.x');
+  });
+  it('accepts a category in the same family, and ranks the exact category higher', () => {
+    const l = label('swag.total', { category: 'consistency' });
+    const fam = m(finding('f', '/inventory.html', 'functional'), l);
+    const exact = m(finding('f', '/inventory.html', 'consistency'), l);
+    expect(fam.ok).toBe(true);
+    expect(exact.ok).toBe(true);
+    expect(exact.score).toBeGreaterThan(fam.score);
+    expect(m(finding('f', '/inventory.html', 'copy'), l).ok).toBe(false);
+    expect(m(finding('f', '/inventory.html', 'perf'), l).ok).toBe(false);
   });
   it('found_by category overrides', () => {
     const l = label('swag.x', { found_by: [{ kind: 'text', category: 'copy' }] });
@@ -91,7 +101,7 @@ describe('category', () => {
     expect(m(finding('f', '/inventory.html', 'consistency'), l).ok).toBe(true);
     const r = m(finding('f', '/inventory.html', 'visual'), l);
     expect(r.ok).toBe(false);
-    expect(r.reason).toBe('category visual ≠ consistency | functional for swag.x');
+    expect(r.reason).toBe('category visual ≠ consistency | functional (family presentation ≠ behaviour) for swag.x');
   });
 });
 
@@ -130,6 +140,10 @@ describe('locators', () => {
     const r = m(finding('f', '/inventory.html'), { ...sel, tolerance: { require_locator: true } });
     expect(r.ok).toBe(false);
     expect(r.reason).toContain('no selector or region');
+  });
+  it('require_locator applies only to entries that have a locator', () => {
+    const l = label('swag.x', { tolerance: { require_locator: true }, found_by: [{ kind: 'text', category: 'copy' }] });
+    expect(m(finding('f', '/inventory.html', 'copy'), l).ok).toBe(true);
   });
   it('a locator on the finding but none on the label entry is route-level', () => {
     expect(m(finding('f', '/inventory.html', 'functional', { selector: '#x' }), label('swag.x')).ok).toBe(true);

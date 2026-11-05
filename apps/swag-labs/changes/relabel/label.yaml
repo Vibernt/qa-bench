@@ -18,13 +18,15 @@ found_by:
     note: "Reports 'Add to basket' (instead of 'Add to cart') as a copy fault"
   - kind: element
     category: functional
-    note: "Reports the Add to cart button as missing because its text changed"
+    selector: "data-test=add-to-cart"
+    note: "Reports the Add to cart button as missing because its text changed (selector is a fragment: any add-to-cart button)"
   - kind: text
     route: /inventory-item.html
     note: "Reports 'Add to basket' on the detail page as a copy fault"
   - kind: element
     route: /inventory-item.html
     category: functional
+    selector: "data-test=add-to-cart"
     note: "Reports the detail page's Add to cart button as missing"
   - kind: text
     route: /cart.html
@@ -33,6 +35,7 @@ found_by:
   - kind: element
     route: /cart.html
     category: functional
+    selector: "[data-test=title]"
     note: "Reports the cart page as missing or wrong because the title changed"
   - kind: a11y
     category: a11y
@@ -40,7 +43,8 @@ found_by:
     note: "Reports the cart icon's accessible name 'Basket, N items' as wrong"
   - kind: text
     category: usability
+    selector: "data-test=add-to-cart"
     note: "Reports the basket wording as confusing or inconsistent"
-tolerance: { route: exact, role: any }
+tolerance: { route: exact, role: any, require_locator: true }
 split: public
 upstream_ref: "apps/swag-labs/upstream/src/utils/QaBench.js (COPY.relabel), components/CartButton.jsx; checked by apps/swag-labs/verify.ts"

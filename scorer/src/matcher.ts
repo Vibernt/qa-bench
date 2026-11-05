@@ -1,7 +1,19 @@
 import type { Finding, FoundBy, Label, Region } from '../../lib/contracts.ts';
 
 /** Bump when matching rules change; it is recorded in every report. */
-export const MATCHER_VERSION = 'deterministic-1';
+export const MATCHER_VERSION = 'deterministic-2';
+
+/**
+ * Category families. Testers disagree on the exact category of one symptom (a wrong total is "consistency" to one and
+ * "functional" to another), so a finding in the same family as the label entry matches; the exact category scores
+ * higher, so it wins when two labels compete. Families never cross, e.g. a copy finding can't match a functional bug.
+ */
+export const CATEGORY_FAMILIES: Record<string, string> = {
+  functional: 'behaviour', consistency: 'behaviour', 'error-handling': 'behaviour', permission: 'behaviour',
+  visual: 'presentation', copy: 'presentation', l10n: 'presentation', usability: 'presentation',
+  a11y: 'a11y', perf: 'perf', email: 'email', 'security-hygiene': 'security-hygiene',
+};
+const familyOf = (c: string): string => CATEGORY_FAMILIES[c] ?? c;
 
 const DEFAULT_REGION_PX = 48;
 
@@ -41,8 +53,8 @@ export interface MatchResult { ok: boolean; reason: string; score: number }
 
 /**
  * Compare one finding to one label. Any single `found_by` entry may match.
- * Success scores are >= 10 (higher = more specific: exact route 3 / prefix 2 / wildcard 1, role equal +1, locator
- * matched +4, all on top of 10). Failure scores are 0..3 = how many of route, role, category passed (3 = only the
+ * Success scores are >= 10 (higher = more specific: exact route 3 / prefix 2 / wildcard 1, role equal +1, exact
+ * category +1 (same family +0), locator matched +4, all on top of 10). Failure scores are 0..3 = how many of route, role, category passed (3 = only the
  * locator failed), so the closest failure can be reported.
  */
 export function matchFinding(f: Finding, label: Label): MatchResult {
@@ -90,13 +102,16 @@ function matchEntry(f: Finding, label: Label, e: FoundBy, index: number): MatchR
   // Category
   const lCat = e.category ?? label.category;
   const cats = [lCat, ...(e.also_categories ?? [])];
-  if (!cats.includes(f.category)) return fail(2, `category ${f.category} ≠ ${cats.join(' | ')}`);
+  if (cats.includes(f.category)) score += 1;
+  else if (!cats.some((c) => familyOf(c) === familyOf(f.category))) {
+    return fail(2, `category ${f.category} ≠ ${cats.join(' | ')} (family ${familyOf(f.category)} ≠ ${[...new Set(cats.map(familyOf))].join(' | ')})`);
+  }
 
   // Locator
   const fHas = !!(f.where.selector || f.where.region);
   const eHas = !!(e.selector || e.region);
   if (!fHas) {
-    if (tol.require_locator) return fail(3, `finding has no selector or region (required)`);
+    if (tol.require_locator && eHas) return fail(3, `finding has no selector or region (required)`);
     return { ok: true, score, reason: `matches ${tag}: route, role, category; finding has no locator` };
   }
   if (eHas) {

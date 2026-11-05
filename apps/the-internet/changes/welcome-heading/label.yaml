@@ -24,5 +24,6 @@ found_by:
     category: visual
     selector: "h1.heading"
     note: "Reports the longer heading as a visual change"
+tolerance: { require_locator: true }
 split: public
 upstream_ref: "apps/the-internet/bench/qa_bench_changes.rb (REWRITES['welcome-heading']); checked by apps/the-internet/verify.ts"

@@ -12,7 +12,7 @@ API (`scorer/src/index.ts`): `MATCHER_VERSION`, `matchFinding`, `scoreEpisode`, 
 `out/findings.json` (invalid → `invalid_findings`, scored with zero findings), and validates the report.
 A missing `runner.json` is scored as `skipped`.
 
-## Matching rules (`deterministic-1`)
+## Matching rules (`deterministic-2`)
 A finding is compared with every label in the episode's answer key (which holds only active defects and changes,
 plus baselines). Any one `found_by` entry may match. Per entry, the effective route, role and category are the
 entry's own value, else the label's.
@@ -23,14 +23,18 @@ entry's own value, else the label's.
    covers `/inventory-item.html`); `any` always. A label route of `*` matches anything.
 2. **Role.** If the label has a role and `tolerance.role` is not `any`, a finding that *states* a role must equal it.
    A finding with no role still matches (adapters on single-role apps may omit it).
-3. **Category.** Must equal the effective category, or one of the entry's `also_categories` (other categories a
-   reasonable report of the same evidence may use, e.g. a cart not emptied after checkout is functional or
-   consistency).
+3. **Category.** The finding's category must equal the effective category or one of the entry's `also_categories`,
+   **or be in the same family**. Families: *behaviour* (functional, consistency, error-handling, permission),
+   *presentation* (visual, copy, l10n, usability), and a11y, perf, email and security-hygiene each on their own.
+   Testers legitimately disagree on the exact category of one symptom. A wrong total is "consistency" to one tester
+   and "functional" to another; it is never "copy". An exact category scores one point higher, so it wins when two
+   labels compete. (`deterministic-1` required the exact category; B0's first agent runs showed it scoring real
+   finds as misses or as false alarms on unrelated changes.)
 4. **Locator.** Selectors are compared after removing quotes and collapsing whitespace
    (`[data-test="x"]` ≡ `[data-test=x]` ≡ `[data-test='x']`); they match when one contains the other. Regions match
    when they overlap or the gap on each axis is at most `tolerance.region_px` (default 48). When both sides have a
    comparable locator and none matches, there is no match. If the finding has no locator it matches, unless
-   `tolerance.require_locator`. If the label entry has no locator, or the two sides only have different kinds
+   `tolerance.require_locator` is set and the entry has a locator. If the label entry has no locator, or the two sides only have different kinds
    (selector vs region), the match is route-level.
 5. **Score** (used to choose among several matching labels): 10 + route (exact 3, prefix 2, wildcard 1) + 1 for an
    equal stated role + 4 for a matched locator. Failed matches score 0–3 (how many of route, role, category,

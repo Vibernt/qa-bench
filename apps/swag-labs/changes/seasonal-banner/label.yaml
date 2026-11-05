@@ -28,6 +28,6 @@ found_by:
     category: usability
     selector: "[data-test=seasonal-banner]"
     note: "Reports the banner as clutter or a distraction"
-tolerance: { route: exact, role: any }
+tolerance: { route: exact, role: any, require_locator: true }
 split: public
 upstream_ref: "apps/swag-labs/upstream/src/pages/Inventory.jsx (benchChange(\"seasonal-banner\")); checked by apps/swag-labs/verify.ts"

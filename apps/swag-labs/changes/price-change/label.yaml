@@ -37,6 +37,6 @@ found_by:
     category: functional
     selector: "[data-test=inventory-item-price]"
     note: "Reports the changed price as a functional fault"
-tolerance: { route: exact, role: any }
+tolerance: { route: exact, role: any, require_locator: true }
 split: public
 upstream_ref: "apps/swag-labs/upstream/src/utils/QaBench.js (benchPrices), utils/InventoryData.js, InventoryDataLong.js; checked by apps/swag-labs/verify.ts"

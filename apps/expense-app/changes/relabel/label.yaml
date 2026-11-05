@@ -16,10 +16,17 @@ found_by:
     note: "Reports the renamed button or field labels as a copy fault"
   - kind: element
     category: functional
-    note: "Reports a missing Save or Add expense control because its label changed"
+    selector: "a[href=/expenses/new]"
+    note: "Reports the Add expense link as missing or wrong because it now reads New expense"
+  - kind: element
+    category: functional
+    route: /expenses/new
+    selector: "button[type=submit]"
+    note: "Reports the Save button as missing or wrong because it now reads Save expense"
   - kind: element
     category: usability
+    selector: "a[href=/expenses/new]"
     note: "Reports the renamed controls as confusing or a usability regression"
-tolerance: { route: prefix, role: any }
+tolerance: { route: prefix, role: any, require_locator: true }
 split: public
 upstream_ref: "apps/expense-app/app/src/variant.ts (VARIANT=relabel); checked by apps/expense-app/verify.ts"
