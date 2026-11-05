@@ -12,7 +12,7 @@ API (`scorer/src/index.ts`): `MATCHER_VERSION`, `matchFinding`, `scoreEpisode`, 
 `out/findings.json` (invalid → `invalid_findings`, scored with zero findings), and validates the report.
 A missing `runner.json` is scored as `skipped`.
 
-## Matching rules (`deterministic-2`)
+## Matching rules (`deterministic-3`)
 A finding is compared with every label in the episode's answer key (which holds only active defects and changes,
 plus baselines). Any one `found_by` entry may match. Per entry, the effective route, role and category are the
 entry's own value, else the label's.
@@ -30,13 +30,18 @@ entry's own value, else the label's.
    and "functional" to another; it is never "copy". An exact category scores one point higher, so it wins when two
    labels compete. (`deterministic-1` required the exact category; B0's first agent runs showed it scoring real
    finds as misses or as false alarms on unrelated changes.)
-4. **Locator.** Selectors are compared after removing quotes and collapsing whitespace
+4. **Description pattern** (optional, per entry). When an entry has `description_pattern`, the finding's
+   description must match that case-insensitive regex, and a match ranks two points higher. It is for labels that
+   share a route and category with others, and every natural defect uses one. Natural defects are present in every
+   episode, so without it they would claim unrelated findings on the same page (`deterministic-2` let a stale-list
+   finding count as the "huge amount" crash). It is still deterministic and applies the same to every system.
+5. **Locator.** Selectors are compared after removing quotes and collapsing whitespace
    (`[data-test="x"]` ≡ `[data-test=x]` ≡ `[data-test='x']`); they match when one contains the other. Regions match
    when they overlap or the gap on each axis is at most `tolerance.region_px` (default 48). When both sides have a
    comparable locator and none matches, there is no match. If the finding has no locator it matches, unless
    `tolerance.require_locator` is set and the entry has a locator. If the label entry has no locator, or the two sides only have different kinds
    (selector vs region), the match is route-level.
-5. **Score** (used to choose among several matching labels): 10 + route (exact 3, prefix 2, wildcard 1) + 1 for an
+6. **Score** (used to choose among several matching labels): 10 + route (exact 3, prefix 2, wildcard 1) + 1 for an
    equal stated role + 4 for a matched locator. Failed matches score 0–3 (how many of route, role, category,
    locator passed) so the closest miss can be reported.
 

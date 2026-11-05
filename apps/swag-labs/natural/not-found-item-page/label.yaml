@@ -11,6 +11,7 @@ where: { route: /inventory-item.html, role: customer }
 found_by:
   - kind: behaviour
     also_categories: [copy]
+    description_pattern: "(not found|nonexist|non-exist|does not exist|doesn.t exist|unknown (product|item|id)|invalid id|id=\\d{2,}|missing product)"
     note: "The not-found product page has a live Add to cart button and placeholder text"
 tolerance: { route: exact, role: any }
 split: public

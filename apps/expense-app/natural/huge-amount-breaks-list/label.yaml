@@ -10,9 +10,11 @@ severity: critical
 where: { route: /expenses, role: editor }
 found_by:
   - kind: status
+    description_pattern: "(large|huge|big|long|overflow|9{6,}|digit|max|limit|upper bound).*(500|error|crash|break|fail)|(500|error|crash|break|fail).*(large|huge|big|long|overflow|9{6,}|digit|max|limit|upper bound)"
     note: "/expenses returns 500 after an expense with a huge amount is saved"
   - kind: behaviour
     route: /expenses/new
+    description_pattern: "(no (upper )?(bound|limit|maximum)|unbounded|9{6,}|too large|huge|absurd)"
     note: "The add form accepts an amount far beyond any real expense with no upper bound"
 tolerance: { route: prefix, role: any }
 split: public

@@ -11,6 +11,7 @@ where: { route: /checkout-step-two.html, role: customer }
 found_by:
   - kind: value
     also_categories: [consistency, visual]
+    description_pattern: "(\\d\\.\\d{5,}|float|unrounded|not rounded|rounding|decimal places|precision)"
     selector: "[data-test=subtotal-label]"
     note: "Item total shows a long floating-point tail instead of two decimals"
 tolerance: { route: exact, role: any }

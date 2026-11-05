@@ -10,6 +10,7 @@ severity: minor
 where: { route: /expenses, role: editor }
 found_by:
   - kind: behaviour
+    description_pattern: "(reject|400|invalid|whitespace|blank|empty|bypass).*(no (error|message|feedback|explanation)|without (an? )?(error|message)|lost|loses|cleared|discard|blank|empty form)"
     also_categories: [usability]
     note: "A rejected add re-renders a blank form with no error message and the typed values gone"
 tolerance: { route: prefix, role: any }

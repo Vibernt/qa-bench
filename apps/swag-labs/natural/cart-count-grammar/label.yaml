@@ -11,6 +11,7 @@ where: { route: /inventory.html, role: customer }
 found_by:
   - kind: a11y
     also_categories: [copy]
+    description_pattern: "(1 items|one items|plural|pluraliz|pluralis|grammar)"
     selector: "[data-test=shopping-cart-link]"
     note: "Accessible name uses the plural with a count of one"
 tolerance: { route: prefix, role: any }

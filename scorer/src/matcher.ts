@@ -1,7 +1,7 @@
 import type { Finding, FoundBy, Label, Region } from '../../lib/contracts.ts';
 
 /** Bump when matching rules change; it is recorded in every report. */
-export const MATCHER_VERSION = 'deterministic-2';
+export const MATCHER_VERSION = 'deterministic-3';
 
 /**
  * Category families. Testers disagree on the exact category of one symptom (a wrong total is "consistency" to one and
@@ -105,6 +105,14 @@ function matchEntry(f: Finding, label: Label, e: FoundBy, index: number): MatchR
   if (cats.includes(f.category)) score += 1;
   else if (!cats.some((c) => familyOf(c) === familyOf(f.category))) {
     return fail(2, `category ${f.category} ≠ ${cats.join(' | ')} (family ${familyOf(f.category)} ≠ ${[...new Set(cats.map(familyOf))].join(' | ')})`);
+  }
+
+  // Description pattern (deterministic text match, for labels that share a route and category with others)
+  if (e.description_pattern) {
+    let re: RegExp;
+    try { re = new RegExp(e.description_pattern, 'i'); } catch { return fail(3, `bad description_pattern on ${tag}`); }
+    if (!re.test(f.description)) return fail(3, `description does not mention the symptom (/${e.description_pattern}/i)`);
+    score += 2;
   }
 
   // Locator

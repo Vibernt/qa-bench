@@ -105,6 +105,18 @@ describe('category', () => {
   });
 });
 
+describe('description pattern', () => {
+  it('requires the finding to name the symptom, case-insensitively, and ranks it higher', () => {
+    const l = label('expense.huge', { kind: 'natural', category: 'error-handling', found_by: [{ kind: 'status', description_pattern: '(huge|large).*500' }] });
+    const hit = m(finding('f', '/inventory.html', 'error-handling', { description: 'A HUGE amount makes the list return 500' }), l);
+    expect(hit.ok).toBe(true);
+    const miss = m(finding('f', '/inventory.html', 'error-handling', { description: 'A rejected form comes back blank' }), l);
+    expect(miss.ok).toBe(false);
+    expect(miss.reason).toContain('does not mention the symptom');
+    expect(hit.score).toBeGreaterThan(m(finding('f', '/inventory.html', 'error-handling'), label('expense.other', { category: 'error-handling' })).score);
+  });
+});
+
 describe('locators', () => {
   const sel = label('swag.x', { found_by: [{ kind: 'element', selector: '[data-test="price"]' }] });
   it('selectors match across quote styles and containment', () => {

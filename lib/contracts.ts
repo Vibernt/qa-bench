@@ -78,6 +78,8 @@ export interface FoundBy {
   category?: Category;
   /** Other categories a reasonable report of the same evidence may use. */
   also_categories?: Category[];
+  /** Case-insensitive regex the finding's description must match. */
+  description_pattern?: string;
   selector?: string;
   region?: Region;
   note?: string;

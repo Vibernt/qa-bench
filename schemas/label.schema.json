@@ -126,6 +126,10 @@
           },
           "note": {
             "type": "string"
+          },
+          "description_pattern": {
+            "type": "string",
+            "description": "Case-insensitive regular expression the finding's description must match. Use it when two labels share a route and category (always for natural defects), so a finding counts only when it names this symptom. Deterministic and the same for every system"
           }
         }
       }
