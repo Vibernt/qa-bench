@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://qa-bench.dev/schemas/answer-key.schema.json",
+  "title": "answer-key.json: the sealed ground truth for one episode",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["episode_id", "app", "track", "noise_only", "labels"],
+  "properties": {
+    "episode_id": { "type": "string" },
+    "app": { "$ref": "defs.schema.json#/$defs/slug" },
+    "track": { "$ref": "defs.schema.json#/$defs/slug" },
+    "noise_only": { "type": "boolean" },
+    "labels": {
+      "type": "array",
+      "description": "Every active defect and change, plus the app's baseline labels",
+      "items": { "$ref": "label.schema.json" }
+    }
+  }
+}

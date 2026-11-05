@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://qa-bench.dev/schemas/track.schema.json",
+  "title": "tracks/<track>.yaml: which apps, mutations and changes make up a track",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "number", "title", "apps", "episodes"],
+  "properties": {
+    "id": { "$ref": "defs.schema.json#/$defs/slug" },
+    "number": { "type": "string", "pattern": "^7\\.[0-9]+$" },
+    "title": { "type": "string" },
+    "description": { "type": "string" },
+    "brief": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "What every brief in this track includes",
+      "properties": {
+        "journeys": { "type": "boolean", "default": false },
+        "goal": { "type": "string" },
+        "wall_time_s": { "type": "integer", "minimum": 1 },
+        "money_usd": { "type": "number", "minimum": 0 }
+      }
+    },
+    "apps": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["app"],
+        "properties": {
+          "app": { "$ref": "defs.schema.json#/$defs/slug" },
+          "weight": { "type": "number", "exclusiveMinimum": 0, "default": 1 },
+          "mutations": {
+            "oneOf": [ { "const": "*" }, { "type": "array", "items": { "$ref": "defs.schema.json#/$defs/labelId" } } ],
+            "default": "*"
+          },
+          "changes": {
+            "oneOf": [ { "const": "*" }, { "type": "array", "items": { "$ref": "defs.schema.json#/$defs/labelId" } } ],
+            "default": "*"
+          }
+        }
+      }
+    },
+    "episodes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["count", "seed"],
+      "properties": {
+        "count": { "type": "integer", "minimum": 1 },
+        "seed": { "type": "integer" },
+        "mutations_per_episode": { "$ref": "#/$defs/range" },
+        "changes_per_episode": { "$ref": "#/$defs/range" },
+        "clean_episodes": { "type": "integer", "minimum": 0, "description": "Episodes with no mutations and no changes", "default": 0 },
+        "twin_episodes": { "type": "integer", "minimum": 0, "description": "Episodes with only deliberate changes switched on", "default": 0 }
+      }
+    },
+    "live": {
+      "type": "array",
+      "description": "Live third-party sites (noise track only). Never generated unless asked; the runner refuses them unless QA_BENCH_ALLOW_LIVE=1",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "url", "rules"],
+        "properties": {
+          "name": { "type": "string" },
+          "url": { "type": "string", "format": "uri" },
+          "pages": { "type": "array", "items": { "type": "string" } },
+          "rules": { "$ref": "brief.schema.json#/$defs/rules" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "range": {
+      "type": "object", "additionalProperties": false, "required": ["min", "max"],
+      "properties": { "min": { "type": "integer", "minimum": 0 }, "max": { "type": "integer", "minimum": 0 } }
+    }
+  }
+}

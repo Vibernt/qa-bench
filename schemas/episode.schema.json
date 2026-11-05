@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://qa-bench.dev/schemas/episode.schema.json",
+  "title": "episode.json: one generated build (sealed: the runner reads it, adapters never do)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "bench_version", "track", "app", "split", "seed", "active", "env", "accounts", "answer_key_sha256"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+    "bench_version": { "type": "string" },
+    "track": { "$ref": "defs.schema.json#/$defs/slug" },
+    "app": { "$ref": "defs.schema.json#/$defs/slug" },
+    "split": { "enum": ["public", "heldout"] },
+    "seed": { "type": "integer", "description": "Per-episode seed (derived from the track seed and index)" },
+    "kind": { "enum": ["mixed", "clean", "twin"], "default": "mixed" },
+    "active": {
+      "type": "object", "additionalProperties": false, "required": ["mutations", "changes"],
+      "properties": {
+        "mutations": { "type": "array", "items": { "$ref": "defs.schema.json#/$defs/labelId" } },
+        "changes": { "type": "array", "items": { "$ref": "defs.schema.json#/$defs/labelId" } }
+      }
+    },
+    "env": { "type": "object", "additionalProperties": { "type": "string" }, "description": "Compose env computed from the active labels' switches, seed_env and generated accounts" },
+    "accounts": {
+      "type": "array",
+      "description": "Test accounts generated for this episode (test values only)",
+      "items": {
+        "type": "object", "additionalProperties": false, "required": ["role", "username", "password"],
+        "properties": { "role": { "type": "string" }, "username": { "type": "string" }, "password": { "type": "string" } }
+      }
+    },
+    "upstream": { "type": "object", "description": "Copy of the app's upstream.json pin at generation time" },
+    "live": {
+      "type": "object", "additionalProperties": false, "required": ["name", "url", "rules"],
+      "properties": {
+        "name": { "type": "string" }, "url": { "type": "string" },
+        "pages": { "type": "array", "items": { "type": "string" } },
+        "rules": { "$ref": "brief.schema.json#/$defs/rules" }
+      }
+    },
+    "answer_key_sha256": { "$ref": "defs.schema.json#/$defs/sha256", "description": "sha256 of answer-key.json as written, so a report proves which key scored it" }
+  }
+}

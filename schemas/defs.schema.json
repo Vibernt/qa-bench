@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://qa-bench.dev/schemas/defs.schema.json",
+  "title": "Shared definitions",
+  "$defs": {
+    "slug": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+    "labelId": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*\\.[a-z0-9][a-z0-9.-]*$", "description": "<app-prefix>.<name>, e.g. expense.wrong-total" },
+    "category": {
+      "enum": ["functional", "consistency", "permission", "error-handling", "visual", "copy", "a11y", "perf", "usability", "email", "security-hygiene", "l10n"]
+    },
+    "class": { "enum": ["deterministic", "judged", "human"] },
+    "severity": { "enum": ["critical", "major", "minor"] },
+    "region": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["x", "y", "w", "h"],
+      "properties": {
+        "x": { "type": "number" }, "y": { "type": "number" },
+        "w": { "type": "number", "minimum": 0 }, "h": { "type": "number", "minimum": 0 },
+        "viewport": { "type": "string", "description": "e.g. 1280x720" }
+      }
+    },
+    "where": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["route"],
+      "properties": {
+        "route": { "type": "string", "description": "Path (no host), e.g. /inventory.html. '*' means anywhere in the app" },
+        "role": { "type": "string" },
+        "step": { "type": "string" },
+        "selector": { "type": "string" },
+        "region": { "$ref": "#/$defs/region" }
+      }
+    },
+    "cost": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "model_usd": { "type": "number", "minimum": 0 },
+        "compute_usd": { "type": "number", "minimum": 0 },
+        "human_hours": { "type": "number", "minimum": 0 },
+        "human_rate_usd_per_hour": { "type": "number", "minimum": 0 },
+        "notes": { "type": "string" }
+      }
+    },
+    "system": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version"],
+      "properties": { "name": { "type": "string" }, "version": { "type": "string" } }
+    },
+    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+  }
+}

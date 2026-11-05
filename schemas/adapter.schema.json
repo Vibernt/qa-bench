@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://qa-bench.dev/schemas/adapter.schema.json",
+  "title": "harness/adapters/<name>/adapter.json: how the runner starts an adapter",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "version", "mode", "description"],
+  "properties": {
+    "name": { "$ref": "defs.schema.json#/$defs/slug" },
+    "version": { "type": "string" },
+    "description": { "type": "string" },
+    "mode": {
+      "enum": ["container", "manual"],
+      "description": "container: the runner builds and runs it in docker with only the brief and an output folder mounted; manual: a person files findings (human adapter)"
+    },
+    "build": { "type": "string", "description": "Dockerfile path relative to the adapter folder (container mode)" },
+    "command": { "type": "array", "items": { "type": "string" }, "description": "Overrides the image's CMD" },
+    "network": {
+      "enum": ["episode", "host"],
+      "default": "episode",
+      "description": "episode: joins the episode's docker network and sees service URLs; host: sees ports published on the host (for systems that run outside docker)"
+    },
+    "env_passthrough": { "type": "array", "items": { "type": "string" }, "description": "Host env vars passed in (e.g. an API token). Never printed" },
+    "needs_approval": { "type": "string", "description": "Why runs need an owner's go-ahead (e.g. hosted spend)" }
+  },
+  "allOf": [
+    { "if": { "properties": { "mode": { "const": "container" } } }, "then": { "required": ["build"] } }
+  ]
+}

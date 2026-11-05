@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://qa-bench.dev/schemas/app.schema.json",
+  "title": "app.yaml: how the runner reaches an app and what it may tell an adapter",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["app", "title", "targets", "roles"],
+  "properties": {
+    "app": { "$ref": "defs.schema.json#/$defs/slug" },
+    "title": { "type": "string" },
+    "label_prefix": { "type": "string", "description": "Prefix of this app's label ids, e.g. 'swag' for swag.problem-user" },
+    "noise_only": { "type": "boolean", "default": false, "description": "Any finding not matching a baseline label is a false alarm" },
+    "available": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "When the app can't always be brought up (e.g. private-pull), the env var or path that must exist",
+      "properties": {
+        "requires_env": { "type": "array", "items": { "type": "string" } },
+        "fetch": { "type": "string", "description": "Script (relative to the app folder) that fetches the source before compose up" }
+      }
+    },
+    "targets": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "service", "port"],
+        "properties": {
+          "name": { "type": "string" },
+          "service": { "type": "string", "description": "compose service name" },
+          "port": { "type": "integer", "minimum": 1, "maximum": 65535, "description": "Container port" },
+          "path": { "type": "string", "default": "/" },
+          "health_path": { "type": "string", "description": "Path that returns 2xx when ready" }
+        }
+      }
+    },
+    "roles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["role", "accounts"],
+        "properties": {
+          "role": { "type": "string" },
+          "accounts": { "type": "integer", "minimum": 0, "description": "How many accounts to generate per episode" },
+          "username_prefix": { "type": "string" },
+          "env": {
+            "type": "string",
+            "description": "Env var the runner sets for compose, value 'user:pass[,user:pass]', so the app accepts the generated accounts"
+          },
+          "fixed": {
+            "type": "array",
+            "description": "Accounts the app hard-codes (test values only); used when it can't take generated ones",
+            "items": {
+              "type": "object", "additionalProperties": false, "required": ["username", "password"],
+              "properties": { "username": { "type": "string" }, "password": { "type": "string" } }
+            }
+          }
+        }
+      }
+    },
+    "seed_env": { "type": "object", "additionalProperties": { "type": "string" }, "description": "Fixed env for compose on every episode" },
+    "journeys": {
+      "type": "array",
+      "description": "Known journeys a regression brief may hand to an adapter",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "title", "role", "steps"],
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" },
+          "role": { "type": "string" },
+          "start": { "type": "string", "description": "Starting path" },
+          "steps": { "type": "array", "minItems": 1, "items": { "type": "string" } }
+        }
+      }
+    },
+    "pages": { "type": "array", "items": { "type": "string" }, "description": "Paths an exploration or noise brief may list" }
+  }
+}

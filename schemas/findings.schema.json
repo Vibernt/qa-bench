@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://qa-bench.dev/schemas/findings.schema.json",
+  "title": "findings.json: what an adapter reports for one episode",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["episode_id", "system", "findings"],
+  "properties": {
+    "episode_id": { "type": "string" },
+    "system": { "$ref": "defs.schema.json#/$defs/system" },
+    "findings": { "type": "array", "items": { "$ref": "#/$defs/finding" } },
+    "cost": { "$ref": "defs.schema.json#/$defs/cost" },
+    "wall_time_s": { "type": "number", "minimum": 0 },
+    "started_at": { "type": "string", "format": "date-time" },
+    "finished_at": { "type": "string", "format": "date-time" },
+    "notes": { "type": "string" }
+  },
+  "$defs": {
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "where", "category", "description", "confidence"],
+      "properties": {
+        "id": { "type": "string" },
+        "where": { "$ref": "defs.schema.json#/$defs/where" },
+        "category": { "$ref": "defs.schema.json#/$defs/category" },
+        "description": { "type": "string", "minLength": 1 },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["kind"],
+            "properties": {
+              "kind": { "enum": ["screenshot", "network", "dom", "console", "text", "timing", "trace", "other"] },
+              "path": { "type": "string", "description": "Relative to the evidence directory" },
+              "excerpt": { "type": "string" },
+              "note": { "type": "string" }
+            }
+          }
+        },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "repro": { "type": "array", "items": { "type": "string" } },
+        "detected_at_s": { "type": "number", "minimum": 0, "description": "Seconds after the adapter started" },
+        "check": { "type": "string", "description": "Adapter-side id of the check that raised it (informational)" }
+      }
+    }
+  }
+}

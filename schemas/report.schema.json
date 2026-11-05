@@ -1,0 +1,133 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://qa-bench.dev/schemas/report.schema.json",
+  "title": "report.json: scores for one system over a set of episodes",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["bench_version", "generated_at", "system", "run", "episodes", "metrics"],
+  "properties": {
+    "bench_version": { "type": "string" },
+    "generated_at": { "type": "string", "format": "date-time" },
+    "system": { "$ref": "defs.schema.json#/$defs/system" },
+    "run": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id"],
+      "properties": {
+        "id": { "type": "string" },
+        "tracks": { "type": "array", "items": { "type": "string" } },
+        "seeds": { "type": "object", "additionalProperties": { "type": "integer" }, "description": "Track id to track seed" },
+        "upstreams": { "type": "object", "description": "App id to its pin" },
+        "matcher": { "type": "string", "description": "Matcher name and version" },
+        "notes": { "type": "string" }
+      }
+    },
+    "episodes": { "type": "array", "items": { "$ref": "#/$defs/episodeScore" } },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["overall", "by_track", "by_category", "by_class", "breakdown"],
+      "properties": {
+        "overall": { "$ref": "#/$defs/metrics" },
+        "by_track": { "type": "object", "additionalProperties": { "$ref": "#/$defs/metrics" } },
+        "by_category": { "type": "object", "additionalProperties": { "$ref": "#/$defs/metrics" } },
+        "by_class": { "type": "object", "additionalProperties": { "$ref": "#/$defs/metrics" } },
+        "breakdown": {
+          "type": "array",
+          "description": "Per track x category x class",
+          "items": {
+            "type": "object",
+            "required": ["track", "category", "class", "metrics"],
+            "additionalProperties": false,
+            "properties": {
+              "track": { "type": "string" }, "category": { "type": "string" }, "class": { "type": "string" },
+              "metrics": { "$ref": "#/$defs/metrics" }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "decision": { "enum": ["true_positive", "duplicate", "false_alarm_change", "excused", "unmatched"] },
+    "episodeScore": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["episode_id", "track", "app", "split", "status", "decisions", "labels"],
+      "properties": {
+        "episode_id": { "type": "string" },
+        "track": { "type": "string" },
+        "app": { "type": "string" },
+        "split": { "enum": ["public", "heldout"] },
+        "answer_key_sha256": { "type": "string" },
+        "status": { "enum": ["scored", "adapter_error", "timeout", "invalid_findings", "skipped"] },
+        "status_reason": { "type": "string" },
+        "wall_time_s": { "type": ["number", "null"] },
+        "cost": { "$ref": "defs.schema.json#/$defs/cost" },
+        "time_to_first_detection_s": { "type": ["number", "null"] },
+        "decisions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["finding_id", "decision", "reason"],
+            "properties": {
+              "finding_id": { "type": "string" },
+              "decision": { "$ref": "#/$defs/decision" },
+              "label_id": { "type": "string" },
+              "category": { "type": "string" },
+              "reason": { "type": "string" }
+            }
+          }
+        },
+        "labels": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["label_id", "kind", "category", "class", "hit"],
+            "properties": {
+              "label_id": { "type": "string" },
+              "kind": { "enum": ["defect", "change", "baseline"] },
+              "category": { "type": "string" },
+              "class": { "type": "string" },
+              "severity": { "type": "string" },
+              "hit": { "type": "boolean", "description": "Defect found, change flagged, or baseline matched" },
+              "finding_ids": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["episodes", "defects_planted", "defects_found", "recall", "findings", "precision"],
+      "properties": {
+        "episodes": { "type": "integer" },
+        "episodes_scored": { "type": "integer" },
+        "defects_planted": { "type": "integer" },
+        "defects_found": { "type": "integer" },
+        "recall": { "type": ["number", "null"] },
+        "findings": { "type": "integer", "description": "All findings, including excused" },
+        "findings_matched": { "type": "integer", "description": "True positives plus duplicates" },
+        "findings_excused": { "type": "integer" },
+        "precision": { "type": ["number", "null"], "description": "matched / (findings - excused)" },
+        "f1": { "type": ["number", "null"] },
+        "changes_active": { "type": "integer" },
+        "changes_flagged": { "type": "integer" },
+        "change_flag_rate": { "type": ["number", "null"] },
+        "false_alarms_on_changes": { "type": "integer", "description": "Findings matched to a deliberate change" },
+        "false_alarms_per_100_episodes": { "type": ["number", "null"] },
+        "unmatched_findings": { "type": "integer" },
+        "unmatched_per_episode": { "type": ["number", "null"] },
+        "mean_time_to_first_detection_s": { "type": ["number", "null"] },
+        "wall_time_s_total": { "type": ["number", "null"] },
+        "cost_usd_total": { "type": ["number", "null"] },
+        "human_hours_total": { "type": ["number", "null"] },
+        "cost_per_defect_found_usd": { "type": ["number", "null"] },
+        "repro_rate": { "type": ["number", "null"], "description": "Not measured in B0" }
+      }
+    }
+  }
+}
