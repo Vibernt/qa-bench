@@ -16,7 +16,7 @@ record them in each `apps/<app>/upstream.json`.
 | Expense app (ours) | Signed-in, 2 roles | MIT (ours) | Adopt: in `apps/expense-app` | B0 | 7.1, 7.3, 7.5, 7.8 |
 | Survey site (ours) | Public site, templates | MIT (ours) | Adopt: in `apps/survey-site` | B1 | 7.4 |
 | Swag Labs (`saucelabs/sample-app-web`) | Small shop with faulty users | MIT | Adopt | B0 | 7.1, 7.3 |
-| the-internet (`tourdedave/the-internet`) | Tricky UI patterns | Apache-2.0 | Run only | B0 | 7.4 |
+| the-internet (`saucelabs/the-internet`, formerly `tourdedave/the-internet`) | Tricky UI patterns | Apache-2.0 | Run only | B0 | 7.4 |
 | UI Test Automation Playground (`Inflectra/ui-test-automation-playground`) | Timing, dynamic IDs, shadow DOM | Apache-2.0 | Run only | B1 | 7.4 |
 | RealWorld "Conduit" (`gothinkster/realworld`) | Medium-style social and content app | MIT (spec); check each chosen implementation | Mutate | B1 | 7.1, 7.5, 7.8 |
 | ParaBank (`parasoft/parabank`) | Online bank | Apache-2.0 | Mutate | B1 | 7.1 |

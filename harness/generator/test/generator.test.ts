@@ -252,4 +252,17 @@ describe('repo tracks', () => {
       expect(e.active.mutations.length).toBeLessThanOrEqual(1); // expense-defect is exclusive
     }
   });
+
+  it('plants every repo defect and change at least once across the B0 tracks', () => {
+    const apps = loadApps();
+    for (const track of ['regression', 'noise']) {
+      const r = generateTrack(join(REPO_ROOT, 'tracks', `${track}.yaml`), { write: false });
+      const on = new Set(r.episodes.flatMap((g) => [...g.episode.active.mutations, ...g.episode.active.changes]));
+      const appIds = new Set(r.episodes.map((g) => g.episode.app));
+      for (const id of appIds) {
+        const app = apps.get(id)!;
+        for (const l of [...app.mutations, ...app.changes]) expect(on.has(l.id), `${track}: ${l.id}`).toBe(true);
+      }
+    }
+  });
 });
