@@ -16,7 +16,7 @@
       "confidence": 0.9,
       "severity": "critical",
       "repro": [
-        "Sign in as editor-4826 / vCTqtpjENHKniSqN.",
+        "Sign in as editor-4826 / [redacted].",
         "Open /expenses/new.",
         "Enter title 'Dup check', amount 1.00, category meals, and click 'Save expense' once.",
         "Observe the redirect to /expenses?flash=saved, then two 'Dup check | meals | $1.00' rows and a total that includes both.",

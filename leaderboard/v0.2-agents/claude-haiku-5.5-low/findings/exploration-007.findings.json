@@ -12,12 +12,12 @@
         "role": "customer"
       },
       "category": "security-hygiene",
-      "description": "The public /runtime-config.js file served to every visitor (including signed-out users) contains the customer's username and password in base64 (field a decodes to customer-acbb:xaSnbnjubn3NtRgb).",
+      "description": "The public /runtime-config.js file served to every visitor (including signed-out users) contains the customer's username and password in base64 (field a decodes to customer-acbb:[redacted]).",
       "confidence": 0.9,
       "severity": "critical",
       "repro": [
         "GET http://127.0.0.1:32778/runtime-config.js without signing in",
-        "Base64-decode the value of field a: Y3VzdG9tZXItYWNiYjp4YVNuYm5qdWJuM050Umdi gives customer-acbb:xaSnbnjubn3NtRgb"
+        "Base64-decode the value of field a: [redacted] gives customer-acbb:[redacted]"
       ]
     },
     {

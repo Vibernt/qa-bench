@@ -117,7 +117,7 @@
       "repro": [
         "Run: curl -s http://127.0.0.1:32791/runtime-config.js",
         "Observe the value 'a' in window.__SL_RUNTIME__",
-        "Base64-decode it to get 'customer-41c5:sPDEJmSqpV8XJKzC'"
+        "Base64-decode it to get 'customer-41c5:[redacted]'"
       ],
       "evidence": [
         {

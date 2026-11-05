@@ -17,7 +17,7 @@
       "severity": "major",
       "repro": [
         "curl -sS http://127.0.0.1:32790/runtime-config.js",
-        "Base64-decode the value of the 'a' field: it decodes to customer-acbb:xaSnbnjubn3NtRgb, the customer sign-in."
+        "Base64-decode the value of the 'a' field: it decodes to customer-acbb:[redacted], the customer sign-in."
       ]
     },
     {
@@ -57,7 +57,7 @@
       ]
     }
   ],
-  "notes": "Tested as customer-acbb in Chromium at 1280px and 375px. Covered: login (empty, wrong password, unknown user), the six-product inventory, all four sort orders (names and prices correct), add/remove from list, detail and cart with badge persistence across reload, cart contents, checkout validation (first, last and postal code required), overview totals (item total, 8% tax, total all verified arithmetically for 1, 2 and 6 items), order completion (cart cleared, badge cleared), the generated order PDF (totals match the screen), logged-out redirects on all protected routes, the burger menu, Reset App State, the Dynamic Catalog Lazy Load (infinite scroll works), Spinner and Slider pages, mobile overflow (none) and a basic a11y scan (images, buttons, inputs and links all named). The ITEM NOT FOUND page for unknown product ids (dog image, '$\u221a-1', dial-an-operator copy) looks like the deliberate Swag Labs easter egg, so it was not reported. Footer Terms of Service and Privacy Policy are plain text, which I took as intended. Not tested: other user accounts (only one was supplied), payment and shipping validation beyond the fields shown, and deeper a11y (contrast, keyboard focus order) and load testing beyond single-page timings.",
+  "notes": "Tested as customer-acbb in Chromium at 1280px and 375px. Covered: login (empty, wrong password, unknown user), the six-product inventory, all four sort orders (names and prices correct), add/remove from list, detail and cart with badge persistence across reload, cart contents, checkout validation (first, last and postal code required), overview totals (item total, 8% tax, total all verified arithmetically for 1, 2 and 6 items), order completion (cart cleared, badge cleared), the generated order PDF (totals match the screen), logged-out redirects on all protected routes, the burger menu, Reset App State, the Dynamic Catalog Lazy Load (infinite scroll works), Spinner and Slider pages, mobile overflow (none) and a basic a11y scan (images, buttons, inputs and links all named). The ITEM NOT FOUND page for unknown product ids (dog image, '$√-1', dial-an-operator copy) looks like the deliberate Swag Labs easter egg, so it was not reported. Footer Terms of Service and Privacy Policy are plain text, which I took as intended. Not tested: other user accounts (only one was supplied), payment and shipping validation beyond the fields shown, and deeper a11y (contrast, keyboard focus order) and load testing beyond single-page timings.",
   "cost": {
     "model_usd": 0.003598,
     "notes": "estimate from 82714 total tokens (85% cache read / 10% input / 5% output); range $0.0008-$0.0099"
