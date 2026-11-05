@@ -1,11 +1,11 @@
 # QA Bench report: claude-sonnet-5.5-high claude-sonnet-5-5@high (bench 0.1.0-b0)
 
 - Run: `ag-claude-sonnet-5.5-high`
-- Generated: 2026-11-05T05:12:34.119Z
+- Generated: 2026-11-05T05:23:11.225Z
 - Tracks: noise, regression
 - Seeds: noise=20261106, regression=20261105
 - Upstreams: expense-app, swag-labs, the-internet
-- Matcher: deterministic-2
+- Matcher: deterministic-3
 
 ## Headline
 
@@ -13,11 +13,12 @@
 |---|---|
 | Recall | 100.0% (6/6 defects) |
 | Severity-weighted recall | 100.0% (24/24 weight; critical 5, major 3, minor 1) |
-| Precision | 88.0% |
-| F1 | 93.6% |
-| Severity-weighted F1 | 93.6% |
+| Natural defects found | 10.0% (2/20 verified real bugs nobody planted) |
+| Precision | 96.0% |
+| F1 | 98.0% |
+| Severity-weighted F1 | 98.0% |
 | False alarms per 100 episodes | 0.0 |
-| Unmatched findings per episode | 0.30 |
+| Unmatched findings per episode | 0.10 |
 | Mean time to first detection | — |
 | Cost | $0.75 (per defect found: $0.12) |
 | Human hours | — |
@@ -30,22 +31,25 @@
 | Track | Episodes | Defects found | Recall | Precision | F1 | Changes flagged | False alarms /100 ep | Unmatched /ep |
 |---|---|---|---|---|---|---|---|---|
 | noise | 2 | 0/0 | — | — | — | 0/1 | 0.0 | 0.00 |
-| regression | 8 | 6/6 | 100.0% | 88.0% | 93.6% | 0/6 | 0.0 | 0.38 |
+| regression | 8 | 6/6 | 100.0% | 96.0% | 98.0% | 0/6 | 0.0 | 0.13 |
 
 ## By category and class
 
 | Track | Category | Class | Defects found | Recall | Precision | Unmatched |
 |---|---|---|---|---|---|---|
+| noise | copy | deterministic | 0/0 | — | — | 0 |
 | noise | copy | judged | 0/0 | — | — | 0 |
 | noise | error-handling | deterministic | 0/0 | — | — | 0 |
 | noise | functional | deterministic | 0/0 | — | — | 0 |
 | noise | perf | deterministic | 0/0 | — | — | 0 |
 | noise | visual | deterministic | 0/0 | — | — | 0 |
 | noise | visual | judged | 0/0 | — | — | 0 |
+| regression | a11y | deterministic | 0/0 | — | — | 0 |
 | regression | consistency | deterministic | 2/2 | 100.0% | — | 0 |
+| regression | copy | deterministic | 0/0 | — | — | 0 |
 | regression | copy | judged | 0/0 | — | — | 0 |
-| regression | error-handling | deterministic | 1/1 | 100.0% | 0.0% | 1 |
-| regression | functional | deterministic | 1/1 | 100.0% | 94.1% | 1 |
+| regression | error-handling | deterministic | 1/1 | 100.0% | 100.0% | 0 |
+| regression | functional | deterministic | 1/1 | 100.0% | 100.0% | 0 |
 | regression | permission | deterministic | 1/1 | 100.0% | 100.0% | 0 |
 | regression | visual | judged | 1/1 | 100.0% | 75.0% | 1 |
 
@@ -53,10 +57,11 @@ Per category
 
 | Category | Episodes | Defects found | Recall | Precision | F1 | Changes flagged | False alarms /100 ep | Unmatched /ep |
 |---|---|---|---|---|---|---|---|---|
+| a11y | 10 | 0/0 | — | — | — | 0/0 | 0.0 | 0.00 |
 | consistency | 10 | 2/2 | 100.0% | — | — | 0/0 | 0.0 | 0.00 |
 | copy | 10 | 0/0 | — | — | — | 0/6 | 0.0 | 0.00 |
-| error-handling | 10 | 1/1 | 100.0% | 0.0% | 0.0% | 0/0 | 0.0 | 0.10 |
-| functional | 10 | 1/1 | 100.0% | 94.4% | 97.1% | 0/0 | 0.0 | 0.10 |
+| error-handling | 10 | 1/1 | 100.0% | 100.0% | 100.0% | 0/0 | 0.0 | 0.00 |
+| functional | 10 | 1/1 | 100.0% | 100.0% | 100.0% | 0/0 | 0.0 | 0.00 |
 | perf | 10 | 0/0 | — | — | — | 0/0 | 0.0 | 0.00 |
 | permission | 10 | 1/1 | 100.0% | 100.0% | 100.0% | 0/0 | 0.0 | 0.00 |
 | visual | 10 | 1/1 | 100.0% | 80.0% | 88.9% | 0/1 | 0.0 | 0.10 |
@@ -65,21 +70,21 @@ Per class
 
 | Class | Episodes | Defects found | Recall | Precision | F1 | Changes flagged | False alarms /100 ep | Unmatched /ep |
 |---|---|---|---|---|---|---|---|---|
-| deterministic | 10 | 5/5 | 100.0% | 85.7% | 92.3% | 0/0 | 0.0 | 0.30 |
-| judged | 10 | 1/1 | 100.0% | 57.1% | 72.7% | 0/7 | 0.0 | 0.30 |
+| deterministic | 10 | 5/5 | 100.0% | 95.2% | 97.6% | 0/0 | 0.0 | 0.10 |
+| judged | 10 | 1/1 | 100.0% | 80.0% | 88.9% | 0/7 | 0.0 | 0.10 |
 
 ## Episodes
 
 | Episode | Track | App | Status | Defects found | Findings | TP | Dup | Change FA | Excused | Unmatched | First detection | Wall time |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
-| regression-001 | regression | expense-app | scored | 0/0 | 1 | 0 | 0 | 0 | 0 | 1 | — | 80.3 s |
+| regression-001 | regression | expense-app | scored | 0/0 | 1 | 1 | 0 | 0 | 0 | 0 | — | 80.3 s |
 | regression-003 | regression | expense-app | scored | 1/1 | 1 | 1 | 0 | 0 | 0 | 0 | — | 55.0 s |
 | regression-006 | regression | expense-app | scored | 1/1 | 1 | 1 | 0 | 0 | 0 | 0 | — | 70.6 s |
 | regression-007 | regression | swag-labs | scored | 1/1 | 6 | 1 | 5 | 0 | 0 | 0 | — | 526.8 s |
 | regression-009 | regression | swag-labs | scored | 1/1 | 8 | 1 | 7 | 0 | 0 | 0 | — | 311.1 s |
 | regression-011 | regression | swag-labs | scored | 1/1 | 5 | 1 | 3 | 0 | 0 | 1 | — | 117.8 s |
 | regression-014 | regression | expense-app | scored | 1/1 | 2 | 1 | 1 | 0 | 0 | 0 | — | 82.9 s |
-| regression-016 | regression | swag-labs | scored | 0/0 | 1 | 0 | 0 | 0 | 0 | 1 | — | 143.8 s |
+| regression-016 | regression | swag-labs | scored | 0/0 | 1 | 1 | 0 | 0 | 0 | 0 | — | 143.8 s |
 | noise-001 | noise | the-internet | scored | 0/0 | 0 | 0 | 0 | 0 | 0 | 0 | — | 59.5 s |
 | noise-002 | noise | the-internet | scored | 0/0 | 0 | 0 | 0 | 0 | 0 | 0 | — | 157.2 s |
 
@@ -87,7 +92,7 @@ Per class
 
 <details><summary>regression-001: 1 finding(s), status scored</summary>
 
-- `f1` **unmatched** [error-handling]: no active defect, change or baseline label in this episode
+- `f1` **true_positive** → `expense.rejected-form-loses-input` [error-handling]: first finding to hit defect expense.rejected-form-loses-input: matches expense.rejected-form-loses-input[0]: route, role, category; locators not comparable
 
 </details>
 
@@ -146,7 +151,7 @@ Per class
 
 <details><summary>regression-016: 1 finding(s), status scored</summary>
 
-- `f1` **unmatched** [functional]: no label matched; closest: category functional ≠ copy (family behaviour ≠ presentation) for swag.checkout-copy
+- `f1` **true_positive** → `swag.unrounded-item-total` [functional]: first finding to hit defect swag.unrounded-item-total: matches swag.unrounded-item-total[0]: route, role, category and selector
 
 </details>
 

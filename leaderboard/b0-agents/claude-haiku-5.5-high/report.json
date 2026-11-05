@@ -1,6 +1,6 @@
 {
   "bench_version": "0.1.0-b0",
-  "generated_at": "2026-11-05T05:12:32.840Z",
+  "generated_at": "2026-11-05T05:23:09.715Z",
   "system": {
     "name": "claude-haiku-5.5-high",
     "version": "claude-haiku-5-5@high"
@@ -40,7 +40,7 @@
         }
       }
     },
-    "matcher": "deterministic-2"
+    "matcher": "deterministic-3"
   },
   "episodes": [
     {
@@ -48,7 +48,7 @@
       "track": "regression",
       "app": "expense-app",
       "split": "public",
-      "answer_key_sha256": "7408c7a5613b0ec527eb14fea519c890175873ee4e342d6869f2ce7736bbf639",
+      "answer_key_sha256": "740b47538b82ac0e21e25eef3277047ef1b4d9650b0542d549747bb3e391dab2",
       "status": "scored",
       "wall_time_s": 232.8,
       "cost": {
@@ -59,25 +59,50 @@
       "decisions": [
         {
           "finding_id": "f1",
-          "decision": "unmatched",
+          "decision": "true_positive",
+          "label_id": "expense.huge-amount-breaks-list",
           "category": "error-handling",
-          "reason": "no active defect, change or baseline label in this episode"
+          "reason": "first finding to hit defect expense.huge-amount-breaks-list: matches expense.huge-amount-breaks-list[0]: route, role, category; locators not comparable"
         },
         {
           "finding_id": "f2",
-          "decision": "unmatched",
+          "decision": "true_positive",
+          "label_id": "expense.rejected-form-loses-input",
           "category": "error-handling",
-          "reason": "no active defect, change or baseline label in this episode"
+          "reason": "first finding to hit defect expense.rejected-form-loses-input: matches expense.rejected-form-loses-input[0]: route, role, category; locators not comparable"
         }
       ],
-      "labels": []
+      "labels": [
+        {
+          "label_id": "expense.huge-amount-breaks-list",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "critical",
+          "hit": true,
+          "finding_ids": [
+            "f1"
+          ]
+        },
+        {
+          "label_id": "expense.rejected-form-loses-input",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": true,
+          "finding_ids": [
+            "f2"
+          ]
+        }
+      ]
     },
     {
       "episode_id": "regression-003",
       "track": "regression",
       "app": "expense-app",
       "split": "public",
-      "answer_key_sha256": "df6b56b415261ceef1cadf54374b4d53d41edb1cef28459817003d0920b2a0e1",
+      "answer_key_sha256": "d1db476ce93e948f9c8e9442e96476f4db98e104c54c8da7301a0b4a3e2a76fa",
       "status": "scored",
       "wall_time_s": 216.1,
       "cost": {
@@ -95,15 +120,17 @@
         },
         {
           "finding_id": "f2",
-          "decision": "unmatched",
+          "decision": "true_positive",
+          "label_id": "expense.huge-amount-breaks-list",
           "category": "error-handling",
-          "reason": "no label matched; closest: role editor ≠ viewer for expense.permission-bypass"
+          "reason": "first finding to hit defect expense.huge-amount-breaks-list: matches expense.huge-amount-breaks-list[0]: route, role, category; locators not comparable"
         },
         {
           "finding_id": "f3",
-          "decision": "unmatched",
+          "decision": "true_positive",
+          "label_id": "expense.rejected-form-loses-input",
           "category": "error-handling",
-          "reason": "no label matched; closest: role editor ≠ viewer for expense.permission-bypass"
+          "reason": "first finding to hit defect expense.rejected-form-loses-input: matches expense.rejected-form-loses-input[0]: route, role, category; locators not comparable"
         }
       ],
       "labels": [
@@ -117,6 +144,28 @@
           "finding_ids": [
             "f1"
           ]
+        },
+        {
+          "label_id": "expense.huge-amount-breaks-list",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "critical",
+          "hit": true,
+          "finding_ids": [
+            "f2"
+          ]
+        },
+        {
+          "label_id": "expense.rejected-form-loses-input",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": true,
+          "finding_ids": [
+            "f3"
+          ]
         }
       ]
     },
@@ -125,7 +174,7 @@
       "track": "regression",
       "app": "expense-app",
       "split": "public",
-      "answer_key_sha256": "bcc461b14f4cf7d9f36c6da60b46b619b809431ef46d72fefcacc8a82a28badc",
+      "answer_key_sha256": "55a699c6f6fc555580d9deb624cf3b3eb43b7d1b0eb0a0cd2726c9dce41fd9e5",
       "status": "scored",
       "wall_time_s": 119.7,
       "cost": {
@@ -143,9 +192,10 @@
         },
         {
           "finding_id": "f2",
-          "decision": "unmatched",
+          "decision": "true_positive",
+          "label_id": "expense.rejected-form-loses-input",
           "category": "error-handling",
-          "reason": "no label matched; closest: locator mismatch (selector form[action=\"/expenses\"] vs [data-testid=total]) for expense.wrong-total"
+          "reason": "first finding to hit defect expense.rejected-form-loses-input: matches expense.rejected-form-loses-input[0]: route, role, category; locators not comparable"
         }
       ],
       "labels": [
@@ -159,6 +209,25 @@
           "finding_ids": [
             "f1"
           ]
+        },
+        {
+          "label_id": "expense.huge-amount-breaks-list",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "critical",
+          "hit": false
+        },
+        {
+          "label_id": "expense.rejected-form-loses-input",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": true,
+          "finding_ids": [
+            "f2"
+          ]
         }
       ]
     },
@@ -167,7 +236,7 @@
       "track": "regression",
       "app": "swag-labs",
       "split": "public",
-      "answer_key_sha256": "f2ffee27eed4eb645d2ece9539799634e232d40ce24287cdb774a5819fbc7d76",
+      "answer_key_sha256": "23e8937153546a198bcf2ffa714918331d2a432a72b7559ce4c38e3ee3a5bf78",
       "status": "scored",
       "wall_time_s": 334.5,
       "cost": {
@@ -201,7 +270,7 @@
           "finding_id": "f4",
           "decision": "unmatched",
           "category": "copy",
-          "reason": "no label matched; closest: category copy ≠ error-handling (family presentation ≠ behaviour) for swag.error-user; category copy ≠ functional | consistency (family presentation ≠ behaviour) for swag.error-user"
+          "reason": "no label matched; closest: description does not mention the symptom (/(not found|nonexist|non-exist|does not exist|doesn.t exist|unknown (product|item|id)|invalid id|id=\\d{2,}|missing product)/i) for swag.not-found-item-page"
         },
         {
           "finding_id": "f5",
@@ -225,6 +294,30 @@
             "f3",
             "f5"
           ]
+        },
+        {
+          "label_id": "swag.cart-count-grammar",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "swag.not-found-item-page",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "swag.unrounded-item-total",
+          "kind": "natural",
+          "category": "copy",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
         }
       ]
     },
@@ -233,7 +326,7 @@
       "track": "regression",
       "app": "swag-labs",
       "split": "public",
-      "answer_key_sha256": "f4cbcd24803a74cf2a178c473f9c54db79dbffff8359ef43f70e4c2c1b0f8dc1",
+      "answer_key_sha256": "59864557dc7499449050297d27db09d3ce0a69412a0899316de0298af782d755",
       "status": "scored",
       "wall_time_s": 424.3,
       "cost": {
@@ -345,6 +438,30 @@
           "class": "judged",
           "severity": "minor",
           "hit": false
+        },
+        {
+          "label_id": "swag.cart-count-grammar",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "swag.not-found-item-page",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "swag.unrounded-item-total",
+          "kind": "natural",
+          "category": "copy",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
         }
       ]
     },
@@ -353,7 +470,7 @@
       "track": "regression",
       "app": "swag-labs",
       "split": "public",
-      "answer_key_sha256": "2c3de972dbefcf3f0d7972f8c49177b8ed1cb1effd65b59eb258588fe7d45819",
+      "answer_key_sha256": "db9edf803e43768df7ce025634cd8b5d51a6a15d7aeee2d080710b37c167a550",
       "status": "scored",
       "wall_time_s": 232.7,
       "cost": {
@@ -412,9 +529,10 @@
         },
         {
           "finding_id": "f8",
-          "decision": "unmatched",
+          "decision": "true_positive",
+          "label_id": "swag.cart-count-grammar",
           "category": "a11y",
-          "reason": "no label matched; closest: category a11y ≠ visual (family a11y ≠ presentation) for swag.visual-user; category a11y ≠ consistency (family a11y ≠ behaviour) for swag.visual-user; category a11y ≠ functional | consistency (family a11y ≠ behaviour) for swag.visual-user"
+          "reason": "first finding to hit defect swag.cart-count-grammar: matches swag.cart-count-grammar[0]: route, role, category and selector"
         },
         {
           "finding_id": "f9",
@@ -447,6 +565,33 @@
           "class": "judged",
           "severity": "minor",
           "hit": false
+        },
+        {
+          "label_id": "swag.cart-count-grammar",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": true,
+          "finding_ids": [
+            "f8"
+          ]
+        },
+        {
+          "label_id": "swag.not-found-item-page",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "swag.unrounded-item-total",
+          "kind": "natural",
+          "category": "copy",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
         }
       ]
     },
@@ -455,7 +600,7 @@
       "track": "regression",
       "app": "expense-app",
       "split": "public",
-      "answer_key_sha256": "bf521cd987419257aced5a56a04da23f3650b072ad2a6ef33183b6a4d4788b9f",
+      "answer_key_sha256": "438899db624df3c2a33526775672b285f8c725610dc75211ae00424aaf0dc86e",
       "status": "scored",
       "wall_time_s": 326,
       "cost": {
@@ -499,6 +644,22 @@
           "class": "judged",
           "severity": "minor",
           "hit": false
+        },
+        {
+          "label_id": "expense.huge-amount-breaks-list",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "critical",
+          "hit": false
+        },
+        {
+          "label_id": "expense.rejected-form-loses-input",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
         }
       ]
     },
@@ -507,7 +668,7 @@
       "track": "regression",
       "app": "swag-labs",
       "split": "public",
-      "answer_key_sha256": "5998441a532f598234d1b04659726ea8f267a1b54076b9332722fa987fc6bf33",
+      "answer_key_sha256": "4361f73443b66e9f2ce4703fb151abd1e4af8ae9b828267662711a70b5b67040",
       "status": "scored",
       "wall_time_s": 184.3,
       "cost": {
@@ -532,6 +693,30 @@
           "class": "judged",
           "severity": "minor",
           "hit": false
+        },
+        {
+          "label_id": "swag.cart-count-grammar",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "swag.not-found-item-page",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "swag.unrounded-item-total",
+          "kind": "natural",
+          "category": "copy",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
         }
       ]
     },
@@ -540,7 +725,7 @@
       "track": "noise",
       "app": "the-internet",
       "split": "public",
-      "answer_key_sha256": "10f0bb77bc188bf022ec9127062b73a2bf210cad92e1e159e154f2f4aae24d01",
+      "answer_key_sha256": "64be00a72eba91088dae8c4a203c2497a8dc39d117957f194029f1279f31bb4c",
       "status": "scored",
       "wall_time_s": 996.9,
       "cost": {
@@ -559,9 +744,9 @@
         {
           "finding_id": "f2",
           "decision": "excused",
-          "label_id": "internet.shifting-content",
+          "label_id": "internet.shifting-menu-typo",
           "category": "copy",
-          "reason": "known baseline issue internet.shifting-content: matches internet.shifting-content[0]: route, role, category; finding has no locator"
+          "reason": "known baseline issue internet.shifting-menu-typo: matches internet.shifting-menu-typo[0]: route, role, category; finding has no locator"
         }
       ],
       "labels": [
@@ -601,6 +786,14 @@
           ]
         },
         {
+          "label_id": "internet.notification-typo",
+          "kind": "baseline",
+          "category": "copy",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
           "label_id": "internet.placeholder-links",
           "kind": "baseline",
           "category": "functional",
@@ -613,6 +806,14 @@
           "kind": "baseline",
           "category": "visual",
           "class": "judged",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.shifting-menu-typo",
+          "kind": "baseline",
+          "category": "copy",
+          "class": "deterministic",
           "severity": "minor",
           "hit": true,
           "finding_ids": [
@@ -658,7 +859,7 @@
       "track": "noise",
       "app": "the-internet",
       "split": "public",
-      "answer_key_sha256": "d60daee0e8387d2f73aea43f6e5cd29e2fcdb11176ae236589e4f1af98b48065",
+      "answer_key_sha256": "0515466f75b0ef74472668c826c5102226ca795f7ddec4b38984f940852f0783",
       "status": "scored",
       "wall_time_s": 146.4,
       "cost": {
@@ -727,6 +928,14 @@
           ]
         },
         {
+          "label_id": "internet.notification-typo",
+          "kind": "baseline",
+          "category": "copy",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
           "label_id": "internet.placeholder-links",
           "kind": "baseline",
           "category": "functional",
@@ -739,6 +948,14 @@
           "kind": "baseline",
           "category": "visual",
           "class": "judged",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.shifting-menu-typo",
+          "kind": "baseline",
+          "category": "copy",
+          "class": "deterministic",
           "severity": "minor",
           "hit": false
         },
@@ -791,24 +1008,27 @@
       "weighted_defects_found": 24,
       "weighted_recall": 1,
       "findings": 37,
-      "findings_matched": 22,
+      "findings_matched": 28,
       "findings_excused": 4,
-      "precision": 0.6666666666666666,
-      "f1": 0.8,
-      "weighted_f1": 0.8,
+      "precision": 0.8484848484848485,
+      "f1": 0.9180327868852458,
+      "weighted_f1": 0.9180327868852458,
       "changes_active": 7,
       "changes_flagged": 0,
       "change_flag_rate": 0,
       "false_alarms_on_changes": 0,
       "false_alarms_per_100_episodes": 0,
-      "unmatched_findings": 11,
-      "unmatched_per_episode": 1.1,
+      "unmatched_findings": 5,
+      "unmatched_per_episode": 0.5,
       "mean_time_to_first_detection_s": null,
       "wall_time_s_total": 3213.7000000000003,
       "cost_usd_total": 0.044234,
       "human_hours_total": null,
       "cost_per_defect_found_usd": 0.007372333333333334,
       "repro_rate": null,
+      "natural_present": 20,
+      "natural_found": 6,
+      "natural_recall": 0.3,
       "severity_judged": 0,
       "severity_agreement": null
     },
@@ -841,6 +1061,9 @@
         "human_hours_total": null,
         "cost_per_defect_found_usd": null,
         "repro_rate": null,
+        "natural_present": 0,
+        "natural_found": 0,
+        "natural_recall": null,
         "severity_judged": 0,
         "severity_agreement": null
       },
@@ -854,24 +1077,27 @@
         "weighted_defects_found": 24,
         "weighted_recall": 1,
         "findings": 33,
-        "findings_matched": 22,
+        "findings_matched": 28,
         "findings_excused": 0,
-        "precision": 0.6666666666666666,
-        "f1": 0.8,
-        "weighted_f1": 0.8,
+        "precision": 0.8484848484848485,
+        "f1": 0.9180327868852458,
+        "weighted_f1": 0.9180327868852458,
         "changes_active": 6,
         "changes_flagged": 0,
         "change_flag_rate": 0,
         "false_alarms_on_changes": 0,
         "false_alarms_per_100_episodes": 0,
-        "unmatched_findings": 11,
-        "unmatched_per_episode": 1.375,
+        "unmatched_findings": 5,
+        "unmatched_per_episode": 0.625,
         "mean_time_to_first_detection_s": null,
         "wall_time_s_total": 2070.4,
         "cost_usd_total": 0.036012,
         "human_hours_total": null,
         "cost_per_defect_found_usd": 0.006002,
         "repro_rate": null,
+        "natural_present": 20,
+        "natural_found": 6,
+        "natural_recall": 0.3,
         "severity_judged": 0,
         "severity_agreement": null
       }
@@ -887,9 +1113,9 @@
         "weighted_defects_found": 0,
         "weighted_recall": null,
         "findings": 1,
-        "findings_matched": 0,
+        "findings_matched": 1,
         "findings_excused": 0,
-        "precision": 0,
+        "precision": 1,
         "f1": null,
         "weighted_f1": null,
         "changes_active": 0,
@@ -897,14 +1123,17 @@
         "change_flag_rate": null,
         "false_alarms_on_changes": 0,
         "false_alarms_per_100_episodes": 0,
-        "unmatched_findings": 1,
-        "unmatched_per_episode": 0.1,
+        "unmatched_findings": 0,
+        "unmatched_per_episode": 0,
         "mean_time_to_first_detection_s": null,
         "wall_time_s_total": null,
         "cost_usd_total": null,
         "human_hours_total": null,
         "cost_per_defect_found_usd": null,
         "repro_rate": null,
+        "natural_present": 4,
+        "natural_found": 1,
+        "natural_recall": 0.25,
         "severity_judged": 0,
         "severity_agreement": null
       },
@@ -936,6 +1165,9 @@
         "human_hours_total": null,
         "cost_per_defect_found_usd": null,
         "repro_rate": null,
+        "natural_present": 0,
+        "natural_found": 0,
+        "natural_recall": null,
         "severity_judged": 0,
         "severity_agreement": null
       },
@@ -967,6 +1199,9 @@
         "human_hours_total": null,
         "cost_per_defect_found_usd": null,
         "repro_rate": null,
+        "natural_present": 4,
+        "natural_found": 0,
+        "natural_recall": 0,
         "severity_judged": 0,
         "severity_agreement": null
       },
@@ -980,24 +1215,27 @@
         "weighted_defects_found": 5,
         "weighted_recall": 1,
         "findings": 6,
-        "findings_matched": 0,
+        "findings_matched": 5,
         "findings_excused": 0,
-        "precision": 0,
-        "f1": 0,
-        "weighted_f1": 0,
+        "precision": 0.8333333333333334,
+        "f1": 0.9090909090909091,
+        "weighted_f1": 0.9090909090909091,
         "changes_active": 0,
         "changes_flagged": 0,
         "change_flag_rate": null,
         "false_alarms_on_changes": 0,
         "false_alarms_per_100_episodes": 0,
-        "unmatched_findings": 6,
-        "unmatched_per_episode": 0.6,
+        "unmatched_findings": 1,
+        "unmatched_per_episode": 0.1,
         "mean_time_to_first_detection_s": null,
         "wall_time_s_total": null,
         "cost_usd_total": null,
         "human_hours_total": null,
         "cost_per_defect_found_usd": null,
         "repro_rate": null,
+        "natural_present": 12,
+        "natural_found": 5,
+        "natural_recall": 0.4166666666666667,
         "severity_judged": 0,
         "severity_agreement": null
       },
@@ -1029,6 +1267,9 @@
         "human_hours_total": null,
         "cost_per_defect_found_usd": null,
         "repro_rate": null,
+        "natural_present": 0,
+        "natural_found": 0,
+        "natural_recall": null,
         "severity_judged": 0,
         "severity_agreement": null
       },
@@ -1060,6 +1301,9 @@
         "human_hours_total": null,
         "cost_per_defect_found_usd": null,
         "repro_rate": null,
+        "natural_present": 0,
+        "natural_found": 0,
+        "natural_recall": null,
         "severity_judged": 0,
         "severity_agreement": null
       },
@@ -1091,6 +1335,9 @@
         "human_hours_total": null,
         "cost_per_defect_found_usd": null,
         "repro_rate": null,
+        "natural_present": 0,
+        "natural_found": 0,
+        "natural_recall": null,
         "severity_judged": 0,
         "severity_agreement": null
       },
@@ -1122,6 +1369,9 @@
         "human_hours_total": null,
         "cost_per_defect_found_usd": null,
         "repro_rate": null,
+        "natural_present": 0,
+        "natural_found": 0,
+        "natural_recall": null,
         "severity_judged": 0,
         "severity_agreement": null
       }
@@ -1136,25 +1386,28 @@
         "weighted_defects_planted": 21,
         "weighted_defects_found": 21,
         "weighted_recall": 1,
-        "findings": 30,
-        "findings_matched": 16,
-        "findings_excused": 3,
-        "precision": 0.5925925925925926,
-        "f1": 0.7441860465116279,
-        "weighted_f1": 0.7441860465116279,
+        "findings": 31,
+        "findings_matched": 22,
+        "findings_excused": 4,
+        "precision": 0.8148148148148148,
+        "f1": 0.8979591836734693,
+        "weighted_f1": 0.8979591836734693,
         "changes_active": 0,
         "changes_flagged": 0,
         "change_flag_rate": null,
         "false_alarms_on_changes": 0,
         "false_alarms_per_100_episodes": 0,
-        "unmatched_findings": 11,
-        "unmatched_per_episode": 1.1,
+        "unmatched_findings": 5,
+        "unmatched_per_episode": 0.5,
         "mean_time_to_first_detection_s": null,
         "wall_time_s_total": null,
         "cost_usd_total": null,
         "human_hours_total": null,
         "cost_per_defect_found_usd": null,
         "repro_rate": null,
+        "natural_present": 20,
+        "natural_found": 6,
+        "natural_recall": 0.3,
         "severity_judged": 0,
         "severity_agreement": null
       },
@@ -1167,30 +1420,72 @@
         "weighted_defects_planted": 3,
         "weighted_defects_found": 3,
         "weighted_recall": 1,
-        "findings": 18,
+        "findings": 11,
         "findings_matched": 6,
-        "findings_excused": 1,
-        "precision": 0.35294117647058826,
-        "f1": 0.5217391304347826,
-        "weighted_f1": 0.5217391304347826,
+        "findings_excused": 0,
+        "precision": 0.5454545454545454,
+        "f1": 0.7058823529411764,
+        "weighted_f1": 0.7058823529411764,
         "changes_active": 7,
         "changes_flagged": 0,
         "change_flag_rate": 0,
         "false_alarms_on_changes": 0,
         "false_alarms_per_100_episodes": 0,
-        "unmatched_findings": 11,
-        "unmatched_per_episode": 1.1,
+        "unmatched_findings": 5,
+        "unmatched_per_episode": 0.5,
         "mean_time_to_first_detection_s": null,
         "wall_time_s_total": null,
         "cost_usd_total": null,
         "human_hours_total": null,
         "cost_per_defect_found_usd": null,
         "repro_rate": null,
+        "natural_present": 0,
+        "natural_found": 0,
+        "natural_recall": null,
         "severity_judged": 0,
         "severity_agreement": null
       }
     },
     "breakdown": [
+      {
+        "track": "noise",
+        "category": "copy",
+        "class": "deterministic",
+        "metrics": {
+          "episodes": 2,
+          "episodes_scored": 2,
+          "defects_planted": 0,
+          "defects_found": 0,
+          "recall": null,
+          "weighted_defects_planted": 0,
+          "weighted_defects_found": 0,
+          "weighted_recall": null,
+          "findings": 3,
+          "findings_matched": 0,
+          "findings_excused": 3,
+          "precision": null,
+          "f1": null,
+          "weighted_f1": null,
+          "changes_active": 0,
+          "changes_flagged": 0,
+          "change_flag_rate": null,
+          "false_alarms_on_changes": 0,
+          "false_alarms_per_100_episodes": 0,
+          "unmatched_findings": 0,
+          "unmatched_per_episode": 0,
+          "mean_time_to_first_detection_s": null,
+          "wall_time_s_total": null,
+          "cost_usd_total": null,
+          "human_hours_total": null,
+          "cost_per_defect_found_usd": null,
+          "repro_rate": null,
+          "natural_present": 0,
+          "natural_found": 0,
+          "natural_recall": null,
+          "severity_judged": 0,
+          "severity_agreement": null
+        }
+      },
       {
         "track": "noise",
         "category": "copy",
@@ -1204,9 +1499,9 @@
           "weighted_defects_planted": 0,
           "weighted_defects_found": 0,
           "weighted_recall": null,
-          "findings": 1,
+          "findings": 0,
           "findings_matched": 0,
-          "findings_excused": 1,
+          "findings_excused": 0,
           "precision": null,
           "f1": null,
           "weighted_f1": null,
@@ -1223,6 +1518,9 @@
           "human_hours_total": null,
           "cost_per_defect_found_usd": null,
           "repro_rate": null,
+          "natural_present": 0,
+          "natural_found": 0,
+          "natural_recall": null,
           "severity_judged": 0,
           "severity_agreement": null
         }
@@ -1259,6 +1557,9 @@
           "human_hours_total": null,
           "cost_per_defect_found_usd": null,
           "repro_rate": null,
+          "natural_present": 0,
+          "natural_found": 0,
+          "natural_recall": null,
           "severity_judged": 0,
           "severity_agreement": null
         }
@@ -1295,6 +1596,9 @@
           "human_hours_total": null,
           "cost_per_defect_found_usd": null,
           "repro_rate": null,
+          "natural_present": 0,
+          "natural_found": 0,
+          "natural_recall": null,
           "severity_judged": 0,
           "severity_agreement": null
         }
@@ -1331,6 +1635,9 @@
           "human_hours_total": null,
           "cost_per_defect_found_usd": null,
           "repro_rate": null,
+          "natural_present": 0,
+          "natural_found": 0,
+          "natural_recall": null,
           "severity_judged": 0,
           "severity_agreement": null
         }
@@ -1367,6 +1674,9 @@
           "human_hours_total": null,
           "cost_per_defect_found_usd": null,
           "repro_rate": null,
+          "natural_present": 0,
+          "natural_found": 0,
+          "natural_recall": null,
           "severity_judged": 0,
           "severity_agreement": null
         }
@@ -1403,6 +1713,48 @@
           "human_hours_total": null,
           "cost_per_defect_found_usd": null,
           "repro_rate": null,
+          "natural_present": 0,
+          "natural_found": 0,
+          "natural_recall": null,
+          "severity_judged": 0,
+          "severity_agreement": null
+        }
+      },
+      {
+        "track": "regression",
+        "category": "a11y",
+        "class": "deterministic",
+        "metrics": {
+          "episodes": 8,
+          "episodes_scored": 8,
+          "defects_planted": 0,
+          "defects_found": 0,
+          "recall": null,
+          "weighted_defects_planted": 0,
+          "weighted_defects_found": 0,
+          "weighted_recall": null,
+          "findings": 1,
+          "findings_matched": 1,
+          "findings_excused": 0,
+          "precision": 1,
+          "f1": null,
+          "weighted_f1": null,
+          "changes_active": 0,
+          "changes_flagged": 0,
+          "change_flag_rate": null,
+          "false_alarms_on_changes": 0,
+          "false_alarms_per_100_episodes": 0,
+          "unmatched_findings": 0,
+          "unmatched_per_episode": 0,
+          "mean_time_to_first_detection_s": null,
+          "wall_time_s_total": null,
+          "cost_usd_total": null,
+          "human_hours_total": null,
+          "cost_per_defect_found_usd": null,
+          "repro_rate": null,
+          "natural_present": 4,
+          "natural_found": 1,
+          "natural_recall": 0.25,
           "severity_judged": 0,
           "severity_agreement": null
         }
@@ -1439,6 +1791,48 @@
           "human_hours_total": null,
           "cost_per_defect_found_usd": null,
           "repro_rate": null,
+          "natural_present": 0,
+          "natural_found": 0,
+          "natural_recall": null,
+          "severity_judged": 0,
+          "severity_agreement": null
+        }
+      },
+      {
+        "track": "regression",
+        "category": "copy",
+        "class": "deterministic",
+        "metrics": {
+          "episodes": 8,
+          "episodes_scored": 8,
+          "defects_planted": 0,
+          "defects_found": 0,
+          "recall": null,
+          "weighted_defects_planted": 0,
+          "weighted_defects_found": 0,
+          "weighted_recall": null,
+          "findings": 1,
+          "findings_matched": 0,
+          "findings_excused": 0,
+          "precision": 0,
+          "f1": null,
+          "weighted_f1": null,
+          "changes_active": 0,
+          "changes_flagged": 0,
+          "change_flag_rate": null,
+          "false_alarms_on_changes": 0,
+          "false_alarms_per_100_episodes": 0,
+          "unmatched_findings": 1,
+          "unmatched_per_episode": 0.125,
+          "mean_time_to_first_detection_s": null,
+          "wall_time_s_total": null,
+          "cost_usd_total": null,
+          "human_hours_total": null,
+          "cost_per_defect_found_usd": null,
+          "repro_rate": null,
+          "natural_present": 4,
+          "natural_found": 0,
+          "natural_recall": 0,
           "severity_judged": 0,
           "severity_agreement": null
         }
@@ -1475,6 +1869,9 @@
           "human_hours_total": null,
           "cost_per_defect_found_usd": null,
           "repro_rate": null,
+          "natural_present": 0,
+          "natural_found": 0,
+          "natural_recall": null,
           "severity_judged": 0,
           "severity_agreement": null
         }
@@ -1493,24 +1890,27 @@
           "weighted_defects_found": 5,
           "weighted_recall": 1,
           "findings": 6,
-          "findings_matched": 0,
+          "findings_matched": 5,
           "findings_excused": 0,
-          "precision": 0,
-          "f1": 0,
-          "weighted_f1": 0,
+          "precision": 0.8333333333333334,
+          "f1": 0.9090909090909091,
+          "weighted_f1": 0.9090909090909091,
           "changes_active": 0,
           "changes_flagged": 0,
           "change_flag_rate": null,
           "false_alarms_on_changes": 0,
           "false_alarms_per_100_episodes": 0,
-          "unmatched_findings": 6,
-          "unmatched_per_episode": 0.75,
+          "unmatched_findings": 1,
+          "unmatched_per_episode": 0.125,
           "mean_time_to_first_detection_s": null,
           "wall_time_s_total": null,
           "cost_usd_total": null,
           "human_hours_total": null,
           "cost_per_defect_found_usd": null,
           "repro_rate": null,
+          "natural_present": 12,
+          "natural_found": 5,
+          "natural_recall": 0.4166666666666667,
           "severity_judged": 0,
           "severity_agreement": null
         }
@@ -1547,6 +1947,9 @@
           "human_hours_total": null,
           "cost_per_defect_found_usd": null,
           "repro_rate": null,
+          "natural_present": 0,
+          "natural_found": 0,
+          "natural_recall": null,
           "severity_judged": 0,
           "severity_agreement": null
         }
@@ -1583,6 +1986,9 @@
           "human_hours_total": null,
           "cost_per_defect_found_usd": null,
           "repro_rate": null,
+          "natural_present": 0,
+          "natural_found": 0,
+          "natural_recall": null,
           "severity_judged": 0,
           "severity_agreement": null
         }
@@ -1619,6 +2025,9 @@
           "human_hours_total": null,
           "cost_per_defect_found_usd": null,
           "repro_rate": null,
+          "natural_present": 0,
+          "natural_found": 0,
+          "natural_recall": null,
           "severity_judged": 0,
           "severity_agreement": null
         }

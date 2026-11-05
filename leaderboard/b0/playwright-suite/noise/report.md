@@ -1,11 +1,11 @@
 # QA Bench report: playwright-suite 0.1.0 (bench 0.1.0-b0)
 
 - Run: `b0-playwright-noise`
-- Generated: 2026-11-05T05:12:28.231Z
+- Generated: 2026-11-05T05:23:06.773Z
 - Tracks: noise
 - Seeds: noise=20261106
 - Upstreams: the-internet
-- Matcher: deterministic-2
+- Matcher: deterministic-3
 
 ## Headline
 
@@ -13,6 +13,7 @@
 |---|---|
 | Recall | — (0/0 defects) |
 | Severity-weighted recall | — (0/0 weight; critical 5, major 3, minor 1) |
+| Natural defects found | — (none labelled for these apps) |
 | Precision | — |
 | F1 | — |
 | Severity-weighted F1 | — |
@@ -35,6 +36,7 @@
 
 | Track | Category | Class | Defects found | Recall | Precision | Unmatched |
 |---|---|---|---|---|---|---|
+| noise | copy | deterministic | 0/0 | — | — | 0 |
 | noise | copy | judged | 0/0 | — | — | 0 |
 | noise | error-handling | deterministic | 0/0 | — | — | 0 |
 | noise | functional | deterministic | 0/0 | — | — | 0 |

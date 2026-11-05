@@ -265,13 +265,13 @@ These are the B0 exit-check results, on 17 regression and 6 noise episodes. Deta
 These are agent runs on a 10-episode sample (8 regression, 2 noise) with the same scorer. Details are in
 [leaderboard/b0-agents/README.md](leaderboard/b0-agents/README.md).
 
-| System | Recall | Precision | False alarms /100 ep | Est. model cost (10 ep) |
-|---|---|---|---|---|
-| Claude Sonnet 5.5, high effort | 100% (6/6) | 88.0% | 0 | $0.75 |
-| Claude Sonnet 5.5, low effort | 100% (6/6) | 87.5% | 10 | $0.59 |
-| Claude Haiku 5.5, low effort | 100% (6/6) | 85.7% | 0 | $0.04 |
-| Claude Haiku 5.5, high effort | 100% (6/6) | 66.7% | 0 | $0.04 |
-| `playwright-suite`, same 10 episodes | 100% (6/6) | 78.0% | 50 | $0 |
+| System | Planted recall | Natural bugs found | Precision | False alarms /100 ep | Est. model cost (10 ep) |
+|---|---|---|---|---|---|
+| Claude Sonnet 5.5, high effort | 100% (6/6) | 2 of 5 | 96.0% | 0 | $0.75 |
+| Claude Haiku 5.5, low effort | 100% (6/6) | 2 of 5 | 95.2% | 0 | $0.04 |
+| Claude Sonnet 5.5, low effort | 100% (6/6) | 0 of 5 | 87.5% | 10 | $0.59 |
+| Claude Haiku 5.5, high effort | 100% (6/6) | 3 of 5 | 84.8% | 0 | $0.04 |
+| `playwright-suite`, same 10 episodes | 100% (6/6) | 0 of 5 | 78.0% | 50 | $0 |
 
 ## Repository layout
 

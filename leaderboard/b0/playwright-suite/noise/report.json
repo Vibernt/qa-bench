@@ -1,6 +1,6 @@
 {
   "bench_version": "0.1.0-b0",
-  "generated_at": "2026-11-05T05:12:28.231Z",
+  "generated_at": "2026-11-05T05:23:06.773Z",
   "system": {
     "name": "playwright-suite",
     "version": "0.1.0"
@@ -23,7 +23,7 @@
         }
       }
     },
-    "matcher": "deterministic-2"
+    "matcher": "deterministic-3"
   },
   "episodes": [
     {
@@ -31,7 +31,7 @@
       "track": "noise",
       "app": "the-internet",
       "split": "public",
-      "answer_key_sha256": "10f0bb77bc188bf022ec9127062b73a2bf210cad92e1e159e154f2f4aae24d01",
+      "answer_key_sha256": "64be00a72eba91088dae8c4a203c2497a8dc39d117957f194029f1279f31bb4c",
       "status": "scored",
       "wall_time_s": 21.09,
       "cost": {
@@ -96,6 +96,14 @@
           "hit": false
         },
         {
+          "label_id": "internet.notification-typo",
+          "kind": "baseline",
+          "category": "copy",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
           "label_id": "internet.placeholder-links",
           "kind": "baseline",
           "category": "functional",
@@ -108,6 +116,14 @@
           "kind": "baseline",
           "category": "visual",
           "class": "judged",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.shifting-menu-typo",
+          "kind": "baseline",
+          "category": "copy",
+          "class": "deterministic",
           "severity": "minor",
           "hit": false
         },
@@ -150,7 +166,7 @@
       "track": "noise",
       "app": "the-internet",
       "split": "public",
-      "answer_key_sha256": "d60daee0e8387d2f73aea43f6e5cd29e2fcdb11176ae236589e4f1af98b48065",
+      "answer_key_sha256": "0515466f75b0ef74472668c826c5102226ca795f7ddec4b38984f940852f0783",
       "status": "scored",
       "wall_time_s": 20.95,
       "cost": {
@@ -223,6 +239,14 @@
           "hit": false
         },
         {
+          "label_id": "internet.notification-typo",
+          "kind": "baseline",
+          "category": "copy",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
           "label_id": "internet.placeholder-links",
           "kind": "baseline",
           "category": "functional",
@@ -235,6 +259,14 @@
           "kind": "baseline",
           "category": "visual",
           "class": "judged",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.shifting-menu-typo",
+          "kind": "baseline",
+          "category": "copy",
+          "class": "deterministic",
           "severity": "minor",
           "hit": false
         },
@@ -277,7 +309,7 @@
       "track": "noise",
       "app": "the-internet",
       "split": "public",
-      "answer_key_sha256": "daf4920e94c756554d6ef4a5dfa97e24d823ec79d11cdf042a19c836e8e99640",
+      "answer_key_sha256": "ad51af3ae71d10694fc08f44dc07259cb968032524cddb96298aa4b2429c1620",
       "status": "scored",
       "wall_time_s": 21.13,
       "cost": {
@@ -350,6 +382,14 @@
           "hit": false
         },
         {
+          "label_id": "internet.notification-typo",
+          "kind": "baseline",
+          "category": "copy",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
           "label_id": "internet.placeholder-links",
           "kind": "baseline",
           "category": "functional",
@@ -362,6 +402,14 @@
           "kind": "baseline",
           "category": "visual",
           "class": "judged",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.shifting-menu-typo",
+          "kind": "baseline",
+          "category": "copy",
+          "class": "deterministic",
           "severity": "minor",
           "hit": false
         },
@@ -404,7 +452,7 @@
       "track": "noise",
       "app": "the-internet",
       "split": "public",
-      "answer_key_sha256": "5fa13780ced6769ec75238084500f650f0c6c1829c63738f09b6e123a053449a",
+      "answer_key_sha256": "78f3b5d518385057e64cef3110e2f934d64156eca74248d225bbe02c0ff13849",
       "status": "scored",
       "wall_time_s": 19.3,
       "cost": {
@@ -469,6 +517,14 @@
           "hit": false
         },
         {
+          "label_id": "internet.notification-typo",
+          "kind": "baseline",
+          "category": "copy",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
           "label_id": "internet.placeholder-links",
           "kind": "baseline",
           "category": "functional",
@@ -481,6 +537,14 @@
           "kind": "baseline",
           "category": "visual",
           "class": "judged",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.shifting-menu-typo",
+          "kind": "baseline",
+          "category": "copy",
+          "class": "deterministic",
           "severity": "minor",
           "hit": false
         },
@@ -523,7 +587,7 @@
       "track": "noise",
       "app": "the-internet",
       "split": "public",
-      "answer_key_sha256": "91a4a08084e2c2877d2a84d8ed08a0fb4c9b15cd1f6c5beebee37ba282ea9475",
+      "answer_key_sha256": "6f4db0d14d2ca21bc0530acfe1ffd7a387ecc756279412473c366970fc131a04",
       "status": "scored",
       "wall_time_s": 19.15,
       "cost": {
@@ -588,6 +652,14 @@
           "hit": false
         },
         {
+          "label_id": "internet.notification-typo",
+          "kind": "baseline",
+          "category": "copy",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
           "label_id": "internet.placeholder-links",
           "kind": "baseline",
           "category": "functional",
@@ -600,6 +672,14 @@
           "kind": "baseline",
           "category": "visual",
           "class": "judged",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.shifting-menu-typo",
+          "kind": "baseline",
+          "category": "copy",
+          "class": "deterministic",
           "severity": "minor",
           "hit": false
         },
@@ -642,7 +722,7 @@
       "track": "noise",
       "app": "the-internet",
       "split": "public",
-      "answer_key_sha256": "73548536b6ff4952ee56d4ce54cd8a0235725a5b0913d724507c8cb4e429c28f",
+      "answer_key_sha256": "b8736c32ce63af950a0e6e613299b8e35d0ae3e1c7d16b9c35b730770cde1f04",
       "status": "scored",
       "wall_time_s": 19.17,
       "cost": {
@@ -707,6 +787,14 @@
           "hit": false
         },
         {
+          "label_id": "internet.notification-typo",
+          "kind": "baseline",
+          "category": "copy",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
           "label_id": "internet.placeholder-links",
           "kind": "baseline",
           "category": "functional",
@@ -719,6 +807,14 @@
           "kind": "baseline",
           "category": "visual",
           "class": "judged",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.shifting-menu-typo",
+          "kind": "baseline",
+          "category": "copy",
+          "class": "deterministic",
           "severity": "minor",
           "hit": false
         },
@@ -786,6 +882,9 @@
       "human_hours_total": null,
       "cost_per_defect_found_usd": null,
       "repro_rate": null,
+      "natural_present": 0,
+      "natural_found": 0,
+      "natural_recall": null,
       "severity_judged": 0,
       "severity_agreement": null
     },
@@ -818,6 +917,9 @@
         "human_hours_total": null,
         "cost_per_defect_found_usd": null,
         "repro_rate": null,
+        "natural_present": 0,
+        "natural_found": 0,
+        "natural_recall": null,
         "severity_judged": 0,
         "severity_agreement": null
       }
@@ -851,6 +953,9 @@
         "human_hours_total": null,
         "cost_per_defect_found_usd": null,
         "repro_rate": null,
+        "natural_present": 0,
+        "natural_found": 0,
+        "natural_recall": null,
         "severity_judged": 0,
         "severity_agreement": null
       },
@@ -882,6 +987,9 @@
         "human_hours_total": null,
         "cost_per_defect_found_usd": null,
         "repro_rate": null,
+        "natural_present": 0,
+        "natural_found": 0,
+        "natural_recall": null,
         "severity_judged": 0,
         "severity_agreement": null
       },
@@ -913,6 +1021,9 @@
         "human_hours_total": null,
         "cost_per_defect_found_usd": null,
         "repro_rate": null,
+        "natural_present": 0,
+        "natural_found": 0,
+        "natural_recall": null,
         "severity_judged": 0,
         "severity_agreement": null
       },
@@ -944,6 +1055,9 @@
         "human_hours_total": null,
         "cost_per_defect_found_usd": null,
         "repro_rate": null,
+        "natural_present": 0,
+        "natural_found": 0,
+        "natural_recall": null,
         "severity_judged": 0,
         "severity_agreement": null
       },
@@ -975,6 +1089,9 @@
         "human_hours_total": null,
         "cost_per_defect_found_usd": null,
         "repro_rate": null,
+        "natural_present": 0,
+        "natural_found": 0,
+        "natural_recall": null,
         "severity_judged": 0,
         "severity_agreement": null
       }
@@ -1008,6 +1125,9 @@
         "human_hours_total": null,
         "cost_per_defect_found_usd": null,
         "repro_rate": null,
+        "natural_present": 0,
+        "natural_found": 0,
+        "natural_recall": null,
         "severity_judged": 0,
         "severity_agreement": null
       },
@@ -1039,11 +1159,53 @@
         "human_hours_total": null,
         "cost_per_defect_found_usd": null,
         "repro_rate": null,
+        "natural_present": 0,
+        "natural_found": 0,
+        "natural_recall": null,
         "severity_judged": 0,
         "severity_agreement": null
       }
     },
     "breakdown": [
+      {
+        "track": "noise",
+        "category": "copy",
+        "class": "deterministic",
+        "metrics": {
+          "episodes": 6,
+          "episodes_scored": 6,
+          "defects_planted": 0,
+          "defects_found": 0,
+          "recall": null,
+          "weighted_defects_planted": 0,
+          "weighted_defects_found": 0,
+          "weighted_recall": null,
+          "findings": 0,
+          "findings_matched": 0,
+          "findings_excused": 0,
+          "precision": null,
+          "f1": null,
+          "weighted_f1": null,
+          "changes_active": 0,
+          "changes_flagged": 0,
+          "change_flag_rate": null,
+          "false_alarms_on_changes": 0,
+          "false_alarms_per_100_episodes": 0,
+          "unmatched_findings": 0,
+          "unmatched_per_episode": 0,
+          "mean_time_to_first_detection_s": null,
+          "wall_time_s_total": null,
+          "cost_usd_total": null,
+          "human_hours_total": null,
+          "cost_per_defect_found_usd": null,
+          "repro_rate": null,
+          "natural_present": 0,
+          "natural_found": 0,
+          "natural_recall": null,
+          "severity_judged": 0,
+          "severity_agreement": null
+        }
+      },
       {
         "track": "noise",
         "category": "copy",
@@ -1076,6 +1238,9 @@
           "human_hours_total": null,
           "cost_per_defect_found_usd": null,
           "repro_rate": null,
+          "natural_present": 0,
+          "natural_found": 0,
+          "natural_recall": null,
           "severity_judged": 0,
           "severity_agreement": null
         }
@@ -1112,6 +1277,9 @@
           "human_hours_total": null,
           "cost_per_defect_found_usd": null,
           "repro_rate": null,
+          "natural_present": 0,
+          "natural_found": 0,
+          "natural_recall": null,
           "severity_judged": 0,
           "severity_agreement": null
         }
@@ -1148,6 +1316,9 @@
           "human_hours_total": null,
           "cost_per_defect_found_usd": null,
           "repro_rate": null,
+          "natural_present": 0,
+          "natural_found": 0,
+          "natural_recall": null,
           "severity_judged": 0,
           "severity_agreement": null
         }
@@ -1184,6 +1355,9 @@
           "human_hours_total": null,
           "cost_per_defect_found_usd": null,
           "repro_rate": null,
+          "natural_present": 0,
+          "natural_found": 0,
+          "natural_recall": null,
           "severity_judged": 0,
           "severity_agreement": null
         }
@@ -1220,6 +1394,9 @@
           "human_hours_total": null,
           "cost_per_defect_found_usd": null,
           "repro_rate": null,
+          "natural_present": 0,
+          "natural_found": 0,
+          "natural_recall": null,
           "severity_judged": 0,
           "severity_agreement": null
         }
@@ -1256,6 +1433,9 @@
           "human_hours_total": null,
           "cost_per_defect_found_usd": null,
           "repro_rate": null,
+          "natural_present": 0,
+          "natural_found": 0,
+          "natural_recall": null,
           "severity_judged": 0,
           "severity_agreement": null
         }

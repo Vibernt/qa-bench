@@ -1,11 +1,11 @@
 # QA Bench report: playwright-suite 0.1.0 (bench 0.1.0-b0)
 
 - Run: `b0-playwright-regression`
-- Generated: 2026-11-05T05:12:27.503Z
+- Generated: 2026-11-05T05:23:06.084Z
 - Tracks: regression
 - Seeds: regression=20261105
 - Upstreams: expense-app, swag-labs
-- Matcher: deterministic-2
+- Matcher: deterministic-3
 
 ## Headline
 
@@ -13,6 +13,7 @@
 |---|---|
 | Recall | 100.0% (12/12 defects) |
 | Severity-weighted recall | 100.0% (50/50 weight; critical 5, major 3, minor 1) |
+| Natural defects found | 0.0% (0/42 verified real bugs nobody planted) |
 | Precision | 78.0% |
 | F1 | 87.6% |
 | Severity-weighted F1 | 87.6% |
@@ -35,8 +36,10 @@
 
 | Track | Category | Class | Defects found | Recall | Precision | Unmatched |
 |---|---|---|---|---|---|---|
+| regression | a11y | deterministic | 0/0 | — | — | 0 |
 | regression | consistency | deterministic | 2/2 | 100.0% | 100.0% | 0 |
 | regression | consistency | judged | 0/0 | — | 100.0% | 0 |
+| regression | copy | deterministic | 0/0 | — | 100.0% | 0 |
 | regression | copy | judged | 0/0 | — | 0.0% | 0 |
 | regression | error-handling | deterministic | 1/1 | 100.0% | 100.0% | 0 |
 | regression | functional | deterministic | 6/6 | 100.0% | 100.0% | 0 |
@@ -48,6 +51,7 @@ Per category
 
 | Category | Episodes | Defects found | Recall | Precision | F1 | Changes flagged | False alarms /100 ep | Unmatched /ep |
 |---|---|---|---|---|---|---|---|---|
+| a11y | 17 | 0/0 | — | — | — | 0/0 | 0.0 | 0.00 |
 | consistency | 17 | 2/2 | 100.0% | 100.0% | 100.0% | 0/1 | 0.0 | 0.00 |
 | copy | 17 | 0/0 | — | 8.3% | — | 7/8 | 41.2 | 0.00 |
 | error-handling | 17 | 1/1 | 100.0% | 100.0% | 100.0% | 0/0 | 0.0 | 0.00 |

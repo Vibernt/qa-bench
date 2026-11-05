@@ -1,11 +1,11 @@
 # QA Bench report: claude-haiku-5.5-low claude-haiku-5-5@low (bench 0.1.0-b0)
 
 - Run: `ag-claude-haiku-5.5-low`
-- Generated: 2026-11-05T05:12:32.153Z
+- Generated: 2026-11-05T05:23:08.942Z
 - Tracks: noise, regression
 - Seeds: noise=20261106, regression=20261105
 - Upstreams: expense-app, swag-labs, the-internet
-- Matcher: deterministic-2
+- Matcher: deterministic-3
 
 ## Headline
 
@@ -13,11 +13,12 @@
 |---|---|
 | Recall | 100.0% (6/6 defects) |
 | Severity-weighted recall | 100.0% (24/24 weight; critical 5, major 3, minor 1) |
-| Precision | 85.7% |
-| F1 | 92.3% |
-| Severity-weighted F1 | 92.3% |
+| Natural defects found | 10.0% (2/20 verified real bugs nobody planted) |
+| Precision | 95.2% |
+| F1 | 97.6% |
+| Severity-weighted F1 | 97.6% |
 | False alarms per 100 episodes | 0.0 |
-| Unmatched findings per episode | 0.30 |
+| Unmatched findings per episode | 0.10 |
 | Mean time to first detection | — |
 | Cost | $0.04 (per defect found: $0.01) |
 | Human hours | — |
@@ -30,21 +31,24 @@
 | Track | Episodes | Defects found | Recall | Precision | F1 | Changes flagged | False alarms /100 ep | Unmatched /ep |
 |---|---|---|---|---|---|---|---|---|
 | noise | 2 | 0/0 | — | — | — | 0/1 | 0.0 | 0.00 |
-| regression | 8 | 6/6 | 100.0% | 85.7% | 92.3% | 0/6 | 0.0 | 0.38 |
+| regression | 8 | 6/6 | 100.0% | 95.2% | 97.6% | 0/6 | 0.0 | 0.13 |
 
 ## By category and class
 
 | Track | Category | Class | Defects found | Recall | Precision | Unmatched |
 |---|---|---|---|---|---|---|
+| noise | copy | deterministic | 0/0 | — | — | 0 |
 | noise | copy | judged | 0/0 | — | — | 0 |
 | noise | error-handling | deterministic | 0/0 | — | — | 0 |
 | noise | functional | deterministic | 0/0 | — | — | 0 |
 | noise | perf | deterministic | 0/0 | — | — | 0 |
 | noise | visual | deterministic | 0/0 | — | — | 0 |
 | noise | visual | judged | 0/0 | — | — | 0 |
+| regression | a11y | deterministic | 0/0 | — | — | 0 |
 | regression | consistency | deterministic | 2/2 | 100.0% | 100.0% | 0 |
+| regression | copy | deterministic | 0/0 | — | — | 0 |
 | regression | copy | judged | 0/0 | — | — | 0 |
-| regression | error-handling | deterministic | 1/1 | 100.0% | 0.0% | 2 |
+| regression | error-handling | deterministic | 1/1 | 100.0% | 100.0% | 0 |
 | regression | functional | deterministic | 1/1 | 100.0% | 91.7% | 1 |
 | regression | permission | deterministic | 1/1 | 100.0% | 100.0% | 0 |
 | regression | visual | judged | 1/1 | 100.0% | 100.0% | 0 |
@@ -53,9 +57,10 @@ Per category
 
 | Category | Episodes | Defects found | Recall | Precision | F1 | Changes flagged | False alarms /100 ep | Unmatched /ep |
 |---|---|---|---|---|---|---|---|---|
+| a11y | 10 | 0/0 | — | — | — | 0/0 | 0.0 | 0.00 |
 | consistency | 10 | 2/2 | 100.0% | 100.0% | 100.0% | 0/0 | 0.0 | 0.00 |
 | copy | 10 | 0/0 | — | — | — | 0/6 | 0.0 | 0.00 |
-| error-handling | 10 | 1/1 | 100.0% | 0.0% | 0.0% | 0/0 | 0.0 | 0.20 |
+| error-handling | 10 | 1/1 | 100.0% | 100.0% | 100.0% | 0/0 | 0.0 | 0.00 |
 | functional | 10 | 1/1 | 100.0% | 92.3% | 96.0% | 0/0 | 0.0 | 0.10 |
 | perf | 10 | 0/0 | — | — | — | 0/0 | 0.0 | 0.00 |
 | permission | 10 | 1/1 | 100.0% | 100.0% | 100.0% | 0/0 | 0.0 | 0.00 |
@@ -65,21 +70,21 @@ Per class
 
 | Class | Episodes | Defects found | Recall | Precision | F1 | Changes flagged | False alarms /100 ep | Unmatched /ep |
 |---|---|---|---|---|---|---|---|---|
-| deterministic | 10 | 5/5 | 100.0% | 82.4% | 90.3% | 0/0 | 0.0 | 0.30 |
-| judged | 10 | 1/1 | 100.0% | 57.1% | 72.7% | 0/7 | 0.0 | 0.30 |
+| deterministic | 10 | 5/5 | 100.0% | 94.1% | 97.0% | 0/0 | 0.0 | 0.10 |
+| judged | 10 | 1/1 | 100.0% | 80.0% | 88.9% | 0/7 | 0.0 | 0.10 |
 
 ## Episodes
 
 | Episode | Track | App | Status | Defects found | Findings | TP | Dup | Change FA | Excused | Unmatched | First detection | Wall time |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
-| regression-001 | regression | expense-app | scored | 0/0 | 1 | 0 | 0 | 0 | 0 | 1 | — | 77.8 s |
+| regression-001 | regression | expense-app | scored | 0/0 | 1 | 1 | 0 | 0 | 0 | 0 | — | 77.8 s |
 | regression-003 | regression | expense-app | scored | 1/1 | 1 | 1 | 0 | 0 | 0 | 0 | — | 86.4 s |
 | regression-006 | regression | expense-app | scored | 1/1 | 1 | 1 | 0 | 0 | 0 | 0 | — | 74.2 s |
 | regression-007 | regression | swag-labs | scored | 1/1 | 6 | 1 | 5 | 0 | 0 | 0 | — | 274.9 s |
 | regression-009 | regression | swag-labs | scored | 1/1 | 6 | 1 | 4 | 0 | 0 | 1 | — | 331.6 s |
 | regression-011 | regression | swag-labs | scored | 1/1 | 4 | 1 | 3 | 0 | 0 | 0 | — | 186.0 s |
 | regression-014 | regression | expense-app | scored | 1/1 | 1 | 1 | 0 | 0 | 0 | 0 | — | 275.7 s |
-| regression-016 | regression | swag-labs | scored | 0/0 | 1 | 0 | 0 | 0 | 0 | 1 | — | 107.9 s |
+| regression-016 | regression | swag-labs | scored | 0/0 | 1 | 1 | 0 | 0 | 0 | 0 | — | 107.9 s |
 | noise-001 | noise | the-internet | scored | 0/0 | 1 | 0 | 0 | 0 | 1 | 0 | — | 246.6 s |
 | noise-002 | noise | the-internet | scored | 0/0 | 1 | 0 | 0 | 0 | 1 | 0 | — | 105.4 s |
 
@@ -87,7 +92,7 @@ Per class
 
 <details><summary>regression-001: 1 finding(s), status scored</summary>
 
-- `f1` **unmatched** [error-handling]: no active defect, change or baseline label in this episode
+- `f1` **true_positive** → `expense.rejected-form-loses-input` [error-handling]: first finding to hit defect expense.rejected-form-loses-input: matches expense.rejected-form-loses-input[0]: route, role, category; locators not comparable
 
 </details>
 
@@ -142,7 +147,7 @@ Per class
 
 <details><summary>regression-016: 1 finding(s), status scored</summary>
 
-- `f1` **unmatched** [error-handling]: no label matched; closest: locator mismatch (selector [data-test="inventory-item-desc"] vs data-test=add-to-cart) for swag.relabel
+- `f1` **true_positive** → `swag.not-found-item-page` [error-handling]: first finding to hit defect swag.not-found-item-page: matches swag.not-found-item-page[0]: route, role, category; locators not comparable
 
 </details>
 

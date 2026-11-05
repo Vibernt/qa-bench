@@ -1,6 +1,6 @@
 {
   "bench_version": "0.1.0-b0",
-  "generated_at": "2026-11-05T05:12:30.831Z",
+  "generated_at": "2026-11-05T05:23:07.504Z",
   "system": {
     "name": "noop",
     "version": "0.1.0"
@@ -30,7 +30,7 @@
         }
       }
     },
-    "matcher": "deterministic-2"
+    "matcher": "deterministic-3"
   },
   "episodes": [
     {
@@ -38,7 +38,7 @@
       "track": "regression",
       "app": "expense-app",
       "split": "public",
-      "answer_key_sha256": "7408c7a5613b0ec527eb14fea519c890175873ee4e342d6869f2ce7736bbf639",
+      "answer_key_sha256": "740b47538b82ac0e21e25eef3277047ef1b4d9650b0542d549747bb3e391dab2",
       "status": "scored",
       "wall_time_s": 0.56,
       "cost": {
@@ -47,14 +47,31 @@
       },
       "time_to_first_detection_s": null,
       "decisions": [],
-      "labels": []
+      "labels": [
+        {
+          "label_id": "expense.huge-amount-breaks-list",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "critical",
+          "hit": false
+        },
+        {
+          "label_id": "expense.rejected-form-loses-input",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        }
+      ]
     },
     {
       "episode_id": "regression-002",
       "track": "regression",
       "app": "swag-labs",
       "split": "public",
-      "answer_key_sha256": "efee7f5be3343f7fd47042b4c59318c9a2ef179d41f5f27d79ad509845cd15a8",
+      "answer_key_sha256": "af21e0bd32f7b10e487f5f73bcf8ff6da1339a3975745e1f12cd4a5c0e41ae8d",
       "status": "scored",
       "wall_time_s": 0.58,
       "cost": {
@@ -63,14 +80,39 @@
       },
       "time_to_first_detection_s": null,
       "decisions": [],
-      "labels": []
+      "labels": [
+        {
+          "label_id": "swag.cart-count-grammar",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "swag.not-found-item-page",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "swag.unrounded-item-total",
+          "kind": "natural",
+          "category": "copy",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        }
+      ]
     },
     {
       "episode_id": "regression-003",
       "track": "regression",
       "app": "expense-app",
       "split": "public",
-      "answer_key_sha256": "df6b56b415261ceef1cadf54374b4d53d41edb1cef28459817003d0920b2a0e1",
+      "answer_key_sha256": "d1db476ce93e948f9c8e9442e96476f4db98e104c54c8da7301a0b4a3e2a76fa",
       "status": "scored",
       "wall_time_s": 0.51,
       "cost": {
@@ -87,6 +129,22 @@
           "class": "deterministic",
           "severity": "critical",
           "hit": false
+        },
+        {
+          "label_id": "expense.huge-amount-breaks-list",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "critical",
+          "hit": false
+        },
+        {
+          "label_id": "expense.rejected-form-loses-input",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
         }
       ]
     },
@@ -95,7 +153,7 @@
       "track": "regression",
       "app": "expense-app",
       "split": "public",
-      "answer_key_sha256": "f6009be73996563e8caa1e76b660f7657b94a854379b427da9f87feea54a9cab",
+      "answer_key_sha256": "1eed4a8de3f341e9134160c1520ee4bb5245fca1fb3d2183f1197fd9538a3332",
       "status": "scored",
       "wall_time_s": 0.57,
       "cost": {
@@ -112,6 +170,22 @@
           "class": "judged",
           "severity": "minor",
           "hit": false
+        },
+        {
+          "label_id": "expense.huge-amount-breaks-list",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "critical",
+          "hit": false
+        },
+        {
+          "label_id": "expense.rejected-form-loses-input",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
         }
       ]
     },
@@ -120,7 +194,7 @@
       "track": "regression",
       "app": "expense-app",
       "split": "public",
-      "answer_key_sha256": "c890877e95b1aa05522d9600329fc6127dd8cdf0bf0a9481a36dfc7900dd6736",
+      "answer_key_sha256": "e3d816fa26e0933bf8034f5ae1c0d996800d8216aad98519f0849b9d58f9c2ec",
       "status": "scored",
       "wall_time_s": 0.48,
       "cost": {
@@ -137,6 +211,22 @@
           "class": "deterministic",
           "severity": "major",
           "hit": false
+        },
+        {
+          "label_id": "expense.huge-amount-breaks-list",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "critical",
+          "hit": false
+        },
+        {
+          "label_id": "expense.rejected-form-loses-input",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
         }
       ]
     },
@@ -145,7 +235,7 @@
       "track": "regression",
       "app": "expense-app",
       "split": "public",
-      "answer_key_sha256": "bcc461b14f4cf7d9f36c6da60b46b619b809431ef46d72fefcacc8a82a28badc",
+      "answer_key_sha256": "55a699c6f6fc555580d9deb624cf3b3eb43b7d1b0eb0a0cd2726c9dce41fd9e5",
       "status": "scored",
       "wall_time_s": 0.66,
       "cost": {
@@ -162,6 +252,22 @@
           "class": "deterministic",
           "severity": "major",
           "hit": false
+        },
+        {
+          "label_id": "expense.huge-amount-breaks-list",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "critical",
+          "hit": false
+        },
+        {
+          "label_id": "expense.rejected-form-loses-input",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
         }
       ]
     },
@@ -170,7 +276,7 @@
       "track": "regression",
       "app": "swag-labs",
       "split": "public",
-      "answer_key_sha256": "f2ffee27eed4eb645d2ece9539799634e232d40ce24287cdb774a5819fbc7d76",
+      "answer_key_sha256": "23e8937153546a198bcf2ffa714918331d2a432a72b7559ce4c38e3ee3a5bf78",
       "status": "scored",
       "wall_time_s": 0.75,
       "cost": {
@@ -187,6 +293,30 @@
           "class": "deterministic",
           "severity": "critical",
           "hit": false
+        },
+        {
+          "label_id": "swag.cart-count-grammar",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "swag.not-found-item-page",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "swag.unrounded-item-total",
+          "kind": "natural",
+          "category": "copy",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
         }
       ]
     },
@@ -195,7 +325,7 @@
       "track": "regression",
       "app": "expense-app",
       "split": "public",
-      "answer_key_sha256": "f8492f43dbf77b5a1facdb156178a4b0843caa9d8f762a7470850fd70bfff904",
+      "answer_key_sha256": "bc2b094597a7387e1d52a9416aeab2a9c582f391df653f9fc208f14ecdd4c8a7",
       "status": "scored",
       "wall_time_s": 0.63,
       "cost": {
@@ -212,6 +342,22 @@
           "class": "deterministic",
           "severity": "critical",
           "hit": false
+        },
+        {
+          "label_id": "expense.huge-amount-breaks-list",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "critical",
+          "hit": false
+        },
+        {
+          "label_id": "expense.rejected-form-loses-input",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
         }
       ]
     },
@@ -220,7 +366,7 @@
       "track": "regression",
       "app": "swag-labs",
       "split": "public",
-      "answer_key_sha256": "f4cbcd24803a74cf2a178c473f9c54db79dbffff8359ef43f70e4c2c1b0f8dc1",
+      "answer_key_sha256": "59864557dc7499449050297d27db09d3ce0a69412a0899316de0298af782d755",
       "status": "scored",
       "wall_time_s": 0.44,
       "cost": {
@@ -253,6 +399,30 @@
           "class": "judged",
           "severity": "minor",
           "hit": false
+        },
+        {
+          "label_id": "swag.cart-count-grammar",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "swag.not-found-item-page",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "swag.unrounded-item-total",
+          "kind": "natural",
+          "category": "copy",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
         }
       ]
     },
@@ -261,7 +431,7 @@
       "track": "regression",
       "app": "expense-app",
       "split": "public",
-      "answer_key_sha256": "9576a7dc62d2acabd16edf878fd338b5779a9e80c5a084bb440f59df3457a05e",
+      "answer_key_sha256": "08381f4fcc36458aad51e5d8d07f3c882fd84e0895c5ce16de5d6b313424337c",
       "status": "scored",
       "wall_time_s": 0.57,
       "cost": {
@@ -286,6 +456,22 @@
           "class": "judged",
           "severity": "minor",
           "hit": false
+        },
+        {
+          "label_id": "expense.huge-amount-breaks-list",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "critical",
+          "hit": false
+        },
+        {
+          "label_id": "expense.rejected-form-loses-input",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
         }
       ]
     },
@@ -294,7 +480,7 @@
       "track": "regression",
       "app": "swag-labs",
       "split": "public",
-      "answer_key_sha256": "2c3de972dbefcf3f0d7972f8c49177b8ed1cb1effd65b59eb258588fe7d45819",
+      "answer_key_sha256": "db9edf803e43768df7ce025634cd8b5d51a6a15d7aeee2d080710b37c167a550",
       "status": "scored",
       "wall_time_s": 0.6,
       "cost": {
@@ -319,6 +505,30 @@
           "class": "judged",
           "severity": "minor",
           "hit": false
+        },
+        {
+          "label_id": "swag.cart-count-grammar",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "swag.not-found-item-page",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "swag.unrounded-item-total",
+          "kind": "natural",
+          "category": "copy",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
         }
       ]
     },
@@ -327,7 +537,7 @@
       "track": "regression",
       "app": "expense-app",
       "split": "public",
-      "answer_key_sha256": "bf1fea28facf5dcc19ee4a69dc869c31d9307862be6adeb45481a5f54c39d92f",
+      "answer_key_sha256": "a8737b7bf9899598f288b9d6a971611285cc6807067ff6e17a0fb834dbbb5a0a",
       "status": "scored",
       "wall_time_s": 0.53,
       "cost": {
@@ -352,6 +562,22 @@
           "class": "judged",
           "severity": "minor",
           "hit": false
+        },
+        {
+          "label_id": "expense.huge-amount-breaks-list",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "critical",
+          "hit": false
+        },
+        {
+          "label_id": "expense.rejected-form-loses-input",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
         }
       ]
     },
@@ -360,7 +586,7 @@
       "track": "regression",
       "app": "swag-labs",
       "split": "public",
-      "answer_key_sha256": "7c82c4f29d8426edc34ff7e4fced300d8aff6a029b4ee9f9f7344d7514017ea7",
+      "answer_key_sha256": "7faf35bb44bb5e338fea281f381ca59ac11dbd3781f302c8f335f2c7fa5c7df0",
       "status": "scored",
       "wall_time_s": 0.43,
       "cost": {
@@ -377,6 +603,30 @@
           "class": "deterministic",
           "severity": "major",
           "hit": false
+        },
+        {
+          "label_id": "swag.cart-count-grammar",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "swag.not-found-item-page",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "swag.unrounded-item-total",
+          "kind": "natural",
+          "category": "copy",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
         }
       ]
     },
@@ -385,7 +635,7 @@
       "track": "regression",
       "app": "expense-app",
       "split": "public",
-      "answer_key_sha256": "bf521cd987419257aced5a56a04da23f3650b072ad2a6ef33183b6a4d4788b9f",
+      "answer_key_sha256": "438899db624df3c2a33526775672b285f8c725610dc75211ae00424aaf0dc86e",
       "status": "scored",
       "wall_time_s": 0.54,
       "cost": {
@@ -410,6 +660,22 @@
           "class": "judged",
           "severity": "minor",
           "hit": false
+        },
+        {
+          "label_id": "expense.huge-amount-breaks-list",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "critical",
+          "hit": false
+        },
+        {
+          "label_id": "expense.rejected-form-loses-input",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
         }
       ]
     },
@@ -418,7 +684,7 @@
       "track": "regression",
       "app": "swag-labs",
       "split": "public",
-      "answer_key_sha256": "6badcf8beaf3a10ab7b6d5a229e5a7400a24c10f665993c6c8bf33303c5b6b7e",
+      "answer_key_sha256": "2f575b5496f5df162248e882588092e6a29a1d203fafce736acaf8798851bce5",
       "status": "scored",
       "wall_time_s": 0.54,
       "cost": {
@@ -443,6 +709,30 @@
           "class": "judged",
           "severity": "minor",
           "hit": false
+        },
+        {
+          "label_id": "swag.cart-count-grammar",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "swag.not-found-item-page",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "swag.unrounded-item-total",
+          "kind": "natural",
+          "category": "copy",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
         }
       ]
     },
@@ -451,7 +741,7 @@
       "track": "regression",
       "app": "swag-labs",
       "split": "public",
-      "answer_key_sha256": "5998441a532f598234d1b04659726ea8f267a1b54076b9332722fa987fc6bf33",
+      "answer_key_sha256": "4361f73443b66e9f2ce4703fb151abd1e4af8ae9b828267662711a70b5b67040",
       "status": "scored",
       "wall_time_s": 0.5,
       "cost": {
@@ -476,6 +766,30 @@
           "class": "judged",
           "severity": "minor",
           "hit": false
+        },
+        {
+          "label_id": "swag.cart-count-grammar",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "swag.not-found-item-page",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "swag.unrounded-item-total",
+          "kind": "natural",
+          "category": "copy",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
         }
       ]
     },
@@ -484,7 +798,7 @@
       "track": "regression",
       "app": "swag-labs",
       "split": "public",
-      "answer_key_sha256": "9511b9d23d76f2b92f78436a9f7f8d874096b7c6703b097ec4c6e50933fcfe2e",
+      "answer_key_sha256": "cf239d83e73150042f4e74385cced5e6336b20c81398ca9a441724e5f3d4ee21",
       "status": "scored",
       "wall_time_s": 0.42,
       "cost": {
@@ -499,6 +813,30 @@
           "kind": "change",
           "category": "visual",
           "class": "judged",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "swag.cart-count-grammar",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "swag.not-found-item-page",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "swag.unrounded-item-total",
+          "kind": "natural",
+          "category": "copy",
+          "class": "deterministic",
           "severity": "minor",
           "hit": false
         }
@@ -534,6 +872,9 @@
       "human_hours_total": null,
       "cost_per_defect_found_usd": null,
       "repro_rate": null,
+      "natural_present": 42,
+      "natural_found": 0,
+      "natural_recall": 0,
       "severity_judged": 0,
       "severity_agreement": null
     },
@@ -566,11 +907,48 @@
         "human_hours_total": null,
         "cost_per_defect_found_usd": null,
         "repro_rate": null,
+        "natural_present": 42,
+        "natural_found": 0,
+        "natural_recall": 0,
         "severity_judged": 0,
         "severity_agreement": null
       }
     },
     "by_category": {
+      "a11y": {
+        "episodes": 17,
+        "episodes_scored": 17,
+        "defects_planted": 0,
+        "defects_found": 0,
+        "recall": null,
+        "weighted_defects_planted": 0,
+        "weighted_defects_found": 0,
+        "weighted_recall": null,
+        "findings": 0,
+        "findings_matched": 0,
+        "findings_excused": 0,
+        "precision": null,
+        "f1": null,
+        "weighted_f1": null,
+        "changes_active": 0,
+        "changes_flagged": 0,
+        "change_flag_rate": null,
+        "false_alarms_on_changes": 0,
+        "false_alarms_per_100_episodes": 0,
+        "unmatched_findings": 0,
+        "unmatched_per_episode": 0,
+        "mean_time_to_first_detection_s": null,
+        "wall_time_s_total": null,
+        "cost_usd_total": null,
+        "human_hours_total": null,
+        "cost_per_defect_found_usd": null,
+        "repro_rate": null,
+        "natural_present": 8,
+        "natural_found": 0,
+        "natural_recall": 0,
+        "severity_judged": 0,
+        "severity_agreement": null
+      },
       "consistency": {
         "episodes": 17,
         "episodes_scored": 17,
@@ -599,6 +977,9 @@
         "human_hours_total": null,
         "cost_per_defect_found_usd": null,
         "repro_rate": null,
+        "natural_present": 0,
+        "natural_found": 0,
+        "natural_recall": null,
         "severity_judged": 0,
         "severity_agreement": null
       },
@@ -630,6 +1011,9 @@
         "human_hours_total": null,
         "cost_per_defect_found_usd": null,
         "repro_rate": null,
+        "natural_present": 8,
+        "natural_found": 0,
+        "natural_recall": 0,
         "severity_judged": 0,
         "severity_agreement": null
       },
@@ -661,6 +1045,9 @@
         "human_hours_total": null,
         "cost_per_defect_found_usd": null,
         "repro_rate": null,
+        "natural_present": 26,
+        "natural_found": 0,
+        "natural_recall": 0,
         "severity_judged": 0,
         "severity_agreement": null
       },
@@ -692,6 +1079,9 @@
         "human_hours_total": null,
         "cost_per_defect_found_usd": null,
         "repro_rate": null,
+        "natural_present": 0,
+        "natural_found": 0,
+        "natural_recall": null,
         "severity_judged": 0,
         "severity_agreement": null
       },
@@ -723,6 +1113,9 @@
         "human_hours_total": null,
         "cost_per_defect_found_usd": null,
         "repro_rate": null,
+        "natural_present": 0,
+        "natural_found": 0,
+        "natural_recall": null,
         "severity_judged": 0,
         "severity_agreement": null
       },
@@ -754,6 +1147,9 @@
         "human_hours_total": null,
         "cost_per_defect_found_usd": null,
         "repro_rate": null,
+        "natural_present": 0,
+        "natural_found": 0,
+        "natural_recall": null,
         "severity_judged": 0,
         "severity_agreement": null
       },
@@ -785,6 +1181,9 @@
         "human_hours_total": null,
         "cost_per_defect_found_usd": null,
         "repro_rate": null,
+        "natural_present": 0,
+        "natural_found": 0,
+        "natural_recall": null,
         "severity_judged": 0,
         "severity_agreement": null
       }
@@ -818,6 +1217,9 @@
         "human_hours_total": null,
         "cost_per_defect_found_usd": null,
         "repro_rate": null,
+        "natural_present": 42,
+        "natural_found": 0,
+        "natural_recall": 0,
         "severity_judged": 0,
         "severity_agreement": null
       },
@@ -849,11 +1251,53 @@
         "human_hours_total": null,
         "cost_per_defect_found_usd": null,
         "repro_rate": null,
+        "natural_present": 0,
+        "natural_found": 0,
+        "natural_recall": null,
         "severity_judged": 0,
         "severity_agreement": null
       }
     },
     "breakdown": [
+      {
+        "track": "regression",
+        "category": "a11y",
+        "class": "deterministic",
+        "metrics": {
+          "episodes": 17,
+          "episodes_scored": 17,
+          "defects_planted": 0,
+          "defects_found": 0,
+          "recall": null,
+          "weighted_defects_planted": 0,
+          "weighted_defects_found": 0,
+          "weighted_recall": null,
+          "findings": 0,
+          "findings_matched": 0,
+          "findings_excused": 0,
+          "precision": null,
+          "f1": null,
+          "weighted_f1": null,
+          "changes_active": 0,
+          "changes_flagged": 0,
+          "change_flag_rate": null,
+          "false_alarms_on_changes": 0,
+          "false_alarms_per_100_episodes": 0,
+          "unmatched_findings": 0,
+          "unmatched_per_episode": 0,
+          "mean_time_to_first_detection_s": null,
+          "wall_time_s_total": null,
+          "cost_usd_total": null,
+          "human_hours_total": null,
+          "cost_per_defect_found_usd": null,
+          "repro_rate": null,
+          "natural_present": 8,
+          "natural_found": 0,
+          "natural_recall": 0,
+          "severity_judged": 0,
+          "severity_agreement": null
+        }
+      },
       {
         "track": "regression",
         "category": "consistency",
@@ -886,6 +1330,9 @@
           "human_hours_total": null,
           "cost_per_defect_found_usd": null,
           "repro_rate": null,
+          "natural_present": 0,
+          "natural_found": 0,
+          "natural_recall": null,
           "severity_judged": 0,
           "severity_agreement": null
         }
@@ -922,6 +1369,48 @@
           "human_hours_total": null,
           "cost_per_defect_found_usd": null,
           "repro_rate": null,
+          "natural_present": 0,
+          "natural_found": 0,
+          "natural_recall": null,
+          "severity_judged": 0,
+          "severity_agreement": null
+        }
+      },
+      {
+        "track": "regression",
+        "category": "copy",
+        "class": "deterministic",
+        "metrics": {
+          "episodes": 17,
+          "episodes_scored": 17,
+          "defects_planted": 0,
+          "defects_found": 0,
+          "recall": null,
+          "weighted_defects_planted": 0,
+          "weighted_defects_found": 0,
+          "weighted_recall": null,
+          "findings": 0,
+          "findings_matched": 0,
+          "findings_excused": 0,
+          "precision": null,
+          "f1": null,
+          "weighted_f1": null,
+          "changes_active": 0,
+          "changes_flagged": 0,
+          "change_flag_rate": null,
+          "false_alarms_on_changes": 0,
+          "false_alarms_per_100_episodes": 0,
+          "unmatched_findings": 0,
+          "unmatched_per_episode": 0,
+          "mean_time_to_first_detection_s": null,
+          "wall_time_s_total": null,
+          "cost_usd_total": null,
+          "human_hours_total": null,
+          "cost_per_defect_found_usd": null,
+          "repro_rate": null,
+          "natural_present": 8,
+          "natural_found": 0,
+          "natural_recall": 0,
           "severity_judged": 0,
           "severity_agreement": null
         }
@@ -958,6 +1447,9 @@
           "human_hours_total": null,
           "cost_per_defect_found_usd": null,
           "repro_rate": null,
+          "natural_present": 0,
+          "natural_found": 0,
+          "natural_recall": null,
           "severity_judged": 0,
           "severity_agreement": null
         }
@@ -994,6 +1486,9 @@
           "human_hours_total": null,
           "cost_per_defect_found_usd": null,
           "repro_rate": null,
+          "natural_present": 26,
+          "natural_found": 0,
+          "natural_recall": 0,
           "severity_judged": 0,
           "severity_agreement": null
         }
@@ -1030,6 +1525,9 @@
           "human_hours_total": null,
           "cost_per_defect_found_usd": null,
           "repro_rate": null,
+          "natural_present": 0,
+          "natural_found": 0,
+          "natural_recall": null,
           "severity_judged": 0,
           "severity_agreement": null
         }
@@ -1066,6 +1564,9 @@
           "human_hours_total": null,
           "cost_per_defect_found_usd": null,
           "repro_rate": null,
+          "natural_present": 0,
+          "natural_found": 0,
+          "natural_recall": null,
           "severity_judged": 0,
           "severity_agreement": null
         }
@@ -1102,6 +1603,9 @@
           "human_hours_total": null,
           "cost_per_defect_found_usd": null,
           "repro_rate": null,
+          "natural_present": 0,
+          "natural_found": 0,
+          "natural_recall": null,
           "severity_judged": 0,
           "severity_agreement": null
         }
@@ -1138,6 +1642,9 @@
           "human_hours_total": null,
           "cost_per_defect_found_usd": null,
           "repro_rate": null,
+          "natural_present": 0,
+          "natural_found": 0,
+          "natural_recall": null,
           "severity_judged": 0,
           "severity_agreement": null
         }
