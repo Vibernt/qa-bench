@@ -51,8 +51,9 @@ The `noop` run is a smoke test that takes seconds. Behind a TLS-intercepting pro
 
 ## Known issues and limits
 - **Swag Labs' runtime config is readable in the browser.** Swag Labs is a client-side app, so
-  `/runtime-config.js` holds the episode's switches as bit flags, not names. An adapter that decodes it is cheating
-  (AGENTS.md rule 8). A server-side switch would close this; it isn't worth it until outside entries arrive.
+  `/runtime-config.js` holds the episode's switches as bit flags, not names, and the generated accounts as salted
+  SHA-256 hashes (never in clear; checked by `verify.ts`). An adapter that decodes the flags is cheating (AGENTS.md
+  rule 8). A server-side switch would close this; it isn't worth it until outside entries arrive.
 - **Swag Labs mutations are mutually exclusive.** All five share `exclusive: swag-user`, because upstream's faulty
   users mask each other. If two behaviours ever need to share an episode, `switch.exclusive` would have to accept a
   list.

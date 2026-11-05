@@ -499,6 +499,10 @@ try {
       return (await count(s, dt('inventory-list'))) === 0 && !hint.includes('standard_user');
     });
     report(refused, 'bench mode: built-in standard_user is refused and not advertised');
+    const rt = await (await fetch(clean.base + '/runtime-config.js')).text();
+    const leaks = [ACCOUNT.username, ACCOUNT.password, Buffer.from(`${ACCOUNT.username}:${ACCOUNT.password}`).toString('base64').slice(0, 12)]
+      .filter((t) => rt.includes(t));
+    report(leaks.length === 0, `runtime config holds only hashed accounts${leaks.length ? ` (found ${leaks.join(', ')})` : ''}`);
   }
 
   for (const l of labels()) {
