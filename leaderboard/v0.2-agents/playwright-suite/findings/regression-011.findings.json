@@ -1,0 +1,346 @@
+{
+  "episode_id": "regression-011",
+  "system": {
+    "name": "playwright-suite",
+    "version": "0.1.0"
+  },
+  "findings": [
+    {
+      "id": "pw-001-swag-sort",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "step": "sort",
+        "selector": "[data-test=\"product-sort-container\"]"
+      },
+      "category": "functional",
+      "description": "Sorting does not sort for 3 of 4 options: Name (Z to A), Price (low to high), Price (high to low) (the page showed: alert: Sorting is broken! This error has been reported to Backtrace.)",
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "pw-001-swag-sort.png"
+        },
+        {
+          "kind": "dom",
+          "excerpt": "Name (Z to A): Sauce Labs Backpack $29.99, Sauce Labs Bike Light $9.99, Sauce Labs Bolt T-Shirt $15.99, Sauce Labs Fleece Jacket $49.99, Sauce Labs Onesie $7.99, Test.allTheThings() T-Shirt (Red) $15.99\nPrice (low to high): Sauce Labs Backpack $29.99, Sauce Labs Bike Light $9.99, Sauce Labs Bolt T-Shirt $15.99, Sauce Labs Fleece Jacket $49.99, Sauce Labs Onesie $7.99, Test.allTheThings() T-Shirt (Red) $15.99\nPrice (high to low): Sauce Labs Backpack $29.99, Sauce Labs Bike Light $9.99, Sauce Labs Bolt T-Shirt $15.99, Sauce Labs Fleece Jacket $49.99, Sauce Labs Onesie $7.99, Test.allTheThings() T-Shirt (Red) $15.99"
+        },
+        {
+          "kind": "text",
+          "excerpt": "alert: Sorting is broken! This error has been reported to Backtrace.\nalert: Sorting is broken! This error has been reported to Backtrace.\nalert: Sorting is broken! This error has been reported to Backtrace.\nalert: Sorting is broken! This error has been reported to Backtrace."
+        }
+      ],
+      "confidence": 0.85,
+      "repro": [
+        "Sign in",
+        "Open the sort menu",
+        "Choose each option in turn and read the order of the products"
+      ],
+      "detected_at_s": 2.9,
+      "check": "swag.sort"
+    },
+    {
+      "id": "pw-002-page-console",
+      "where": {
+        "route": "/inventory-item.html",
+        "role": "customer"
+      },
+      "category": "error-handling",
+      "description": "6 console errors on /inventory-item.html: Error: This component failed to render! at bf (http://app/assets/index-DGEeKO38.js:573:50965) at Co (http://app/assets/index-DGEeKO38.js:15:47499) at mc (http://app/assets/index-DGEeKO38.js:15:70008)…",
+      "evidence": [
+        {
+          "kind": "console",
+          "excerpt": "Error: This component failed to render!\n    at bf (http://app/assets/index-DGEeKO38.js:573:50965)\n    at Co (http://app/assets/index-DGEeKO38.js:15:47499)\n    at mc (http://app/assets/index-DGEeKO38.js:15:70008)\n    at jc (http://app/assets/index-DGEeKO38.js:15:80269)\n    at Mu (http://app/assets/index-DGEeKO38.js:15:115660)\n    at ku (http://app/assets/index-DGEeKO38.js:15:114741)\n    at Ou (http://app/assets/index-DGEeKO38.js:15:114579)\n    at gu (http://app/assets/index-DGEeKO38.js:15:111445…"
+        }
+      ],
+      "confidence": 0.5,
+      "repro": [
+        "Open /inventory-item.html as customer with the browser console and network panel open"
+      ],
+      "detected_at_s": 3.1,
+      "check": "page.console"
+    },
+    {
+      "id": "pw-003-page-pageerror",
+      "where": {
+        "route": "/inventory-item.html",
+        "role": "customer"
+      },
+      "category": "error-handling",
+      "description": "1 uncaught JavaScript exception on /inventory-item.html: Error: Failed to remove item from cart.",
+      "evidence": [
+        {
+          "kind": "console",
+          "excerpt": "Error: Failed to remove item from cart."
+        }
+      ],
+      "confidence": 0.6,
+      "repro": [
+        "Open /inventory-item.html as customer with the browser console and network panel open"
+      ],
+      "detected_at_s": 3.2,
+      "check": "page.pageerror"
+    },
+    {
+      "id": "pw-004-swag-detail-cart",
+      "where": {
+        "route": "/inventory-item.html",
+        "role": "customer",
+        "step": "detail",
+        "selector": "[data-test=\"remove\"]"
+      },
+      "category": "functional",
+      "description": "On the product page of \"Sauce Labs Backpack\", \"Remove\" does not take it out (badge 1, was 0)",
+      "confidence": 0.8,
+      "repro": [
+        "Sign in",
+        "Open \"Sauce Labs Backpack\"",
+        "Click Add to cart, then Remove; watch the button and the cart badge"
+      ],
+      "detected_at_s": 4.8,
+      "check": "swag.detail-cart",
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "pw-004-swag-detail-cart.png"
+        }
+      ]
+    },
+    {
+      "id": "pw-005-swag-detail-description",
+      "where": {
+        "route": "/inventory-item.html",
+        "role": "customer",
+        "step": "detail",
+        "selector": "[data-test=\"inventory-item-desc\"]"
+      },
+      "category": "consistency",
+      "description": "The product page of \"Sauce Labs Backpack\" shows a different description: \"\"",
+      "confidence": 0.7,
+      "detected_at_s": 4.8,
+      "check": "swag.detail-description",
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "pw-005-swag-detail-description.png"
+        }
+      ]
+    },
+    {
+      "id": "pw-006-page-pageerror",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer"
+      },
+      "category": "error-handling",
+      "description": "9 uncaught JavaScript exceptions on /inventory.html: Error: Failed to remove item from cart.",
+      "evidence": [
+        {
+          "kind": "console",
+          "excerpt": "Error: Failed to remove item from cart."
+        },
+        {
+          "kind": "console",
+          "excerpt": "Error: Failed to add item to the cart."
+        }
+      ],
+      "confidence": 0.6,
+      "repro": [
+        "Open /inventory.html as customer with the browser console and network panel open"
+      ],
+      "detected_at_s": 5.8,
+      "check": "page.pageerror"
+    },
+    {
+      "id": "pw-007-swag-cart-add",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "step": "cart",
+        "selector": "[data-test=\"add-to-cart-sauce-labs-bolt-t-shirt\"]"
+      },
+      "category": "functional",
+      "description": "\"Add to cart\" does not work for 3 of 6 products (Sauce Labs Bolt T-Shirt, Sauce Labs Fleece Jacket, Test.allTheThings() T-Shirt (Red))",
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "pw-007-swag-cart-add.png"
+        },
+        {
+          "kind": "dom",
+          "excerpt": "Sauce Labs Bolt T-Shirt: button add-to-cart-sauce-labs-bolt-t-shirt, badge 2 (was 2)\nSauce Labs Fleece Jacket: button add-to-cart-sauce-labs-fleece-jacket, badge 2 (was 2)\nTest.allTheThings() T-Shirt (Red): button add-to-cart-test.allthethings()-t-shirt-(red), badge 3 (was 3)"
+        }
+      ],
+      "confidence": 0.85,
+      "repro": [
+        "Sign in",
+        "Click \"Add to cart\" on \"Sauce Labs Bolt T-Shirt\"",
+        "Watch the button label and the cart badge"
+      ],
+      "detected_at_s": 15.5,
+      "check": "swag.cart-add"
+    },
+    {
+      "id": "pw-008-swag-cart-remove",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "step": "cart",
+        "selector": "[data-test=\"remove-sauce-labs-backpack\"]"
+      },
+      "category": "functional",
+      "description": "\"Remove\" does not work for 3 of 6 products (Sauce Labs Backpack, Sauce Labs Bike Light, Sauce Labs Onesie)",
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "pw-008-swag-cart-remove.png"
+        },
+        {
+          "kind": "dom",
+          "excerpt": "Sauce Labs Backpack: button remove-sauce-labs-backpack, badge 1 (was 0)\nSauce Labs Bike Light: button remove-sauce-labs-bike-light, badge 2 (was 1)\nSauce Labs Onesie: button remove-sauce-labs-onesie, badge 3 (was 2)"
+        }
+      ],
+      "confidence": 0.85,
+      "repro": [
+        "Sign in",
+        "Click \"Remove\" on \"Sauce Labs Backpack\"",
+        "Watch the button label and the cart badge"
+      ],
+      "detected_at_s": 15.5,
+      "check": "swag.cart-remove"
+    },
+    {
+      "id": "pw-009-swag-page-copy",
+      "where": {
+        "route": "/cart.html",
+        "role": "customer",
+        "step": "cart",
+        "selector": "[data-test=\"title\"]",
+        "region": {
+          "x": 20,
+          "y": 61,
+          "w": 98,
+          "h": 48,
+          "viewport": "1280x720"
+        }
+      },
+      "category": "copy",
+      "description": "[data-test=\"title\"] reads \"Your Basket\", expected \"Your Cart\"",
+      "confidence": 0.5,
+      "detected_at_s": 23.3,
+      "check": "swag.page-copy",
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "pw-009-swag-page-copy.png"
+        }
+      ]
+    },
+    {
+      "id": "pw-010-page-pageerror",
+      "where": {
+        "route": "/checkout-step-one.html",
+        "role": "customer"
+      },
+      "category": "error-handling",
+      "description": "8 uncaught JavaScript exceptions on /checkout-step-one.html: TypeError: Cannot read properties of undefined (reading 'value')",
+      "evidence": [
+        {
+          "kind": "console",
+          "excerpt": "TypeError: Cannot read properties of undefined (reading 'value')"
+        }
+      ],
+      "confidence": 0.6,
+      "repro": [
+        "Open /checkout-step-one.html as customer with the browser console and network panel open"
+      ],
+      "detected_at_s": 23.7,
+      "check": "page.pageerror"
+    },
+    {
+      "id": "pw-011-swag-checkout-fields-kept",
+      "where": {
+        "route": "/checkout-step-one.html",
+        "role": "customer",
+        "step": "checkout-info",
+        "selector": "[data-test=\"lastName\"]",
+        "region": {
+          "x": 450,
+          "y": 309,
+          "w": 380,
+          "h": 39,
+          "viewport": "1280x720"
+        }
+      },
+      "category": "functional",
+      "description": "The checkout form does not keep what was typed: Last Name shows \"\" instead of \"Lovelace\"",
+      "confidence": 0.9,
+      "repro": [
+        "Sign in, add a product, open the cart, Checkout",
+        "Type Ada, Lovelace, 10115 into First Name, Last Name, Zip",
+        "Read the three fields"
+      ],
+      "detected_at_s": 23.9,
+      "check": "swag.checkout-fields-kept",
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "pw-011-swag-checkout-fields-kept.png"
+        }
+      ]
+    },
+    {
+      "id": "pw-012-page-pageerror",
+      "where": {
+        "route": "/checkout-step-two.html",
+        "role": "customer"
+      },
+      "category": "error-handling",
+      "description": "1 uncaught JavaScript exception on /checkout-step-two.html: TypeError: Va.cesetRart is not a function",
+      "evidence": [
+        {
+          "kind": "console",
+          "excerpt": "TypeError: Va.cesetRart is not a function"
+        }
+      ],
+      "confidence": 0.6,
+      "repro": [
+        "Open /checkout-step-two.html as customer with the browser console and network panel open"
+      ],
+      "detected_at_s": 24.1,
+      "check": "page.pageerror"
+    },
+    {
+      "id": "pw-013-swag-finish",
+      "where": {
+        "route": "/checkout-step-two.html",
+        "role": "customer",
+        "step": "finish",
+        "selector": "[data-test=\"finish\"]"
+      },
+      "category": "functional",
+      "description": "Finish does not complete the order (still on /checkout-step-two.html)",
+      "confidence": 0.85,
+      "repro": [
+        "Add a product, check out, fill in the form",
+        "Click Finish"
+      ],
+      "detected_at_s": 29.1,
+      "check": "swag.finish",
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "pw-013-swag-finish.png"
+        }
+      ]
+    }
+  ],
+  "cost": {
+    "compute_usd": 0,
+    "model_usd": 0,
+    "notes": "Scripted Playwright suite: no model calls; local compute only, not metered."
+  },
+  "wall_time_s": 33.1,
+  "started_at": "2026-11-05T15:10:09.908Z",
+  "finished_at": "2026-11-05T15:10:43.041Z",
+  "notes": "suite swag-labs for app swag-labs"
+}

@@ -5,13 +5,18 @@
 //   npx tsx apps/expense-app/verify.ts [--image <tag>]
 // Builds the image unless --image is given. Plain HTTP: the app is server-rendered, so no browser is needed.
 import { execFileSync } from 'node:child_process';
-import { dirname } from 'node:path';
+import { readdirSync, readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const argImage = process.argv.indexOf('--image');
 const image = argImage > 0 ? process.argv[argImage + 1]! : 'qa-bench-app-expense-app:verify';
-if (argImage < 0) execFileSync('docker', ['build', '-q', '-t', image, here], { stdio: 'inherit' });
+if (argImage < 0) {
+  // Behind a TLS-intercepting proxy, QA_BENCH_EXTRA_CA=<ca.pem> passes its CA as an optional build secret.
+  const secret = process.env.QA_BENCH_EXTRA_CA ? ['--secret', `id=extra_ca,src=${process.env.QA_BENCH_EXTRA_CA}`] : [];
+  execFileSync('docker', ['build', '-q', ...secret, '-t', image, here], { stdio: 'inherit' });
+}
 
 const VIEWER = { username: 'viewer-verify', password: 'verify-viewer-pw' };
 const EDITOR = { username: 'editor-verify', password: 'verify-editor-pw' };
@@ -182,6 +187,43 @@ const naturalProbes: Record<string, (app: App) => Promise<boolean>> = {
     const html = await res.text();
     return res.status === 400 && !/role="alert"/.test(html) && !html.includes('value="5.00"');
   },
+  // [0] the Delete form submits on one click (no confirm handler); [1] the list after a delete shows no message.
+  'expense.silent-delete': async (app) => {
+    const c = await login(app, EDITOR);
+    const list = (await get(app, c, '/expenses')).html;
+    const form = list.match(/<form method="post" action="\/expenses\/(\d+)\/delete">[\s\S]*?<\/form>/);
+    if (!form || /confirm|onsubmit|onclick/i.test(form[0])) return false;
+    const res = await post(app, c, `/expenses/${form[1]}/delete`, {});
+    const after = (await get(app, c, res.location || '/expenses')).html;
+    return res.status === 303 && !/role="status"/.test(after) && !after.includes(`/expenses/${form[1]}/edit`);
+  },
+  'expense.zero-amount-accepted': async (app) => {
+    const c = await login(app, EDITOR);
+    const saved = await post(app, c, '/expenses', { title: 'Zero amount', category: 'office', amount: '0' });
+    const negative = await post(app, c, '/expenses', { title: 'Negative amount', category: 'office', amount: '-5' });
+    const list = (await get(app, c, '/expenses?category=office')).html;
+    return saved.status === 303 && negative.status === 400 && rows(list).some((r) => r.title === 'Zero amount' && r.cents === 0);
+  },
+  'expense.no-security-headers': async (app) => {
+    const c = await login(app, VIEWER);
+    const pages = [await fetch(app.base + '/login'), await fetch(app.base + '/expenses', { headers: { cookie: c } })];
+    return pages.every((r) => r.status === 200 && !['content-security-policy', 'x-frame-options', 'x-content-type-options'].some((h) => r.headers.has(h)));
+  },
+  'expense.flash-in-url': async (app) => {
+    const c = await login(app, EDITOR);
+    const saved = await post(app, c, '/expenses', { title: 'Flash check', category: 'office', amount: '1.00' });
+    const reload1 = (await get(app, c, saved.location)).html;
+    const reload2 = (await get(app, c, saved.location)).html;
+    const fresh = await login(app, VIEWER);
+    const forged = (await get(app, fresh, '/expenses?flash=saved')).html;
+    return saved.location.includes('flash=') && [reload1, reload2, forged].every((h) => h.includes('Expense saved'));
+  },
+  'expense.delete-missing-id': async (app) => {
+    const c = await login(app, EDITOR);
+    const del = await post(app, c, '/expenses/999/delete', {});
+    const edit = await get(app, c, '/expenses/999/edit');
+    return del.status === 303 && edit.status === 404;
+  },
 };
 
 const switches: Record<string, Record<string, string>> = {
@@ -249,6 +291,15 @@ for (const members of combinations) {
     console.log(`${missing.length ? 'FAIL' : 'ok  '} DEFECT=${env.DEFECT} shows all ${members.length}${missing.length ? ` (missing: ${missing.join(', ')})` : ''}`);
     if (missing.length) failures++;
   } finally { app.stop(); }
+}
+
+// Every natural label needs a probe, and every probe a label.
+{
+  const ids = readdirSync(join(here, 'natural')).map((d) => (readFileSync(join(here, 'natural', d, 'label.yaml'), 'utf8').match(/^id: (\S+)/m) ?? [])[1]).sort();
+  const probed = Object.keys(naturalProbes).sort();
+  const same = JSON.stringify(ids) === JSON.stringify(probed);
+  console.log(`${same ? 'ok  ' : 'FAIL'} every natural label has a probe${same ? '' : ` (labels ${ids.join(', ')}; probes ${probed.join(', ')})`}`);
+  if (!same) failures++;
 }
 
 for (const [id, probe] of Object.entries(naturalProbes)) {

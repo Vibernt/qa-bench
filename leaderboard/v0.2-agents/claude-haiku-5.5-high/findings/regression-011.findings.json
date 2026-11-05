@@ -1,0 +1,124 @@
+{
+  "episode_id": "regression-011",
+  "system": {
+    "name": "claude-haiku-5.5-high",
+    "version": "claude-haiku-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"remove-sauce-labs-backpack\"]"
+      },
+      "category": "functional",
+      "description": "On the product list, choosing Remove does nothing: the item stays in the cart, the button keeps saying Remove and the cart badge does not decrease. The page raises 'Failed to remove item from cart.' (Remove from the cart page works.)",
+      "confidence": 0.9,
+      "severity": "major",
+      "repro": [
+        "Sign in as customer-286a",
+        "Choose Add to basket on Sauce Labs Backpack; badge shows 1",
+        "Choose Remove on Sauce Labs Backpack",
+        "Observe: button still reads Remove, badge still 1, and 'Failed to remove item from cart.' is raised"
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/inventory-item.html",
+        "role": "customer",
+        "selector": "[data-test=\"inventory-item-desc\"]"
+      },
+      "category": "functional",
+      "description": "The product detail page does not show the product description for any of the six products. The description area fails with 'This component failed to render!' (description-boundary), so the description that the list shows is missing from the detail view.",
+      "confidence": 0.9,
+      "severity": "major",
+      "repro": [
+        "Sign in as customer-286a",
+        "Choose a product name on /inventory.html (e.g. Sauce Labs Onesie)",
+        "Observe the detail page shows name, price and button but no description",
+        "Open /inventory-item.html?id=4 directly: same, no description"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "detail-onesie.png"
+        }
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"product-sort-container\"]"
+      },
+      "category": "functional",
+      "description": "The sort dropdown does not work: choosing Price (low to high), Price (high to low) or Name (Z to A) snaps the control back to Name (A to Z) and the list stays in A to Z order.",
+      "confidence": 0.9,
+      "severity": "major",
+      "repro": [
+        "Sign in as customer-286a",
+        "Open the sort dropdown and choose Price (low to high)",
+        "Observe the dropdown reverts to Name (A to Z) and the products stay in the original A to Z order ($29.99, $9.99, $15.99, ...)",
+        "Repeat with Name (Z to A) and Price (high to low): same result"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "sort-lohi.png"
+        }
+      ]
+    },
+    {
+      "id": "f4",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"add-to-cart-sauce-labs-fleece-jacket\"]"
+      },
+      "category": "functional",
+      "description": "Add to basket fails for Sauce Labs Fleece Jacket, Sauce Labs Bolt T-Shirt and Test.allTheThings() T-Shirt (Red): the button stays Add to basket, the badge does not change and 'Failed to add item to the cart.' is raised. These products cannot be bought, and the same happens on their detail pages.",
+      "confidence": 0.85,
+      "severity": "critical",
+      "repro": [
+        "Sign in as customer-286a in a fresh session with an empty cart",
+        "Choose Add to basket on Sauce Labs Fleece Jacket",
+        "Observe the button stays Add to basket, the cart badge stays empty and 'Failed to add item to the cart.' is raised",
+        "Repeat for Sauce Labs Bolt T-Shirt and Test.allTheThings() T-Shirt (Red)"
+      ]
+    },
+    {
+      "id": "f5",
+      "where": {
+        "route": "/checkout-step-two.html",
+        "role": "customer",
+        "selector": "[data-test=\"finish\"]"
+      },
+      "category": "functional",
+      "description": "Choosing Finish on the checkout overview does not complete the order: the page stays on /checkout-step-two.html, the confirmation page never opens, and the page raises 'Cannot read properties of undefined (reading 'value')' and 'Ra.cesetRart is not a function'. The cart keeps its items, so the order is not placed.",
+      "confidence": 0.9,
+      "severity": "critical",
+      "repro": [
+        "Sign in as customer-286a with an empty cart",
+        "Add Sauce Labs Backpack and Sauce Labs Onesie (or Backpack and Bike Light) and open the cart",
+        "Choose Checkout, fill First Name, Last Name and Zip/Postal Code, choose Continue",
+        "On the overview, choose Finish",
+        "Observe: still on /checkout-step-two.html, no confirmation, cart still lists both items and badge still 2, errors raised"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "checkout-overview.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Not tested or only partly tested: Continue Shopping from cart (cart remove on the cart page did work once), Back Home after a completed order (blocked by Finish failure), the 'About' link and visual checks beyond the product list, accessibility beyond spot checks, and the Test.allTheThings()/Bolt/Fleece detail pages (add blocked). Sign-in, logout and redirect to login for /inventory.html all worked. Products are labelled 'Add to basket' throughout; treated as deliberate wording and not reported.",
+  "cost": {
+    "model_usd": 0.002964,
+    "notes": "estimate from 68144 total tokens (85% cache read / 10% input / 5% output); range $0.0007-$0.0082"
+  },
+  "wall_time_s": 376
+}

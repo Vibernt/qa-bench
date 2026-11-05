@@ -1,0 +1,67 @@
+{
+  "episode_id": "exploration-001",
+  "system": {
+    "name": "playwright-suite",
+    "version": "0.1.0"
+  },
+  "findings": [
+    {
+      "id": "pw-001-expense-add-control-label",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "step": "add",
+        "selector": "a[href=\"/expenses/new\"]"
+      },
+      "category": "copy",
+      "description": "The add control reads \"New expense\"; the journey calls it \"Add expense\"",
+      "confidence": 0.5,
+      "detected_at_s": 3.5,
+      "check": "expense.add-control-label",
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "pw-001-expense-add-control-label.png"
+        }
+      ]
+    },
+    {
+      "id": "pw-002-expense-add-persists",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "step": "add",
+        "selector": "table[aria-label=\"Expenses\"]"
+      },
+      "category": "functional",
+      "description": "After \"Expense saved\" the new expense is in no list view, not even after a reload: it was not saved",
+      "confidence": 0.85,
+      "repro": [
+        "Sign in as editor",
+        "Open /expenses and note the rows",
+        "Choose \"Add expense\"",
+        "Save title \"QA suite check expense\", category office, amount 12.34",
+        "Count the rows with that title",
+        "Reload",
+        "Filter by office"
+      ],
+      "detected_at_s": 4.8,
+      "check": "expense.add-persists",
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "pw-002-expense-add-persists.png"
+        }
+      ]
+    }
+  ],
+  "cost": {
+    "compute_usd": 0,
+    "model_usd": 0,
+    "notes": "Scripted Playwright suite: no model calls; local compute only, not metered."
+  },
+  "wall_time_s": 9,
+  "started_at": "2026-11-05T15:10:10.134Z",
+  "finished_at": "2026-11-05T15:10:19.098Z",
+  "notes": "suite expense-app for app expense-app"
+}

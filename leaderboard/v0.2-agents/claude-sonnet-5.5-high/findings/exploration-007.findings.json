@@ -1,0 +1,112 @@
+{
+  "episode_id": "exploration-007",
+  "system": {
+    "name": "claude-sonnet-5.5-high",
+    "version": "claude-sonnet-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/checkout-step-two.html",
+        "role": "customer",
+        "selector": "[data-test=\"subtotal-label\"]"
+      },
+      "category": "functional",
+      "description": "Checkout overview shows an unrounded floating point item total (Item total: $119.94999999999999) for a cart of 5 items; the money value is not formatted to 2 decimals.",
+      "confidence": 0.85,
+      "severity": "major",
+      "repro": [
+        "Sign in as customer",
+        "Add Backpack, Bolt T-Shirt, Fleece Jacket, Onesie and Red T-Shirt to the cart",
+        "Cart > Checkout, fill in name and postal code, Continue",
+        "Read 'Item total' on the overview"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "step2_5.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"reset-sidebar-link\"]"
+      },
+      "category": "functional",
+      "description": "Reset App State empties the cart badge but the product tile still shows a 'Remove' button instead of 'Add to cart' until the page is reloaded.",
+      "confidence": 0.6,
+      "severity": "minor",
+      "repro": [
+        "Sign in as customer",
+        "Add Sauce Labs Onesie to cart",
+        "Open menu > Reset App State",
+        "Observe the Onesie tile still shows Remove while the badge is gone"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "reset.png"
+        }
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/cart.html",
+        "role": "customer",
+        "selector": "[data-test=\"checkout\"]"
+      },
+      "category": "functional",
+      "description": "Checkout can be started and completed with an empty cart; checkout-step-two shows Item total $0 / Total $0.00 and Finish leads to 'Order placed'. /checkout-complete.html is also reachable directly without any order.",
+      "confidence": 0.5,
+      "severity": "minor",
+      "repro": [
+        "Sign in as customer with an empty cart",
+        "Open /cart.html and click Checkout",
+        "Fill in details, Continue, Finish"
+      ]
+    },
+    {
+      "id": "f4",
+      "where": {
+        "route": "/checkout-step-one.html",
+        "role": "customer",
+        "selector": "[data-test=\"firstName\"]"
+      },
+      "category": "error-handling",
+      "description": "Checkout information form accepts a whitespace-only first name and meaningless postal code ('!!') and proceeds to the overview without validation error.",
+      "confidence": 0.4,
+      "severity": "minor",
+      "repro": [
+        "Add an item, go to Checkout",
+        "Enter '   ' as First Name, any Last Name, '!!' as Postal Code",
+        "Click Continue"
+      ]
+    },
+    {
+      "id": "f5",
+      "where": {
+        "route": "/nonexistent",
+        "role": "customer"
+      },
+      "category": "error-handling",
+      "description": "Unknown URLs render a completely blank page (no 404 message or navigation) rather than an error page.",
+      "confidence": 0.35,
+      "severity": "minor",
+      "repro": [
+        "Sign in as customer",
+        "Open /nonexistent"
+      ]
+    }
+  ],
+  "notes": "Tested login errors, sorting, cart, checkout, detail pages, dynamic catalog pages, menu, mobile viewport. About link goes to external saucelabs.com (unreachable in sandbox). Did not test perf in depth.",
+  "cost": {
+    "model_usd": 0.034973,
+    "notes": "estimate from 40199 total tokens (85% cache read / 10% input / 5% output); range $0.0080-$0.0965"
+  },
+  "wall_time_s": 327.6
+}

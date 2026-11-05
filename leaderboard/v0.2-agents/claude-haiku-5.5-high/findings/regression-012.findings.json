@@ -1,0 +1,81 @@
+{
+  "episode_id": "regression-012",
+  "system": {
+    "name": "claude-haiku-5.5-high",
+    "version": "claude-haiku-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses/1/delete",
+        "role": "viewer",
+        "selector": "form[action=\"/expenses/1/delete\"]"
+      },
+      "category": "permission",
+      "description": "A viewer can delete expenses. A direct POST to /expenses/1/delete as the viewer was accepted (303 redirect to /expenses) instead of being refused with 403 as the add and edit endpoints do, and the expense 'Train to Pune' ($42.50) was removed from the list and the total for everyone. A POST to /expenses/999/delete by the viewer also returned 303 success.",
+      "confidence": 0.9,
+      "severity": "critical",
+      "repro": [
+        "Sign in as viewer-023c at /login and open /expenses (the viewer page has no delete control).",
+        "Send POST /expenses/1/delete with the viewer session cookie and no body (for example from the browser context request API).",
+        "Response is 303 to /expenses instead of 403.",
+        "Reload /expenses as viewer or editor: 'Train to Pune' is gone and the total dropped from $399.99 to $357.49."
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "table[aria-label=\"Expenses\"]"
+      },
+      "category": "functional",
+      "description": "The expense list and total do not reflect saved changes straight away. After adding 'QA Test Taxi Fare' ($30.25) the success flash shows and the row is saved, but the unfiltered list and total ($357.49) still leave it out, even after reload; it only appears in the category=travel view. After editing 'Team lunch' to 75.00 the flash says 'Expense updated' and the edit form shows 75.00, but the list and total still show $68.40 / $357.49 on reload, and the meals filter drops Team lunch altogether. A later edit of Notebooks (12.99 to 14.49) was still not shown in the list 35 s later, while the edit form showed 14.49. The list and the filtered views disagree with each other and with the stored data.",
+      "confidence": 0.8,
+      "severity": "critical",
+      "repro": [
+        "Sign in as editor-9b65 and open /expenses (7 rows, total $357.49).",
+        "Click 'New expense', enter 'QA Test Taxi Fare', category travel, amount 30.25, click 'Save expense'. Page shows 'Expense saved'.",
+        "Table still shows 7 rows and total $357.49, also after reload. /expenses?category=travel does list the new row.",
+        "Click Edit on 'Team lunch', change amount to 75.00, save. Page shows 'Expense updated'.",
+        "The list still shows Team lunch $68.40 and total $357.49 after reload, while /expenses/2/edit shows 75.00. /expenses?category=meals omits Team lunch.",
+        "Send a direct edit of Notebooks (id 3) to 14.49: /expenses/3/edit shows 14.49, but the list still shows $12.99 for 35 seconds of polling."
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "editor-after-add.png"
+        },
+        {
+          "kind": "screenshot",
+          "path": "editor-after-edit.png"
+        }
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/expenses/2/edit",
+        "role": "editor",
+        "selector": "select[name=\"category\"]"
+      },
+      "category": "functional",
+      "description": "The Edit expense form does not preselect the expense's current category: no option is selected, so the dropdown shows 'travel' for every expense. Saving an edit without touching the category silently re-categorises the expense (Team lunch, a meals item, ended up listed as travel after I changed only its amount).",
+      "confidence": 0.7,
+      "severity": "major",
+      "repro": [
+        "Sign in as editor-9b65 and click Edit on 'Team lunch' (category meals).",
+        "The Category dropdown shows 'travel' rather than 'meals'.",
+        "Change only the amount to 75.00 and click 'Save expense'.",
+        "Later reads of /expenses show Team lunch with category travel instead of meals."
+      ]
+    }
+  ],
+  "notes": "Test data changed during the run: the viewer delete probe removed 'Train to Pune' (id 1, $42.50); 'QA Test Taxi Fare' ($30.25, id 9) was added; 'Team lunch' amount was changed to 75.00 and Notebooks was edited and restored to 12.99 (its value at the end is 12.99). Covered: viewer list total and category filter (both correct when read from the store), viewer refused for add (POST /expenses 403) and edit (POST /expenses/2 403, GET /expenses/N/edit 403). Not fully tested: the browser-level viewer-only UI check (viewer page has no edit/add/delete controls, verified in HTML), performance and visual checks, accessibility beyond the HTML inspection. The editor view also has a Delete button that the brief does not mention; not reported as a bug.",
+  "cost": {
+    "model_usd": 0.002069,
+    "notes": "estimate from 47568 total tokens (85% cache read / 10% input / 5% output); range $0.0005-$0.0057"
+  },
+  "wall_time_s": 358.7
+}

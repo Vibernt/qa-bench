@@ -1,0 +1,39 @@
+{
+  "episode_id": "regression-003",
+  "system": {
+    "name": "claude-haiku-5.5-low",
+    "version": "claude-haiku-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "viewer",
+        "selector": "[data-test=\"expense-title\"]"
+      },
+      "category": "security-hygiene",
+      "description": "Expense titles are stored and rendered as raw HTML. An editor saved the title <img src=x onerror=alert(1)>, and the list shows it unescaped, so the script runs for any viewer who opens /expenses (stored XSS).",
+      "confidence": 0.95,
+      "severity": "critical",
+      "repro": [
+        "Sign in as editor-5014",
+        "Open /expenses/new, enter title <img src=x onerror=alert(1)>, category travel, amount 1, and save",
+        "Sign in as viewer-eb09 and open /expenses",
+        "Observe the alert dialog fire; the title cell contains an unescaped img element"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "xss-viewer.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Tested: viewer list total and filter by category (all correct); viewer blocked from /expenses/new, /expenses/1/edit, POST /expenses, POST /expenses/1 and POST /expenses/1/delete (all 403); editor add (success message, one new row, persists after reload, total correct); editor edit (flash, list and total updated, persists); server-side validation rejects negative amount, bad category and blank title (400). Side effects on shared data: added 'QA Test Taxi' ($10.25), added a row with the XSS title ($1.00, id 10), and changed 'Client taxi' from $18.75 to $30.00. The brief's 'Add expense' label is rendered as 'New expense' on the page; not reported as a bug since the wording is a paraphrase and the function works.",
+  "cost": {
+    "model_usd": 0.001029,
+    "notes": "estimate from 23648 total tokens (85% cache read / 10% input / 5% output); range $0.0002-$0.0028"
+  },
+  "wall_time_s": 88.2
+}

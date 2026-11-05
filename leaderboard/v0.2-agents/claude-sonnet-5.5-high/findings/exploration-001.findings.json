@@ -1,0 +1,130 @@
+{
+  "episode_id": "exploration-001",
+  "system": {
+    "name": "claude-sonnet-5.5-high",
+    "version": "claude-sonnet-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses/new",
+        "role": "editor"
+      },
+      "category": "functional",
+      "description": "Saving a new expense creates it twice: two identical rows appear in the list and the total is inflated by double the amount (e.g. adding $10.10 raised $399.99 to $420.19).",
+      "confidence": 0.95,
+      "severity": "critical",
+      "repro": [
+        "Sign in as editor",
+        "Open /expenses/new, enter title 'UI created', category travel, amount 7.25, Save",
+        "Observe two identical rows in /expenses and the total increased by 14.50"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "after-create.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses",
+        "role": "editor"
+      },
+      "category": "functional",
+      "description": "Expense titles are silently truncated to 20 characters on create and on edit (a 25-char title is saved as 20 chars) with no validation message or maxlength on the input.",
+      "confidence": 0.7,
+      "severity": "major",
+      "repro": [
+        "Sign in as editor",
+        "Create an expense with a 25-character title",
+        "List shows only the first 20 characters"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "editor-after.png"
+        }
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "tbody td:first-child"
+      },
+      "category": "security-hygiene",
+      "description": "Expense titles are rendered into the table without HTML escaping (title '<b>x</b>' renders as bold 'x'), a stored XSS vector visible to viewers too.",
+      "confidence": 0.8,
+      "severity": "major",
+      "repro": [
+        "Sign in as editor",
+        "Create expense titled <b>x</b>",
+        "View /expenses: the cell contains raw <b>x</b> markup rather than literal text"
+      ]
+    },
+    {
+      "id": "f4",
+      "where": {
+        "route": "/expenses/new",
+        "role": "editor"
+      },
+      "category": "error-handling",
+      "description": "Invalid submissions (negative amount, blank title, more than 2 decimals such as 1.005) return HTTP 400 and re-render an empty form with no error message and the entered values lost; the user gets no hint what was wrong. Amounts with 3 decimals are rejected rather than rounded, with no feedback.",
+      "confidence": 0.6,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor",
+        "POST /expenses with amount=-3 (or 1.005) bypassing browser validation",
+        "Page shows a blank New expense form with no error text"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "400.png"
+        }
+      ]
+    },
+    {
+      "id": "f5",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "form[action$=\"/delete\"] button"
+      },
+      "category": "usability",
+      "description": "Delete button removes the expense immediately with no confirmation step, and deleting a non-existent expense id returns a redirect as if it succeeded.",
+      "confidence": 0.35,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor",
+        "Click Delete on a row: row is removed with no confirmation"
+      ]
+    },
+    {
+      "id": "f6",
+      "where": {
+        "route": "/expenses",
+        "role": "viewer",
+        "selector": "[data-testid=\"total\"]"
+      },
+      "category": "copy",
+      "description": "Large amounts and totals are shown without thousands separators (e.g. $1234567.89, Total: $2669577.07), hard to read.",
+      "confidence": 0.25,
+      "severity": "minor",
+      "repro": [
+        "Create expense with amount 1234567.89",
+        "View /expenses"
+      ]
+    }
+  ],
+  "notes": "Viewer permissions (403 on new/edit/create/delete) and anonymous redirects worked correctly; category filter totals matched. Session cookie lacks Secure flag (http only, not reported). I left test rows in the data.",
+  "cost": {
+    "model_usd": 0.023431,
+    "notes": "estimate from 26932 total tokens (85% cache read / 10% input / 5% output); range $0.0054-$0.0646"
+  },
+  "wall_time_s": 72.2
+}

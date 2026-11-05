@@ -1,0 +1,14 @@
+{
+  "episode_id": "exploration-007",
+  "system": {
+    "name": "claude-sonnet-5.5-low",
+    "version": "claude-sonnet-5-5@low"
+  },
+  "findings": [],
+  "notes": "Sorting, cart, badge, checkout totals and validation all checked and looked correct. Limited time; nothing else tested.",
+  "cost": {
+    "model_usd": 0.012889,
+    "notes": "estimate from 14815 total tokens (85% cache read / 10% input / 5% output); range $0.0030-$0.0356"
+  },
+  "wall_time_s": 20.8
+}

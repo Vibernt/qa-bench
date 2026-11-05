@@ -1,0 +1,57 @@
+{
+  "episode_id": "regression-019",
+  "system": {
+    "name": "claude-sonnet-5.5-high",
+    "version": "claude-sonnet-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "table[aria-label=\"Expenses\"] tbody"
+      },
+      "category": "functional",
+      "description": "Saving a new expense once (a single POST /expenses) creates two identical rows, so the list shows a duplicate and the total is inflated by the amount twice. The duplicate persists after reload.",
+      "confidence": 0.95,
+      "severity": "critical",
+      "repro": [
+        "Sign in as editor-b6a1",
+        "Open /expenses/new",
+        "Enter title 'QA test item', amount 10.10, category office, click Save expense once",
+        "Observe two 'QA test item' rows (ids 9 and 10) and total rising by 20.20 instead of 10.10; reload and both remain"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "new.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses",
+        "role": "viewer",
+        "selector": "[data-testid=\"total\"]"
+      },
+      "category": "consistency",
+      "description": "When a category filter is applied, the listed rows are filtered but the Total still shows the sum of all expenses (e.g. $399.99 with only the 3 travel rows, which sum to $185.25), so the total does not equal the sum of the listed amounts.",
+      "confidence": 0.5,
+      "severity": "major",
+      "repro": [
+        "Sign in as viewer-0139",
+        "Open /expenses",
+        "Choose category travel and click Apply",
+        "Rows listed: 42.50, 18.75, 124.00 but Total reads $399.99"
+      ]
+    }
+  ],
+  "notes": "Edit flow (list and total update immediately), viewer read-only (no controls, 403 on direct edit/new/delete/POST) and unauthenticated redirects worked. Extreme amounts (99999999999) and 0 are accepted without limit; not reported.",
+  "cost": {
+    "model_usd": 0.022006,
+    "notes": "estimate from 25294 total tokens (85% cache read / 10% input / 5% output); range $0.0051-$0.0607"
+  },
+  "wall_time_s": 55.8
+}

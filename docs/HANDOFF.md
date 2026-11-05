@@ -13,19 +13,24 @@ also been scored on a 10-episode sample, and their runs fed the first quality ro
 - precise deliberate-change labels;
 - natural defects.
 
+**0.2.0-dev (a harder bench) is in progress on `main`.** It has exploratory briefs, 2–3 bugs per mixed episode,
+subtle and known/novel defects, and 14 natural defects. The four configurations and the scripted suite were re-run on
+`v0.2-sample-12` ([leaderboard/v0.2-agents/](../leaderboard/v0.2-agents/README.md)). Planted recall now ranges from
+35% to 100%, and subtle defects separate the systems.
+
 | Piece | Where | Proof |
 |---|---|---|
 | Contracts | `schemas/` (10 JSON Schemas), `lib/contracts.ts` | `npm run validate`: every YAML and JSON file in the repo, plus cross-file checks |
-| Expense app (ours) | `apps/expense-app` (code in `app/`, bench wrapper `bench-entry.mjs`) | 13 defects (7 blatant, 6 subtle; any compatible subset at once), 1 change, 2 natural. `verify.ts` 37/37 incl. six 3-defect combinations; the app's own 42 tests pass on Node 26 |
-| Swag Labs (vendored, MIT) | `apps/swag-labs` (`upstream/` at `ad62bb2`) | 5 faulty-user defects, 4 changes. `verify.ts` 155/155 |
+| Expense app (ours) | `apps/expense-app` (code in `app/`, bench wrapper `bench-entry.mjs`) | 13 defects (7 blatant, 6 subtle; any compatible subset at once), 1 change, 7 natural. `verify.ts` 43/43 incl. six 3-defect combinations; the app's own 42 tests pass on Node 26 |
+| Swag Labs (vendored, MIT) | `apps/swag-labs` (`upstream/` at `ad62bb2`) | 5 faulty-user defects (`known`), 4 changes, 7 natural. `verify.ts` passes |
 | the-internet (run-only, Apache-2.0) | `apps/the-internet` (fetched at build time at `4126619`) | 10 baseline labels, 1 change. `verify.ts` passes |
 | Survey site (ours) | `apps/survey-site` | Not wired into a track yet (B1) |
 | Generator | `harness/generator` | Seeded and byte-reproducible; clean and twin episodes; exclusive groups; held-out labels kept out of public episodes |
 | Runner | `harness/runner` | Builds images once per run; sealed container adapters (only brief/ read-only and out/ mounted); budget kill; teardown always; `up`/`down` for people |
 | Scorer | `scorer/` | Deterministic matcher `deterministic-3` (category families, description patterns), every BRIEF §9 metric except repro quality, plus severity-weighted recall and F1, severity agreement and natural recall; JSON and Markdown |
 | Adapters | `harness/adapters/{playwright-suite,http-api,human,noop}` | See each README |
-| Agent runs | `harness/agents` (configs, episode sets, one prompt, `agents prepare/finish`) | Haiku 5.5 and Sonnet 5.5 at low and high effort on `b0-sample-10`: `leaderboard/b0-agents/` |
-| Natural defects | `apps/*/natural/` | 5 verified real bugs found by the agent runs, each with a `verify.ts` check |
+| Agent runs | `harness/agents` (configs, episode sets, one prompt, `agents prepare/finish`) | Haiku 5.5 and Sonnet 5.5 at low and high effort on `b0-sample-10` (`leaderboard/b0-agents/`) and `v0.2-sample-12` (`leaderboard/v0.2-agents/`) |
+| Natural defects | `apps/*/natural/` | 14 verified real bugs found by the agent runs, each with a `verify.ts` check |
 | Tracks | `tracks/regression.yaml` (24 episodes, 2-3 bugs per mixed episode), `tracks/noise.yaml` (6 + 2 live sites, generated only with `--live`), `tracks/exploration.yaml` (17, exploratory briefs) | Every defect and change is planted at least once (unit test) |
 | CLI | `bin/qa-bench.ts` | `validate`, `generate`, `build-apps`, `run`, `up`, `down`, `score`, `report` |
 | CI | `.github/workflows/ci.yml` | Lint and typecheck, validate, unit tests (142). No Docker or browsers in CI |
@@ -51,8 +56,9 @@ The `noop` run is a smoke test that takes seconds. Behind a TLS-intercepting pro
 
 ## Known issues and limits
 - **Swag Labs' runtime config is readable in the browser.** Swag Labs is a client-side app, so
-  `/runtime-config.js` holds the episode's switches as bit flags, not names. An adapter that decodes it is cheating
-  (AGENTS.md rule 8). A server-side switch would close this; it isn't worth it until outside entries arrive.
+  `/runtime-config.js` holds the episode's switches as bit flags, not names, and the generated accounts as salted
+  SHA-256 hashes (never in clear; checked by `verify.ts`). An adapter that decodes the flags is cheating (AGENTS.md
+  rule 8). A server-side switch would close this; it isn't worth it until outside entries arrive.
 - **Swag Labs mutations are mutually exclusive.** All five share `exclusive: swag-user`, because upstream's faulty
   users mask each other. If two behaviours ever need to share an episode, `switch.exclusive` would have to accept a
   list.
@@ -69,14 +75,15 @@ The `noop` run is a smoke test that takes seconds. Behind a TLS-intercepting pro
   - Description patterns are a deterministic stand-in, used only where labels collide.
   - An LLM matcher with a fixed prompt, logged decisions and maintainer spot-checks is the planned upgrade.
 - **Agent runs** use Claude Code subagents. Sealing is by instruction, plus an audit of every tool input (0 hits in
-  40 runs), but the subagents could see the repository's instructions file. See `harness/agents/README.md`.
+  88 runs), but the subagents could see the repository's instructions file. See `harness/agents/README.md`.
 - **Docker network pools.** Docker's default address pools allow about 30 episode networks at once, so finish
   sessions as they complete, or widen `default-address-pools` in the daemon config.
 
 ## Next step: bring the bench to the level of strong human QA (no paid testers yet)
-The B0 runs showed every agent, and the scripted suite, finding every planted defect. So recall no longer separates
-systems, and the planted bugs are easier than real ones. These steps, in order, close the gap without paid testers:
-1. **Exploratory briefs.** Add a goal-only brief mode, with no journeys or checklist, scored as its own track
+The B0 runs showed every agent, and the scripted suite, finding every planted defect, so recall didn't separate
+systems. Steps 1, 3 (several and subtle defects per episode, fewer known faults) and 4 are done for 0.2, and the
+v0.2 runs separate systems. The steps, in order:
+1. **Exploratory briefs** (done in 0.2: track 7.7). Add a goal-only brief mode, with no journeys or checklist, scored as its own track
    variant. Regression briefs measure following a plan; exploratory ones measure finding problems.
 2. **Expert test charters per app.** Write down what a senior tester would cover, using:
    - boundary values and equivalence classes;
@@ -87,14 +94,15 @@ systems, and the planted bugs are easier than real ones. These steps, in order, 
 
    Coverage of the charters becomes a metric, standing in for human-like thoroughness. Charters are public; the
    labels stay sealed.
-3. **Harder, realistic defects.** In order:
+3. **Harder, realistic defects** (the first steps done in 0.2: 2–3 bugs per episode, 6 subtle defects, known faults
+   scored apart). In order:
    - several defects per episode;
    - bugs that show only for some data, roles or sequences (rounding, timezones, a stale cache after edits, two
      tabs);
    - cross-page mismatches;
    - fewer of Swag Labs' publicly documented faults (the models may know them);
    - then Conduit and ParaBank (B1) with new mutations.
-4. **Keep triaging.**
+4. **Keep triaging** (done after every run so far: 14 natural defects).
    - After every run, reproduce the unmatched findings on the clean build. Each real one becomes a `natural` label
      with a `description_pattern` and a `verify.ts` check.
    - Fix bugs that the bench itself introduced, such as unknown URLs returning a blank 200 page from our nginx
@@ -104,8 +112,8 @@ systems, and the planted bugs are easier than real ones. These steps, in order, 
 6. **Report quality** (BRIEF §9). A fixed agent replays each true finding's repro steps on a fresh instance of the
    episode, and the share that reproduce is the score.
 7. **Tighter agent sealing:**
-   - a `qa-tester` agent definition with only browser and file tools, so subagents can't call messaging or docs
-     tools;
+   - a `qa-tester` agent definition with only shell and file tools, so subagents can't call messaging or docs
+     tools (done in 0.2);
    - then a container driver with a model API key, so agents never see the repository.
 8. **Then B1 breadth** (BRIEF §12):
    - the survey site in the noise track;

@@ -1,0 +1,49 @@
+{
+  "episode_id": "regression-019",
+  "system": {
+    "name": "claude-sonnet-5.5-low",
+    "version": "claude-sonnet-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "table[aria-label=Expenses]"
+      },
+      "category": "functional",
+      "description": "Saving a new expense creates two identical rows instead of one; total is inflated by double the amount.",
+      "confidence": 0.9,
+      "severity": "critical",
+      "repro": [
+        "Sign in as editor",
+        "Open /expenses/new, enter title, amount 10.00, category meals, Save",
+        "Two rows 'QA item' appear and total rises by 20.00; persists on reload"
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses",
+        "role": "viewer",
+        "selector": "[data-testid=\"total\"]"
+      },
+      "category": "consistency",
+      "description": "When filtered by category, the total still shows the grand total of all expenses rather than the sum of the listed rows.",
+      "confidence": 0.55,
+      "severity": "major",
+      "repro": [
+        "Sign in as viewer",
+        "Open /expenses?category=office",
+        "Listed rows sum to 37.49 but Total shows $399.99"
+      ]
+    }
+  ],
+  "notes": "Edit and viewer read-only (403 on edit GET) looked correct. Delete and viewer POST not tested.",
+  "cost": {
+    "model_usd": 0.015174,
+    "notes": "estimate from 17441 total tokens (85% cache read / 10% input / 5% output); range $0.0035-$0.0419"
+  },
+  "wall_time_s": 25.5
+}

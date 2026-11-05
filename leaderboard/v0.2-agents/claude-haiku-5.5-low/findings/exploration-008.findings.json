@@ -1,0 +1,94 @@
+{
+  "episode_id": "exploration-008",
+  "system": {
+    "name": "claude-haiku-5.5-low",
+    "version": "claude-haiku-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses/1",
+        "role": "viewer",
+        "selector": "form[action=\"/expenses/1\"]"
+      },
+      "category": "permission",
+      "description": "A viewer can save changes to an existing expense: a POST to /expenses/1 as the viewer returns 303 'updated' and overwrites the title and amount (Train to Pune $42.50 became HACK $1.00), so the viewer's role can change data that only editors should edit.",
+      "confidence": 0.95,
+      "severity": "critical",
+      "repro": [
+        "Sign in as viewer-9f08",
+        "Open /expenses/1/edit (returns 200 with the full edit form, not 403)",
+        "POST title=HACK, category=travel, amount=1 to /expenses/1 (the form's action)",
+        "Observe 303 to /expenses?flash=updated and the list now shows HACK $1.00; total drops by $41.50"
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses/1/edit",
+        "role": "viewer"
+      },
+      "category": "permission",
+      "description": "The edit page renders the full editable form for a viewer (200 with title, category and amount inputs and a Save button), while the viewer's /expenses/new returns 403 and the list hides Edit links; the edit page should be forbidden to viewers too.",
+      "confidence": 0.9,
+      "severity": "major",
+      "repro": [
+        "Sign in as viewer-9f08",
+        "Navigate to /expenses/1/edit",
+        "Observe the Edit expense form with a Save expense button"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "viewer-edit-form.png"
+        }
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/expenses",
+        "role": "viewer",
+        "selector": "[data-testid=\"total\"]"
+      },
+      "category": "consistency",
+      "description": "When the category filter is applied, the list shows only the filtered rows but the Total still sums every expense (e.g. travel shows 3 rows totalling $185.25 but the Total reads $399.99).",
+      "confidence": 0.6,
+      "severity": "major",
+      "repro": [
+        "Sign in as viewer-9f08",
+        "Open /expenses?category=travel",
+        "Observe three rows summing to $185.25 and Total: $399.99"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "viewer-travel.png"
+        }
+      ]
+    },
+    {
+      "id": "f4",
+      "where": {
+        "route": "/expenses",
+        "role": "viewer"
+      },
+      "category": "security-hygiene",
+      "description": "Authenticated HTML pages are served without anti-framing or content-type hardening headers (no Content-Security-Policy, X-Frame-Options or X-Content-Type-Options), leaving the app open to clickjacking.",
+      "confidence": 0.35,
+      "severity": "minor",
+      "repro": [
+        "Sign in as viewer-9f08",
+        "GET /expenses and inspect response headers",
+        "Observe no CSP, X-Frame-Options or X-Content-Type-Options headers"
+      ]
+    }
+  ],
+  "notes": "Tested: login, both roles' lists and totals, category filter, route access (new/edit/detail/404), viewer POST writes, editor create/edit/delete, validation (negative, 3dp, blank title), escaping of HTML in titles, response times (all under 120 ms). Side effects on shared data: expense 1 was overwritten by the viewer (f1) and remains as HACK $1.00; test row 9 was deleted; expense 2 was restored to 68.40. Session cookie is httpOnly and SameSite=Lax but not Secure (plain HTTP target, not reported).",
+  "cost": {
+    "model_usd": 0.001116,
+    "notes": "estimate from 25664 total tokens (85% cache read / 10% input / 5% output); range $0.0003-$0.0031"
+  },
+  "wall_time_s": 88
+}

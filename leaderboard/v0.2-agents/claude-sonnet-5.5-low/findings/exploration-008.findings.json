@@ -1,0 +1,46 @@
+{
+  "episode_id": "exploration-008",
+  "system": {
+    "name": "claude-sonnet-5.5-low",
+    "version": "claude-sonnet-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses/1",
+        "role": "viewer"
+      },
+      "category": "permission",
+      "description": "A read-only viewer can modify expenses: POST /expenses/1 returns 303 and changes the record (title/amount overwritten), while create and delete correctly return 403.",
+      "confidence": 0.95,
+      "severity": "critical",
+      "repro": [
+        "Sign in as viewer",
+        "POST /expenses/1 with title, category, amount",
+        "Open /expenses: expense 1 changed and total altered"
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses/1/edit",
+        "role": "viewer"
+      },
+      "category": "permission",
+      "description": "The edit form page is served with 200 to a viewer, while /expenses/new returns 403 for the same role.",
+      "confidence": 0.85,
+      "severity": "major",
+      "repro": [
+        "Sign in as viewer",
+        "Open /expenses/1/edit"
+      ]
+    }
+  ],
+  "notes": "Totals and category filters were correct. No upper amount limit (99999999999 accepted), not reported.",
+  "cost": {
+    "model_usd": 0.015564,
+    "notes": "estimate from 17890 total tokens (85% cache read / 10% input / 5% output); range $0.0036-$0.0429"
+  },
+  "wall_time_s": 49.5
+}

@@ -1,0 +1,14 @@
+{
+  "episode_id": "exploration-010",
+  "system": {
+    "name": "claude-haiku-5.5-low",
+    "version": "claude-haiku-5-5@low"
+  },
+  "findings": [],
+  "notes": "Tested as viewer and editor: list page and totals (unfiltered and per category, arithmetic checked), category filter incl. bogus and script values, add/edit/delete as editor, server-side validation (negative, non-numeric, 1e400, whitespace title), stored XSS in title (escaped), viewer access control on new/edit/create/update/delete (all 403), unknown routes (404), login error copy, logout invalidating session, cookie flags, load times (about 20-60 ms). No defects that I would file were confirmed. Not tested: pagination (none seen), concurrency, accessibility beyond label checks, and visual layout beyond unstyled-but-readable pages. Test data was added and modified during the run (QA test item, edited Train to Pune amount to 0.00, deleted Printer paper).",
+  "cost": {
+    "model_usd": 0.001309,
+    "notes": "estimate from 30084 total tokens (85% cache read / 10% input / 5% output); range $0.0003-$0.0036"
+  },
+  "wall_time_s": 204
+}

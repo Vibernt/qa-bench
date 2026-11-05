@@ -1,0 +1,18 @@
+id: expense.delete-missing-id
+app: expense-app
+title: "Deleting an expense that doesn't exist reports success"
+description: "POST /expenses/999/delete (any unknown id) redirects to the list as if it had worked, while editing an unknown id answers 404. Found by agents in the v0.2 sample runs; not planted."
+track: regression
+kind: natural
+category: error-handling
+class: deterministic
+severity: minor
+where: { route: /expenses, role: editor }
+found_by:
+  - kind: status
+    also_categories: [functional, usability]
+    description_pattern: '^(?=[\s\S]*(delet|remov))(?=[\s\S]*(non-?existent|nonexist|does ?n.t exist|does not exist|unknown (id|expense)|invalid id|missing (id|expense)|already[- ]deleted|/999))(?=[\s\S]*(redirect|303|succe|as if|404|no error))'
+    note: "Deleting an unknown id redirects as if it succeeded instead of answering 404"
+tolerance: { route: prefix, role: any }
+split: public
+upstream_ref: "apps/expense-app/app/src/server.ts (the delete handler never checks that a row was removed); checked by apps/expense-app/verify.ts"

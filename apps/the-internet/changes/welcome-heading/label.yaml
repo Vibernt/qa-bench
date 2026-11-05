@@ -14,13 +14,16 @@ switch:
   env: { QA_BENCH_CHANGES: welcome-heading }
 found_by:
   - kind: text
+    description_pattern: 'welcome|heading|title|\bh1\b|the[- ]internet'
     selector: "h1.heading"
     note: "Reports the reworded heading as wrong copy"
   - kind: element
+    description_pattern: 'welcome|heading|title|\bh1\b|the[- ]internet'
     category: functional
     selector: "h1.heading"
     note: "Reports the 'Welcome to the-internet' heading as missing"
   - kind: visual
+    description_pattern: 'welcome|heading|title|\bh1\b|the[- ]internet'
     category: visual
     selector: "h1.heading"
     note: "Reports the longer heading as a visual change"

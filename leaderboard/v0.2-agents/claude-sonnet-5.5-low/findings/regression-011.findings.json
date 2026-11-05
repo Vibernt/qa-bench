@@ -1,0 +1,95 @@
+{
+  "episode_id": "regression-011",
+  "system": {
+    "name": "claude-sonnet-5.5-low",
+    "version": "claude-sonnet-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": ".product_sort_container"
+      },
+      "category": "functional",
+      "description": "Choosing any sort order (Z to A, price low to high, price high to low) does not reorder the list; it stays in A-Z order.",
+      "confidence": 0.85,
+      "severity": "major",
+      "repro": [
+        "Sign in",
+        "Select Price (low to high)",
+        "List unchanged"
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer"
+      },
+      "category": "functional",
+      "description": "Clicking Remove on a product in the list does nothing: button stays Remove and badge stays 2.",
+      "confidence": 0.7,
+      "severity": "major",
+      "repro": [
+        "Sign in",
+        "Add two products",
+        "Click Remove on the first",
+        "Badge still 2, button still Remove"
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/inventory-item.html",
+        "role": "customer"
+      },
+      "category": "functional",
+      "description": "Product detail page shows no description and no photo (only name, price and button).",
+      "confidence": 0.6,
+      "severity": "major",
+      "repro": [
+        "Sign in",
+        "Open product name",
+        "Description/image missing"
+      ]
+    },
+    {
+      "id": "f4",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer"
+      },
+      "category": "copy",
+      "description": "Buttons read 'Add to basket' instead of 'Add to cart' as the rest of the app/brief uses.",
+      "confidence": 0.5,
+      "severity": "minor",
+      "repro": [
+        "Sign in",
+        "See button labels"
+      ]
+    },
+    {
+      "id": "f5",
+      "where": {
+        "route": "/checkout-complete.html",
+        "role": "customer"
+      },
+      "category": "functional",
+      "description": "After Finish the cart badge still shows 1 item; cart is not emptied after checkout.",
+      "confidence": 0.6,
+      "severity": "major",
+      "repro": [
+        "Add two products, checkout, Finish",
+        "Badge shows 1"
+      ]
+    }
+  ],
+  "notes": "Limited time; logout and complete page not fully verified.",
+  "cost": {
+    "model_usd": 0.016384,
+    "notes": "estimate from 18832 total tokens (85% cache read / 10% input / 5% output); range $0.0038-$0.0452"
+  },
+  "wall_time_s": 89.3
+}

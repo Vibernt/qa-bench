@@ -82,6 +82,7 @@ const samples: Record<string, S[]> = {
     ['/expenses', 'viewer', 'functional', 'The total ignores the category filter: it keeps summing all expenses instead of only the listed ones.'],
     ['/expenses', 'viewer', 'consistency', 'Filtering by travel lists $185.25 of expenses but the total is higher ($399.99); it includes the hidden rows from other categories.'],
     ['/expenses', 'viewer', 'consistency', 'Total does not change when a category is selected; it remains the grand total.'],
+    ['/expenses', 'viewer', 'functional', 'When filtering by category the total still shows the all-expenses total ($399.99) instead of the total of the visible rows.'],
   ],
   'expense.ignored-filter': [
     ['/expenses', 'viewer', 'functional', 'Selecting the office category and clicking Apply still lists all expenses.'],
@@ -108,6 +109,7 @@ const samples: Record<string, S[]> = {
     ['/expenses', 'editor', 'consistency', 'After saving, the new expense only shows up in the list about a minute later; the list looks cached.'],
     ['/expenses', 'editor', 'functional', 'Edited amounts appear in the list only after 60 seconds, although the edit form already shows the new value.'],
     ['/expenses', 'editor', 'consistency', 'The list is out of date after a write and updates eventually.'],
+    ['/expenses', 'editor', 'consistency', 'After an add, edit or delete the list and the Total stay on the old data for about a minute until the list catches up.'],
   ],
   'expense.missing-persistence': [
     ['/expenses', 'editor', 'functional', 'The expense I added is not in the list after saving.'],
@@ -153,6 +155,31 @@ const samples: Record<string, S[]> = {
     ['/expenses/5/edit', 'editor', 'functional', 'Category is lost on edit; the dropdown defaults to travel.'],
   ],
 };
+// Natural defects (real bugs on every build): reports from the v0.2 agent runs, lightly trimmed, plus rewordings.
+const naturalSamples: Record<string, S[]> = {
+  'expense.silent-delete': [
+    ['/expenses', 'editor', 'usability', 'The Delete button on each expense row deletes the expense immediately on one click, with no confirmation and no undo.'],
+    ['/expenses', 'editor', 'consistency', 'Save and edit show a flash confirmation ("Expense saved", "Expense updated") but deleting an expense redirects to /expenses with no confirmation message, so the user gets no feedback.'],
+    ['/expenses', 'editor', 'consistency', 'After a successful add or edit the list shows a status message, but after deleting an expense the page reloads with no message.'],
+    ['/expenses', 'editor', 'usability', 'Removing an expense happens without asking: there is no "are you sure" step.'],
+  ],
+  'expense.zero-amount-accepted': [
+    ['/expenses/new', 'editor', 'functional', 'The server accepts an expense with amount 0 (POST /expenses returns 303 and the row is saved as $0.00), while negative amounts are rejected with 400.'],
+    ['/expenses/new', 'editor', 'error-handling', 'A zero amount is allowed; an expense of $0.00 should be refused.'],
+  ],
+  'expense.no-security-headers': [
+    ['/expenses', 'viewer', 'security-hygiene', 'Pages send no anti-framing or hardening headers (no X-Frame-Options or CSP frame-ancestors, no X-Content-Type-Options, no CSP).'],
+    ['/login', 'viewer', 'security-hygiene', 'The app can be embedded in an iframe: clickjacking is possible because no Content-Security-Policy is sent.'],
+  ],
+  'expense.flash-in-url': [
+    ['/expenses', 'editor', 'usability', "After a successful save the page redirects to /expenses?flash=saved and the 'Expense saved' message stays on the list after every reload."],
+    ['/expenses', 'viewer', 'usability', 'Opening /expenses?flash=saved shows "Expense saved" without anything being saved: the message comes from the query string.'],
+  ],
+  'expense.delete-missing-id': [
+    ['/expenses/999/delete', 'editor', 'error-handling', 'Deleting a non-existent expense id (POST /expenses/999/delete) redirects to /expenses as if successful instead of returning 404.'],
+    ['/expenses', 'editor', 'error-handling', 'Delete of an unknown id gives no error; the app redirects as if the expense was removed.'],
+  ],
+};
 const sampleFindings = Object.entries(samples).flatMap(([id, list]) => list.map(([route, role, category, description], i) => ({
   id, finding: { id: `${id}-${i}`, category, severity: 'major', description, where: { route, role } } as unknown as Finding,
 })));
@@ -191,5 +218,21 @@ describe('expense planted labels', () => {
   it('sample descriptions of planted symptoms do not match a natural label', () => {
     const bad = sampleFindings.flatMap((s) => matches(s.finding, natural).map((n) => `${s.finding.id}: ${n}`));
     expect(bad).toEqual([]);
+  });
+
+  it('each natural sample matches its own natural label, and no planted label', () => {
+    const naturalById = new Map(natural.map((l) => [l.id, l]));
+    const wrong: string[] = [];
+    for (const [id, list] of Object.entries(naturalSamples)) {
+      for (const [i, [route, role, category, description]] of list.entries()) {
+        const f = { id: `${id}-${i}`, category, severity: 'minor', description, where: { route, role } } as unknown as Finding;
+        const own = matches(f, natural);
+        if (!naturalById.has(id) || !own.includes(id)) wrong.push(`${id} missed: ${description}`);
+        if (own.length > 1) wrong.push(`${description} matches naturals ${own.join(' + ')}`);
+        const p = matches(f, planted);
+        if (p.length) wrong.push(`${description} matches planted ${p.join(', ')}`);
+      }
+    }
+    expect(wrong).toEqual([]);
   });
 });

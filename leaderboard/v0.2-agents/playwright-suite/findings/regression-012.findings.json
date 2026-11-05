@@ -1,0 +1,95 @@
+{
+  "episode_id": "regression-012",
+  "system": {
+    "name": "playwright-suite",
+    "version": "0.1.0"
+  },
+  "findings": [
+    {
+      "id": "pw-001-expense-add-control-label",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "step": "add",
+        "selector": "a[href=\"/expenses/new\"]"
+      },
+      "category": "copy",
+      "description": "The add control reads \"New expense\"; the journey calls it \"Add expense\"",
+      "confidence": 0.5,
+      "detected_at_s": 27.7,
+      "check": "expense.add-control-label",
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "pw-001-expense-add-control-label.png"
+        }
+      ]
+    },
+    {
+      "id": "pw-002-expense-add-shows-now",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "step": "add",
+        "selector": "table[aria-label=\"Expenses\"]"
+      },
+      "category": "consistency",
+      "description": "A saved expense is missing from the full list, even after a reload, but shows when filtering by \"office\": the list is stale",
+      "confidence": 0.8,
+      "repro": [
+        "Sign in as editor",
+        "Open /expenses and note the rows",
+        "Choose \"Add expense\"",
+        "Save title \"QA suite check expense\", category office, amount 12.34",
+        "Count the rows with that title",
+        "Reload",
+        "Filter by office"
+      ],
+      "detected_at_s": 29.4,
+      "check": "expense.add-shows-now",
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "pw-002-expense-add-shows-now.png"
+        }
+      ]
+    },
+    {
+      "id": "pw-003-expense-edit-shows-now",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "step": "edit",
+        "selector": "table[aria-label=\"Expenses\"]"
+      },
+      "category": "consistency",
+      "description": "After \"Expense updated\" the list still shows $42.50 for \"Train to Pune\" although the record holds $43.50: the list is stale",
+      "confidence": 0.8,
+      "repro": [
+        "Sign in as editor",
+        "Open /expenses/1/edit",
+        "Change the amount of \"Train to Pune\" from $42.50 to $43.50",
+        "Save",
+        "Read the row and the total",
+        "Open /expenses/1/edit again: the form shows the new amount"
+      ],
+      "detected_at_s": 30.2,
+      "check": "expense.edit-shows-now",
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "pw-003-expense-edit-shows-now.png"
+        }
+      ]
+    }
+  ],
+  "cost": {
+    "compute_usd": 0,
+    "model_usd": 0,
+    "notes": "Scripted Playwright suite: no model calls; local compute only, not metered."
+  },
+  "wall_time_s": 33,
+  "started_at": "2026-11-05T15:09:32.608Z",
+  "finished_at": "2026-11-05T15:10:05.606Z",
+  "notes": "suite expense-app for app expense-app"
+}

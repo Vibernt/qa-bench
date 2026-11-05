@@ -1,0 +1,253 @@
+{
+  "episode_id": "exploration-015",
+  "system": {
+    "name": "playwright-suite",
+    "version": "0.1.0"
+  },
+  "findings": [
+    {
+      "id": "pw-001-swag-product-images-distinct",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "step": "inventory",
+        "selector": "[data-test=\"inventory-item-sauce-labs-backpack-img\"]",
+        "region": {
+          "x": 111,
+          "y": 155,
+          "w": 262,
+          "h": 238,
+          "viewport": "1280x720"
+        }
+      },
+      "category": "visual",
+      "description": "6 different products show the same image (Sauce Labs Backpack, Sauce Labs Bike Light, Sauce Labs Bolt T-Shirt, Sauce Labs Fleece Jacket, Sauce Labs Onesie, Test.allTheThings() T-Shirt (Red))",
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "pw-001-swag-product-images-distinct.png"
+        },
+        {
+          "kind": "dom",
+          "excerpt": "Sauce Labs Backpack: http://app/assets/sl-404-Cq1a9k9X.jpg\nSauce Labs Bike Light: http://app/assets/sl-404-Cq1a9k9X.jpg\nSauce Labs Bolt T-Shirt: http://app/assets/sl-404-Cq1a9k9X.jpg\nSauce Labs Fleece Jacket: http://app/assets/sl-404-Cq1a9k9X.jpg\nSauce Labs Onesie: http://app/assets/sl-404-Cq1a9k9X.jpg\nTest.allTheThings() T-Shirt (Red): http://app/assets/sl-404-Cq1a9k9X.jpg"
+        }
+      ],
+      "confidence": 0.85,
+      "detected_at_s": 0.6,
+      "check": "swag.product-images-distinct"
+    },
+    {
+      "id": "pw-002-swag-sort",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "step": "sort",
+        "selector": "[data-test=\"product-sort-container\"]"
+      },
+      "category": "functional",
+      "description": "Sorting does not sort for 3 of 4 options: Name (Z to A), Price (low to high), Price (high to low)",
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "pw-002-swag-sort.png"
+        },
+        {
+          "kind": "dom",
+          "excerpt": "Name (Z to A): Sauce Labs Backpack $29.99, Sauce Labs Bike Light $9.99, Sauce Labs Bolt T-Shirt $15.99, Sauce Labs Fleece Jacket $49.99, Sauce Labs Onesie $7.99, Test.allTheThings() T-Shirt (Red) $15.99\nPrice (low to high): Sauce Labs Backpack $29.99, Sauce Labs Bike Light $9.99, Sauce Labs Bolt T-Shirt $15.99, Sauce Labs Fleece Jacket $49.99, Sauce Labs Onesie $7.99, Test.allTheThings() T-Shirt (Red) $15.99\nPrice (high to low): Sauce Labs Backpack $29.99, Sauce Labs Bike Light $9.99, Sauce Labs Bolt T-Shirt $15.99, Sauce Labs Fleece Jacket $49.99, Sauce Labs Onesie $7.99, Test.allTheThings() T-Shirt (Red) $15.99"
+        }
+      ],
+      "confidence": 0.85,
+      "repro": [
+        "Sign in",
+        "Open the sort menu",
+        "Choose each option in turn and read the order of the products"
+      ],
+      "detected_at_s": 1.5,
+      "check": "swag.sort"
+    },
+    {
+      "id": "pw-003-swag-detail-matches",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "step": "detail",
+        "selector": "[data-test=\"item-4-title-link\"]"
+      },
+      "category": "functional",
+      "description": "Clicking \"Sauce Labs Backpack\" opens the page of \"Sauce Labs Fleece Jacket\"",
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "pw-003-swag-detail-matches.png"
+        },
+        {
+          "kind": "text",
+          "excerpt": "clicked: Sauce Labs Backpack\nopened: Sauce Labs Fleece Jacket $49.99\nurl: http://app/inventory-item.html?id=5"
+        }
+      ],
+      "confidence": 0.9,
+      "repro": [
+        "Sign in",
+        "Click \"Sauce Labs Backpack\" in the catalogue",
+        "Read the product name on the page that opens"
+      ],
+      "detected_at_s": 1.7,
+      "check": "swag.detail-matches"
+    },
+    {
+      "id": "pw-004-swag-cart-add",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "step": "cart",
+        "selector": "[data-test=\"add-to-cart-sauce-labs-bolt-t-shirt\"]"
+      },
+      "category": "functional",
+      "description": "\"Add to cart\" does not work for 3 of 6 products (Sauce Labs Bolt T-Shirt, Sauce Labs Fleece Jacket, Test.allTheThings() T-Shirt (Red))",
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "pw-004-swag-cart-add.png"
+        },
+        {
+          "kind": "dom",
+          "excerpt": "Sauce Labs Bolt T-Shirt: button add-to-cart-sauce-labs-bolt-t-shirt, badge 2 (was 2)\nSauce Labs Fleece Jacket: button add-to-cart-sauce-labs-fleece-jacket, badge 2 (was 2)\nTest.allTheThings() T-Shirt (Red): button add-to-cart-test.allthethings()-t-shirt-(red), badge 3 (was 3)"
+        }
+      ],
+      "confidence": 0.85,
+      "repro": [
+        "Sign in",
+        "Click \"Add to cart\" on \"Sauce Labs Bolt T-Shirt\"",
+        "Watch the button label and the cart badge"
+      ],
+      "detected_at_s": 12.2,
+      "check": "swag.cart-add"
+    },
+    {
+      "id": "pw-005-swag-cart-remove",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "step": "cart",
+        "selector": "[data-test=\"remove-sauce-labs-backpack\"]"
+      },
+      "category": "functional",
+      "description": "\"Remove\" does not work for 3 of 6 products (Sauce Labs Backpack, Sauce Labs Bike Light, Sauce Labs Onesie)",
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "pw-005-swag-cart-remove.png"
+        },
+        {
+          "kind": "dom",
+          "excerpt": "Sauce Labs Backpack: button remove-sauce-labs-backpack, badge 1 (was 0)\nSauce Labs Bike Light: button remove-sauce-labs-bike-light, badge 2 (was 1)\nSauce Labs Onesie: button remove-sauce-labs-onesie, badge 3 (was 2)"
+        }
+      ],
+      "confidence": 0.85,
+      "repro": [
+        "Sign in",
+        "Click \"Remove\" on \"Sauce Labs Backpack\"",
+        "Watch the button label and the cart badge"
+      ],
+      "detected_at_s": 12.2,
+      "check": "swag.cart-remove"
+    },
+    {
+      "id": "pw-006-swag-checkout-fields-kept",
+      "where": {
+        "route": "/checkout-step-one.html",
+        "role": "customer",
+        "step": "checkout-info",
+        "selector": "[data-test=\"lastName\"]",
+        "region": {
+          "x": 450,
+          "y": 309,
+          "w": 380,
+          "h": 39,
+          "viewport": "1280x720"
+        }
+      },
+      "category": "functional",
+      "description": "The checkout form does not keep what was typed: First Name shows \"e\" instead of \"Ada\"; Last Name shows \"\" instead of \"Lovelace\"",
+      "confidence": 0.9,
+      "repro": [
+        "Sign in, add a product, open the cart, Checkout",
+        "Type Ada, Lovelace, 10115 into First Name, Last Name, Zip",
+        "Read the three fields"
+      ],
+      "detected_at_s": 17.3,
+      "check": "swag.checkout-fields-kept",
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "pw-006-swag-checkout-fields-kept.png"
+        }
+      ]
+    },
+    {
+      "id": "pw-007-swag-overview-item-total",
+      "where": {
+        "route": "/checkout-step-two.html",
+        "role": "customer",
+        "step": "overview",
+        "selector": "[data-test=\"subtotal-label\"]",
+        "region": {
+          "x": 15,
+          "y": 748,
+          "w": 1250,
+          "h": 20,
+          "viewport": "1280x720"
+        }
+      },
+      "category": "consistency",
+      "description": "Checkout overview: Item total $79.96 but the listed prices add up to $39.98",
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "pw-007-swag-overview-item-total.png"
+        },
+        {
+          "kind": "dom",
+          "excerpt": "Sauce Labs Backpack $29.99\nSauce Labs Bike Light $9.99\nItem total: $79.96\nTax: $6.40\nTotal: $86.36\nexpected $39.98"
+        }
+      ],
+      "confidence": 0.9,
+      "repro": [
+        "Add products to the cart",
+        "Check out to the overview",
+        "Add up the item prices and compare with Item total, Tax and Total"
+      ],
+      "detected_at_s": 22.5,
+      "check": "swag.overview-item-total"
+    },
+    {
+      "id": "pw-008-swag-finish-empties-cart",
+      "where": {
+        "route": "/checkout-complete.html",
+        "role": "customer",
+        "step": "finish",
+        "selector": "[data-test=\"shopping-cart-badge\"]"
+      },
+      "category": "functional",
+      "description": "After the order is complete the cart still holds 2 product(s)",
+      "confidence": 0.8,
+      "detected_at_s": 22.6,
+      "check": "swag.finish-empties-cart",
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "pw-008-swag-finish-empties-cart.png"
+        }
+      ]
+    }
+  ],
+  "cost": {
+    "compute_usd": 0,
+    "model_usd": 0,
+    "notes": "Scripted Playwright suite: no model calls; local compute only, not metered."
+  },
+  "wall_time_s": 26.8,
+  "started_at": "2026-11-05T15:10:34.671Z",
+  "finished_at": "2026-11-05T15:11:01.431Z",
+  "notes": "suite swag-labs for app swag-labs\ncheckout step one did not proceed (Error: Last Name is required); opening the overview by URL to keep checking"
+}

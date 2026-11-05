@@ -1,0 +1,66 @@
+{
+  "episode_id": "exploration-008",
+  "system": {
+    "name": "playwright-suite",
+    "version": "0.1.0"
+  },
+  "findings": [
+    {
+      "id": "pw-001-expense-viewer-endpoints-refused",
+      "where": {
+        "route": "/expenses/1/edit",
+        "role": "viewer",
+        "step": "viewer-readonly"
+      },
+      "category": "permission",
+      "description": "The viewer can reach editor-only endpoints: GET /expenses/1/edit returned 200 with the edit form; POST /expenses/1 returned 303 -> /expenses?flash=updated (expected 403)",
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "pw-001-expense-viewer-endpoints-refused.png"
+        },
+        {
+          "kind": "network",
+          "excerpt": "GET /expenses/1/edit returned 200 with the edit form\nPOST /expenses/1 returned 303 -> /expenses?flash=updated"
+        }
+      ],
+      "confidence": 0.9,
+      "repro": [
+        "Sign in as viewer",
+        "Open /expenses/1/edit directly",
+        "Or POST /expenses/1 with title, category and amount"
+      ],
+      "detected_at_s": 2.4,
+      "check": "expense.viewer-endpoints-refused"
+    },
+    {
+      "id": "pw-002-expense-add-control-label",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "step": "add",
+        "selector": "a[href=\"/expenses/new\"]"
+      },
+      "category": "copy",
+      "description": "The add control reads \"New expense\"; the journey calls it \"Add expense\"",
+      "confidence": 0.5,
+      "detected_at_s": 2.9,
+      "check": "expense.add-control-label",
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "pw-002-expense-add-control-label.png"
+        }
+      ]
+    }
+  ],
+  "cost": {
+    "compute_usd": 0,
+    "model_usd": 0,
+    "notes": "Scripted Playwright suite: no model calls; local compute only, not metered."
+  },
+  "wall_time_s": 7.8,
+  "started_at": "2026-11-05T15:10:22.547Z",
+  "finished_at": "2026-11-05T15:10:30.355Z",
+  "notes": "suite expense-app for app expense-app"
+}

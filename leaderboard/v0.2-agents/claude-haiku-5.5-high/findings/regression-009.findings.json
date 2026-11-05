@@ -1,0 +1,84 @@
+{
+  "episode_id": "regression-009",
+  "system": {
+    "name": "claude-haiku-5.5-high",
+    "version": "claude-haiku-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "form[action=\"/expenses\"] input[name=\"title\"]"
+      },
+      "category": "error-handling",
+      "description": "Submitting the Add expense form with a whitespace-only title passes the browser's native validation, but the server rejects it with a bare HTTP 400. The user is returned to a blank Add expense form with no error message, and the category and amount they entered are cleared.",
+      "confidence": 0.5,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor-c7ad",
+        "Open /expenses/new (Add expense)",
+        "Type three spaces in Title, choose a category, enter amount 3.00",
+        "Click Save: the form submits and the page shows a blank 'Add expense' form with no error text (POST /expenses returns 400)"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "whitespace-title-400.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses",
+        "role": "editor"
+      },
+      "category": "security-hygiene",
+      "description": "Pages send no anti-framing or hardening headers (no X-Frame-Options or CSP frame-ancestors, no X-Content-Type-Options, no CSP). The editor's Add, Edit and Delete controls can therefore be framed by another site and used for clickjacking.",
+      "confidence": 0.35,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor-c7ad",
+        "GET /expenses and inspect the response headers: only content-type and cache-control are set",
+        "Embed /expenses in an iframe on another origin: it loads without restriction"
+      ],
+      "evidence": [
+        {
+          "kind": "other",
+          "path": "expenses-headers.txt"
+        }
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "form[action$=\"/delete\"] button"
+      },
+      "category": "usability",
+      "description": "The Delete button on each expense row deletes the expense immediately on one click, with no confirmation and no undo. The row disappears with no message.",
+      "confidence": 0.3,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor-c7ad",
+        "On /expenses, click Delete on any row",
+        "The expense is deleted at once, with no confirmation prompt and no success message"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "editor-expenses.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Tested all five journeys through the browser and over HTTP. Viewer list, total, category filter and the no-edit rule (UI and direct GET/POST to /expenses/new, /expenses/N/edit, /expenses/N, /expenses/N/delete all refused with 403) behaved correctly. Editor add, edit, delete, decimal totals, and reload persistence were correct, and viewer and editor lists and totals agreed across all filters. Session handling (logout invalidation, forged cookie, login errors) was fine. Side effects on shared test data: I added and edited expenses and deleted my test rows (ids 9, 10, 11, 12); the original 8 rows remain, with Team lunch changed to 75.00 and Notebooks changed to travel/20.00. Two Float test rows (0.10 and 0.20) were added and left in place. Not tested: load with large row counts, and cross-browser rendering. Not reported as bugs: a zero amount and very large amounts are accepted by the server,.",
+  "cost": {
+    "model_usd": 0.002329,
+    "notes": "estimate from 53534 total tokens (85% cache read / 10% input / 5% output); range $0.0005-$0.0064"
+  },
+  "wall_time_s": 203.5
+}

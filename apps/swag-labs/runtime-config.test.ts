@@ -1,13 +1,14 @@
 // Unit test (no docker, no browser): bench/runtime-config.sh and upstream/src/utils/QaBench.js agree on the names and
-// bit flags of every mutation and change, every label's switch value is a known name, and the script encodes the env
-// as the page expects and refuses unknown names.
+// bit flags of every mutation and change, every label's switch value is a known name, the script hashes accounts the
+// way the page checks them, and it refuses unknown names.
 import { execFileSync, spawnSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { mkdtempSync, readdirSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import YAML from 'yaml';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const script = join(here, 'bench', 'runtime-config.sh');
@@ -48,19 +49,54 @@ describe('swag-labs runtime config', () => {
     expect(labelValues('changes', 'QA_BENCH_CHANGES').sort()).toEqual(Object.keys(changes).sort());
   });
 
-  it('encodes accounts, mutations and changes', () => {
+  it('encodes accounts as salted hashes, plus mutation and change bits', () => {
     const r = run({ QA_BENCH_ACCOUNTS: 'customer-a:pw-a', QA_BENCH_MUTATIONS: 'problem_user,visual_user', QA_BENCH_CHANGES: 'relabel, price-change' });
     expect(r.status).toBe(0);
-    const m = r.out!.match(/window\.__SL_RUNTIME__ = \{ a: "([^"]*)", m: (\d+), c: (\d+) \};/);
+    const m = r.out!.match(/window\.__SL_RUNTIME__ = \{ s: "([0-9a-f]{32})", a: \["([0-9a-f]{64}):([0-9a-f]{64})"\], m: (\d+), c: (\d+) \};/);
     expect(m).not.toBeNull();
-    expect(Buffer.from(m![1]!, 'base64').toString()).toBe('customer-a:pw-a');
-    expect(Number(m![2])).toBe(mutations.problem_user! | mutations.visual_user!);
-    expect(Number(m![3])).toBe(changes.relabel! | changes['price-change']!);
-    expect(r.out).not.toMatch(/problem_user|visual_user|relabel/);
+    const [, salt, user, pass] = m!;
+    expect(user).toBe(createHash('sha256').update(`${salt}\ncustomer-a`).digest('hex'));
+    expect(pass).toBe(createHash('sha256').update(`${salt}\ncustomer-a\npw-a`).digest('hex'));
+    expect(Number(m![4])).toBe(mutations.problem_user! | mutations.visual_user!);
+    expect(Number(m![5])).toBe(changes.relabel! | changes['price-change']!);
+    expect(r.out).not.toMatch(/problem_user|visual_user|relabel|customer-a|pw-a/);
+    expect(r.out).not.toContain(Buffer.from('customer-a').toString('base64').slice(0, 12));
+  });
+
+  it('uses a fresh salt on every start', () => {
+    const salt = (env: Record<string, string>) => run(env).out!.match(/s: "([0-9a-f]+)"/)![1];
+    expect(salt({ QA_BENCH_ACCOUNTS: 'u:p' })).not.toBe(salt({ QA_BENCH_ACCOUNTS: 'u:p' }));
+  });
+
+  it('the page accepts exactly the generated accounts (shell and page hashes agree)', async () => {
+    const r = run({ QA_BENCH_ACCOUNTS: 'customer-a:pw-a,customer-b:pw:with:colons', QA_BENCH_MUTATIONS: 'error_user' });
+    const g = globalThis as { window?: unknown };
+    g.window = {};
+    new Function('window', r.out!)(g.window);
+    vi.resetModules();
+    const qb = await import('./upstream/src/utils/QaBench.js');
+    delete g.window;
+    expect(qb.benchMode()).toBe(true);
+    expect(qb.benchAccountOk('customer-a', 'pw-a')).toBe(true);
+    expect(qb.benchAccountOk('customer-b', 'pw:with:colons')).toBe(true);
+    expect(qb.benchAccountOk('customer-a', 'pw-b')).toBe(false);
+    expect(qb.benchAccountOk('standard_user', 'secret_sauce')).toBe(false);
+    expect(qb.benchIsAccount('customer-b')).toBe(true);
+    expect(qb.benchIsAccount('customer-c')).toBe(false);
+    expect(qb.benchIsAccount(undefined)).toBe(false);
+    expect(qb.benchFaulty('error_user', 'customer-a')).toBe(true);
+    expect(qb.benchFaulty('problem_user', 'customer-a')).toBe(false);
+  });
+
+  it('hashes like node:crypto', async () => {
+    const { sha256Hex } = await import('./upstream/src/utils/QaBench.js');
+    for (const t of ['', 'abc', 'é ü ✓', 'x'.repeat(55), 'x'.repeat(56), 'x'.repeat(64), 'x'.repeat(1000)]) {
+      expect(sha256Hex(t)).toBe(createHash('sha256').update(t).digest('hex'));
+    }
   });
 
   it('writes an empty config when nothing is set (upstream behaviour)', () => {
-    expect(run({}).out).toContain('{ a: "", m: 0, c: 0 }');
+    expect(run({}).out).toContain('a: [], m: 0, c: 0 }');
   });
 
   it('refuses unknown names', () => {

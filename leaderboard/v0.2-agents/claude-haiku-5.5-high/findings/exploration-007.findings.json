@@ -1,0 +1,66 @@
+{
+  "episode_id": "exploration-007",
+  "system": {
+    "name": "claude-haiku-5.5-high",
+    "version": "claude-haiku-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/runtime-config.js",
+        "role": "customer"
+      },
+      "category": "security-hygiene",
+      "description": "The publicly served /runtime-config.js (loaded on the login page, no sign-in needed) embeds the customer test account credentials as a base64 string in window.__SL_RUNTIME__.a. Anyone who fetches the file can decode it to the username and password.",
+      "confidence": 0.45,
+      "severity": "major",
+      "repro": [
+        "curl -sS http://127.0.0.1:32790/runtime-config.js",
+        "Base64-decode the value of the 'a' field: it decodes to customer-acbb:[redacted], the customer sign-in."
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer"
+      },
+      "category": "security-hygiene",
+      "description": "Document responses carry no hardening headers: no Content-Security-Policy, X-Content-Type-Options, X-Frame-Options (or frame-ancestors) or Strict-Transport-Security. The nginx Server header also exposes its version (nginx/1.29.8).",
+      "confidence": 0.3,
+      "severity": "minor",
+      "repro": [
+        "curl -sS -D - -o /dev/null http://127.0.0.1:32790/inventory.html",
+        "Observe that the response headers contain only Server, Date, Content-Type, Content-Length, Last-Modified, Connection, ETag and Accept-Ranges."
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/checkout-complete.html",
+        "role": "customer"
+      },
+      "category": "visual",
+      "description": "On the order-complete page the 'Generate PDF order' button label wraps onto two lines inside a narrower box than the adjacent 'Back Home' button, so the two action buttons look unequal in size and text alignment.",
+      "confidence": 0.2,
+      "severity": "minor",
+      "repro": [
+        "Sign in as customer-acbb, add any product to the cart, and complete checkout (Checkout, fill the form, Continue, Finish).",
+        "On the Checkout: Complete! page, look at the two buttons below the message."
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "complete.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Tested as customer-acbb in Chromium at 1280px and 375px. Covered: login (empty, wrong password, unknown user), the six-product inventory, all four sort orders (names and prices correct), add/remove from list, detail and cart with badge persistence across reload, cart contents, checkout validation (first, last and postal code required), overview totals (item total, 8% tax, total all verified arithmetically for 1, 2 and 6 items), order completion (cart cleared, badge cleared), the generated order PDF (totals match the screen), logged-out redirects on all protected routes, the burger menu, Reset App State, the Dynamic Catalog Lazy Load (infinite scroll works), Spinner and Slider pages, mobile overflow (none) and a basic a11y scan (images, buttons, inputs and links all named). The ITEM NOT FOUND page for unknown product ids (dog image, '$√-1', dial-an-operator copy) looks like the deliberate Swag Labs easter egg, so it was not reported. Footer Terms of Service and Privacy Policy are plain text, which I took as intended. Not tested: other user accounts (only one was supplied), payment and shipping validation beyond the fields shown, and deeper a11y (contrast, keyboard focus order) and load testing beyond single-page timings.",
+  "cost": {
+    "model_usd": 0.003598,
+    "notes": "estimate from 82714 total tokens (85% cache read / 10% input / 5% output); range $0.0008-$0.0099"
+  },
+  "wall_time_s": 530.5
+}

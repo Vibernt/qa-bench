@@ -15,33 +15,41 @@ switch:
   env: { QA_BENCH_CHANGES: relabel }
 found_by:
   - kind: text
+    description_pattern: 'basket|add to cart|your cart|renam|relabel|re-?word|wording|(label|button|title)s? (now )?(reads?|says|is called|changed)'
     note: "Reports 'Add to basket' (instead of 'Add to cart') as a copy fault"
   - kind: element
+    description_pattern: 'basket|add to cart|your cart|renam|relabel|re-?word|wording|(label|button|title)s? (now )?(reads?|says|is called|changed)'
     category: functional
     selector: "data-test=add-to-cart"
     note: "Reports the Add to cart button as missing because its text changed (selector is a fragment: any add-to-cart button)"
   - kind: text
+    description_pattern: 'basket|add to cart|your cart|renam|relabel|re-?word|wording|(label|button|title)s? (now )?(reads?|says|is called|changed)'
     route: /inventory-item.html
     note: "Reports 'Add to basket' on the detail page as a copy fault"
   - kind: element
+    description_pattern: 'basket|add to cart|your cart|renam|relabel|re-?word|wording|(label|button|title)s? (now )?(reads?|says|is called|changed)'
     route: /inventory-item.html
     category: functional
     selector: "data-test=add-to-cart"
     note: "Reports the detail page's Add to cart button as missing"
   - kind: text
+    description_pattern: 'basket|add to cart|your cart|renam|relabel|re-?word|wording|(label|button|title)s? (now )?(reads?|says|is called|changed)'
     route: /cart.html
     selector: "[data-test=title]"
     note: "Reports the 'Your Basket' title as a copy fault or a wrong page"
   - kind: element
+    description_pattern: 'basket|add to cart|your cart|renam|relabel|re-?word|wording|(label|button|title)s? (now )?(reads?|says|is called|changed)'
     route: /cart.html
     category: functional
     selector: "[data-test=title]"
     note: "Reports the cart page as missing or wrong because the title changed"
   - kind: a11y
+    description_pattern: 'basket|add to cart|your cart|renam|relabel|re-?word|wording|(label|button|title)s? (now )?(reads?|says|is called|changed)'
     category: a11y
     selector: "[data-test=shopping-cart-link]"
     note: "Reports the cart icon's accessible name 'Basket, N items' as wrong"
   - kind: text
+    description_pattern: 'basket|add to cart|your cart|renam|relabel|re-?word|wording|(label|button|title)s? (now )?(reads?|says|is called|changed)'
     category: usability
     selector: "data-test=add-to-cart"
     note: "Reports the basket wording as confusing or inconsistent"

@@ -1,0 +1,61 @@
+{
+  "episode_id": "regression-009",
+  "system": {
+    "name": "claude-haiku-5.5-low",
+    "version": "claude-haiku-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses/new",
+        "role": "editor",
+        "selector": "[data-test=\"amount\"]"
+      },
+      "category": "functional",
+      "description": "The server accepts an expense with amount 0 (POST /expenses returns 303 and the row is saved as $0.00), while negative amounts are rejected with 400. A zero-value expense is likely invalid input that the add form should refuse.",
+      "confidence": 0.4,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor-c7ad at /login.",
+        "Open /expenses/new and enter a title, a category, and amount 0.",
+        "Click Save. The expense is saved and appears in the list as $0.00. Submitting a negative amount is rejected instead."
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "editor-edge.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "[data-testid=\"total\"]"
+      },
+      "category": "usability",
+      "description": "After a successful save the page redirects to /expenses?flash=saved and the 'Expense saved' message stays on the list after every reload, because the flash is carried in the URL rather than shown once.",
+      "confidence": 0.3,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor-c7ad and add an expense via Add expense, then Save.",
+        "Note the 'Expense saved' message on /expenses?flash=saved.",
+        "Reload the page. The message is still shown, and it stays while the URL keeps the flash parameter."
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "after-add.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Checked as viewer and editor: list totals match row sums, category filter lists only matching rows and matching totals, add creates exactly one row that persists after reload, edit updates list and total immediately, viewers get 403 on edit/add/delete routes and POSTs, unauthenticated access redirects to /login, labels are present on all form fields, and list load is under 50 ms. Editors also see a Delete control that the brief does not mention; I did not report it because it is consistent with editor rights. Test data was mutated during testing (added and edited expenses, including a $99,999,999.99 and a $0 entry), so later totals in the shared app are inflated.",
+  "cost": {
+    "model_usd": 0.001292,
+    "notes": "estimate from 29693 total tokens (85% cache read / 10% input / 5% output); range $0.0003-$0.0036"
+  },
+  "wall_time_s": 107.8
+}

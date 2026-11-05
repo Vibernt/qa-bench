@@ -1,0 +1,18 @@
+id: swag.reset-keeps-remove-buttons
+app: swag-labs
+title: "Reset App State empties the cart but leaves Remove buttons on the product list"
+description: "With items in the cart, menu > Reset App State clears the cart badge, but the product tiles keep showing Remove instead of Add to cart until the page is reloaded. Upstream behaviour, found by agents in the v0.2 sample runs; not planted."
+track: regression
+kind: natural
+category: functional
+class: deterministic
+severity: minor
+where: { route: /inventory.html, role: customer }
+found_by:
+  - kind: element
+    also_categories: [consistency, visual]
+    description_pattern: '^(?=[\s\S]*reset)(?=[\s\S]*(remove|add to cart|button|tile))'
+    note: "After Reset App State a product tile still shows Remove although the cart is empty"
+tolerance: { route: prefix, role: any }
+split: public
+upstream_ref: "apps/swag-labs/upstream/src/components/DrawerMenu.jsx (resetStorage clears the cart, not the tiles' state); checked by apps/swag-labs/verify.ts"

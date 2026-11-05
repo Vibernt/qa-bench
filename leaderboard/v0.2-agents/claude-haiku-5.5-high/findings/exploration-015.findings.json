@@ -1,0 +1,136 @@
+{
+  "episode_id": "exploration-015",
+  "system": {
+    "name": "claude-haiku-5.5-high",
+    "version": "claude-haiku-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/checkout-step-one.html",
+        "role": "customer",
+        "selector": "[data-test=\"lastName\"]"
+      },
+      "category": "functional",
+      "description": "The Last Name field on checkout step one cannot be filled: text typed into it is written into the First Name field instead, so Continue always fails with 'Last Name is required' and the order cannot be placed.",
+      "confidence": 0.9,
+      "severity": "critical",
+      "repro": [
+        "Sign in as customer",
+        "Add any product to the cart and open the cart",
+        "Click Checkout",
+        "Click the Last Name field and type 'Tester'",
+        "Observe the text lands in First Name and Last Name stays empty",
+        "Fill First Name and Postal Code, click Continue",
+        "Observe error 'Last Name is required' and the page does not advance to Overview"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "05d-step1-error.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"product-sort-container\"]"
+      },
+      "category": "functional",
+      "description": "The product sort dropdown has no effect: Name (Z to A), Price (low to high) and Price (high to low) leave the product list in the same A-to-Z order as Name (A to Z).",
+      "confidence": 0.75,
+      "severity": "major",
+      "repro": [
+        "Sign in as customer",
+        "Open the Products page",
+        "Select 'Price (low to high)' in the sort dropdown",
+        "Observe the order is unchanged: Backpack $29.99 first, Onesie $7.99 fifth",
+        "Select 'Name (Z to A)' and observe the same order"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "02-inventory.png"
+        }
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"inventory-item-name\"]"
+      },
+      "category": "functional",
+      "description": "Clicking a product name or image on the Products list opens the detail page of a different product (e.g. 'Sauce Labs Backpack' opens Sauce Labs Fleece Jacket, 'Sauce Labs Bike Light' opens Sauce Labs Bolt T-Shirt). The product link does not match the product clicked.",
+      "confidence": 0.8,
+      "severity": "major",
+      "repro": [
+        "Sign in as customer",
+        "On Products, click 'Sauce Labs Backpack' (first item)",
+        "Observe the detail page URL is inventory-item.html?id=5 and shows 'Sauce Labs Fleece Jacket'",
+        "Go back and click 'Sauce Labs Bike Light', which opens 'Sauce Labs Bolt T-Shirt'"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "11-backpack-click-detail.png"
+        }
+      ]
+    },
+    {
+      "id": "f4",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"inventory-item\"] img"
+      },
+      "category": "visual",
+      "description": "Every product thumbnail on the Products list shows the same placeholder dog photo (sl-404 image), so the six products are indistinguishable. The product detail page shows the correct product photo.",
+      "confidence": 0.6,
+      "severity": "major",
+      "repro": [
+        "Sign in as customer",
+        "Open the Products page",
+        "Observe all six product tiles show the same image",
+        "Open any product detail and observe a different, product-specific photo"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "02-inventory.png"
+        }
+      ]
+    },
+    {
+      "id": "f5",
+      "where": {
+        "route": "/runtime-config.js"
+      },
+      "category": "security-hygiene",
+      "description": "The public runtime-config.js served to every visitor, including signed-out ones, contains the customer account's username and password base64-encoded in the window.__SL_RUNTIME__ object, so anyone can recover the login credentials.",
+      "confidence": 0.6,
+      "severity": "major",
+      "repro": [
+        "Run: curl -s http://127.0.0.1:32791/runtime-config.js",
+        "Observe the value 'a' in window.__SL_RUNTIME__",
+        "Base64-decode it to get 'customer-41c5:[redacted]'"
+      ],
+      "evidence": [
+        {
+          "kind": "other",
+          "path": "runtime-config.js.txt"
+        }
+      ]
+    }
+  ],
+  "notes": "Tested as customer only, within about 10 minutes. Not tested: order completion past step one (blocked by f1), cart removal, the Overview and Complete pages in full, logout, the hamburger menu and footer links, and performance timing. The Overview page reachable directly with an empty cart showed Item total $0 and Finish enabled (not reported as a finding, unverified as a bug). The 'ITEM NOT FOUND' detail page for id=6 shows a joke price and Add to cart button; not reported as unclear. Product images on the Products list are all identical (f4).",
+  "cost": {
+    "model_usd": 0.001876,
+    "notes": "estimate from 43136 total tokens (85% cache read / 10% input / 5% output); range $0.0004-$0.0052"
+  },
+  "wall_time_s": 188.9
+}

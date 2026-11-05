@@ -16,20 +16,25 @@ switch:
   env: { QA_BENCH_CHANGES: checkout-copy }
 found_by:
   - kind: text
+    description_pattern: 'your details|review your order|order placed|thank you|dispatch|pony|heading|title|wording|re-?word|copy|confirmation'
     route: /checkout-step-one.html
     selector: "[data-test=title]"
     note: "Reports the step-one title 'Checkout: Your details' as wrong copy"
   - kind: text
+    description_pattern: 'your details|review your order|order placed|thank you|dispatch|pony|heading|title|wording|re-?word|copy|confirmation'
     route: /checkout-step-two.html
     selector: "[data-test=title]"
     note: "Reports the overview title 'Checkout: Review your order' as wrong copy"
   - kind: text
+    description_pattern: 'your details|review your order|order placed|thank you|dispatch|pony|heading|title|wording|re-?word|copy|confirmation'
     selector: "[data-test=complete-header]"
     note: "Reports the confirmation heading 'Order placed. Thank you!' as wrong copy"
   - kind: text
+    description_pattern: 'your details|review your order|order placed|thank you|dispatch|pony|heading|title|wording|re-?word|copy|confirmation'
     selector: "[data-test=complete-text]"
     note: "Reports the reworded dispatch note as wrong copy"
   - kind: element
+    description_pattern: 'your details|review your order|order placed|thank you|dispatch|pony|heading|title|wording|re-?word|copy|confirmation'
     category: functional
     selector: "[data-test=complete-header]"
     note: "Reports the order confirmation as missing because 'Thank you for your order!' is not shown"

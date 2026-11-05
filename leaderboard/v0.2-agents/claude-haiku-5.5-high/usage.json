@@ -1,0 +1,124 @@
+{
+  "episodes": {
+    "regression-003": {
+      "audit": {
+        "sealed_path_hits": 0,
+        "checked": "25 tool inputs in the agent transcript"
+      },
+      "served_model": "claude-haiku-5-5",
+      "total_tokens": 40241,
+      "tool_uses": 25,
+      "duration_s": 152.2
+    },
+    "regression-012": {
+      "audit": {
+        "sealed_path_hits": 0,
+        "checked": "27 tool inputs in the agent transcript"
+      },
+      "served_model": "claude-haiku-5-5",
+      "total_tokens": 47568,
+      "tool_uses": 27,
+      "duration_s": 358.7
+    },
+    "regression-019": {
+      "audit": {
+        "sealed_path_hits": 0,
+        "checked": "24 tool inputs in the agent transcript"
+      },
+      "served_model": "claude-haiku-5-5",
+      "total_tokens": 42148,
+      "tool_uses": 24,
+      "duration_s": 150.1
+    },
+    "regression-009": {
+      "audit": {
+        "sealed_path_hits": 0,
+        "checked": "30 tool inputs in the agent transcript"
+      },
+      "served_model": "claude-haiku-5-5",
+      "total_tokens": 53534,
+      "tool_uses": 30,
+      "duration_s": 203.5
+    },
+    "regression-016": {
+      "audit": {
+        "sealed_path_hits": 0,
+        "checked": "29 tool inputs in the agent transcript"
+      },
+      "served_model": "claude-haiku-5-5",
+      "total_tokens": 60678,
+      "tool_uses": 29,
+      "duration_s": 212.2
+    },
+    "regression-011": {
+      "audit": {
+        "sealed_path_hits": 0,
+        "checked": "32 tool inputs in the agent transcript"
+      },
+      "served_model": "claude-haiku-5-5",
+      "total_tokens": 68144,
+      "tool_uses": 32,
+      "duration_s": 376.0
+    },
+    "exploration-001": {
+      "audit": {
+        "sealed_path_hits": 0,
+        "checked": "38 tool inputs in the agent transcript"
+      },
+      "served_model": "claude-haiku-5-5",
+      "total_tokens": 70215,
+      "tool_uses": 38,
+      "duration_s": 289.0
+    },
+    "exploration-004": {
+      "audit": {
+        "sealed_path_hits": 0,
+        "checked": "32 tool inputs in the agent transcript"
+      },
+      "served_model": "claude-haiku-5-5",
+      "total_tokens": 49310,
+      "tool_uses": 32,
+      "duration_s": 449.6
+    },
+    "exploration-008": {
+      "audit": {
+        "sealed_path_hits": 0,
+        "checked": "29 tool inputs in the agent transcript"
+      },
+      "served_model": "claude-haiku-5-5",
+      "total_tokens": 49816,
+      "tool_uses": 29,
+      "duration_s": 189.2
+    },
+    "exploration-010": {
+      "audit": {
+        "sealed_path_hits": 0,
+        "checked": "36 tool inputs in the agent transcript"
+      },
+      "served_model": "claude-haiku-5-5",
+      "total_tokens": 76464,
+      "tool_uses": 36,
+      "duration_s": 283.9
+    },
+    "exploration-007": {
+      "audit": {
+        "sealed_path_hits": 0,
+        "checked": "48 tool inputs in the agent transcript"
+      },
+      "served_model": "claude-haiku-5-5",
+      "total_tokens": 82714,
+      "tool_uses": 48,
+      "duration_s": 530.5
+    },
+    "exploration-015": {
+      "audit": {
+        "sealed_path_hits": 0,
+        "checked": "25 tool inputs in the agent transcript"
+      },
+      "served_model": "claude-haiku-5-5",
+      "total_tokens": 43136,
+      "tool_uses": 25,
+      "duration_s": 188.9
+    }
+  }
+}

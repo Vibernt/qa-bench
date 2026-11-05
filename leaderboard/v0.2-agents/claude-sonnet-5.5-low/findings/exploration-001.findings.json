@@ -1,0 +1,31 @@
+{
+  "episode_id": "exploration-001",
+  "system": {
+    "name": "claude-sonnet-5.5-low",
+    "version": "claude-sonnet-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "editor"
+      },
+      "category": "error-handling",
+      "description": "Submitting the new-expense form with invalid data (empty title, negative or 3-decimal amount) returns HTTP 400 and re-renders a blank form with no error message, and the URL changes to /expenses.",
+      "confidence": 0.4,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor",
+        "POST /expenses with empty title or amount -5",
+        "Observe blank form, no message"
+      ]
+    }
+  ],
+  "notes": "Totals, category filters and viewer permissions checked and looked correct.",
+  "cost": {
+    "model_usd": 0.014499,
+    "notes": "estimate from 16665 total tokens (85% cache read / 10% input / 5% output); range $0.0033-$0.0400"
+  },
+  "wall_time_s": 34
+}

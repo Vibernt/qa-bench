@@ -1,0 +1,118 @@
+{
+  "episode_id": "exploration-004",
+  "system": {
+    "name": "claude-sonnet-5.5-high",
+    "version": "claude-sonnet-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "[data-testid=\"total\"]"
+      },
+      "category": "functional",
+      "description": "After adding, editing or deleting an expense the list and Total are stale: the page shows 'Expense saved' but the new/edited row is missing and the total is unchanged for roughly 30 seconds (other sessions/viewers too). The edit page and /expenses/N/edit already show the new data, so the list appears served from a stale cache. A deleted row also keeps showing.",
+      "confidence": 0.8,
+      "severity": "major",
+      "repro": [
+        "Sign in as editor",
+        "Note Total $399.99",
+        "Add expense 'Test A', meals, 10.10 via /expenses/new",
+        "After redirect to /expenses?flash=saved, observe the row is absent and Total still $399.99",
+        "Open /expenses/9/edit - the record exists; reload /expenses after ~30 s and the row and Total $409.99+ appear"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "f1-stale.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses",
+        "role": "viewer",
+        "selector": "[data-testid=\"total\"]"
+      },
+      "category": "consistency",
+      "description": "Total does not respect the category filter: filtering by travel, meals or office (or an unknown category that yields an empty table) still shows the grand total $399.99, which does not match the rows displayed.",
+      "confidence": 0.6,
+      "severity": "major",
+      "repro": [
+        "Sign in as viewer",
+        "Open /expenses?category=office (2 rows, $37.49)",
+        "Total still reads $399.99",
+        "Also /expenses?category=bogus shows no rows but Total $399.99"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "f2-filter-total.png"
+        }
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/expenses",
+        "role": "editor"
+      },
+      "category": "error-handling",
+      "description": "Server-side validation failures (empty/blank title, negative or non-numeric amount, amount with more than 2 decimals, bad category) return 400 and re-render a blank form with no error message and the user's input discarded, so the user does not know why the save failed.",
+      "confidence": 0.6,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor",
+        "POST /expenses with title empty or amount=-5 (e.g. bypass HTML min via devtools)",
+        "Response is 400 with an empty 'Add expense' form and no error text"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "f3-no-error.png"
+        }
+      ]
+    },
+    {
+      "id": "f4",
+      "where": {
+        "route": "/expenses",
+        "role": "editor"
+      },
+      "category": "error-handling",
+      "description": "Unreasonable input is accepted: amount 0, amount 99999999999 and a 5000-character title are saved without limits or error.",
+      "confidence": 0.3,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor",
+        "POST /expenses with amount=99999999999 or a 5000 char title",
+        "Gets 303 saved"
+      ]
+    },
+    {
+      "id": "f5",
+      "where": {
+        "route": "/expenses/999/delete",
+        "role": "editor"
+      },
+      "category": "error-handling",
+      "description": "Deleting a non-existent expense id (POST /expenses/999/delete) redirects to /expenses as if successful instead of returning 404 (edit of a missing id returns 404).",
+      "confidence": 0.3,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor",
+        "POST /expenses/999/delete",
+        "Returns 303 to /expenses rather than 404"
+      ]
+    }
+  ],
+  "notes": "Delete has no confirmation (not reported). Permissions for viewer (403 on new/edit/create/delete) and unauthenticated redirect behave correctly. Total arithmetic of seed data is correct.",
+  "cost": {
+    "model_usd": 0.02962,
+    "notes": "estimate from 34046 total tokens (85% cache read / 10% input / 5% output); range $0.0068-$0.0817"
+  },
+  "wall_time_s": 111
+}

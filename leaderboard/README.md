@@ -1,6 +1,6 @@
 # Leaderboard
 
-Each folder is `<bench version>/<system>/<track>/`, or `b0-agents/<configuration>/` for the agent sample runs, and holds the scorer's `report.json` (schema
+Each folder is `<bench version>/<system>/<track>/`, or `<version>-agents/<configuration>/` for the agent sample runs, and holds the scorer's `report.json` (schema
 [`report.schema.json`](../schemas/report.schema.json)) and `report.md`. Every report records:
 - the upstream pin of each app;
 - each track's seed;
@@ -81,3 +81,14 @@ npx tsx bin/qa-bench.ts run --adapter playwright-suite --track noise --parallel 
 ```
 Episode generation is deterministic. The same commit gives byte-identical episodes and answer keys, so the
 sha256 values in these reports must match.
+
+## v0.2 agent runs (bench 0.2.0-dev, 5 Nov 2026)
+Four Claude configurations and the scripted suite, each run once on the 12-episode set `v0.2-sample-12`: 6
+regression and 6 exploratory episodes, with 17 planted defects (10 subtle) and 14 natural bugs. Results and
+caveats are in [`v0.2-agents/`](v0.2-agents/README.md). Recall now separates systems:
+- Haiku 5.5 at high effort found 17 of 17;
+- Sonnet 5.5 at high effort found 15 of 17, with the best precision (95.5%) and the most natural bugs (7 of 14);
+- the low-effort runs and the scripted suite found 6 to 9.
+
+The triage of these runs added 9 natural defects, gave every deliberate-change label a description pattern, and
+fixed a bench bug: Swag Labs' runtime config exposed the test account.

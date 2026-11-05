@@ -1,0 +1,49 @@
+{
+  "episode_id": "regression-012",
+  "system": {
+    "name": "claude-sonnet-5.5-low",
+    "version": "claude-sonnet-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "editor"
+      },
+      "category": "functional",
+      "description": "Editing an expense shows 'Expense updated' but the amount is not changed in the list or total (still $42.50, total $399.99); the edit is lost.",
+      "confidence": 0.85,
+      "severity": "critical",
+      "repro": [
+        "Sign in as editor",
+        "Open /expenses/1/edit",
+        "Change amount to 50.00 and save",
+        "List still shows $42.50 and total unchanged"
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses",
+        "role": "editor"
+      },
+      "category": "functional",
+      "description": "Adding an expense shows 'Expense saved' but no new row appears, even after reload; total unchanged. The expense is lost.",
+      "confidence": 0.85,
+      "severity": "critical",
+      "repro": [
+        "Sign in as editor",
+        "Open /expenses/new",
+        "Fill title 'QA item', amount 10.10, category office, save",
+        "No new row in list, nor after reload"
+      ]
+    }
+  ],
+  "notes": "List total, filter, viewer read-only checks looked correct.",
+  "cost": {
+    "model_usd": 0.017292,
+    "notes": "estimate from 19876 total tokens (85% cache read / 10% input / 5% output); range $0.0040-$0.0477"
+  },
+  "wall_time_s": 212.8
+}

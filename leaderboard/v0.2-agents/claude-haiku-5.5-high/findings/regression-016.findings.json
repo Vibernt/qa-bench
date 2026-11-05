@@ -1,0 +1,55 @@
+{
+  "episode_id": "regression-016",
+  "system": {
+    "name": "claude-haiku-5.5-high",
+    "version": "claude-haiku-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses/new",
+        "role": "editor"
+      },
+      "category": "error-handling",
+      "description": "When the server rejects a new expense (for example an amount typed as 1e6 or 1e15, which the number input accepts as valid), the 'New expense' form is shown again with every field blank and no error message, so the title and category the user entered are lost. The edit form (/expenses/<id>/edit) behaves the same way: it reverts the title to the stored value with no message.",
+      "confidence": 0.55,
+      "severity": "major",
+      "repro": [
+        "Sign in as editor-640c at /login.",
+        "Open /expenses/new.",
+        "Enter title 'Taxi home', choose category travel, and enter amount 1e6.",
+        "Click 'Save expense'.",
+        "Observe: the response is a 400, the page shows the 'New expense' form with an empty title and no error text, and no expense is added."
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "f1-add-400.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses",
+        "role": "editor"
+      },
+      "category": "consistency",
+      "description": "After a successful add or edit the list shows a status message ('Expense saved' / 'Expense updated'), but after deleting an expense the page reloads with no confirmation message.",
+      "confidence": 0.3,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor-640c and open /expenses.",
+        "Click 'Delete' on any row.",
+        "Observe: the row disappears and the page reloads at /expenses with no status message, unlike add and edit."
+      ]
+    }
+  ],
+  "notes": "Tested as viewer and editor. Working correctly: viewer list total and per-category filter totals (checked against manual sums); editor add (success message, one new row, persists after reload, total updated); editor edit of amount, title and category (list, total, filter and reload all updated straight away); viewer sees no Edit, Delete or New expense controls; viewer GET and POST to /expenses/new, /expenses/<id>/edit, add and delete are refused with 403 and the data is unchanged; unauthenticated access redirects to /login; wrong password gives 'Invalid credentials'; sign-out invalidates the old session cookie server-side; titles are HTML-escaped; negative and text amounts are rejected server-side; list loads in about 20 ms. Not reported: missing CSP and other security headers (baseline unknown), the unstyled plain-HTML layout, the 'New expense' link wording versus the brief's 'Add expense', and the lack of thousands separators in amounts. Test data was added to the shared instance during testing (QA rows, LimitTest rows, an HTML-injection test row, and edited amounts on 'Train to Pune', 'Notebooks' and 'Project dinner'). The session cookie is HttpOnly and SameSite=Lax but not Secure, which is expected over http on localhost.",
+  "cost": {
+    "model_usd": 0.002639,
+    "notes": "estimate from 60678 total tokens (85% cache read / 10% input / 5% output); range $0.0006-$0.0073"
+  },
+  "wall_time_s": 212.2
+}

@@ -1,7 +1,8 @@
 #!/bin/sh
 # QA-BENCH: writes /runtime-config.js from the episode's env at container start, so one image serves every
 # episode. Runs from nginx's /docker-entrypoint.d; a non-zero exit stops the container (unknown names fail loudly).
-#   QA_BENCH_ACCOUNTS   "user:pass[,user:pass]"  generated accounts; when set, built-in usernames are refused
+#   QA_BENCH_ACCOUNTS   "user:pass[,user:pass]"  generated accounts; when set, built-in usernames are refused.
+#                       Only salted SHA-256 hashes reach the page, so reading the file doesn't reveal them.
 #   QA_BENCH_MUTATIONS  comma list of built-in faulty users whose behaviour the generated accounts get
 #   QA_BENCH_CHANGES    comma list of deliberate changes (not bugs)
 # Names become bit flags (they must match upstream/src/utils/QaBench.js), so the page does not spell them out.
@@ -33,7 +34,21 @@ for name in $(printf '%s' "${QA_BENCH_CHANGES:-}" | tr ',' ' '); do
   c=$((c | bit))
 done
 
-a=$(printf '%s' "${QA_BENCH_ACCOUNTS:-}" | base64 | tr -d '\n')
-printf 'window.__SL_RUNTIME__ = { a: "%s", m: %d, c: %d };\n' "$a" "$m" "$c" > "$out"
+# Each account becomes "sha256(salt LF user):sha256(salt LF user LF pass)", with a fresh random salt per start.
+# The hashing must match upstream/src/utils/QaBench.js.
+salt=$(od -An -N16 -tx1 /dev/urandom | tr -d ' \n')
+h() { printf '%s' "$1" | sha256sum | cut -d' ' -f1; }
+a=""
+for pair in $(printf '%s' "${QA_BENCH_ACCOUNTS:-}" | tr ',' ' '); do
+  case "$pair" in *:*) ;; *) echo "runtime-config: QA_BENCH_ACCOUNTS entry without ':'" >&2; exit 1 ;; esac
+  user=${pair%%:*}
+  pass=${pair#*:}
+  entry="$(h "$salt
+$user"):$(h "$salt
+$user
+$pass")"
+  a="${a:+$a,}\"$entry\""
+done
+printf 'window.__SL_RUNTIME__ = { s: "%s", a: [%s], m: %d, c: %d };\n' "$salt" "$a" "$m" "$c" > "$out"
 n=$(printf '%s' "${QA_BENCH_ACCOUNTS:-}" | tr ',' '\n' | grep -c ':' || true)
 echo "runtime-config: ${n} account(s); bench mode $([ "$n" -gt 0 ] && echo on || echo off)"

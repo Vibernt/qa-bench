@@ -1,0 +1,55 @@
+{
+  "episode_id": "exploration-015",
+  "system": {
+    "name": "claude-haiku-5.5-low",
+    "version": "claude-haiku-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/checkout-step-one.html",
+        "role": "customer",
+        "selector": "[data-test=\"lastName\"]"
+      },
+      "category": "functional",
+      "description": "On checkout step one, the Last Name field is bound to the First Name value: typing a last name overwrites the first name and the last name field stays empty, so Continue is blocked with 'Last Name is required' and the customer cannot reach the overview or finish an order.",
+      "confidence": 0.9,
+      "severity": "critical",
+      "repro": [
+        "Sign in as customer",
+        "Add any product to the cart and click Checkout",
+        "Type 'Ann' into First Name",
+        "Type 'Lee' into Last Name",
+        "Observe First Name now shows 'Lee' and Last Name is empty",
+        "Enter a postal code and click Continue",
+        "Observe error 'Error: Last Name is required' and the page stays on step one"
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"product-sort-container\"]"
+      },
+      "category": "functional",
+      "description": "Sorting by price (low to high or high to low) does not work: after selecting either price option the dropdown snaps back to 'Name (A to Z)' and the product list stays in the default order (29.99, 9.99, 15.99, 49.99, 7.99, 15.99). Name sorting works.",
+      "confidence": 0.85,
+      "severity": "major",
+      "repro": [
+        "Sign in as customer",
+        "On the products page open the sort dropdown",
+        "Select 'Price (low to high)'",
+        "Observe the dropdown returns to 'Name (A to Z)' and prices are not ordered ascending",
+        "Select 'Price (high to low)' and observe the same reset"
+      ]
+    }
+  ],
+  "notes": "Tested login, product list, name sorting, add to cart, cart view and checkout step one. Could not reach checkout overview or order completion because of f1, so totals, tax and completion were not verified. Time budget was short; permission, security-hygiene, perf and visual categories were only lightly checked (no issues seen on the pages visited).",
+  "cost": {
+    "model_usd": 0.001121,
+    "notes": "estimate from 25767 total tokens (85% cache read / 10% input / 5% output); range $0.0003-$0.0031"
+  },
+  "wall_time_s": 139.3
+}

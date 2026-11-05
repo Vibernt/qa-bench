@@ -1,0 +1,14 @@
+{
+  "episode_id": "exploration-010",
+  "system": {
+    "name": "claude-sonnet-5.5-low",
+    "version": "claude-sonnet-5-5@low"
+  },
+  "findings": [],
+  "notes": "Tested listing, filter, totals, permissions, add/edit/delete, validation; no defects found.",
+  "cost": {
+    "model_usd": 0.019368,
+    "notes": "estimate from 22262 total tokens (85% cache read / 10% input / 5% output); range $0.0045-$0.0534"
+  },
+  "wall_time_s": 55.1
+}

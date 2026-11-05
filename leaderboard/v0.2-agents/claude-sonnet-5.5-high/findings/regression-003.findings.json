@@ -1,0 +1,39 @@
+{
+  "episode_id": "regression-003",
+  "system": {
+    "name": "claude-sonnet-5.5-high",
+    "version": "claude-sonnet-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "[data-testid=\"total\"]"
+      },
+      "category": "functional",
+      "description": "Editing an expense drops the cents of the amount: saving 42.50 stores $42.00, 12.34 becomes $12.00, 5.5 becomes $5.00, 0.99 becomes $0.00. The list row and total then show the truncated value, and it persists after reload. Adding an expense keeps cents correctly (7.25 stays $7.25).",
+      "confidence": 0.9,
+      "severity": "major",
+      "repro": [
+        "Sign in as editor-5014",
+        "Open /expenses/1/edit (Train to Pune, amount 42.50)",
+        "Change the amount to 12.34 (or re-save 42.50) and click Save expense",
+        "Observe the list row shows $12.00 (or $42.00) and the total is computed from the truncated amount; reload and it stays truncated"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "f1.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Total vs sum, category filter, add (single row, flash, persistence), viewer read-only (UI and direct GET/POST refused with 403) all behaved correctly. Very large amounts (99999999999) are accepted without an upper bound; not reported.",
+  "cost": {
+    "model_usd": 0.022777,
+    "notes": "estimate from 26180 total tokens (85% cache read / 10% input / 5% output); range $0.0052-$0.0628"
+  },
+  "wall_time_s": 63
+}

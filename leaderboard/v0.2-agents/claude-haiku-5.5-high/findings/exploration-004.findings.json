@@ -1,0 +1,78 @@
+{
+  "episode_id": "exploration-004",
+  "system": {
+    "name": "claude-haiku-5.5-high",
+    "version": "claude-haiku-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "[aria-label=\"Expenses\"]"
+      },
+      "category": "consistency",
+      "description": "After an expense is added, edited or deleted, the unfiltered expense list and the Total stay on the old data for about a minute, although the save shows success and the edit form and category-filtered list already show the change. New rows are missing and deleted rows still appear until the list catches up.",
+      "confidence": 0.7,
+      "severity": "major",
+      "repro": [
+        "Sign in as editor-ac77",
+        "Open /expenses/new, enter title 'IMM test', category travel, amount 3.21, click Save",
+        "Page shows 'Expense saved' but the new row is not in the table and the total is unchanged",
+        "Open /expenses?category=travel: the new row is there",
+        "Reload /expenses after about 60 s: the row and the updated total now appear",
+        "Editing Team lunch to 75.00 / office shows the same lag: the edit form reopens with 75.00 but the list still shows $68.40 for a while"
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses",
+        "role": "viewer",
+        "selector": "[data-testid=\"total\"]"
+      },
+      "category": "functional",
+      "description": "The Total does not follow the category filter: with Category = travel the table shows 3 rows summing to $185.25, but the total still reads $399.99 (the grand total of all expenses).",
+      "confidence": 0.5,
+      "severity": "major",
+      "repro": [
+        "Sign in as viewer-691c",
+        "Open /expenses",
+        "Select Category = travel and click Apply",
+        "Rows shown are Train to Pune $42.50, Client taxi $18.75, Hotel booking $124.00",
+        "Total still shows Total: $399.99"
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/expenses/new",
+        "role": "editor",
+        "selector": "input[name=\"title\"]"
+      },
+      "category": "error-handling",
+      "description": "A whitespace-only title passes the browser 'required' check, the server rejects it with a 400, and the page comes back as a blank Add expense form with no error message. The typed values are lost and the user is not told why the save failed. The same happens on the edit form, which reloads the stored values with no message.",
+      "confidence": 0.7,
+      "severity": "major",
+      "repro": [
+        "Sign in as editor-ac77",
+        "Open /expenses/new",
+        "Type three spaces in Title, enter Amount 4.00, keep a category, click Save",
+        "Result: the URL is /expenses, the form is empty, no error text is shown, and no expense is created"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "ws-title-add.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Tested over HTTP and a browser. Permission checks passed: viewer gets 403 on /expenses/new, /expenses/1/edit and POST /expenses/1/delete, and sees no Edit, Delete or Add controls. Login with a wrong password shows 'Invalid credentials'. Logout invalidates the session. Category filter returns the right rows for each category. Totals match the row sums on the unfiltered list. HTML in titles is escaped. Not tested: performance beyond a single fast load, and accessibility beyond the labels seen. Test data was added during the run (QA*, UI QA lunch, POLL, LAG, IMM expenses, plus Printer paper deleted and Team lunch edited then restored to 68.40/meals).",
+  "cost": {
+    "model_usd": 0.002145,
+    "notes": "estimate from 49310 total tokens (85% cache read / 10% input / 5% output); range $0.0005-$0.0059"
+  },
+  "wall_time_s": 449.6
+}

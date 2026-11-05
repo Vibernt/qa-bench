@@ -1,0 +1,90 @@
+{
+  "episode_id": "regression-019",
+  "system": {
+    "name": "claude-haiku-5.5-high",
+    "version": "claude-haiku-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "[data-testid=\"total\"]"
+      },
+      "category": "functional",
+      "description": "Saving one new expense creates two identical rows in the expense list with two ids (e.g. ids 9 and 10), and the total counts the expense twice (8 rows/$399.99 became 10 rows/$420.49 after adding one $10.25 expense). The duplicate persists after reload, and a second add behaves the same way.",
+      "confidence": 0.8,
+      "severity": "critical",
+      "repro": [
+        "Sign in as editor-b6a1",
+        "Open /expenses/new (New expense)",
+        "Enter title 'QA Probe Taxi', category travel, amount 10.25",
+        "Click 'Save expense' once; the page shows 'Expense saved'",
+        "Open /expenses: two 'QA Probe Taxi' rows appear and the total rises by 20.50",
+        "Reload: the duplicate remains"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "editor-after-add.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses",
+        "role": "viewer",
+        "selector": "table[aria-label=\"Expenses\"] tbody"
+      },
+      "category": "security-hygiene",
+      "description": "The expense title is stored and rendered without HTML escaping. An editor can save a title such as <script>alert(1)</script>, and it runs in the browser of every user who opens /expenses, including viewers. The alert fired for the viewer account.",
+      "confidence": 0.9,
+      "severity": "critical",
+      "repro": [
+        "Sign in as editor-b6a1",
+        "Open /expenses/new",
+        "Enter title <script>alert(1)</script>, category travel, amount 2, and save",
+        "Sign out and sign in as viewer-0139",
+        "Open /expenses: a JavaScript dialog fires from the title cell"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "viewer-expenses.png"
+        }
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/expenses",
+        "role": "viewer",
+        "selector": "[data-testid=\"total\"]"
+      },
+      "category": "functional",
+      "description": "The total does not change when a category filter is applied. Filtering to travel lists 3 expenses that sum to $185.25, but the total still reads $399.99 (the all-expense total). A filter with no matches shows an empty list with the same total, so the total is not the sum of the listed amounts.",
+      "confidence": 0.5,
+      "severity": "major",
+      "repro": [
+        "Sign in as viewer-0139",
+        "Open /expenses",
+        "Choose 'travel' in the Category filter and click Apply",
+        "Three rows are listed (42.50, 18.75, 124.00) but the total still shows $399.99"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "viewer-filter-travel-total.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Tested as viewer: list and total (sum matches with no filter), category filter rows, direct edit/add/delete POSTs (403), GET /expenses/1/edit and /expenses/new (403), anonymous POST (redirect to login, nothing created), logout invalidates the session, wrong-password message. Tested as editor: add (duplicate, see f1), edit amount (list, total and reload updated correctly), edit validation (400 for negative, empty title and 3-decimal amount), and create validation (400 for negative, non-numeric, empty title and unknown category). Page timing about 1 ms over HTTP. The Add link is labelled 'New expense' rather than 'Add expense'; I did not report it as the wording looks deliberate. Test data left in the app: duplicated QA Probe rows, the script-title row (id 14) and an edited amount on expense 3 (now 50.00), so that the environment is not clean. Delete was not run on the main data.",
+  "cost": {
+    "model_usd": 0.001833,
+    "notes": "estimate from 42148 total tokens (85% cache read / 10% input / 5% output); range $0.0004-$0.0051"
+  },
+  "wall_time_s": 150.1
+}

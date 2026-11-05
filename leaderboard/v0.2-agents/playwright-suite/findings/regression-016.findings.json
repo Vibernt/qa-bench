@@ -1,0 +1,38 @@
+{
+  "episode_id": "regression-016",
+  "system": {
+    "name": "playwright-suite",
+    "version": "0.1.0"
+  },
+  "findings": [
+    {
+      "id": "pw-001-expense-add-control-label",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "step": "add",
+        "selector": "a[href=\"/expenses/new\"]"
+      },
+      "category": "copy",
+      "description": "The add control reads \"New expense\"; the journey calls it \"Add expense\"",
+      "confidence": 0.5,
+      "detected_at_s": 3.4,
+      "check": "expense.add-control-label",
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "pw-001-expense-add-control-label.png"
+        }
+      ]
+    }
+  ],
+  "cost": {
+    "compute_usd": 0,
+    "model_usd": 0,
+    "notes": "Scripted Playwright suite: no model calls; local compute only, not metered."
+  },
+  "wall_time_s": 8.3,
+  "started_at": "2026-11-05T15:10:09.907Z",
+  "finished_at": "2026-11-05T15:10:18.161Z",
+  "notes": "suite expense-app for app expense-app"
+}

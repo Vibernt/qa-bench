@@ -151,6 +151,45 @@ export async function prepareSession(configId: string, setId: string, opts: Prep
 }
 
 /** Bring an agent's findings file into the schema: drop unknown fields and unrepairable findings. Pure. */
+/**
+ * The episode's generated passwords, and the base64 forms an app might expose them in. Findings that quote them
+ * (e.g. a report that credentials leak) keep the description with the values redacted: test accounts live only in
+ * the episode's seed (AGENTS.md rule 3).
+ */
+export function briefSecrets(brief: Pick<Brief, 'roles'>): string[] {
+  const accounts = (brief.roles ?? []).flatMap((r) => r.accounts ?? []).filter((a) => a.password);
+  const b64 = (t: string) => Buffer.from(t).toString('base64');
+  const out = new Set<string>();
+  for (const a of accounts) {
+    out.add(a.password);
+    out.add(b64(`${a.username}:${a.password}`));
+    out.add(b64(a.password).replace(/=+$/, ''));
+  }
+  if (accounts.length) out.add(b64(accounts.map((a) => `${a.username}:${a.password}`).join(',')));
+  return [...out].filter((t) => t.length >= 4).sort((a, b) => b.length - a.length);
+}
+
+/** Replace every secret in every string of `value` with "[redacted]". */
+export function redactSecrets<T>(value: T, secrets: string[]): T {
+  if (!secrets.length) return value;
+  const walk = (v: unknown): unknown => {
+    if (typeof v === 'string') return secrets.reduce((t, s) => t.split(s).join('[redacted]'), v);
+    if (Array.isArray(v)) return v.map(walk);
+    if (v && typeof v === 'object') return Object.fromEntries(Object.entries(v).map(([k, x]) => [k, walk(x)]));
+    return v;
+  };
+  return walk(value) as T;
+}
+
+/** Evidence paths are relative to the evidence directory (schema); agents often give absolute workspace paths. */
+export function evidencePath(p: string): string {
+  const s = p.replace(/\\/g, '/');
+  const i = s.lastIndexOf('/evidence/');
+  if (i >= 0) return s.slice(i + '/evidence/'.length);
+  if (s.startsWith('evidence/')) return s.slice('evidence/'.length);
+  return s.startsWith('/') ? s.slice(s.lastIndexOf('/') + 1) : s.replace(/^\.\//, '');
+}
+
 export function sanitiseFindings(raw: unknown, episodeId: string, system: { name: string; version: string }): { file: FindingsFile; dropped: number; repaired: number } {
   const src = (raw && typeof raw === 'object' ? raw : {}) as Record<string, unknown>;
   const list = Array.isArray(src.findings) ? src.findings : [];
@@ -187,7 +226,7 @@ export function sanitiseFindings(raw: unknown, episodeId: string, system: { name
         const kinds = ['screenshot', 'network', 'dom', 'console', 'text', 'timing', 'trace', 'other'];
         const kind = typeof o.kind === 'string' && kinds.includes(o.kind) ? o.kind : 'other';
         const item: NonNullable<Finding['evidence']>[number] = { kind: kind as never };
-        if (typeof o.path === 'string') item.path = o.path;
+        if (typeof o.path === 'string' && o.path) item.path = evidencePath(o.path);
         if (typeof o.excerpt === 'string') item.excerpt = o.excerpt.slice(0, 2000);
         if (typeof o.note === 'string') item.note = o.note;
         return [item];
@@ -253,7 +292,7 @@ export async function finishSession(session: string, opts: FinishOptions = {}): 
     } else note = 'the agent wrote no findings.json';
     const sanitised = sanitiseFindings(raw, ep.episode_id, system);
     const { dropped, repaired } = sanitised;
-    let file = sanitised.file;
+    let file = existsSync(ep.brief) ? redactSecrets(sanitised.file, briefSecrets(JSON.parse(readFileSync(ep.brief, 'utf8')) as Brief)) : sanitised.file;
     if (u.audit && u.audit.sealed_path_hits > 0) {
       file = { episode_id: ep.episode_id, system, findings: [] };
       note = `DISQUALIFIED: ${u.audit.sealed_path_hits} reference(s) to sealed paths in the agent's commands; findings dropped`;

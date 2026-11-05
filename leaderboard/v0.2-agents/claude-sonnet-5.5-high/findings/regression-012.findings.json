@@ -1,0 +1,91 @@
+{
+  "episode_id": "regression-012",
+  "system": {
+    "name": "claude-sonnet-5.5-high",
+    "version": "claude-sonnet-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses/1/delete",
+        "role": "viewer"
+      },
+      "category": "permission",
+      "description": "A viewer can delete expenses. POST /expenses/{id}/delete as the viewer is accepted (303 redirect to /expenses, no 403) and the expense is actually removed. Other write requests by the viewer (POST /expenses, POST /expenses/{id}) are correctly refused with 403.",
+      "confidence": 0.9,
+      "severity": "critical",
+      "repro": [
+        "Sign in as viewer-023c",
+        "Send POST /expenses/1/delete with the viewer session cookie",
+        "Observe 303 to /expenses instead of 403",
+        "After a while the list no longer contains 'Train to Pune' and the total has dropped by $42.50"
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "[data-testid=\"total\"]"
+      },
+      "category": "functional",
+      "description": "After adding, editing or deleting an expense the list and total do not update: the redirected page shows the success flash ('Expense saved'/'Expense updated') but still the old rows and old total, and reloads (also from a new session) keep showing stale data for roughly 50 seconds. The change only appears later (measured ~54 s for an added row). The journey requires the new amount to show straight away.",
+      "confidence": 0.85,
+      "severity": "critical",
+      "repro": [
+        "Sign in as editor-9b65",
+        "Open /expenses/3/edit, change the amount to 20.00, save",
+        "Redirected to /expenses?flash=updated: row still shows $12.99 and total unchanged",
+        "Reload repeatedly / sign in again: still old values for about a minute, then the new amount appears"
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/expenses/5/edit",
+        "role": "editor",
+        "selector": "select[name=\"category\"]"
+      },
+      "category": "functional",
+      "description": "The edit form does not preselect the expense's current category: the Category select always defaults to the first option (travel). Editing only the amount of a meals/office expense therefore silently changes its category to travel (e.g. Team lunch went from meals to travel after an amount-only edit), which also corrupts category filters.",
+      "confidence": 0.85,
+      "severity": "major",
+      "repro": [
+        "Sign in as editor-9b65",
+        "Open /expenses/2/edit (Team lunch, meals)",
+        "Category shows 'travel'; change only the amount and save",
+        "After the list refreshes, Team lunch is listed under travel"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "edit-form.png"
+        }
+      ]
+    },
+    {
+      "id": "f4",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "form[action=\"/expenses\"]"
+      },
+      "category": "error-handling",
+      "description": "Submitting the add-expense form with invalid data (empty title, negative or non-numeric amount, unknown category) returns HTTP 400 and re-renders a blank form with no error message, and the user's entered values are discarded.",
+      "confidence": 0.5,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor-9b65",
+        "POST /expenses with title='' and amount=-5 (bypassing browser validation)",
+        "Response is 400 with the form re-rendered, no error text, fields emptied"
+      ]
+    }
+  ],
+  "notes": "Viewer list, total sum and category filter looked correct (filtered total equals filtered sum). Not tested: editor delete behavior in detail, visual/responsive layout. My own test edits (items renamed/added: 'QA test item', 'QA add two', 'Delay probe', '<b>x</b>') remain in the data.",
+  "cost": {
+    "model_usd": 0.031417,
+    "notes": "estimate from 36112 total tokens (85% cache read / 10% input / 5% output); range $0.0072-$0.0867"
+  },
+  "wall_time_s": 241.7
+}

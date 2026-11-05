@@ -18,6 +18,14 @@ with its answer-key hashes.
 - **Agent harness 0.3.0:** an exploratory prompt variant, the severity field in findings, and a `qa-tester` subagent
   definition limited to shell and file tools.
 - **Swag Labs** answers 404 for unknown URLs, as its upstream deployment does.
+- **Swag Labs' runtime config** carries salted SHA-256 account hashes, not the base64 credentials that agents
+  found readable by signed-out visitors.
+- **Natural defects:** 9 more from the v0.2 agent runs, each with a `verify.ts` check, for 14 in all (7 per app).
+- **Matcher precision:** every deliberate-change label names its change in a description pattern, so unrelated
+  findings on the same route are no longer scored as false alarms. `expense.stale-state` and
+  `expense.total-under-filter` accept more ways of describing their symptom.
+- **Agent harness:** evidence paths in findings are made relative to the evidence folder.
+- **Leaderboard:** `v0.2-agents/`, with four Claude configurations and the scripted suite on `v0.2-sample-12`.
 
 ## 0.1.0-b0 (5 Nov 2026): skeleton
 **Apps**, each with a `verify.ts` that proves every label against the running app:

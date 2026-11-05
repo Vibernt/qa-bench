@@ -275,6 +275,21 @@ These are agent runs on a 10-episode sample (8 regression, 2 noise) with the sam
 | Claude Haiku 5.5, high effort | 100% (6/6) | 3 of 5 | 84.8% | 0 | $0.04 |
 | `playwright-suite`, same 10 episodes | 100% (6/6) | 0 of 5 | 78.0% | 50 | $0 |
 
+On the harder 0.2 bench (12 episodes: 6 regression and 6 exploratory, with 17 planted defects, 10 of them subtle,
+and 14 verified natural bugs), the same configurations separate clearly. Details are in
+[leaderboard/v0.2-agents/README.md](leaderboard/v0.2-agents/README.md).
+
+| System | Planted recall | Subtle | Natural bugs found | Precision | False alarms /100 ep | Est. model cost (12 ep) |
+|---|---|---|---|---|---|---|
+| Claude Haiku 5.5, high effort | 100% (17/17) | 10/10 | 5 of 14 | 92.7% | 0 | $0.03 |
+| Claude Sonnet 5.5, high effort | 88.2% (15/17) | 8/10 | 7 of 14 | 95.5% | 0 | $0.35 |
+| Claude Haiku 5.5, low effort | 52.9% (9/17) | 3/10 | 4 of 14 | 81.8% | 0 | $0.01 |
+| Claude Sonnet 5.5, low effort | 35.3% (6/17) | 2/10 | 1 of 14 | 73.3% | 8.3 | $0.19 |
+| `playwright-suite`, same 12 episodes | 35.3% (6/17) | 0/10 | 0 of 14 | 65.0% | 66.7 | $0 |
+
+One run per configuration on 12 episodes, so the intervals are wide: the two high-effort configurations can't be
+told apart yet.
+
 ## Repository layout
 
 ```
