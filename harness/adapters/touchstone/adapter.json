@@ -1,0 +1,10 @@
+{
+  "name": "touchstone",
+  "version": "0.1.0",
+  "description": "Hands the brief to Touchstone's run API as briefs and goals, polls until done, and maps Touchstone's findings and reported cost into bench findings. Never promotes journeys or changes Touchstone's state beyond starting a run.",
+  "mode": "container",
+  "build": "Dockerfile",
+  "network": "host",
+  "env_passthrough": ["TOUCHSTONE_API_URL", "TOUCHSTONE_API_TOKEN", "TOUCHSTONE_PROJECT", "QA_BENCH_TOUCHSTONE_APPROVED"],
+  "needs_approval": "Runs against a hosted Touchstone, or hosted episodes, need vid's go-ahead and BD4 (spend cap). The adapter refuses a non-local API URL unless QA_BENCH_TOUCHSTONE_APPROVED=1."
+}
