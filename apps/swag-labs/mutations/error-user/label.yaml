@@ -56,6 +56,7 @@ found_by:
   - kind: element
     route: /inventory-item.html
     category: functional
+    also_categories: [consistency]
     note: "Product description is missing on the detail page (blank where the text should be)"
   - kind: console
     route: /checkout-step-one.html

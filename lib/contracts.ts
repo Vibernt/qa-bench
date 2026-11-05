@@ -76,6 +76,8 @@ export interface FoundBy {
   route?: string;
   role?: string;
   category?: Category;
+  /** Other categories a reasonable report of the same evidence may use. */
+  also_categories?: Category[];
   selector?: string;
   region?: Region;
   note?: string;

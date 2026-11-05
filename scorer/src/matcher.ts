@@ -89,7 +89,8 @@ function matchEntry(f: Finding, label: Label, e: FoundBy, index: number): MatchR
 
   // Category
   const lCat = e.category ?? label.category;
-  if (f.category !== lCat) return fail(2, `category ${f.category} ≠ ${lCat}`);
+  const cats = [lCat, ...(e.also_categories ?? [])];
+  if (!cats.includes(f.category)) return fail(2, `category ${f.category} ≠ ${cats.join(' | ')}`);
 
   // Locator
   const fHas = !!(f.where.selector || f.where.region);

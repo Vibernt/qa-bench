@@ -85,6 +85,14 @@ describe('category', () => {
     const l = label('swag.x', { found_by: [{ kind: 'text', category: 'copy' }] });
     expect(m(finding('f', '/inventory.html', 'copy'), l).ok).toBe(true);
   });
+  it('accepts also_categories for the same evidence, and nothing else', () => {
+    const l = label('swag.x', { found_by: [{ kind: 'value', category: 'consistency', also_categories: ['functional'] }] });
+    expect(m(finding('f', '/inventory.html', 'functional'), l).ok).toBe(true);
+    expect(m(finding('f', '/inventory.html', 'consistency'), l).ok).toBe(true);
+    const r = m(finding('f', '/inventory.html', 'visual'), l);
+    expect(r.ok).toBe(false);
+    expect(r.reason).toBe('category visual ≠ consistency | functional for swag.x');
+  });
 });
 
 describe('locators', () => {

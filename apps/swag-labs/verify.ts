@@ -314,6 +314,13 @@ const checks: Record<string, Check[]> = {
       await s.page.locator(dt('cart-list')).waitFor();
       return displaced(await cartLinkBox(s));
     },
+    async (s) => {
+      await login(s);
+      await s.page.selectOption(dt('product-sort-container'), 'lohi');
+      await pause(300);
+      const shown = (await s.page.locator(`${dt('inventory-list')} ${dt('inventory-item-price')}`).allInnerTexts()).map(money);
+      return shown.some((p, i) => i > 0 && p < shown[i - 1]!);
+    },
   ],
   'swag.performance-glitch-user': [
     async (s) => {

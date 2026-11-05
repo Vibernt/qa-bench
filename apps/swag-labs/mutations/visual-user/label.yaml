@@ -47,5 +47,10 @@ found_by:
     route: /cart.html
     selector: "[data-test=shopping-cart-link]"
     note: "Cart icon displaced on the cart page too"
+  - kind: behaviour
+    category: functional
+    also_categories: [consistency]
+    selector: "[data-test=product-sort-container]"
+    note: "Sorting by price looks broken: the displayed prices are random, so the list is not in price order after Price (low to high)"
 split: public
 upstream_ref: "apps/swag-labs/upstream/src (isVisualUser in pages/Inventory.jsx, Cart.jsx, components/HeaderContainer.jsx, DrawerMenu.jsx; CSS .visual_failure, .btn_visual_failure, .btn_inventory_misaligned, .align_right); checked by apps/swag-labs/verify.ts"

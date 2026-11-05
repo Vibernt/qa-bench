@@ -4,21 +4,56 @@
   "title": "label.yaml: one planted defect, deliberate change or known baseline quirk",
   "type": "object",
   "additionalProperties": false,
-  "required": ["id", "app", "kind", "category", "class", "severity", "where", "found_by", "split", "title"],
+  "required": [
+    "id",
+    "app",
+    "kind",
+    "category",
+    "class",
+    "severity",
+    "where",
+    "found_by",
+    "split",
+    "title"
+  ],
   "properties": {
-    "id": { "$ref": "defs.schema.json#/$defs/labelId" },
-    "app": { "$ref": "defs.schema.json#/$defs/slug" },
-    "title": { "type": "string", "minLength": 1 },
-    "description": { "type": "string" },
-    "track": { "type": "string", "description": "Primary track (informational; tracks/*.yaml decide membership)" },
+    "id": {
+      "$ref": "defs.schema.json#/$defs/labelId"
+    },
+    "app": {
+      "$ref": "defs.schema.json#/$defs/slug"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "description": {
+      "type": "string"
+    },
+    "track": {
+      "type": "string",
+      "description": "Primary track (informational; tracks/*.yaml decide membership)"
+    },
     "kind": {
-      "enum": ["defect", "change", "baseline"],
+      "enum": [
+        "defect",
+        "change",
+        "baseline"
+      ],
       "description": "defect: planted bug (recall). change: deliberate change, reporting it is a false alarm. baseline: intended quirk of the unmutated app (e.g. a demo page that is broken on purpose); matching findings are excused"
     },
-    "category": { "$ref": "defs.schema.json#/$defs/category" },
-    "class": { "$ref": "defs.schema.json#/$defs/class" },
-    "severity": { "$ref": "defs.schema.json#/$defs/severity" },
-    "where": { "$ref": "defs.schema.json#/$defs/where" },
+    "category": {
+      "$ref": "defs.schema.json#/$defs/category"
+    },
+    "class": {
+      "$ref": "defs.schema.json#/$defs/class"
+    },
+    "severity": {
+      "$ref": "defs.schema.json#/$defs/severity"
+    },
+    "where": {
+      "$ref": "defs.schema.json#/$defs/where"
+    },
     "switch": {
       "type": "object",
       "additionalProperties": false,
@@ -26,10 +61,15 @@
       "properties": {
         "env": {
           "type": "object",
-          "additionalProperties": { "type": "string" },
+          "additionalProperties": {
+            "type": "string"
+          },
           "description": "Environment variables for compose. When several active labels set the same variable, values are joined with commas"
         },
-        "exclusive": { "type": "string", "description": "Labels sharing this group can't be active in the same episode" }
+        "exclusive": {
+          "type": "string",
+          "description": "Labels sharing this group can't be active in the same episode"
+        }
       }
     },
     "found_by": {
@@ -39,15 +79,53 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["kind"],
+        "required": [
+          "kind"
+        ],
         "properties": {
-          "kind": { "enum": ["value", "element", "text", "console", "network", "status", "visual", "timing", "a11y", "behaviour"] },
-          "route": { "type": "string", "description": "Overrides where.route for this entry" },
-          "role": { "type": "string", "description": "Overrides where.role for this entry" },
-          "category": { "$ref": "defs.schema.json#/$defs/category", "description": "Overrides the label category for this entry" },
-          "selector": { "type": "string" },
-          "region": { "$ref": "defs.schema.json#/$defs/region" },
-          "note": { "type": "string" }
+          "kind": {
+            "enum": [
+              "value",
+              "element",
+              "text",
+              "console",
+              "network",
+              "status",
+              "visual",
+              "timing",
+              "a11y",
+              "behaviour"
+            ]
+          },
+          "route": {
+            "type": "string",
+            "description": "Overrides where.route for this entry"
+          },
+          "role": {
+            "type": "string",
+            "description": "Overrides where.role for this entry"
+          },
+          "category": {
+            "$ref": "defs.schema.json#/$defs/category",
+            "description": "Overrides the label category for this entry"
+          },
+          "also_categories": {
+            "type": "array",
+            "items": {
+              "$ref": "defs.schema.json#/$defs/category"
+            },
+            "uniqueItems": true,
+            "description": "Other categories a reasonable report of this same evidence may use (e.g. a cart not emptied after checkout is functional or consistency)"
+          },
+          "selector": {
+            "type": "string"
+          },
+          "region": {
+            "$ref": "defs.schema.json#/$defs/region"
+          },
+          "note": {
+            "type": "string"
+          }
         }
       }
     },
@@ -55,17 +133,65 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "route": { "enum": ["exact", "prefix", "any"], "default": "exact" },
-        "role": { "enum": ["exact", "any"], "default": "exact" },
-        "region_px": { "type": "number", "minimum": 0, "default": 48 },
-        "require_locator": { "type": "boolean", "default": false, "description": "If true, a selector or region must also match when the entry has one" }
+        "route": {
+          "enum": [
+            "exact",
+            "prefix",
+            "any"
+          ],
+          "default": "exact"
+        },
+        "role": {
+          "enum": [
+            "exact",
+            "any"
+          ],
+          "default": "exact"
+        },
+        "region_px": {
+          "type": "number",
+          "minimum": 0,
+          "default": 48
+        },
+        "require_locator": {
+          "type": "boolean",
+          "default": false,
+          "description": "If true, a selector or region must also match when the entry has one"
+        }
       }
     },
-    "split": { "enum": ["public", "heldout"] },
-    "operator": { "type": "string", "description": "operators/ id this was instantiated from, if any" },
-    "upstream_ref": { "type": "string", "description": "Where the behaviour lives upstream (file or doc), for reviewers" }
+    "split": {
+      "enum": [
+        "public",
+        "heldout"
+      ]
+    },
+    "operator": {
+      "type": "string",
+      "description": "operators/ id this was instantiated from, if any"
+    },
+    "upstream_ref": {
+      "type": "string",
+      "description": "Where the behaviour lives upstream (file or doc), for reviewers"
+    }
   },
   "allOf": [
-    { "if": { "properties": { "kind": { "enum": ["defect", "change"] } } }, "then": { "required": ["switch"] } }
+    {
+      "if": {
+        "properties": {
+          "kind": {
+            "enum": [
+              "defect",
+              "change"
+            ]
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "switch"
+        ]
+      }
+    }
   ]
 }

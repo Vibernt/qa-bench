@@ -76,6 +76,7 @@ found_by:
   - kind: value
     route: /checkout-complete.html
     category: consistency
+    also_categories: [functional]
     selector: "[data-test=shopping-cart-badge]"
     note: "After Finish the cart badge still shows the ordered items; the cart was not emptied"
   - kind: element

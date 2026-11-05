@@ -23,7 +23,9 @@ entry's own value, else the label's.
    covers `/inventory-item.html`); `any` always. A label route of `*` matches anything.
 2. **Role.** If the label has a role and `tolerance.role` is not `any`, a finding that *states* a role must equal it.
    A finding with no role still matches (adapters on single-role apps may omit it).
-3. **Category.** Must be equal.
+3. **Category.** Must equal the effective category, or one of the entry's `also_categories` (other categories a
+   reasonable report of the same evidence may use, e.g. a cart not emptied after checkout is functional or
+   consistency).
 4. **Locator.** Selectors are compared after removing quotes and collapsing whitespace
    (`[data-test="x"]` ≡ `[data-test=x]` ≡ `[data-test='x']`); they match when one contains the other. Regions match
    when they overlap or the gap on each axis is at most `tolerance.region_px` (default 48). When both sides have a
