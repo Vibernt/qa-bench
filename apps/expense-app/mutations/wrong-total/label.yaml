@@ -7,13 +7,15 @@ kind: defect
 category: consistency
 class: deterministic
 severity: major
+difficulty: blatant
+exposure: novel
 where: { route: /expenses, role: viewer }
 switch:
   env: { DEFECT: wrong_total }
-  exclusive: expense-defect   # the app takes one DEFECT value at a time
 found_by:
   - kind: value
     selector: "[data-testid=total]"
+    description_pattern: '^(?![\s\S]*((hidden|other|unlisted|invisible|filtered[- ]out|non-?matching|every|all(?! (the )?(listed|visible|shown|displayed|of the listed)))( \w+){0,2} (rows?|expenses?|items?|entries|categor\w*|amounts?)|(rows?|expenses?|items?|amounts?|entries) (that are |which are )?(not (shown|listed|visible|displayed)|hidden|filtered out)|unfiltered (total|sum|amount)|(overall|grand|full|whole|entire|complete) (total|sum)|(same|identical) (total|amount|sum|figure|number|value)|same as (the |with |without )?(the )?(unfiltered|overall|full|all|grand|whole|no filter|before)|(stays|remains|is) the same|(does ?n.t|does not|never|did ?n.t|did not|won.t) (change|update|recalculate|go down|reflect the filter)|ignor\w* the (category )?filter|regardless of the filter|total.{0,40}(higher|greater|larger|too (high|large|big)|inflated|exceeds)|cents?\b|decimal|fraction|pennies|paise|whole (number|unit|dollar|amount|euro|rupee)|integer|round(ed|s|ing)? (down|off|to)|(amount|value|price)s? (is |are |gets? |was )?(truncat|round|floor)|truncat\w* (the )?(amount|value|cents|decimal)|\bfloor|\d+\.(?!00)\d{2}\W{0,3} ?(->|→|becomes?|became|is saved as|was saved as|saved as|shows? (up )?as|turns? into|turned into|changes? to|changed to|(is |was )?stored as|ended up as|is now|to|into) \$?\d+(\.00)?\b(?!\.\d)|twice|two (identical |duplicate |separate )?(rows|copies|entries|records|expenses|times|lines)|\b2 (identical )?(rows|copies|entries|records|lines)|duplicat|doubl(e|ed|es)\b|second (copy|row|entry)|by two (rows|entries)|stale|cach|old (amount|value|sum|total)|still shows|delet|remov))(?=[\s\S]*\b(total|sum)\b)(?=[\s\S]*(omit|leav\w* out|left out|exclud|\bmiss|skip|\bdrop|except|short|\bless\b|lower|smaller|too low|under-?(count|stat|report)|off[- ]by[- ]one|last (listed )?(row|item|expense|entry|line|amount)|final (row|item|expense|entry|line)|wrong|incorrect|does ?n.t (match|equal|add up)|does not (match|equal|add up)|not (equal|match)|mismatch|discrepan|adds? up to|but (the )?(\w+ )?total (says|shows|reads|is|displays)))'
     note: "Total is not the sum of the listed amounts"
 tolerance: { route: exact, role: any }
 split: public

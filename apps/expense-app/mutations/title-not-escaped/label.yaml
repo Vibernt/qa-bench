@@ -1,0 +1,22 @@
+id: expense.title-not-escaped
+app: expense-app
+title: "Expense titles are not HTML-escaped in the list"
+description: "The list writes titles into the page without escaping, so a title like <b>x</b> renders as bold markup and <img src=x onerror=...> would run script (stored XSS). The edit form escapes correctly."
+track: regression
+kind: defect
+category: security-hygiene
+class: deterministic
+severity: major
+difficulty: subtle
+exposure: novel
+where: { route: /expenses, role: editor }
+switch:
+  env: { DEFECT: title_not_escaped }
+found_by:
+  - kind: behaviour
+    also_categories: [functional, visual]
+    description_pattern: 'escap|html|markup|mark-up|inject|xss|cross[- ]site|<\s*/?\s*(b|i|u|img|script|svg|a|em|strong|h\d|div|span|iframe)\b|onerror|alert\(|sanitiz|rendered (as|like) (bold|italic|html|markup)|\b(bold|italic)\b|raw (html|tags)|interpreted as'
+    note: "A title with HTML tags renders as markup in the list instead of as text"
+tolerance: { route: prefix, role: any }
+split: public
+upstream_ref: "apps/expense-app/app/src/server.ts (DEFECT=title_not_escaped); checked by apps/expense-app/verify.ts"

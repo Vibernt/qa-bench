@@ -91,7 +91,7 @@ Builds the expense app, Swag Labs and the-internet images.
 ```bash
 npx tsx bin/qa-bench.ts generate --all
 ```
-Writes `episodes/` (24 regression, 12 exploration and 6 noise episodes).
+Writes `episodes/` (24 regression, 17 exploration and 6 noise episodes).
 
 ```bash
 npx tsx bin/qa-bench.ts run --adapter playwright-suite --track regression --parallel 4

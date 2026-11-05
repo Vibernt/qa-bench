@@ -7,15 +7,19 @@ kind: defect
 category: functional
 class: deterministic
 severity: critical
+difficulty: blatant
+exposure: novel
 where: { route: /expenses, role: editor }
 switch:
   env: { DEFECT: duplicate_write }
-  exclusive: expense-defect   # the app takes one DEFECT value at a time
+  exclusive: expense-create   # missing_persistence skips the insert, so duplicate_write cannot show
 found_by:
   - kind: value
+    description_pattern: 'twice|two (identical |duplicate |separate )?(rows|copies|entries|records|expenses|times|lines)|\b2 (identical )?(rows|copies|entries|records|lines)|duplicat|doubl(e|ed|es)\b|second (copy|row|entry)|by two (rows|entries)'
     note: "Two identical rows appear after one save"
   - kind: value
     category: consistency
+    description_pattern: 'twice|two (identical |duplicate |separate )?(rows|copies|entries|records|expenses|times|lines)|\b2 (identical )?(rows|copies|entries|records|lines)|duplicat|doubl(e|ed|es)\b|second (copy|row|entry)|by two (rows|entries)'
     note: "Row count or total grows by two entries after one save"
 tolerance: { route: prefix }
 split: public

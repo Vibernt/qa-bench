@@ -1,0 +1,24 @@
+id: expense.delete-open-to-viewer
+app: expense-app
+title: "Viewer can delete expenses with a direct request"
+description: "The list shows the viewer no Delete button, but POST /expenses/:id/delete by the viewer is accepted (303) and the expense is removed."
+track: regression
+kind: defect
+category: permission
+class: deterministic
+severity: critical
+difficulty: subtle
+exposure: novel
+where: { route: /expenses, role: viewer }
+switch:
+  env: { DEFECT: delete_open_to_viewer }
+found_by:
+  - kind: network
+    description_pattern: '^(?=[\s\S]*\b(viewers?|read-?only|non-editors?|unprivileged|low(er)?[- ]privilege\w*)\b)(?=[\s\S]*(delet|remov))(?=[\s\S]*((delet|remov)\w*.{0,80}(succe|accept|303|\b200\b|allow|works|went through|is gone|\bgone\b|disappear|vanish|really|actually|removed|no longer|permitted|not (refused|blocked|rejected|forbidden|denied|prevented)|instead of (a )?403)|(can|could|able to|allowed to|manag\w* to|permitted to|lets?)( still)?( \w+){0,3} (delet|remov)))'
+    note: "Viewer's POST /expenses/:id/delete is accepted (303) instead of 403"
+  - kind: behaviour
+    description_pattern: '^(?=[\s\S]*\b(viewers?|read-?only|non-editors?|unprivileged|low(er)?[- ]privilege\w*)\b)(?=[\s\S]*(delet|remov))(?=[\s\S]*((delet|remov)\w*.{0,80}(succe|accept|303|\b200\b|allow|works|went through|is gone|\bgone\b|disappear|vanish|really|actually|removed|no longer|permitted|not (refused|blocked|rejected|forbidden|denied|prevented)|instead of (a )?403)|(can|could|able to|allowed to|manag\w* to|permitted to|lets?)( still)?( \w+){0,3} (delet|remov)))'
+    note: "The expense is gone from the list after the viewer's delete request"
+tolerance: { route: prefix }
+split: public
+upstream_ref: "apps/expense-app/app/src/server.ts (DEFECT=delete_open_to_viewer); checked by apps/expense-app/verify.ts"

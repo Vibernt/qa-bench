@@ -8,7 +8,10 @@ Episodes and answer keys changed, so scores aren't comparable with 0.1.0-b0. The
 with its answer-key hashes.
 - **Defect mix:** mixed regression episodes carry 2-3 planted bugs, at most one blatant (`max_blatant_per_episode`).
   The regression track has 24 episodes, so episode ids now mean different builds.
-- **Exploration track** (7.7): exploratory briefs give only the targets, roles and a one-line product purpose, with
+- **Expense app:** 6 new subtle defects (a total wrong only under a filter, a delete endpoint open to the viewer,
+  edits that drop cents, long titles truncated, unescaped titles, edits that reset the category). `DEFECT` takes any
+  compatible subset, and every planted label has description patterns so co-active bugs stay distinguishable.
+- **Exploration track** (7.7, 17 episodes): exploratory briefs give only the targets, roles and a one-line product purpose, with
   no journeys or checklist.
 - **Labels:** `difficulty` (blatant or subtle) and `exposure` (novel or known). Swag Labs' publicly documented faulty
   users are `known`, and the report splits recall into novel and known, and into subtle and blatant.

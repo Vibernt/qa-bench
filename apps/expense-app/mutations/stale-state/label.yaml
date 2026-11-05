@@ -7,12 +7,14 @@ kind: defect
 category: consistency
 class: deterministic
 severity: major
+difficulty: blatant
+exposure: novel
 where: { route: /expenses, role: editor }
 switch:
   env: { DEFECT: stale_state }
-  exclusive: expense-defect   # the app takes one DEFECT value at a time
 found_by:
   - kind: value
+    description_pattern: 'stale|cach|out of (sync|date)|\blater\b|eventually|delay|\blag(s|ging)?\b|after (about |roughly |around |some |a few |~)?(\d+ ?(s|secs?|seconds|mins?|minutes)\b|a (while|minute|bit))|\d+ ?(seconds|minutes)|when filtering|filtered (list|view) (already )?shows|(only|eventually) (appears?|shows?( up)?) after|appears? (only )?(later|after)|shows? up (only )?(later|after)|(edit form|record|database|saved data|stored (value|data))( for the same expense)?( already| does| still)? (shows?|holds?|has|contains) the (new|updated|saved|correct|changed)'
     note: "After saving, the list (and its total) doesn't show the write; it appears about 60 s later"
 tolerance: { route: prefix }
 split: public

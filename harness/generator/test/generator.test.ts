@@ -325,7 +325,7 @@ describe('repo tracks', () => {
     expect(r.track.episodes.mutations_per_episode).toEqual(reg.episodes.mutations_per_episode);
     expect(r.track.episodes.seed).not.toBe(reg.episodes.seed);
     const eps = r.episodes.map((g) => g.episode);
-    expect(eps.length).toBe(12);
+    expect(eps.length).toBe(17);
     expect(eps.filter((e) => e.kind === 'clean').length).toBe(2);
     expect(eps.filter((e) => e.kind === 'twin').length).toBe(2);
   });

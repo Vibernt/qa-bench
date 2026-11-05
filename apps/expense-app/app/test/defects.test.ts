@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import { postForm, startApp, type RunningApp } from './helpers.js';
+import { parseDefects } from '../src/server.js';
 
 const apps: RunningApp[] = [];
 async function app(defect: Parameters<typeof startApp>[0]): Promise<RunningApp> {
@@ -79,5 +80,90 @@ describe('seeded defects retain a successful UI response', () => {
     expect(html).toContain('role="status">Expense saved');
     expect(html).not.toContain('Stale list row');
     expect(running.countByTitle('Stale list row')).toBe(1);
+  });
+});
+
+function listRows(html: string): { title: string; category: string; amount: string }[] {
+  const body = html.match(/<tbody>([\s\S]*?)<\/tbody>/)?.[1] ?? '';
+  return [...body.matchAll(/<tr><td>(.*?)<\/td><td>(.*?)<\/td><td>\$([\d.]+)<\/td>/g)].map((m) => ({ title: m[1]!, category: m[2]!, amount: m[3]! }));
+}
+
+describe('defect selection', () => {
+  it('parses one name, a comma-separated list or an array, and rejects unknown names', () => {
+    expect([...parseDefects('')]).toEqual([]);
+    expect([...parseDefects(' wrong_total , edit_drops_cents,')]).toEqual(['wrong_total', 'edit_drops_cents']);
+    expect([...parseDefects(['title_not_escaped'])]).toEqual(['title_not_escaped']);
+    expect(() => parseDefects('wrong_totl')).toThrow(/Unknown DEFECT/);
+  });
+
+  it('switches on several defects at once', async () => {
+    const running = await app('wrong_total,edit_drops_cents,title_not_escaped');
+    const cookie = await running.login();
+    await postForm(running.baseUrl, '/expenses/2', cookie, { title: '<b>bold</b>', category: 'meals', amount: '12.50' });
+    const html = await (await fetch(`${running.baseUrl}/expenses`, { headers: { cookie } })).text();
+    expect(running.expenseAmount(2)).toBe(1200);
+    expect(html).toContain('<td><b>bold</b></td>');
+    expect(html).toContain('data-testid="total">Total: $250.34'); // $306.74 - $68.40 + $12.00, still without the last row
+  });
+});
+
+describe('subtle defects', () => {
+  it('total_under_filter sums every row under a filter but not without one', async () => {
+    const running = await app('total_under_filter');
+    const cookie = await running.login('viewer');
+    const filtered = await (await fetch(`${running.baseUrl}/expenses?category=meals`, { headers: { cookie } })).text();
+    expect(listRows(filtered)).toHaveLength(3);
+    expect(filtered).toContain('data-testid="total">Total: $399.99');
+    const all = await (await fetch(`${running.baseUrl}/expenses`, { headers: { cookie } })).text();
+    expect(all).toContain('data-testid="total">Total: $399.99');
+  });
+
+  it('delete_open_to_viewer hides the button but accepts the viewer POST', async () => {
+    const running = await app('delete_open_to_viewer');
+    const cookie = await running.login('viewer');
+    const html = await (await fetch(`${running.baseUrl}/expenses`, { headers: { cookie } })).text();
+    expect(html).not.toContain('/delete');
+    expect((await postForm(running.baseUrl, '/expenses/3/delete', cookie, {})).status).toBe(303);
+    expect(running.expenseAmount(3)).toBeUndefined();
+    expect((await postForm(running.baseUrl, '/expenses/1', cookie, { title: 'x', category: 'travel', amount: '1.00' })).status).toBe(403);
+  });
+
+  it('edit_drops_cents truncates edited amounts only', async () => {
+    const running = await app('edit_drops_cents');
+    const cookie = await running.login();
+    await postForm(running.baseUrl, '/expenses/2', cookie, { title: 'Team lunch', category: 'meals', amount: '12.50' });
+    expect(running.expenseAmount(2)).toBe(1200);
+    await postForm(running.baseUrl, '/expenses', cookie, { title: 'Cents kept', category: 'meals', amount: '12.50' });
+    const html = await (await fetch(`${running.baseUrl}/expenses`, { headers: { cookie } })).text();
+    expect(listRows(html).find((row) => row.title === 'Cents kept')?.amount).toBe('12.50');
+  });
+
+  it('long_title_truncated cuts titles to 20 characters on add and edit', async () => {
+    const running = await app('long_title_truncated');
+    const cookie = await running.login();
+    await postForm(running.baseUrl, '/expenses', cookie, { title: 'Conference registration fee', category: 'travel', amount: '5.00' });
+    await postForm(running.baseUrl, '/expenses/2', cookie, { title: 'Team lunch with the new client', category: 'meals', amount: '68.40' });
+    expect(running.countByTitle('Conference registrat')).toBe(1);
+    expect(running.countByTitle('Team lunch with the ')).toBe(1);
+  });
+
+  it('title_not_escaped renders list titles as markup', async () => {
+    const running = await app('title_not_escaped');
+    const cookie = await running.login();
+    await postForm(running.baseUrl, '/expenses', cookie, { title: '<i>x</i>', category: 'office', amount: '1.00' });
+    const html = await (await fetch(`${running.baseUrl}/expenses`, { headers: { cookie } })).text();
+    expect(html).toContain('<td><i>x</i></td>');
+    const form = await (await fetch(`${running.baseUrl}/expenses/9/edit`, { headers: { cookie } })).text();
+    expect(form).toContain('value="&lt;i&gt;x&lt;/i&gt;"');
+  });
+
+  it('edit_resets_category leaves the category unselected on the edit form', async () => {
+    const running = await app('edit_resets_category');
+    const cookie = await running.login();
+    const form = await (await fetch(`${running.baseUrl}/expenses/2/edit`, { headers: { cookie } })).text();
+    expect(form).not.toContain(' selected');
+    const clean = await app('');
+    const cleanCookie = await clean.login();
+    expect(await (await fetch(`${clean.baseUrl}/expenses/2/edit`, { headers: { cookie: cleanCookie } })).text()).toContain('<option value="meals" selected>');
   });
 });

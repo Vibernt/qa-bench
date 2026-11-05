@@ -11,15 +11,33 @@ import { hostileRoute } from './hostile.js';
 import type { FixtureIsolation } from './isolation.js';
 import { AuthLifecycle, type AuthLifecycleOptions } from './auth-lifecycle/routes.js';
 
-export type Defect =
-  | 'missing_persistence'
-  | 'duplicate_write'
-  | 'misleading_success'
-  | 'permission_bypass'
-  | 'ignored_filter'
-  | 'wrong_total'
-  | 'stale_state'
-  | '';
+export const defects = [
+  'missing_persistence',
+  'duplicate_write',
+  'misleading_success',
+  'permission_bypass',
+  'ignored_filter',
+  'wrong_total',
+  'stale_state',
+  'total_under_filter',
+  'delete_open_to_viewer',
+  'edit_drops_cents',
+  'long_title_truncated',
+  'title_not_escaped',
+  'edit_resets_category',
+] as const;
+
+export type Defect = (typeof defects)[number] | '';
+
+/**
+ * Planted defects to switch on: one name, a comma-separated list ("wrong_total,edit_drops_cents") or an array.
+ * Empty entries are ignored; an unknown name throws, so a typo can't silently run the clean build.
+ */
+export function parseDefects(value: string | readonly string[] | undefined): Set<Exclude<Defect, ''>> {
+  const names = (typeof value === 'string' ? value.split(',') : [...(value ?? [])]).map((name) => name.trim()).filter(Boolean);
+  for (const name of names) if (!(defects as readonly string[]).includes(name)) throw new Error(`Unknown DEFECT: ${name}`);
+  return new Set(names as Exclude<Defect, ''>[]);
+}
 
 export interface ServerOptions {
   dbPath: string;
@@ -28,7 +46,8 @@ export interface ServerOptions {
   /** Reviewed catalogue lifecycle; defaults remain unchanged. */
   isolation?: FixtureIsolation;
   authenticate?: (username: string, password: string) => { id: number; username: string; role: Role; expiresAt: number } | undefined;
-  defect?: Defect;
+  /** One defect, a comma-separated list of them, or an array; absent or empty is the clean build. */
+  defect?: Defect | string | readonly Defect[];
   variant?: Variant;
   /** Reviewed idempotency and commit barrier opt-ins; disabled by default. */
   idempotency?: boolean;
@@ -102,13 +121,13 @@ function loginPage(error = false): string {
   </form>`);
 }
 
-function expenseForm(expense?: Expense, variant: Variant = '', token = ''): string {
+function expenseForm(expense?: Expense, variant: Variant = '', token = '', preselectCategory = true): string {
   const labels = variantLabels(variant);
   const editing = expense !== undefined;
   const action = editing ? `/expenses/${expense.id}` : '/expenses';
   const fields = `<label>${labels.title} <input name="title" value="${escapeHtml(expense?.title ?? '')}" required></label>
     <label>Category <select name="category" aria-label="Category">${categories.map((category) =>
-      `<option value="${category}"${expense?.category === category ? ' selected' : ''}>${category}</option>`).join('')}</select></label>
+      `<option value="${category}"${preselectCategory && expense?.category === category ? ' selected' : ''}>${category}</option>`).join('')}</select></label>
     <label>Amount <input name="amount" type="number" min="0" step="0.01" value="${expense ? (expense.amount_cents / 100).toFixed(2) : ''}" required></label>`;
   return page(editing ? 'Edit expense' : labels.add, `<form method="post" action="${action}">${fields}${token ? `<input type="hidden" name="idempotency_token" value="${escapeHtml(token)}">` : ''}<button type="submit">${labels.save}</button></form>`);
 }
@@ -127,7 +146,9 @@ export function createServer(options: ServerOptions): Server {
   if (options.isolation && options.experimentalIsolation) throw new FixtureError('STATE', 'Supply only one isolation capability');
   const authLifecycle = options.authLifecycle ? new AuthLifecycle(options.authLifecycle) : undefined;
   const db: DatabaseSync = createDatabase(options.dbPath);
-  const defect = options.defect ?? '';
+  const active = parseDefects(options.defect);
+  const has = (name: Exclude<Defect, ''>): boolean => active.has(name);
+  const storedTitle = (title: string): string => has('long_title_truncated') ? title.slice(0, 20) : title;
   const variant = options.variant ?? '';
   const labels = variantLabels(variant);
   const idempotency = options.idempotency ?? process.env.IDEMPOTENCY === '1';
@@ -148,13 +169,14 @@ export function createServer(options: ServerOptions): Server {
     return session;
   }
 
-  function requireEditor(request: IncomingMessage, response: ServerResponse, allowPermissionBypass = false): Session | undefined {
+  /** `bypass` names the planted defect that lets a viewer through this route. */
+  function requireEditor(request: IncomingMessage, response: ServerResponse, bypass?: Exclude<Defect, ''>): Session | undefined {
     const session = currentSession(request);
     if (!session) {
       redirect(response, '/login');
       return undefined;
     }
-    if (session.role !== 'editor' && !(allowPermissionBypass && defect === 'permission_bypass')) {
+    if (session.role !== 'editor' && !(bypass && has(bypass))) {
       forbidden(response);
       return undefined;
     }
@@ -164,12 +186,12 @@ export function createServer(options: ServerOptions): Server {
   function loadExpenses(category: string): Expense[] {
     const cacheKey = category;
     const cached = listCache.get(cacheKey);
-    if (defect === 'stale_state' && cached && cached.expiresAt > Date.now()) return cached.rows;
-    const effectiveCategory = defect === 'ignored_filter' ? '' : category;
+    if (has('stale_state') && cached && cached.expiresAt > Date.now()) return cached.rows;
+    const effectiveCategory = has('ignored_filter') ? '' : category;
     const rows = (effectiveCategory
       ? db.prepare('SELECT id, title, category, amount_cents, created_by, updated_at FROM expenses WHERE category = ? ORDER BY id').all(effectiveCategory)
       : db.prepare('SELECT id, title, category, amount_cents, created_by, updated_at FROM expenses ORDER BY id').all()) as unknown as Expense[];
-    if (defect === 'stale_state') listCache.set(cacheKey, { rows, expiresAt: Date.now() + 60_000 });
+    if (has('stale_state')) listCache.set(cacheKey, { rows, expiresAt: Date.now() + 60_000 });
     return rows;
   }
 
@@ -181,9 +203,10 @@ export function createServer(options: ServerOptions): Server {
     }
     const category = url.searchParams.get('category') ?? '';
     const rows = loadExpenses(category);
-    const totalRows = defect === 'wrong_total' ? rows.slice(0, -1) : rows;
+    const summed = has('total_under_filter') && category ? loadExpenses('') : rows;
+    const totalRows = has('wrong_total') ? summed.slice(0, -1) : summed;
     const total = totalRows.reduce((sum, row) => sum + row.amount_cents, 0);
-    const tableRows = rows.map((row) => `<tr><td>${escapeHtml(row.title)}</td><td>${escapeHtml(row.category)}</td><td>${formatMoney(row.amount_cents)}</td><td>${session.role === 'editor' ? `<a href="/expenses/${row.id}/edit">Edit</a><form method="post" action="/expenses/${row.id}/delete"><button type="submit">Delete</button></form>` : ''}</td></tr>`).join('');
+    const tableRows = rows.map((row) => `<tr><td>${has('title_not_escaped') ? row.title : escapeHtml(row.title)}</td><td>${escapeHtml(row.category)}</td><td>${formatMoney(row.amount_cents)}</td><td>${session.role === 'editor' ? `<a href="/expenses/${row.id}/edit">Edit</a><form method="post" action="/expenses/${row.id}/delete"><button type="submit">Delete</button></form>` : ''}</td></tr>`).join('');
     const editorLinks = session.role === 'editor' ? `<p><a href="/expenses/new">${labels.add}</a></p>` : '';
     const status = flash ? `<p role="status">${escapeHtml(flash)}</p>` : '';
     const html = page('Expenses', `${status}${options.authenticate || authLifecycle ? `<span data-testid="session-account">${escapeHtml(session.username)}</span><span data-testid="session-role">${session.role}</span>` : ''}<p>Signed in as ${escapeHtml(session.displayName ?? session.username)}</p>
@@ -257,7 +280,7 @@ export function createServer(options: ServerOptions): Server {
       const session = requireEditor(request, response);
       if (!session) return;
       const form = await readForm(request);
-      const title = (form.get('title') ?? '').trim();
+      const title = storedTitle((form.get('title') ?? '').trim());
       const category = form.get('category') ?? '';
       const amount = parseAmount(form.get('amount') ?? '');
       if (!title || !categories.includes(category) || amount === undefined) {
@@ -276,9 +299,9 @@ export function createServer(options: ServerOptions): Server {
       }
       if (idempotency) db.exec('BEGIN IMMEDIATE');
       try {
-        if (defect !== 'missing_persistence') {
+        if (!has('missing_persistence')) {
           const insert = db.prepare('INSERT INTO expenses (title, category, amount_cents, created_by, updated_at) VALUES (?, ?, ?, ?, ?)');
-          const writeCount = defect === 'duplicate_write' ? 2 : 1;
+          const writeCount = has('duplicate_write') ? 2 : 1;
           for (let index = 0; index < writeCount; index += 1) insert.run(title, category, amount, session.userId, new Date().toISOString());
           if (idempotency) db.prepare('INSERT INTO idempotency_keys VALUES (?, ?, ?)').run(token, session.userId, payload);
         }
@@ -294,18 +317,18 @@ export function createServer(options: ServerOptions): Server {
     }
     const editMatch = path.match(/^\/expenses\/(\d+)\/edit$/);
     if (request.method === 'GET' && editMatch) {
-      if (!requireEditor(request, response, true)) return;
+      if (!requireEditor(request, response, 'permission_bypass')) return;
       const expense = findExpense(db, Number(editMatch[1]));
       if (!expense) {
         sendHtml(response, 404, page('Not found', '<p>Expense not found</p>'));
         return;
       }
-      sendHtml(response, 200, expenseForm(expense, variant));
+      sendHtml(response, 200, expenseForm(expense, variant, '', !has('edit_resets_category')));
       return;
     }
     const updateMatch = path.match(/^\/expenses\/(\d+)$/);
     if (request.method === 'POST' && updateMatch) {
-      const session = requireEditor(request, response, true);
+      const session = requireEditor(request, response, 'permission_bypass');
       if (!session) return;
       const id = Number(updateMatch[1]);
       const existing = findExpense(db, id);
@@ -314,23 +337,24 @@ export function createServer(options: ServerOptions): Server {
         return;
       }
       const form = await readForm(request);
-      const title = (form.get('title') ?? '').trim();
+      const title = storedTitle((form.get('title') ?? '').trim());
       const category = form.get('category') ?? '';
       const amount = parseAmount(form.get('amount') ?? '');
       if (!title || !categories.includes(category) || amount === undefined) {
-        sendHtml(response, 400, expenseForm(existing, variant));
+        sendHtml(response, 400, expenseForm(existing, variant, '', !has('edit_resets_category')));
         return;
       }
-      if (defect !== 'misleading_success') {
+      if (!has('misleading_success')) {
+        const saved = has('edit_drops_cents') ? Math.trunc(amount / 100) * 100 : amount;
         db.prepare('UPDATE expenses SET title = ?, category = ?, amount_cents = ?, updated_at = ? WHERE id = ?')
-          .run(title, category, amount, new Date().toISOString(), id);
+          .run(title, category, saved, new Date().toISOString(), id);
       }
       redirect(response, `/expenses?flash=updated`);
       return;
     }
     const deleteMatch = path.match(/^\/expenses\/(\d+)\/delete$/);
     if (request.method === 'POST' && deleteMatch) {
-      if (!requireEditor(request, response)) return;
+      if (!requireEditor(request, response, 'delete_open_to_viewer')) return;
       db.prepare('DELETE FROM expenses WHERE id = ?').run(Number(deleteMatch[1]));
       redirect(response, '/expenses');
       return;
@@ -366,7 +390,7 @@ if (isEntryPoint()) {
   const port = Number(process.env.PORT ?? 3000);
   const dbPath = process.env.DB_PATH;
   if (!dbPath) throw new Error('DB_PATH is required');
-  const server = createServer({ dbPath, defect: (process.env.DEFECT ?? '') as Defect, variant: (process.env.VARIANT ?? '') as Variant });
+  const server = createServer({ dbPath, defect: process.env.DEFECT ?? '', variant: (process.env.VARIANT ?? '') as Variant });
   server.listen(port, () => {
     const address = server.address();
     if (address && typeof address !== 'string') process.stdout.write(`LISTENING ${address.port}\n`);

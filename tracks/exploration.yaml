@@ -2,8 +2,7 @@
 # roles and a one-line product purpose (brief.mode exploratory: no journeys, no pages, no checklist). Regression
 # measures following a plan; this measures finding problems (docs/DECISIONS.md, 5 Nov). Generate with:
 #   npx tsx bin/qa-bench.ts generate exploration
-# 12 episodes keep agent runs affordable; with 8 mixed episodes a run samples the defects rather than covering
-# every one (the generator says which are not covered).
+# 17 episodes (13 mixed) is the smallest count that switches on every defect of both apps at least once.
 id: exploration
 number: "7.7"
 title: Exploration
@@ -18,7 +17,7 @@ apps:
   - { app: expense-app, weight: 1, mutations: '*', changes: '*' }
   - { app: swag-labs, weight: 1, mutations: '*', changes: '*' }
 episodes:
-  count: 12
+  count: 17
   seed: 20261107
   mutations_per_episode: { min: 2, max: 3 }
   max_blatant_per_episode: 1

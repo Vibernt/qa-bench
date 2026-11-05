@@ -1,0 +1,21 @@
+id: expense.long-title-truncated
+app: expense-app
+title: "Long titles are silently cut to 20 characters"
+description: "A title longer than 20 characters is saved as its first 20 characters, on add and on edit, with no message."
+track: regression
+kind: defect
+category: functional
+class: deterministic
+severity: major
+difficulty: subtle
+exposure: novel
+where: { route: /expenses, role: editor }
+switch:
+  env: { DEFECT: long_title_truncated }
+found_by:
+  - kind: value
+    description_pattern: '^(?=[\s\S]*(title|name|description|text|label))(?=[\s\S]*(truncat|cut (off|short|down|to|at)|chopped|clipped|shortened|limited to \d+|first \d+ (char|letter)|\b\d+ (char|letter)|(max|maximum) (length|of \d+)|(lost|loses|drops?|dropped|missing) (the |its )?(end|rest|last (part|\d+|few)|tail|remainder)))'
+    note: "A 30-character title shows as its first 20 characters after saving"
+tolerance: { route: prefix }
+split: public
+upstream_ref: "apps/expense-app/app/src/server.ts (DEFECT=long_title_truncated); checked by apps/expense-app/verify.ts"
