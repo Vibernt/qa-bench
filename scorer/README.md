@@ -65,3 +65,22 @@ planted defects count as missed.
 
 ## Tests
 `npx vitest run scorer`. Fixtures are in `scorer/test/fixtures/` (`*.findings.json` are checked by `npm run validate`).
+
+## Severity
+Every defect label has a severity, set by its **impact on a real user, not by its category**:
+
+| Severity | Rubric | Weight |
+|---|---|---|
+| critical | Blocks a core journey for some users; loses or corrupts data; leaks access or money; an accessibility blocker (keyboard trap, unlabelled control on a required step) | 5 |
+| major | Wrong result or clearly broken UI on a core journey, with a workaround; layout that breaks or hides content; misleading numbers | 3 |
+| minor | Cosmetic; copy typos; edge cases off the main path; small accessibility issues with no blocker | 1 |
+
+Metrics that use it:
+- **Weighted recall:** Σ weights of the defects found ÷ Σ weights of the defects planted. Missing a critical costs five
+  times as much as missing a minor.
+- **Weighted F1:** the F1 of weighted recall and precision.
+- **Severity agreement:** findings may state their own `severity`. Of the true positives that did, this is the share
+  whose severity equals the label's, so it measures whether a system judges importance the way the ground truth
+  does.
+
+`SEVERITY_WEIGHTS` in `src/metrics.ts` holds the weights.

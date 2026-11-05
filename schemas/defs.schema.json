@@ -3,52 +3,145 @@
   "$id": "https://qa-bench.dev/schemas/defs.schema.json",
   "title": "Shared definitions",
   "$defs": {
-    "slug": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
-    "labelId": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*\\.[a-z0-9][a-z0-9.-]*$", "description": "<app-prefix>.<name>, e.g. expense.wrong-total" },
-    "category": {
-      "enum": ["functional", "consistency", "permission", "error-handling", "visual", "copy", "a11y", "perf", "usability", "email", "security-hygiene", "l10n"]
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$"
     },
-    "class": { "enum": ["deterministic", "judged", "human"] },
-    "severity": { "enum": ["critical", "major", "minor"] },
+    "labelId": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*\\.[a-z0-9][a-z0-9.-]*$",
+      "description": "<app-prefix>.<name>, e.g. expense.wrong-total"
+    },
+    "category": {
+      "enum": [
+        "functional",
+        "consistency",
+        "permission",
+        "error-handling",
+        "visual",
+        "copy",
+        "a11y",
+        "perf",
+        "usability",
+        "email",
+        "security-hygiene",
+        "l10n"
+      ]
+    },
+    "class": {
+      "enum": [
+        "deterministic",
+        "judged",
+        "human"
+      ]
+    },
+    "severity": {
+      "enum": [
+        "critical",
+        "major",
+        "minor"
+      ],
+      "description": "By impact on a real user, not by category (scorer/README.md, Severity). critical: blocks a core journey for some users, loses or corrupts data, leaks access or money, or is an accessibility blocker. major: wrong result or clearly broken UI on a core journey with a workaround, layout that breaks or hides content, misleading numbers. minor: cosmetic, copy typos, edge cases off the main path, small accessibility issues with no blocker. Weights for weighted recall: 5 / 3 / 1"
+    },
     "region": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["x", "y", "w", "h"],
+      "required": [
+        "x",
+        "y",
+        "w",
+        "h"
+      ],
       "properties": {
-        "x": { "type": "number" }, "y": { "type": "number" },
-        "w": { "type": "number", "minimum": 0 }, "h": { "type": "number", "minimum": 0 },
-        "viewport": { "type": "string", "description": "e.g. 1280x720" }
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        },
+        "w": {
+          "type": "number",
+          "minimum": 0
+        },
+        "h": {
+          "type": "number",
+          "minimum": 0
+        },
+        "viewport": {
+          "type": "string",
+          "description": "e.g. 1280x720"
+        }
       }
     },
     "where": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["route"],
+      "required": [
+        "route"
+      ],
       "properties": {
-        "route": { "type": "string", "description": "Path (no host), e.g. /inventory.html. '*' means anywhere in the app" },
-        "role": { "type": "string" },
-        "step": { "type": "string" },
-        "selector": { "type": "string" },
-        "region": { "$ref": "#/$defs/region" }
+        "route": {
+          "type": "string",
+          "description": "Path (no host), e.g. /inventory.html. '*' means anywhere in the app"
+        },
+        "role": {
+          "type": "string"
+        },
+        "step": {
+          "type": "string"
+        },
+        "selector": {
+          "type": "string"
+        },
+        "region": {
+          "$ref": "#/$defs/region"
+        }
       }
     },
     "cost": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "model_usd": { "type": "number", "minimum": 0 },
-        "compute_usd": { "type": "number", "minimum": 0 },
-        "human_hours": { "type": "number", "minimum": 0 },
-        "human_rate_usd_per_hour": { "type": "number", "minimum": 0 },
-        "notes": { "type": "string" }
+        "model_usd": {
+          "type": "number",
+          "minimum": 0
+        },
+        "compute_usd": {
+          "type": "number",
+          "minimum": 0
+        },
+        "human_hours": {
+          "type": "number",
+          "minimum": 0
+        },
+        "human_rate_usd_per_hour": {
+          "type": "number",
+          "minimum": 0
+        },
+        "notes": {
+          "type": "string"
+        }
       }
     },
     "system": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["name", "version"],
-      "properties": { "name": { "type": "string" }, "version": { "type": "string" } }
+      "required": [
+        "name",
+        "version"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        }
+      }
     },
-    "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
   }
 }

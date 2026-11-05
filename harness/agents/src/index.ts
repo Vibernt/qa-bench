@@ -168,6 +168,8 @@ export function sanitiseFindings(raw: unknown, episodeId: string, system: { name
     if (reg && ['x', 'y', 'w', 'h'].every((k) => typeof reg[k] === 'number')) where.region = { x: reg.x as number, y: reg.y as number, w: reg.w as number, h: reg.h as number };
     const conf = typeof r.confidence === 'number' && Number.isFinite(r.confidence) ? Math.min(1, Math.max(0, r.confidence)) : 0.5;
     const f: Finding = { id: typeof r.id === 'string' && r.id ? r.id : `f${i + 1}`, where, category, description, confidence: conf };
+    const sev = typeof r.severity === 'string' ? r.severity.trim().toLowerCase() : '';
+    if (sev === 'critical' || sev === 'major' || sev === 'minor') f.severity = sev;
     if (Array.isArray(r.repro)) f.repro = r.repro.filter((s): s is string => typeof s === 'string');
     if (Array.isArray(r.evidence)) {
       const ev = r.evidence.flatMap((e) => {

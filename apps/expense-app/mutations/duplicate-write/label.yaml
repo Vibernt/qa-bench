@@ -6,7 +6,7 @@ track: regression
 kind: defect
 category: functional
 class: deterministic
-severity: major
+severity: critical
 where: { route: /expenses, role: editor }
 switch:
   env: { DEFECT: duplicate_write }

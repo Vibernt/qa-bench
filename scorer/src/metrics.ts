@@ -11,6 +11,14 @@ interface Slice {
 
 const ratio = (a: number, b: number): number | null => (b > 0 ? a / b : null);
 
+/**
+ * Severity weights for weighted recall (scorer/README.md, "Severity"). Severity is set per label by impact on a real
+ * user, not by category: a keyboard trap that blocks checkout is critical; a 1 px misalignment is minor.
+ */
+export const SEVERITY_WEIGHTS = { critical: 5, major: 3, minor: 1 } as const;
+const weightOf = (s: string | undefined): number => SEVERITY_WEIGHTS[(s ?? 'major') as keyof typeof SEVERITY_WEIGHTS] ?? SEVERITY_WEIGHTS.major;
+const f1Of = (r: number | null, p: number | null): number | null => (r === null || p === null ? null : r + p === 0 ? 0 : (2 * r * p) / (r + p));
+
 export function episodeCostUsd(cost: Cost | undefined): number | null {
   if (!cost) return null;
   const { model_usd, compute_usd, human_hours, human_rate_usd_per_hour } = cost;
@@ -24,35 +32,46 @@ function sumOrNull(xs: (number | null | undefined)[]): number | null {
 }
 
 function compute(scores: EpisodeScore[], s: Slice): Metrics {
-  let planted = 0, found = 0, changesActive = 0, changesFlagged = 0;
+  let planted = 0, found = 0, changesActive = 0, changesFlagged = 0, wPlanted = 0, wFound = 0, sevJudged = 0, sevAgree = 0;
   const counts: Record<Decision, number> = { true_positive: 0, duplicate: 0, false_alarm_change: 0, excused: 0, unmatched: 0 };
   for (const ep of scores) {
     const byLabel = new Map(ep.labels.map((l) => [l.label_id, l]));
     for (const l of ep.labels) {
       if (!s.label(l)) continue;
-      if (l.kind === 'defect') { planted++; if (l.hit) found++; }
+      if (l.kind === 'defect') {
+        const w = weightOf(l.severity);
+        planted++; wPlanted += w;
+        if (l.hit) { found++; wFound += w; }
+      }
       if (l.kind === 'change') { changesActive++; if (l.hit) changesFlagged++; }
     }
-    for (const d of ep.decisions) if (s.decision(d, byLabel)) counts[d.decision]++;
+    for (const d of ep.decisions) {
+      if (!s.decision(d, byLabel)) continue;
+      counts[d.decision]++;
+      if (d.decision === 'true_positive' && d.severity_agrees !== undefined) { sevJudged++; if (d.severity_agrees) sevAgree++; }
+    }
   }
   const findings = Object.values(counts).reduce((a, b) => a + b, 0);
   const matched = counts.true_positive + counts.duplicate;
   const recall = ratio(found, planted);
   const precision = ratio(matched, findings - counts.excused);
-  const f1 = recall === null || precision === null ? null : recall + precision === 0 ? 0 : (2 * recall * precision) / (recall + precision);
+  const f1 = f1Of(recall, precision);
+  const weightedRecall = ratio(wFound, wPlanted);
   const n = scores.length;
 
   const m: Metrics = {
     episodes: n,
     episodes_scored: scores.filter((e) => e.status === 'scored').length,
     defects_planted: planted, defects_found: found, recall,
-    findings, findings_matched: matched, findings_excused: counts.excused, precision, f1,
+    weighted_defects_planted: wPlanted, weighted_defects_found: wFound, weighted_recall: weightedRecall,
+    findings, findings_matched: matched, findings_excused: counts.excused, precision, f1, weighted_f1: f1Of(weightedRecall, precision),
     changes_active: changesActive, changes_flagged: changesFlagged, change_flag_rate: ratio(changesFlagged, changesActive),
     false_alarms_on_changes: counts.false_alarm_change,
     false_alarms_per_100_episodes: n ? (changesFlagged * 100) / n : null,
     unmatched_findings: counts.unmatched, unmatched_per_episode: n ? counts.unmatched / n : null,
     mean_time_to_first_detection_s: null, wall_time_s_total: null, cost_usd_total: null, human_hours_total: null,
     cost_per_defect_found_usd: null, repro_rate: null,
+    severity_judged: sevJudged, severity_agreement: ratio(sevAgree, sevJudged),
   };
   if (s.episodeLevel) {
     const ttfd = scores.map((e) => e.time_to_first_detection_s).filter((x): x is number => typeof x === 'number');

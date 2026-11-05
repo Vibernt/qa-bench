@@ -43,7 +43,9 @@ export function scoreEpisode(input: {
       addHit(d.hit.label.id, f.id);
       if (!seen) {
         if (typeof f.detected_at_s === 'number') tpTimes.push(f.detected_at_s);
-        decisions.push(mk('true_positive', `first finding to hit defect ${d.hit.label.id}: ${d.hit.reason}`, d.hit.label));
+        const tp = mk('true_positive', `first finding to hit defect ${d.hit.label.id}: ${d.hit.reason}`, d.hit.label);
+        if (f.severity) tp.severity_agrees = f.severity === d.hit.label.severity;
+        decisions.push(tp);
       } else {
         decisions.push(mk('duplicate', `defect ${d.hit.label.id} already found by ${hits.get(d.hit.label.id)![0]}: ${d.hit.reason}`, d.hit.label));
       }

@@ -173,3 +173,36 @@ describe('report', () => {
     expect(md).toContain('| Cost | — (per defect found: —) |');
   });
 });
+
+describe('severity weighting', () => {
+  const ls = [
+    label('swag.crit', { severity: 'critical', where: { route: '/a.html' } }),
+    label('swag.maj', { severity: 'major', where: { route: '/b.html' } }),
+    label('swag.min', { severity: 'minor', where: { route: '/c.html' } }),
+  ];
+  const run = (fs: ReturnType<typeof finding>[]) =>
+    aggregate([scoreEpisode({ ...episode('regression-009', ls), findings: { episode_id: 'regression-009', system: { name: 's', version: '1' }, findings: fs as never }, status: 'scored' })]);
+
+  it('a found critical outweighs a found minor', () => {
+    const critOnly = run([finding('f1', '/a.html')]);
+    const minOnly = run([finding('f1', '/c.html')]);
+    expect(critOnly.recall).toBeCloseTo(1 / 3);
+    expect(minOnly.recall).toBeCloseTo(1 / 3);
+    expect(critOnly.weighted_recall).toBeCloseTo(5 / 9);
+    expect(minOnly.weighted_recall).toBeCloseTo(1 / 9);
+    expect(critOnly.weighted_defects_planted).toBe(9);
+    expect(critOnly.weighted_f1).toBeCloseTo((2 * (5 / 9) * 1) / (5 / 9 + 1));
+  });
+
+  it('scores whether a true positive stated the label severity', () => {
+    const m = run([finding('f1', '/a.html', 'functional', { severity: 'critical' }), finding('f2', '/b.html', 'functional', { severity: 'minor' }), finding('f3', '/c.html')]);
+    expect(m.severity_judged).toBe(2);
+    expect(m.severity_agreement).toBeCloseTo(0.5);
+  });
+
+  it('is null-safe with no defects', () => {
+    const m = aggregate([]);
+    expect(m.weighted_recall).toBeNull();
+    expect(m.severity_agreement).toBeNull();
+  });
+});

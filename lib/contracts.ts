@@ -192,6 +192,7 @@ export interface Finding {
   id: string;
   where: Where;
   category: Category;
+  severity?: Severity;
   description: string;
   evidence?: Evidence[];
   confidence: number;
@@ -233,6 +234,7 @@ export interface FindingDecision {
   label_id?: string;
   category?: string;
   reason: string;
+  severity_agrees?: boolean;
 }
 export interface LabelOutcome {
   label_id: string;
@@ -263,11 +265,15 @@ export interface Metrics {
   defects_planted: number;
   defects_found: number;
   recall: number | null;
+  weighted_defects_planted?: number;
+  weighted_defects_found?: number;
+  weighted_recall?: number | null;
   findings: number;
   findings_matched?: number;
   findings_excused?: number;
   precision: number | null;
   f1?: number | null;
+  weighted_f1?: number | null;
   changes_active?: number;
   changes_flagged?: number;
   change_flag_rate?: number | null;
@@ -281,6 +287,8 @@ export interface Metrics {
   human_hours_total?: number | null;
   cost_per_defect_found_usd?: number | null;
   repro_rate?: number | null;
+  severity_judged?: number;
+  severity_agreement?: number | null;
 }
 export interface Report {
   bench_version: string;

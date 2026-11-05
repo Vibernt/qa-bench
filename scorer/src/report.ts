@@ -55,14 +55,17 @@ export function renderMarkdown(report: Report): string {
   L.push('', '## Headline', '');
   L.push(table(['Metric', 'Value'], [
     ['Recall', `${pct(m.recall)} (${frac(m.defects_found, m.defects_planted)} defects)`],
+    ['Severity-weighted recall', `${pct(m.weighted_recall ?? null)} (${dec(m.weighted_defects_found ?? null, 0)}/${dec(m.weighted_defects_planted ?? null, 0)} weight; critical 5, major 3, minor 1)`],
     ['Precision', pct(m.precision)],
     ['F1', pct(m.f1)],
+    ['Severity-weighted F1', pct(m.weighted_f1 ?? null)],
     ['False alarms per 100 episodes', dec(m.false_alarms_per_100_episodes, 1)],
     ['Unmatched findings per episode', dec(m.unmatched_per_episode)],
     ['Mean time to first detection', secs(m.mean_time_to_first_detection_s)],
     ['Cost', `${usd(m.cost_usd_total)} (per defect found: ${usd(m.cost_per_defect_found_usd)})`],
     ['Human hours', dec(m.human_hours_total)],
     ['Wall time', secs(m.wall_time_s_total)],
+    ['Severity agreement', m.severity_judged ? `${pct(m.severity_agreement ?? null)} of ${m.severity_judged} true positives that stated a severity` : '— (no finding stated a severity)'],
     ['Episodes scored', `${m.episodes_scored ?? 0}/${m.episodes}`],
   ]), '');
 
