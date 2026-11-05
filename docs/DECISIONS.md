@@ -8,6 +8,10 @@
 | 2026-11-05 | Create the repo now as `Vibernt/qa-bench` and push the full brief with a handoff | vid |
 | 2026-11-05 | BD2: the expense app and survey site live in this repo (MIT) | vid |
 | 2026-11-05 | The bench is system-neutral: no system under test is named or privileged in code or docs; systems plug in through adapters (`http-api` for services) | vid |
+| 2026-11-05 | Exploratory briefs give the URL, the roles and a one-line product purpose, with no journeys or checklist | vid |
+| 2026-11-05 | Mixed regression episodes carry 2-3 planted bugs, at most one of them blatant; clean and twin episodes stay | vid |
+| 2026-11-05 | Swag Labs' publicly documented faulty users stay, but are scored apart as "known" exposure; the headline score uses novel (unpublished) bugs | vid |
+| 2026-11-05 | Tag v0.1.0-b0 now and keep the repository private; going public (and whether history starts fresh) waits for B5, and the held-out repository is created by vid | vid |
 
 ## Open (recommendation first)
 | # | Question | Recommendation |
