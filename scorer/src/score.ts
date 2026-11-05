@@ -75,6 +75,7 @@ export function scoreEpisode(input: {
 
   const labels: LabelOutcome[] = answerKey.labels.map((l) => ({
     label_id: l.id, kind: l.kind, category: l.category, class: l.class, severity: l.severity,
+    exposure: l.exposure ?? 'novel', difficulty: l.difficulty ?? 'blatant',
     hit: hits.has(l.id), ...(hits.has(l.id) ? { finding_ids: hits.get(l.id) } : {}),
   }));
 

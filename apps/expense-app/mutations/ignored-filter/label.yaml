@@ -7,12 +7,15 @@ kind: defect
 category: functional
 class: deterministic
 severity: major
+difficulty: blatant
+exposure: novel
 where: { route: /expenses, role: viewer }
 switch:
   env: { DEFECT: ignored_filter }
-  exclusive: expense-defect   # the app takes one DEFECT value at a time
+  exclusive: expense-filter   # with every row listed, the total_under_filter total is the sum of the listed rows again, so it cannot show
 found_by:
   - kind: value
+    description_pattern: 'filter\w*.{0,80}(ignor|not (filter|appl|work|restrict|narrow|take effect)|does ?n.t (filter|apply|work|restrict|narrow|do anything|change)|did ?n.t (filter|apply|work)|no effect|has no|still (lists?|shows?|displays?|returns?|includes?)|(lists?|shows?|displays?|returns?|includes?) (all|every|the same|rows of other|other)|other categor|all categor|unfiltered)|(all|every) (\w+ )?(rows|expenses|categories) .{0,60}filter|(ignor\w*|bypass\w*) (the )?(category )?filter|categor\w*.{0,80}(still (lists?|shows?|displays?) (all|every|the same)|(lists?|shows?|displays?) (all|every) (\w+ )?(rows|expenses))'
     note: "Rows of other categories remain after applying the filter"
 tolerance: { route: exact, role: any }
 split: public

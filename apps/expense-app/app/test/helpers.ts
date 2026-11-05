@@ -15,7 +15,7 @@ export interface RunningApp {
   expenseAmount(id: number): number | undefined;
 }
 
-export async function startApp(defect: Defect = ''): Promise<RunningApp> {
+export async function startApp(defect: Defect | string | readonly Defect[] = ''): Promise<RunningApp> {
   const directory = await mkdtemp(join(tmpdir(), 'qab-expense-app-'));
   const dbPath = join(directory, 'fixture.sqlite');
   seed(dbPath);

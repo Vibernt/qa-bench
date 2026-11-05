@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import type { EpisodeScore } from '../../lib/contracts.ts';
+import { BENCH_VERSION, type EpisodeScore } from '../../lib/contracts.ts';
 import { assertValid } from '../../lib/schemas.ts';
-import { aggregate, buildReport, renderMarkdown, scoreEpisode } from '../src/index.ts';
+import { aggregate, aggregateByDifficulty, aggregateByExposure, buildReport, renderMarkdown, scoreEpisode } from '../src/index.ts';
 import { episode, finding, label, loadFindings } from './helpers.ts';
 import { check } from '../../lib/schemas.ts';
 
@@ -154,7 +154,7 @@ describe('report', () => {
   });
   it('renders the key Markdown rows', () => {
     const md = renderMarkdown(report);
-    expect(md).toContain('# QA Bench report: hand-written 1 (bench 0.1.0-b0)');
+    expect(md).toContain(`# QA Bench report: hand-written 1 (bench ${BENCH_VERSION})`);
     expect(md).toContain('| Recall | 50.0% (1/2 defects) |');
     expect(md).toContain('| Precision | 33.3% |'); // 2 matched / (7 findings - 1 excused)
     expect(md).toContain('| Mean time to first detection | 30.0 s |');
@@ -229,5 +229,66 @@ describe('natural defects', () => {
     const both = [label('swag.p', { where: { route: '/x.html' } }), label('swag.n', { kind: 'natural', where: { route: '/x.html' } })];
     const s = scoreEpisode({ ...episode('e', both), findings: { episode_id: 'e', system: { name: 's', version: '1' }, findings: [finding('f', '/x.html')] as never }, status: 'scored' });
     expect(s.decisions[0]?.label_id).toBe('swag.p');
+  });
+});
+
+describe('exposure and difficulty', () => {
+  const ls = [
+    label('swag.known-user', { exposure: 'known', difficulty: 'blatant', where: { route: '/a.html' } }),
+    label('swag.novel-subtle', { exposure: 'novel', difficulty: 'subtle', where: { route: '/b.html' } }),
+    label('swag.novel-default', { where: { route: '/c.html' } }), // no exposure or difficulty: novel, blatant
+    label('swag.banner', { kind: 'change', category: 'copy', where: { route: '/d.html' } }),
+  ];
+  const s = scoreEpisode({
+    ...episode('regression-011', ls),
+    findings: {
+      episode_id: 'regression-011', system: { name: 's', version: '1' },
+      findings: [finding('f1', '/a.html'), finding('f2', '/b.html'), finding('f3', '/d.html', 'copy'), finding('f4', '/zzz.html')] as never,
+    },
+    status: 'scored',
+  });
+
+  it('label outcomes carry exposure and difficulty, with the schema defaults', () => {
+    const by = Object.fromEntries(s.labels.map((l) => [l.label_id, [l.exposure, l.difficulty]]));
+    expect(by['swag.known-user']).toEqual(['known', 'blatant']);
+    expect(by['swag.novel-subtle']).toEqual(['novel', 'subtle']);
+    expect(by['swag.novel-default']).toEqual(['novel', 'blatant']);
+  });
+
+  it('slices by exposure: labels of that exposure, findings by the matched label, unmatched against both', () => {
+    const report = buildReport({ scores: [s], system: { name: 's', version: '1' }, runId: 'r' });
+    assertValid('report', report);
+    const { novel, known } = report.metrics.by_exposure!;
+    expect(novel).toMatchObject({ defects_planted: 2, defects_found: 1, recall: 0.5, changes_active: 1, changes_flagged: 1 });
+    expect(known).toMatchObject({ defects_planted: 1, defects_found: 1, recall: 1, changes_active: 0 });
+    // novel: f2 (TP), f3 (change false alarm, novel by default), f4 (unmatched). known: f1 (TP), f4 (unmatched).
+    expect(novel).toMatchObject({ findings: 3, findings_matched: 1, unmatched_findings: 1 });
+    expect(known).toMatchObject({ findings: 2, findings_matched: 1, unmatched_findings: 1, precision: 0.5 });
+  });
+
+  it('slices by difficulty for the Markdown headline', () => {
+    const d = aggregateByDifficulty([s]);
+    expect(d.subtle).toMatchObject({ defects_planted: 1, defects_found: 1 });
+    expect(d.blatant).toMatchObject({ defects_planted: 2, defects_found: 1 });
+  });
+
+  it('renders novel, known, subtle and blatant recall rows', () => {
+    const md = renderMarkdown(buildReport({ scores: [s], system: { name: 's', version: '1' }, runId: 'r' }));
+    expect(md).toContain('| Recall (novel defects) | 50.0% (1/2 novel defects) |');
+    expect(md).toContain('| Recall (known, publicly documented) | 100.0% (1/1 known defects) |');
+    expect(md).toContain('| Recall (subtle) | 100.0% (1/1 subtle defects) |');
+    expect(md).toContain('| Recall (blatant) | 50.0% (1/2 blatant defects) |');
+    const empty = renderMarkdown(buildReport({ scores: [], system: { name: 's', version: '1' }, runId: 'r' }));
+    expect(empty).toContain('| Recall (known, publicly documented) | — (no known defects planted) |');
+  });
+
+  it('older reports without by_exposure or label exposure still render (defaults apply)', () => {
+    const old = buildReport({ scores: [s], system: { name: 's', version: '1' }, runId: 'r' });
+    delete old.metrics.by_exposure;
+    for (const l of old.episodes[0]!.labels) { delete l.exposure; delete l.difficulty; }
+    const md = renderMarkdown(old);
+    expect(md).toContain('| Recall (novel defects) | 66.7% (2/3 novel defects) |');
+    expect(md).toContain('| Recall (known, publicly documented) | — (no known defects planted) |');
+    expect(aggregateByExposure(old.episodes).novel!.defects_planted).toBe(3);
   });
 });

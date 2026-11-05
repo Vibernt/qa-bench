@@ -5,7 +5,7 @@ deliberate changes, a seed, and a sealed answer key.
 
 ```sh
 npx tsx bin/qa-bench.ts generate regression            # tracks/regression.yaml -> episodes/regression/
-npx tsx bin/qa-bench.ts generate --all                 # every tracks/*.yaml
+npx tsx bin/qa-bench.ts generate --all                 # every tracks/*.yaml (regression, exploration, noise)
 npx tsx bin/qa-bench.ts generate noise --live          # also the live-site episodes (see below)
 npx tsx bin/qa-bench.ts generate regression --apps expense-app   # only some of the track's apps (local work)
 npx tsx bin/qa-bench.ts generate regression --heldout-root ../qa-bench-heldout/episodes
@@ -16,7 +16,8 @@ From code: `generateTrack(trackFile, { appsRoot, episodesRoot, heldoutRoot, live
 
 ## Inputs
 - `tracks/<id>.yaml` (schema `track`): apps with weights, which mutations and changes (`'*'` or a list), and
-  `episodes: { count, seed, mutations_per_episode, changes_per_episode, clean_episodes, twin_episodes }`.
+  `episodes: { count, seed, mutations_per_episode, changes_per_episode, clean_episodes, twin_episodes,
+  max_blatant_per_episode }`.
 - `apps/<app>/app.yaml`, `apps/<app>/upstream.json`, and every `apps/<app>/{mutations,changes,baseline}/*/label.yaml`.
   Everything is validated against `schemas/` before use; any error stops generation.
 
@@ -49,6 +50,13 @@ regenerate rather than edit.
   before any repeats, as far as the count allows. When the count can't cover everything the generator says so
   (`warning: not covered`).
 - **Exclusive groups.** Two labels with the same `switch.exclusive` are never on together.
+- **Defect mix.** `max_blatant_per_episode` caps the defects with `difficulty: blatant` in one mixed episode (a
+  label with no `difficulty` counts as blatant); subtle defects fill the rest. The cap applies to defects only, not
+  to deliberate changes. Coverage still comes first: a covered defect is repeated only when no uncovered one of
+  that app fits the episode (another blatant one doesn't fit once the cap is reached).
+- **Short episodes.** When an app can't supply `mutations_per_episode.min` valid defects at once (Swag Labs' faulty
+  users all share one exclusive group, so it supplies one), the episode takes as many as are valid rather than
+  failing, and the generator warns once per track, naming the apps.
 - **Splits.** Public episodes use public labels (and public baselines) only. Held-out labels go only to held-out
   episodes (`<track>-hNNN`), written under `--heldout-root` or `QA_BENCH_HELDOUT_DIR`; the generator refuses a
   held-out root inside the repo or inside the public episodes root.

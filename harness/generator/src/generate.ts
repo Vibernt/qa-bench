@@ -113,22 +113,48 @@ function buildPools(track: Track, apps: Map<string, LoadedApp>, split: Split, wh
   return pools;
 }
 
-/** Lower bound on episodes needed to switch on every label in `labels` once, given a per-episode cap. */
-function episodesNeeded(labels: Label[], cap: number): number {
+/** Missing difficulty counts as blatant (label.schema.json default). */
+export const isBlatant = (l: Label): boolean => (l.difficulty ?? 'blatant') === 'blatant';
+
+/**
+ * Lower bound on episodes needed to switch on every label in `labels` once, given a per-episode cap, the
+ * exclusive groups and (when set) the per-episode cap on blatant defects.
+ */
+function episodesNeeded(labels: Label[], cap: number, maxBlatant?: number): number {
   if (!labels.length) return 0;
   const groups = new Map<string, number>();
   for (const l of labels) {
     const g = l.switch?.exclusive;
     if (g) groups.set(g, (groups.get(g) ?? 0) + 1);
   }
-  return Math.max(Math.ceil(labels.length / Math.max(cap, 1)), ...groups.values());
+  const blatant = maxBlatant === undefined ? 0 : Math.ceil(labels.filter(isBlatant).length / Math.max(maxBlatant, 1));
+  return Math.max(Math.ceil(labels.length / Math.max(cap, 1)), blatant, ...groups.values());
 }
 
 class Planner {
   private readonly uses = new Map<string, number>();
   private readonly appUses = new Map<string, number>();
+  /** Apps that could not supply mutations_per_episode.min valid mutations for some mixed episode. */
+  readonly short = new Set<string>();
+  /** episodes.max_blatant_per_episode; undefined means no cap. */
+  private readonly maxBlatant: number | undefined;
 
-  constructor(private readonly rng: Rng, private readonly pools: Pool[], private readonly track: Track) {}
+  constructor(private readonly rng: Rng, private readonly pools: Pool[], private readonly track: Track) {
+    this.maxBlatant = track.episodes.max_blatant_per_episode;
+  }
+
+  /** Mutations of a pool that can ever be switched on (a cap of 0 rules out every blatant one). */
+  private pickable(p: Pool): Label[] {
+    return this.maxBlatant === 0 ? p.mutations.filter((l) => !isBlatant(l)) : p.mutations;
+  }
+
+  /** How many uncovered labels one episode could take: all subtle ones plus at most the blatant cap. */
+  private fitUncovered(labels: Label[]): number {
+    const unc = this.uncovered(labels);
+    if (this.maxBlatant === undefined) return unc.length;
+    const blatant = unc.filter(isBlatant).length;
+    return unc.length - blatant + Math.min(blatant, this.maxBlatant);
+  }
 
   private used(l: Label): number {
     return this.uses.get(l.id) ?? 0;
@@ -147,13 +173,17 @@ class Planner {
       .map((x) => x.l);
   }
 
-  private pick(labels: Label[], k: number, groups: Set<string>): Label[] {
+  /** Up to k labels, least-used first, at most one per exclusive group and at most `maxBlatant` blatant ones. */
+  private pick(labels: Label[], k: number, groups: Set<string>, maxBlatant = Infinity): Label[] {
     const out: Label[] = [];
+    let blatant = 0;
     for (const l of this.order(labels)) {
       if (out.length >= k) break;
       const g = l.switch?.exclusive;
       if (g && groups.has(g)) continue;
+      if (isBlatant(l) && blatant >= maxBlatant) continue;
       if (g) groups.add(g);
+      if (isBlatant(l)) blatant++;
       out.push(l);
     }
     for (const l of out) this.uses.set(l.id, this.used(l) + 1);
@@ -195,9 +225,9 @@ class Planner {
       }
 
       // mixed
-      const withMutations = this.pools.filter((p) => p.mutations.length);
+      const withMutations = this.pools.filter((p) => this.pickable(p).length);
       const candidates = withMutations.length ? withMutations : this.pools;
-      const needs = new Map(candidates.map((p) => [p, episodesNeeded(this.uncovered(p.mutations), mr.max)]));
+      const needs = new Map(candidates.map((p) => [p, episodesNeeded(this.uncovered(this.pickable(p)), mr.max, this.maxBlatant)]));
       const needy = candidates.filter((p) => (needs.get(p) ?? 0) > 0);
       const totalNeed = needy.reduce((s, p) => s + (needs.get(p) ?? 0), 0);
       let pool: Pool;
@@ -211,15 +241,18 @@ class Planner {
       }
       this.markApp(pool, kind);
 
+      const pickable = this.pickable(pool);
       let k = this.rng.int(mr.min, Math.max(mr.min, mr.max));
-      const unc = this.uncovered(pool.mutations).length;
+      const unc = this.fitUncovered(pickable);
       if (unc) {
         // Still covering: push towards the cap when the remaining episodes are tight, but never repeat a
-        // covered mutation beyond the minimum while others are uncovered.
+        // covered mutation beyond the minimum while others that fit this episode are uncovered.
         if (totalNeed >= mixedLeft) k = mr.max;
         k = Math.max(mr.min, Math.min(k, unc));
       }
-      const mutations = this.pick(pool.mutations, k, groups);
+      // Exclusive groups and the blatant cap may leave fewer than mr.min valid: take what is valid.
+      const mutations = this.pick(pickable, k, groups, this.maxBlatant ?? Infinity);
+      if (mutations.length < mr.min) this.short.add(pool.app.id);
       const c = this.rng.int(cr.min, Math.max(cr.min, cr.max));
       const changes = this.pick(pool.changes, c, groups);
       out.push({ kind, pool, mutations, changes });
@@ -400,7 +433,9 @@ export function generateTrack(trackFile: string, opts: GenerateOptions = {}): Ge
   const pools = buildPools(track, apps, 'public', trackFile);
   const planRng = new Rng(deriveSeed(track.episodes.seed, 'plan'));
   const kinds = kindsFor(track, track.episodes.count, pools, planRng, warnings, trackFile);
-  const plans = new Planner(planRng, pools, track).plan(kinds);
+  const planner = new Planner(planRng, pools, track);
+  const plans = planner.plan(kinds);
+  const short = new Set(planner.short);
   const pubDir = join(episodesRoot, track.id);
   const episodes = plans.map((p, i) =>
     build(track, `${track.id}-${String(i + 1).padStart(3, '0')}`, 'public', deriveSeed(track.episodes.seed, i), p, benchVersion, pubDir),
@@ -428,12 +463,23 @@ export function generateTrack(trackFile: string, opts: GenerateOptions = {}): Ge
       const hRng = new Rng(deriveSeed(track.episodes.seed, 'heldout-plan'));
       const count = opts.heldoutCount ?? track.episodes.count;
       const hKinds = kindsFor(track, count, heldoutPools, hRng, warnings, `${trackFile} (held-out)`);
-      const hPlans = new Planner(hRng, heldoutPools, track).plan(hKinds);
+      const hPlanner = new Planner(hRng, heldoutPools, track);
+      const hPlans = hPlanner.plan(hKinds);
+      for (const a of hPlanner.short) short.add(a);
       const hDir = join(heldoutRoot, track.id);
       heldout = hPlans.map((p, i) =>
         build(track, `${track.id}-h${String(i + 1).padStart(3, '0')}`, 'heldout', deriveSeed(track.episodes.seed, `heldout:${i}`), p, benchVersion, hDir),
       );
     }
+  }
+
+  if (short.size) {
+    const min = track.episodes.mutations_per_episode?.min ?? 1;
+    warnings.push(
+      `${track.id}: ${[...short].sort().join(', ')} can't supply mutations_per_episode.min (${min}) valid mutations at once ` +
+        `(switch.exclusive groups${track.episodes.max_blatant_per_episode !== undefined ? ', max_blatant_per_episode' : ''}); ` +
+        'some mixed episodes have fewer',
+    );
   }
 
   if (opts.write !== false) {

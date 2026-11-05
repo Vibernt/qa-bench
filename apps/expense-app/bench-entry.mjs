@@ -2,7 +2,8 @@
 // 1. seed a new SQLite database (eight expenses, one viewer, one editor);
 // 2. replace the seed logins with this episode's generated test accounts
 //    (QA_BENCH_VIEWER_ACCOUNTS / QA_BENCH_EDITOR_ACCOUNTS, "user:pass", first account per role);
-// 3. start the app with DEFECT and VARIANT from the environment.
+// 3. start the app with DEFECT (one planted defect or a comma-separated list, e.g. "wrong_total,edit_drops_cents")
+//    and VARIANT from the environment.
 // The app itself (app/) is unchanged.
 import { randomBytes, scryptSync } from 'node:crypto';
 import { rmSync } from 'node:fs';

@@ -1,0 +1,22 @@
+id: expense.total-under-filter
+app: expense-app
+title: "Total ignores the category filter"
+description: "With a category filter applied (/expenses?category=meals) the list is right but the total still sums every expense, not the listed ones. The unfiltered total is right."
+track: regression
+kind: defect
+category: consistency
+class: deterministic
+severity: major
+difficulty: subtle
+exposure: novel
+where: { route: /expenses, role: viewer }
+switch:
+  env: { DEFECT: total_under_filter }
+  exclusive: expense-filter   # ignored_filter lists every row, which hides this total
+found_by:
+  - kind: value
+    description_pattern: '^(?=[\s\S]*(filter|categor|travel|meals|office))(?=[\s\S]*\b(total|sum)\b)(?=[\s\S]*((hidden|other|unlisted|invisible|filtered[- ]out|non-?matching|every|all(?! (the )?(listed|visible|shown|displayed|of the listed)))( \w+){0,2} (rows?|expenses?|items?|entries|categor\w*|amounts?)|(rows?|expenses?|items?|amounts?|entries) (that are |which are )?(not (shown|listed|visible|displayed)|hidden|filtered out)|unfiltered (total|sum|amount)|(overall|grand|full|whole|entire|complete) (total|sum)|(same|identical) (total|amount|sum|figure|number|value)|same as (the |with |without )?(the )?(unfiltered|overall|full|all|grand|whole|no filter|before)|(stays|remains|is) the same|(does ?n.t|does not|never|did ?n.t|did not|won.t) (change|update|recalculate|go down|reflect the filter)|ignor\w* the (category )?filter|regardless of the filter|total.{0,40}(higher|greater|larger|too (high|large|big)|inflated|exceeds)|(includ\w*|count\w*|sums?|add\w*)( up)? (in )?(the )?(hidden|other|every|all(?! (the )?(listed|visible|shown|displayed))|filtered[- ]out|rows (that are )?not (shown|listed))))'
+    note: "Under a category filter the total equals the unfiltered total, not the sum of the listed rows"
+tolerance: { route: exact, role: any }
+split: public
+upstream_ref: "apps/expense-app/app/src/server.ts (DEFECT=total_under_filter); checked by apps/expense-app/verify.ts"

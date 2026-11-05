@@ -1,5 +1,7 @@
 // Mutation validation for the expense app (BRIEF.md §8.3): for every label, the labelled symptom appears with its
-// switch on, and the clean build does not show it. Native script (needs docker), not a CI test:
+// switch on, and the clean build does not show it. Several defects can be on at once (DEFECT=a,b,c), so it also runs
+// multi-defect combinations: every member's symptom must show in one container. Native script (needs docker), not a
+// CI test:
 //   npx tsx apps/expense-app/verify.ts [--image <tag>]
 // Builds the image unless --image is given. Plain HTTP: the app is server-rendered, so no browser is needed.
 import { execFileSync } from 'node:child_process';
@@ -54,7 +56,7 @@ async function post(app: App, cookie: string, path: string, form: Record<string,
 
 function rows(html: string): Row[] {
   const body = html.match(/<tbody>([\s\S]*?)<\/tbody>/)?.[1] ?? '';
-  return [...body.matchAll(/<tr><td>(.*?)<\/td><td>(.*?)<\/td><td>\$([\d.]+)<\/td>/g)].map((m) => ({
+  return [...body.matchAll(/<tr><td>(.*?)<\/td><td>([a-z]+)<\/td><td>\$([\d.]+)<\/td>/g)].map((m) => ({
     title: m[1]!, category: m[2]!, cents: Math.round(Number(m[3]) * 100),
   }));
 }
@@ -64,7 +66,20 @@ function total(html: string): number {
   return Math.round(Number(m[1]) * 100);
 }
 
-// Each probe returns true when its symptom is present.
+const sum = (list: Row[]): number => list.reduce((s, r) => s + r.cents, 0);
+/** What a browser submits for the edit form: the fields' values, and the selected option (else the first one). */
+function editFormFields(html: string): Record<string, string> {
+  const select = html.match(/<select name="category"[^>]*>([\s\S]*?)<\/select>/)?.[1] ?? '';
+  const options = [...select.matchAll(/<option value="([^"]*)"( selected)?>/g)];
+  return {
+    title: html.match(/name="title" value="([^"]*)"/)?.[1]?.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&') ?? '',
+    category: (options.find((o) => o[2]) ?? options[0])?.[1] ?? '',
+    amount: html.match(/name="amount" type="number"[^>]*value="([^"]*)"/)?.[1] ?? '',
+  };
+}
+
+// Each probe returns true when its symptom is present. Probes touch different rows, so the members of a
+// combination can run one after another in the same container.
 const probes: Record<string, (app: App) => Promise<boolean>> = {
   'expense.wrong-total': async (app) => {
     const { html } = await get(app, await login(app, VIEWER), '/expenses');
@@ -99,9 +114,52 @@ const probes: Record<string, (app: App) => Promise<boolean>> = {
   },
   'expense.misleading-success': async (app) => {
     const c = await login(app, EDITOR);
-    const saved = await post(app, c, '/expenses/1', { title: 'Train to Pune', category: 'travel', amount: '99.00' });
-    const row = rows((await get(app, c, '/expenses')).html).find((r) => r.title === 'Train to Pune');
+    const saved = await post(app, c, '/expenses/4', { title: 'Client taxi', category: 'travel', amount: '99.00' });
+    const row = rows((await get(app, c, '/expenses')).html).find((r) => r.title === 'Client taxi');
     return saved.location.includes('flash=updated') && row?.cents !== 9900;
+  },
+  // Subtle defects
+  'expense.total-under-filter': async (app) => {
+    const c = await login(app, VIEWER);
+    const { html } = await get(app, c, '/expenses?category=meals');
+    // Too high under a filter (wrong_total makes it too low instead, so the two can be told apart when both are on).
+    return total(html) > sum(rows(html));
+  },
+  'expense.delete-open-to-viewer': async (app) => {
+    const c = await login(app, VIEWER);
+    const list = (await get(app, c, '/expenses')).html;
+    const res = await post(app, c, '/expenses/3/delete', {});
+    const after = rows((await get(app, c, '/expenses')).html);
+    return !list.includes('/delete') && res.status === 303 && !after.some((r) => r.title === 'Notebooks');
+  },
+  'expense.edit-drops-cents': async (app) => {
+    const c = await login(app, EDITOR);
+    await post(app, c, '/expenses/5', { title: 'Coffee with team', category: 'meals', amount: '12.50' });
+    await post(app, c, '/expenses', { title: 'Verify cents', category: 'meals', amount: '12.50' });
+    const list = rows((await get(app, c, '/expenses')).html);
+    return list.find((r) => r.title === 'Coffee with team')?.cents === 1200 && list.find((r) => r.title === 'Verify cents')?.cents === 1250;
+  },
+  'expense.long-title-truncated': async (app) => {
+    const c = await login(app, EDITOR);
+    const added = 'Verify long title on add';
+    const edited = 'Printer paper and toner for March';
+    await post(app, c, '/expenses', { title: added, category: 'office', amount: '6.00' });
+    await post(app, c, '/expenses/6', { title: edited, category: 'office', amount: '24.50' });
+    const titles = rows((await get(app, c, '/expenses')).html).map((r) => r.title);
+    return titles.includes(added.slice(0, 20)) && !titles.includes(added) && titles.includes(edited.slice(0, 20)) && !titles.includes(edited);
+  },
+  'expense.title-not-escaped': async (app) => {
+    const c = await login(app, EDITOR);
+    await post(app, c, '/expenses', { title: '<b>qab</b>', category: 'office', amount: '2.00' });
+    const { html } = await get(app, c, '/expenses');
+    return html.includes('<td><b>qab</b></td>');
+  },
+  'expense.edit-resets-category': async (app) => {
+    const c = await login(app, EDITOR);
+    // Edit "Team lunch" (meals) as a browser would: change the amount, leave the category select alone.
+    const fields = editFormFields((await get(app, c, '/expenses/2/edit')).html);
+    await post(app, c, '/expenses/2', { ...fields, amount: '70.00' });
+    return rows((await get(app, c, '/expenses')).html).find((r) => r.title.startsWith('Team lunch'))?.category !== 'meals';
   },
   'expense.relabel': async (app) => {
     const c = await login(app, EDITOR);
@@ -134,8 +192,25 @@ const switches: Record<string, Record<string, string>> = {
   'expense.missing-persistence': { DEFECT: 'missing_persistence' },
   'expense.duplicate-write': { DEFECT: 'duplicate_write' },
   'expense.misleading-success': { DEFECT: 'misleading_success' },
+  'expense.total-under-filter': { DEFECT: 'total_under_filter' },
+  'expense.delete-open-to-viewer': { DEFECT: 'delete_open_to_viewer' },
+  'expense.edit-drops-cents': { DEFECT: 'edit_drops_cents' },
+  'expense.long-title-truncated': { DEFECT: 'long_title_truncated' },
+  'expense.title-not-escaped': { DEFECT: 'title_not_escaped' },
+  'expense.edit-resets-category': { DEFECT: 'edit_resets_category' },
   'expense.relabel': { VARIANT: 'relabel' },
 };
+
+// Multi-defect episodes: every member's symptom shows in one container, probed one after another. No two members
+// share an exclusive group (expense-create, expense-update, expense-filter).
+const combinations: string[][] = [
+  ['expense.wrong-total', 'expense.edit-drops-cents', 'expense.title-not-escaped'],
+  ['expense.total-under-filter', 'expense.delete-open-to-viewer', 'expense.long-title-truncated'],
+  ['expense.permission-bypass', 'expense.edit-resets-category', 'expense.duplicate-write'],
+  ['expense.stale-state', 'expense.ignored-filter', 'expense.permission-bypass'],
+  ['expense.missing-persistence', 'expense.misleading-success', 'expense.wrong-total'],
+  ['expense.wrong-total', 'expense.total-under-filter', 'expense.edit-resets-category'],
+];
 
 let failures = 0;
 const clean = start({});
@@ -161,6 +236,18 @@ for (const [id, env] of Object.entries(switches)) {
     const present = await probes[id]!(app);
     console.log(`${present ? 'ok  ' : 'FAIL'} ${id} shows with ${Object.entries(env).map(([k, v]) => `${k}=${v}`).join(' ')}`);
     if (!present) failures++;
+  } finally { app.stop(); }
+}
+
+for (const members of combinations) {
+  const env = { DEFECT: members.map((id) => switches[id]!.DEFECT).join(',') };
+  const app = start(env);
+  try {
+    await waitUp(app);
+    const missing: string[] = [];
+    for (const id of members) if (!(await probes[id]!(app))) missing.push(id);
+    console.log(`${missing.length ? 'FAIL' : 'ok  '} DEFECT=${env.DEFECT} shows all ${members.length}${missing.length ? ` (missing: ${missing.join(', ')})` : ''}`);
+    if (missing.length) failures++;
   } finally { app.stop(); }
 }
 

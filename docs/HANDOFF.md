@@ -16,7 +16,7 @@ also been scored on a 10-episode sample, and their runs fed the first quality ro
 | Piece | Where | Proof |
 |---|---|---|
 | Contracts | `schemas/` (10 JSON Schemas), `lib/contracts.ts` | `npm run validate`: every YAML and JSON file in the repo, plus cross-file checks |
-| Expense app (ours) | `apps/expense-app` (code in `app/`, bench wrapper `bench-entry.mjs`) | 7 defects, 1 change. `verify.ts` 17/17; the app's own 34 tests pass on Node 26 |
+| Expense app (ours) | `apps/expense-app` (code in `app/`, bench wrapper `bench-entry.mjs`) | 13 defects (7 blatant, 6 subtle; any compatible subset at once), 1 change, 2 natural. `verify.ts` 37/37 incl. six 3-defect combinations; the app's own 42 tests pass on Node 26 |
 | Swag Labs (vendored, MIT) | `apps/swag-labs` (`upstream/` at `ad62bb2`) | 5 faulty-user defects, 4 changes. `verify.ts` 155/155 |
 | the-internet (run-only, Apache-2.0) | `apps/the-internet` (fetched at build time at `4126619`) | 10 baseline labels, 1 change. `verify.ts` passes |
 | Survey site (ours) | `apps/survey-site` | Not wired into a track yet (B1) |
@@ -26,7 +26,7 @@ also been scored on a 10-episode sample, and their runs fed the first quality ro
 | Adapters | `harness/adapters/{playwright-suite,http-api,human,noop}` | See each README |
 | Agent runs | `harness/agents` (configs, episode sets, one prompt, `agents prepare/finish`) | Haiku 5.5 and Sonnet 5.5 at low and high effort on `b0-sample-10`: `leaderboard/b0-agents/` |
 | Natural defects | `apps/*/natural/` | 5 verified real bugs found by the agent runs, each with a `verify.ts` check |
-| Tracks | `tracks/regression.yaml` (17 episodes), `tracks/noise.yaml` (6 + 2 live sites, generated only with `--live`) | Every defect and change is planted at least once (unit test) |
+| Tracks | `tracks/regression.yaml` (24 episodes, 2-3 bugs per mixed episode), `tracks/noise.yaml` (6 + 2 live sites, generated only with `--live`), `tracks/exploration.yaml` (17, exploratory briefs) | Every defect and change is planted at least once (unit test) |
 | CLI | `bin/qa-bench.ts` | `validate`, `generate`, `build-apps`, `run`, `up`, `down`, `score`, `report` |
 | CI | `.github/workflows/ci.yml` | Lint and typecheck, validate, unit tests (142). No Docker or browsers in CI |
 

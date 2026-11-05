@@ -3,6 +3,22 @@
 Versions follow `bench vMAJOR.MINOR.PATCH-phase`. A version pins the apps, labels, tracks, matcher and scorer, so
 scores are comparable only within one version. Every report records it.
 
+## Unreleased (0.2.0-dev): a harder bench
+Episodes and answer keys changed, so scores aren't comparable with 0.1.0-b0. The B0 leaderboard stays as recorded,
+with its answer-key hashes.
+- **Defect mix:** mixed regression episodes carry 2-3 planted bugs, at most one blatant (`max_blatant_per_episode`).
+  The regression track has 24 episodes, so episode ids now mean different builds.
+- **Expense app:** 6 new subtle defects (a total wrong only under a filter, a delete endpoint open to the viewer,
+  edits that drop cents, long titles truncated, unescaped titles, edits that reset the category). `DEFECT` takes any
+  compatible subset, and every planted label has description patterns so co-active bugs stay distinguishable.
+- **Exploration track** (7.7, 17 episodes): exploratory briefs give only the targets, roles and a one-line product purpose, with
+  no journeys or checklist.
+- **Labels:** `difficulty` (blatant or subtle) and `exposure` (novel or known). Swag Labs' publicly documented faulty
+  users are `known`, and the report splits recall into novel and known, and into subtle and blatant.
+- **Agent harness 0.3.0:** an exploratory prompt variant, the severity field in findings, and a `qa-tester` subagent
+  definition limited to shell and file tools.
+- **Swag Labs** answers 404 for unknown URLs, as its upstream deployment does.
+
 ## 0.1.0-b0 (5 Nov 2026): skeleton
 **Apps**, each with a `verify.ts` that proves every label against the running app:
 - **expense-app** (ours, MIT): 7 planted defects, 1 deliberate change and 2 natural defects. Generated accounts per

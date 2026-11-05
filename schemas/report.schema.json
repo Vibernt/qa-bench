@@ -124,6 +124,13 @@
               }
             }
           }
+        },
+        "by_exposure": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/metrics"
+          },
+          "description": "novel (unpublished) vs known (publicly documented) defects"
         }
       }
     }
@@ -271,6 +278,18 @@
                 "items": {
                   "type": "string"
                 }
+              },
+              "exposure": {
+                "enum": [
+                  "novel",
+                  "known"
+                ]
+              },
+              "difficulty": {
+                "enum": [
+                  "blatant",
+                  "subtle"
+                ]
               }
             }
           }

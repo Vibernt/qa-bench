@@ -13,6 +13,8 @@ kind: defect
 category: functional
 class: deterministic
 severity: critical
+difficulty: blatant
+exposure: known
 where: { route: /inventory.html, role: customer }
 switch:
   env: { QA_BENCH_MUTATIONS: problem_user }

@@ -1,6 +1,10 @@
 # Track 7.1 Regression (BRIEF §7): planted functional, consistency and permission bugs in known journeys, plus a
 # deliberate-change twin whose findings are the false-alarm number. Generate with:
 #   npx tsx bin/qa-bench.ts generate regression
+# Mixed episodes carry 2-3 planted defects, at most one of them blatant (docs/DECISIONS.md, 5 Nov). Swag Labs'
+# faulty users share one exclusive group, so its mixed episodes carry one (the generator warns once).
+# count 24 leaves slack over what covering every defect needs (expense app: one episode per blatant defect;
+# Swag Labs: one per faulty user), so every defect of both apps is switched on at least once.
 id: regression
 number: "7.1"
 title: Regression
@@ -8,15 +12,17 @@ description: >-
   Known journeys on the expense app and Swag Labs, each episode with planted defects switched on. Twin episodes
   switch on only deliberate changes (no defects), so anything reported there is a false alarm.
 brief:
+  mode: regression
   journeys: true
   wall_time_s: 600
 apps:
   - { app: expense-app, weight: 1, mutations: '*', changes: '*' }
   - { app: swag-labs, weight: 1, mutations: '*', changes: '*' }
 episodes:
-  count: 17
+  count: 24
   seed: 20261105
-  mutations_per_episode: { min: 1, max: 2 }
+  mutations_per_episode: { min: 2, max: 3 }
+  max_blatant_per_episode: 1
   changes_per_episode: { min: 0, max: 2 }
   clean_episodes: 2
   twin_episodes: 3

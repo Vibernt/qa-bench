@@ -1,22 +1,26 @@
 id: expense.misleading-success
 app: expense-app
 title: "Edit reports success but changes nothing"
-description: "Editing an expense redirects with \"Expense updated\" but the update is never written."
+description: 'Editing an expense redirects with "Expense updated" but the update is never written.'
 track: regression
 kind: defect
 category: functional
 class: deterministic
 severity: critical
+difficulty: blatant
+exposure: novel
 where: { route: /expenses, role: editor }
 switch:
   env: { DEFECT: misleading_success }
-  exclusive: expense-defect   # the app takes one DEFECT value at a time
+  exclusive: expense-update   # misleading_success skips the update, so edit_drops_cents and edit_resets_category cannot show
 found_by:
   - kind: behaviour
-    note: "After \"Expense updated\" the list still shows the old values"
+    description_pattern: '^(?![\s\S]*(stale|cach|out of (sync|date)|eventually|delay|appears? (only )?(later|after)|shows? up (only )?(later|after)|when filtering|filtered (list|view) (already )?shows|truncat|characters|\bchars\b|cut (off|short)))(?=[\s\S]*(\bedit|expense updated|updat\w* (an|the|a|its) (expense|row|amount|title|category|record)|chang\w* (an|the|its) (expense|amount|title|category)|modif))(?=[\s\S]*(not (saved|stored|persisted|written|applied|changed|updated|kept)|nothing (was |is |has |gets )?(saved|stored|written|changed|updated|applied)|never (saved|stored|applied|written|takes effect|persist)|(change|edit|update)s? (is |was |are |were )?(lost|discarded|ignored|dropped|not (saved|applied|kept|persisted))|still (shows?|has|holds?|lists?|displays?|reads?) (the )?(old|original|previous|same|\$)|(old|original|previous|unchanged) (value|amount|title|values|data)|unchanged|reverts?|no effect))'
+    note: 'After "Expense updated" the list still shows the old values'
   - kind: text
     category: copy
-    note: "\"Expense updated\" is shown although nothing changed"
+    description_pattern: '^(?![\s\S]*(stale|cach|out of (sync|date)|eventually|delay|appears? (only )?(later|after)|shows? up (only )?(later|after)|when filtering|filtered (list|view) (already )?shows|truncat|characters|\bchars\b|cut (off|short)))(?=[\s\S]*(\bedit|expense updated|updat\w* (an|the|a|its) (expense|row|amount|title|category|record)|chang\w* (an|the|its) (expense|amount|title|category)|modif))(?=[\s\S]*(not (saved|stored|persisted|written|applied|changed|updated|kept)|nothing (was |is |has |gets )?(saved|stored|written|changed|updated|applied)|never (saved|stored|applied|written|takes effect|persist)|(change|edit|update)s? (is |was |are |were )?(lost|discarded|ignored|dropped|not (saved|applied|kept|persisted))|still (shows?|has|holds?|lists?|displays?|reads?) (the )?(old|original|previous|same|\$)|(old|original|previous|unchanged) (value|amount|title|values|data)|unchanged|reverts?|no effect))'
+    note: '"Expense updated" is shown although nothing changed'
 tolerance: { route: prefix }
 split: public
 upstream_ref: "apps/expense-app/app/src/server.ts (DEFECT=misleading_success); checked by apps/expense-app/verify.ts"

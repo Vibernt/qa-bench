@@ -51,15 +51,25 @@ We may run these unmodified if one becomes useful (BD7).
   track.
 - **Defects already built** (`DEFECT=` env var). Each becomes one label:
 
-  | Toggle | What goes wrong | Category | Class |
-  |---|---|---|---|
-  | `permission_bypass` | Viewer can open the edit form and save, though no Edit link is shown | permission | deterministic |
-  | `stale_state` | List served from a 60-second cache after a write | consistency | deterministic |
-  | `ignored_filter` | Category filter ignored | functional | deterministic |
-  | `wrong_total` | Total omits the last row | consistency | deterministic |
-  | `missing_persistence` | Save shows success but nothing is written | functional | deterministic |
-  | `duplicate_write` | One save writes two rows | functional | deterministic |
-  | `misleading_success` | Edit says "Expense updated" but nothing is saved | functional (copy) | deterministic |
+  | Toggle (any comma-separated subset) | What goes wrong | Category | Severity | Difficulty | Exclusive group |
+  |---|---|---|---|---|---|
+  | `permission_bypass` | Viewer can open the edit form and save, though no Edit link is shown | permission | critical | blatant | |
+  | `stale_state` | List served from a 60-second cache after a write | consistency | major | blatant | |
+  | `ignored_filter` | Category filter ignored | functional | major | blatant | `expense-filter` |
+  | `wrong_total` | Total omits the last row | consistency | major | blatant | |
+  | `missing_persistence` | Save shows success but nothing is written | functional | critical | blatant | `expense-create` |
+  | `duplicate_write` | One save writes two rows | functional | critical | blatant | `expense-create` |
+  | `misleading_success` | Edit says "Expense updated" but nothing is saved | functional (copy) | critical | blatant | `expense-update` |
+  | `total_under_filter` | Under a category filter the total still sums every row; unfiltered is right | consistency | major | subtle | `expense-filter` |
+  | `delete_open_to_viewer` | Viewer has no Delete button, but a direct POST `/expenses/:id/delete` succeeds | permission | critical | subtle | |
+  | `edit_drops_cents` | An edit saves the amount truncated to whole units (12.50 → 12.00); adding is right | functional | critical | subtle | `expense-update` |
+  | `long_title_truncated` | Titles over 20 characters are silently cut to 20 on add and edit | functional | major | subtle | |
+  | `title_not_escaped` | The list renders titles as HTML (`<b>x</b>` is bold; stored XSS) | security-hygiene | major | subtle | |
+  | `edit_resets_category` | The edit form preselects no category, so an untouched save changes it to the first option | functional | major | subtle | `expense-update` |
+
+  All are deterministic, exposure `novel`. A group holds defects where one hides another: `missing_persistence` skips
+  the insert (hides `duplicate_write`), `misleading_success` skips the update (hides both edit bugs), and
+  `ignored_filter` lists every row (hides `total_under_filter`).
 
 - **Deliberate change already built:** `VARIANT=relabel` changes the visible labels. Title becomes "Expense title",
   Save becomes "Save expense" and "Add expense" becomes "New expense". Behaviour stays the same.

@@ -1,6 +1,6 @@
 import { BENCH_VERSION } from '../../lib/contracts.ts';
 import type { EpisodeScore, Metrics, Report, SystemId } from '../../lib/contracts.ts';
-import { aggregateAll } from './metrics.ts';
+import { aggregateAll, aggregateByDifficulty, aggregateByExposure } from './metrics.ts';
 import { MATCHER_VERSION } from './matcher.ts';
 
 export function buildReport(input: {
@@ -41,8 +41,14 @@ const metricRow = (name: string, m: Metrics) => [
 ];
 const METRIC_HEAD = ['', 'Episodes', 'Defects found', 'Recall', 'Precision', 'F1', 'Changes flagged', 'False alarms /100 ep', 'Unmatched /ep'];
 
+const sliceRecall = (s: Metrics | undefined, what: string) =>
+  s && s.defects_planted ? `${pct(s.recall)} (${frac(s.defects_found, s.defects_planted)} ${what})` : `— (no ${what} planted)`;
+
 export function renderMarkdown(report: Report): string {
   const m = report.metrics.overall;
+  // Older reports have no by_exposure; both slices can be recomputed from the episode scores.
+  const byExposure = report.metrics.by_exposure ?? aggregateByExposure(report.episodes);
+  const byDifficulty = aggregateByDifficulty(report.episodes);
   const L: string[] = [];
   L.push(`# QA Bench report: ${report.system.name} ${report.system.version} (bench ${report.bench_version})`, '');
   L.push(`- Run: \`${report.run.id}\``);
@@ -55,6 +61,10 @@ export function renderMarkdown(report: Report): string {
   L.push('', '## Headline', '');
   L.push(table(['Metric', 'Value'], [
     ['Recall', `${pct(m.recall)} (${frac(m.defects_found, m.defects_planted)} defects)`],
+    ['Recall (novel defects)', sliceRecall(byExposure.novel, 'novel defects')],
+    ['Recall (known, publicly documented)', sliceRecall(byExposure.known, 'known defects')],
+    ['Recall (subtle)', sliceRecall(byDifficulty.subtle, 'subtle defects')],
+    ['Recall (blatant)', sliceRecall(byDifficulty.blatant, 'blatant defects')],
     ['Severity-weighted recall', `${pct(m.weighted_recall ?? null)} (${dec(m.weighted_defects_found ?? null, 0)}/${dec(m.weighted_defects_planted ?? null, 0)} weight; critical 5, major 3, minor 1)`],
     ['Natural defects found', m.natural_present ? `${pct(m.natural_recall ?? null)} (${frac(m.natural_found ?? 0, m.natural_present)} verified real bugs nobody planted)` : '— (none labelled for these apps)'],
     ['Precision', pct(m.precision)],

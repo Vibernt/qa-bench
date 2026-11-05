@@ -1,22 +1,26 @@
 id: expense.missing-persistence
 app: expense-app
 title: "New expense reports success but is not saved"
-description: "Saving a new expense redirects with \"Expense saved\" but nothing is written; the row never appears."
+description: 'Saving a new expense redirects with "Expense saved" but nothing is written; the row never appears.'
 track: regression
 kind: defect
 category: functional
 class: deterministic
 severity: critical
+difficulty: blatant
+exposure: novel
 where: { route: /expenses, role: editor }
 switch:
   env: { DEFECT: missing_persistence }
-  exclusive: expense-defect   # the app takes one DEFECT value at a time
+  exclusive: expense-create   # missing_persistence skips the insert, so duplicate_write cannot show
 found_by:
   - kind: behaviour
-    note: "The new expense is missing from the list after \"Expense saved\""
+    description_pattern: '^(?![\s\S]*(stale|cach|out of (sync|date)|eventually|delay|appears? (only )?(later|after)|shows? up (only )?(later|after)|when filtering|filtered (list|view) (already )?shows|\bedit|expense updated|truncat|duplicat|twice))(?=[\s\S]*(\badd|\bnew\b|creat|expense saved|sav(e|ed|ing)))(?=[\s\S]*(not (saved|stored|persisted|written|created|added|kept|recorded)|nothing (was |is |gets )?(saved|stored|written|persisted|added)|never (saved|stored|persisted|written|created|added|appears|shows|listed|there|arrives)|(expense|row|entry|item|record)s? (is |was |are |were )?(missing|absent|nowhere|lost|not (there|shown|listed|visible|present|in the list)|in no (list|view))|no (new )?(rows?|expenses?|entry|entries|records?) (appears?|is (added|shown|listed)|shows)|does ?n.t (appear|show up|get (saved|added))|did ?n.t (appear|show up|get (saved|added)|save)|not (in|on) the list|in no list))'
+    note: 'The new expense is missing from the list after "Expense saved"'
   - kind: text
     category: copy
-    note: "\"Expense saved\" is shown although nothing was saved"
+    description_pattern: '^(?![\s\S]*(stale|cach|out of (sync|date)|eventually|delay|appears? (only )?(later|after)|shows? up (only )?(later|after)|when filtering|filtered (list|view) (already )?shows|\bedit|expense updated|truncat|duplicat|twice))(?=[\s\S]*(\badd|\bnew\b|creat|expense saved|sav(e|ed|ing)))(?=[\s\S]*(not (saved|stored|persisted|written|created|added|kept|recorded)|nothing (was |is |gets )?(saved|stored|written|persisted|added)|never (saved|stored|persisted|written|created|added|appears|shows|listed|there|arrives)|(expense|row|entry|item|record)s? (is |was |are |were )?(missing|absent|nowhere|lost|not (there|shown|listed|visible|present|in the list)|in no (list|view))|no (new )?(rows?|expenses?|entry|entries|records?) (appears?|is (added|shown|listed)|shows)|does ?n.t (appear|show up|get (saved|added))|did ?n.t (appear|show up|get (saved|added)|save)|not (in|on) the list|in no list))'
+    note: '"Expense saved" is shown although nothing was saved'
 tolerance: { route: prefix }
 split: public
 upstream_ref: "apps/expense-app/app/src/server.ts (DEFECT=missing_persistence); checked by apps/expense-app/verify.ts"

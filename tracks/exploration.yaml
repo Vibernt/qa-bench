@@ -1,0 +1,26 @@
+# Track 7.7 Exploration: the same apps and defect mix as regression (7.1), but the brief gives only the URL, the
+# roles and a one-line product purpose (brief.mode exploratory: no journeys, no pages, no checklist). Regression
+# measures following a plan; this measures finding problems (docs/DECISIONS.md, 5 Nov). Generate with:
+#   npx tsx bin/qa-bench.ts generate exploration
+# 17 episodes (13 mixed) is the smallest count that switches on every defect of both apps at least once.
+id: exploration
+number: "7.7"
+title: Exploration
+description: >-
+  The expense app and Swag Labs with planted defects, briefed with only the targets, the roles and the product's
+  purpose: no journeys or checklist. Twin episodes switch on only deliberate changes, so anything reported there is
+  a false alarm.
+brief:
+  mode: exploratory
+  wall_time_s: 600
+apps:
+  - { app: expense-app, weight: 1, mutations: '*', changes: '*' }
+  - { app: swag-labs, weight: 1, mutations: '*', changes: '*' }
+episodes:
+  count: 17
+  seed: 20261107
+  mutations_per_episode: { min: 2, max: 3 }
+  max_blatant_per_episode: 1
+  changes_per_episode: { min: 0, max: 2 }
+  clean_episodes: 2
+  twin_episodes: 2

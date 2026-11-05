@@ -11,6 +11,7 @@ const FX = join(import.meta.dirname, 'fixtures');
 const APPS = join(FX, 'apps');
 const MIX = join(FX, 'tracks', 'mix.yaml');
 const QUIET = join(FX, 'tracks', 'quiet.yaml');
+const MIXED_DEFECTS = join(FX, 'tracks', 'defect-mix.yaml');
 
 const temps: string[] = [];
 function temp(): string {
@@ -226,6 +227,64 @@ describe('generateTrack', () => {
     expect((live[0]!.answerKey as AnswerKey).labels).toEqual([]);
   });
 
+  it('caps blatant defects per mixed episode (missing difficulty counts as blatant) and covers every label', () => {
+    const labels = labelsOf(loadApps(APPS));
+    const blatant = (id: string) => (labels.get(id)?.difficulty ?? 'blatant') === 'blatant';
+    expect(labels.get('delta.b2')?.difficulty).toBeUndefined();
+    const a = generateTrack(MIXED_DEFECTS, { appsRoot: APPS, write: false });
+    const b = generateTrack(MIXED_DEFECTS, { appsRoot: APPS, write: false });
+    expect(b.episodes.map((g) => g.episodeText)).toEqual(a.episodes.map((g) => g.episodeText)); // deterministic
+    const eps = a.episodes.map((g) => g.episode);
+    expect(eps.filter((e) => e.kind === 'clean').length).toBe(1);
+    expect(eps.filter((e) => e.kind === 'twin').length).toBe(1);
+    const mixed = eps.filter((e) => e.kind === 'mixed');
+    for (const e of mixed) {
+      expect(e.active.mutations.filter(blatant).length).toBeLessThanOrEqual(1);
+      expect(e.active.mutations.length).toBeGreaterThanOrEqual(1);
+      expect(e.active.mutations.length).toBeLessThanOrEqual(3);
+      // delta has enough subtle defects to always reach the minimum of 2.
+      if (e.app === 'delta') expect(e.active.mutations.length).toBeGreaterThanOrEqual(2);
+      // alpha (in this track) and beta have only blatant defects: one per episode, never zero.
+      if (e.app !== 'delta') expect(e.active.mutations.length).toBe(1);
+    }
+    const on = new Set(eps.flatMap((e) => e.active.mutations));
+    for (const id of ['alpha.three', 'alpha.four', 'beta.broken', 'beta.slow', 'delta.b1', 'delta.b2', 'delta.b3', 'delta.s1', 'delta.s2', 'delta.s3', 'delta.s4']) {
+      expect(on.has(id), id).toBe(true);
+    }
+    expect(a.warnings.filter((w) => w.includes('not covered'))).toEqual([]);
+    // One warning for the whole track, naming the apps that fell short of the minimum.
+    const short = a.warnings.filter((w) => w.includes('mutations_per_episode.min'));
+    expect(short).toEqual([expect.stringMatching(/^defect-mix: alpha, beta can't supply mutations_per_episode\.min \(2\).*max_blatant_per_episode/)]);
+  });
+
+  it('repeats a covered defect only when no uncovered one of that app fits the episode', () => {
+    const labels = labelsOf(loadApps(APPS));
+    const blatant = (id: string) => (labels.get(id)?.difficulty ?? 'blatant') === 'blatant';
+    for (const seed of [1, 2, 3, 99, 20261107]) {
+      const root = temp();
+      const trackFile = join(root, 'defect-mix.yaml');
+      writeFileSync(trackFile, readFileSync(MIXED_DEFECTS, 'utf8').replace(/seed: \d+/, `seed: ${seed}`));
+      const r = generateTrack(trackFile, { appsRoot: APPS, write: false });
+      const seen = new Set<string>();
+      const pickable = new Map<string, string[]>([
+        ['alpha', ['alpha.four', 'alpha.three']], ['beta', ['beta.broken', 'beta.slow']],
+        ['delta', ['delta.b1', 'delta.b2', 'delta.b3', 'delta.s1', 'delta.s2', 'delta.s3', 'delta.s4']],
+      ]);
+      for (const { episode: e } of r.episodes) {
+        if (e.kind !== 'mixed') continue;
+        const repeats = e.active.mutations.filter((id) => seen.has(id));
+        if (repeats.length) {
+          const uncovered = pickable.get(e.app)!.filter((id) => !seen.has(id) && !e.active.mutations.includes(id));
+          const hasBlatant = e.active.mutations.some(blatant);
+          // Any uncovered subtle one would have fit; an uncovered blatant one fits only if none is on yet.
+          expect(uncovered.filter((id) => !blatant(id) || !hasBlatant), `seed ${seed} ${e.id}`).toEqual([]);
+        }
+        for (const id of e.active.mutations) seen.add(id);
+      }
+      expect(r.warnings.filter((w) => w.includes('not covered'))).toEqual([]);
+    }
+  });
+
   it('restricts a track to some apps when asked, and refuses unknown apps otherwise', () => {
     const r = generateTrack(MIX, { appsRoot: APPS, write: false, onlyApps: ['beta'] });
     expect(new Set(r.episodes.map((g) => g.episode.app))).toEqual(new Set(['beta']));
@@ -240,20 +299,38 @@ describe('repo tracks', () => {
   it('generates the regression track for the expense app with every defect and the change covered', () => {
     const r = generateTrack(join(REPO_ROOT, 'tracks', 'regression.yaml'), { write: false, onlyApps: ['expense-app'] });
     const eps = r.episodes.map((g) => g.episode);
-    expect(eps.length).toBe(17);
+    expect(eps.length).toBe(24);
     expect(eps.filter((e) => e.kind === 'clean').length).toBe(2);
     expect(eps.filter((e) => e.kind === 'twin').length).toBe(3);
     const apps = loadApps();
     const expense = apps.get('expense-app')!;
+    const byId = new Map(expense.mutations.map((l) => [l.id, l]));
     const on = new Set(eps.flatMap((e) => [...e.active.mutations, ...e.active.changes]));
     for (const l of [...expense.mutations, ...expense.changes]) expect(on.has(l.id)).toBe(true);
     for (const e of eps) {
       expect(e.env.QA_BENCH_VIEWER_ACCOUNTS).toMatch(/^viewer-[0-9a-f]{4}:[A-Za-z0-9]{16}$/);
-      expect(e.active.mutations.length).toBeLessThanOrEqual(1); // expense-defect is exclusive
+      expect(e.active.mutations.length).toBeLessThanOrEqual(3);
+      const blatant = e.active.mutations.filter((id) => (byId.get(id)?.difficulty ?? 'blatant') === 'blatant');
+      expect(blatant.length).toBeLessThanOrEqual(1); // max_blatant_per_episode: 1
     }
   });
 
-  it('plants every repo defect and change at least once across the B0 tracks', () => {
+  it('briefs the exploration track exploratory, on the same apps and defect mix as regression', () => {
+    const reg = generateTrack(join(REPO_ROOT, 'tracks', 'regression.yaml'), { write: false }).track;
+    const r = generateTrack(join(REPO_ROOT, 'tracks', 'exploration.yaml'), { write: false });
+    expect(r.track.number).toBe('7.7');
+    expect(r.track.brief?.mode).toBe('exploratory');
+    expect(r.track.apps.map((a) => a.app)).toEqual(reg.apps.map((a) => a.app));
+    expect(r.track.episodes.max_blatant_per_episode).toBe(reg.episodes.max_blatant_per_episode);
+    expect(r.track.episodes.mutations_per_episode).toEqual(reg.episodes.mutations_per_episode);
+    expect(r.track.episodes.seed).not.toBe(reg.episodes.seed);
+    const eps = r.episodes.map((g) => g.episode);
+    expect(eps.length).toBe(17);
+    expect(eps.filter((e) => e.kind === 'clean').length).toBe(2);
+    expect(eps.filter((e) => e.kind === 'twin').length).toBe(2);
+  });
+
+  it('plants every repo defect and change at least once across the regression and noise tracks', () => {
     const apps = loadApps();
     for (const track of ['regression', 'noise']) {
       const r = generateTrack(join(REPO_ROOT, 'tracks', `${track}.yaml`), { write: false });

@@ -43,13 +43,17 @@ valid findings, or the adapter image didn't build), `timeout`, `skipped`.
 
 ## The brief
 Built only from `app.yaml`, the track and the episode's accounts: `episode_id`, `bench_version`, `app`, `track`,
-`targets` (`http://<service>:<port><path>` on the episode network, or `http://127.0.0.1:<port><path>` for host
+`mode` (the track's `brief.mode`, default `regression`), `purpose` (the app's one-line purpose), `targets` (`http://<service>:<port><path>` on the episode network, or `http://127.0.0.1:<port><path>` for host
 adapters, or the live URL), `roles` with their accounts, `budget` (the track's, default 600 s), `journeys` when
 the track sets `brief.journeys`, `goal`, `pages`, `rules` (live sites), `categories` and `out`
 (`/bench/out/findings.json`, `/bench/out/evidence`). `categories` is the track's scope: every category any label
 of the track's apps carries, the same for every episode of the track. Nothing comes from the answer key,
 `episode.active` or the episode's env, and a unit test checks that no active label id, switch key or switch value
 appears in any brief.
+
+An **exploratory** brief (`brief.mode: exploratory`, track 7.7) has the purpose, targets, roles, budget, rules and
+categories, but no `journeys` and no `pages`, and a `goal` only when the track sets one: the system decides what to
+test. A unit test checks that no journey text reaches it.
 
 ## Sealing model (AGENTS.md rule 8)
 The adapter runs as

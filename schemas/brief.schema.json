@@ -28,6 +28,18 @@
     "track": {
       "type": "string"
     },
+    "mode": {
+      "enum": [
+        "regression",
+        "exploratory"
+      ],
+      "default": "regression",
+      "description": "regression: journeys to replay are given. exploratory: only targets, roles and the product purpose; find what is broken"
+    },
+    "purpose": {
+      "type": "string",
+      "description": "One-line product purpose (app.yaml purpose)"
+    },
     "targets": {
       "type": "array",
       "minItems": 1,

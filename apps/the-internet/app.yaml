@@ -3,6 +3,7 @@
 # broken on purpose) is a false alarm.
 app: the-internet
 title: the-internet (tricky UI patterns; noise only)
+purpose: "A collection of small web pages that each demonstrate a tricky UI pattern for test automation."
 label_prefix: internet
 noise_only: true
 targets:

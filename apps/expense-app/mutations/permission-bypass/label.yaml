@@ -7,14 +7,17 @@ kind: defect
 category: permission
 class: deterministic
 severity: critical
+difficulty: blatant
+exposure: novel
 where: { route: /expenses/, role: viewer }
 switch:
   env: { DEFECT: permission_bypass }
-  exclusive: expense-defect   # the app takes one DEFECT value at a time
 found_by:
   - kind: behaviour
+    description_pattern: '^(?![\s\S]*((delet|remov)\w*.{0,80}(succe|accept|303|\b200\b|allow|works|went through|is gone|\bgone\b|disappear|vanish|really|actually|removed|no longer|permitted|not (refused|blocked|rejected|forbidden|denied|prevented)|instead of (a )?403)|(can|could|able to|allowed to|manag\w* to|permitted to|lets?)( still)?( \w+){0,3} (delet|remov)))(?=[\s\S]*\b(viewers?|read-?only|non-editors?|unprivileged|low(er)?[- ]privilege\w*)\b)(?=[\s\S]*(\bedit|updat|modif|chang|alter|/expenses/\d+\b))(?=[\s\S]*(\b200\b|303|accept|allow|succe|works|\bable\b|\bcan\b|could|lets?\b|permit|reach|not (refused|blocked|rejected|forbidden|enforced|denied)|instead of|bypass|without (a |being )?(403|refused|blocked)|gets? the (full |edit )?form|(shows?|serves?|opens?|displays?|returns?) the (full |whole |pre-?filled )?(edit )?form|(saving|submitting)( it)? (changes|updates|works|is accepted|goes through)))'
     note: "Viewer opens /expenses/:id/edit directly and gets the form instead of 403"
   - kind: network
+    description_pattern: '^(?![\s\S]*((delet|remov)\w*.{0,80}(succe|accept|303|\b200\b|allow|works|went through|is gone|\bgone\b|disappear|vanish|really|actually|removed|no longer|permitted|not (refused|blocked|rejected|forbidden|denied|prevented)|instead of (a )?403)|(can|could|able to|allowed to|manag\w* to|permitted to|lets?)( still)?( \w+){0,3} (delet|remov)))(?=[\s\S]*\b(viewers?|read-?only|non-editors?|unprivileged|low(er)?[- ]privilege\w*)\b)(?=[\s\S]*(\bedit|updat|modif|chang|alter|/expenses/\d+\b))(?=[\s\S]*(\b200\b|303|accept|allow|succe|works|\bable\b|\bcan\b|could|lets?\b|permit|reach|not (refused|blocked|rejected|forbidden|enforced|denied)|instead of|bypass|without (a |being )?(403|refused|blocked)|gets? the (full |edit )?form|(shows?|serves?|opens?|displays?|returns?) the (full |whole |pre-?filled )?(edit )?form|(saving|submitting)( it)? (changes|updates|works|is accepted|goes through)))'
     note: "Viewer's POST /expenses/:id is accepted (303) and the amount changes"
 tolerance: { route: prefix }
 split: public
