@@ -22,4 +22,4 @@ found_by:
     note: "Reports the renamed controls as confusing or a usability regression"
 tolerance: { route: prefix, role: any }
 split: public
-upstream_ref: "Touchstone fixtures/expense-app, VARIANT=relabel. VERIFY selectors and routes against the source at first pull (placeholder written from docs/APPS.md)."
+upstream_ref: "apps/expense-app/app/src/variant.ts (VARIANT=relabel); checked by apps/expense-app/verify.ts"

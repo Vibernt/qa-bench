@@ -1,7 +1,7 @@
 id: expense.missing-persistence
 app: expense-app
-title: "Save reports success but writes nothing"
-description: "Saving shows a success message but nothing is stored; the row is gone after a reload."
+title: "New expense reports success but is not saved"
+description: "Saving a new expense redirects with \"Expense saved\" but nothing is written; the row never appears."
 track: regression
 kind: defect
 category: functional
@@ -13,7 +13,10 @@ switch:
   exclusive: expense-defect   # the app takes one DEFECT value at a time
 found_by:
   - kind: behaviour
-    note: "Saved expense is missing from the list or after a reload"
-tolerance: { route: prefix, region_px: 48 }
+    note: "The new expense is missing from the list after \"Expense saved\""
+  - kind: text
+    category: copy
+    note: "\"Expense saved\" is shown although nothing was saved"
+tolerance: { route: prefix }
 split: public
-upstream_ref: "Touchstone fixtures/expense-app, DEFECT=missing_persistence. VERIFY selectors and routes against the source at first pull (placeholder written from docs/APPS.md)."
+upstream_ref: "apps/expense-app/app/src/server.ts (DEFECT=missing_persistence); checked by apps/expense-app/verify.ts"

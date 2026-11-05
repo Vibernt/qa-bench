@@ -1,7 +1,7 @@
 id: expense.wrong-total
 app: expense-app
 title: "Total omits the last row"
-description: "The list total leaves out the last expense."
+description: "The list total leaves out the last listed expense."
 track: regression
 kind: defect
 category: consistency
@@ -15,6 +15,6 @@ found_by:
   - kind: value
     selector: "[data-testid=total]"
     note: "Total is not the sum of the listed amounts"
-tolerance: { route: prefix, region_px: 48 }
+tolerance: { route: exact, role: any }
 split: public
-upstream_ref: "Touchstone fixtures/expense-app, DEFECT=wrong_total. VERIFY selectors and routes against the source at first pull (placeholder written from docs/APPS.md)."
+upstream_ref: "apps/expense-app/app/src/server.ts (DEFECT=wrong_total); checked by apps/expense-app/verify.ts"

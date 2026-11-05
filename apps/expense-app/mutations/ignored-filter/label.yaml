@@ -1,7 +1,7 @@
 id: expense.ignored-filter
 app: expense-app
 title: "Category filter is ignored"
-description: "Choosing a category leaves every expense in the list."
+description: "Choosing a category (/expenses?category=meals) still lists every expense."
 track: regression
 kind: defect
 category: functional
@@ -13,7 +13,7 @@ switch:
   exclusive: expense-defect   # the app takes one DEFECT value at a time
 found_by:
   - kind: value
-    note: "Rows of other categories remain after filtering"
-tolerance: { route: prefix, region_px: 48 }
+    note: "Rows of other categories remain after applying the filter"
+tolerance: { route: exact, role: any }
 split: public
-upstream_ref: "Touchstone fixtures/expense-app, DEFECT=ignored_filter. VERIFY selectors and routes against the source at first pull (placeholder written from docs/APPS.md)."
+upstream_ref: "apps/expense-app/app/src/server.ts (DEFECT=ignored_filter); checked by apps/expense-app/verify.ts"

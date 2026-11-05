@@ -1,18 +1,14 @@
-# Expense app (ours). Placeholder until BD2: the source is pulled at setup, never committed.
-# VERIFY at first pull: the routes, selectors, port, start command and account env below are taken from
-# docs/APPS.md and BRIEF.md §6.2, not from the source (which this repo can't see). Fix them here and in the labels.
+# Expense app (ours, apps/expense-app/app). bench-entry.mjs seeds a fresh database at every container start and
+# swaps the seed logins for the episode's generated accounts.
 app: expense-app
 title: Expense app (two roles, SQLite, deterministic reset)
 label_prefix: expense
-available:
-  requires_env: [QA_BENCH_EXPENSE_APP_DIR]
-  fetch: fetch.sh
 targets:
   - name: expense-app
     service: app
     port: 3000
     path: /expenses
-    health_path: /expenses
+    health_path: /login
 roles:
   - role: viewer
     accounts: 1
