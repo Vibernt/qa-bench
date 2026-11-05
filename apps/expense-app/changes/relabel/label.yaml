@@ -1,0 +1,25 @@
+id: expense.relabel
+app: expense-app
+title: Visible labels renamed (deliberate)
+description: "VARIANT=relabel renames visible labels: Title becomes \"Expense title\", Save becomes \"Save expense\" and \"Add expense\" becomes \"New expense\". Behaviour is unchanged. Reporting it is a false alarm."
+track: regression
+kind: change
+category: copy
+class: judged
+severity: minor
+where: { route: /expenses }
+switch:
+  env: { VARIANT: relabel }
+  exclusive: expense-variant
+found_by:
+  - kind: text
+    note: "Reports the renamed button or field labels as a copy fault"
+  - kind: element
+    category: functional
+    note: "Reports a missing Save or Add expense control because its label changed"
+  - kind: element
+    category: usability
+    note: "Reports the renamed controls as confusing or a usability regression"
+tolerance: { route: prefix, role: any }
+split: public
+upstream_ref: "Touchstone fixtures/expense-app, VARIANT=relabel. VERIFY selectors and routes against the source at first pull (placeholder written from docs/APPS.md)."

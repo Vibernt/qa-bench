@@ -1,0 +1,22 @@
+id: expense.duplicate-write
+app: expense-app
+title: "One save writes two rows"
+description: "A single save inserts the expense twice."
+track: regression
+kind: defect
+category: functional
+class: deterministic
+severity: major
+where: { route: /expenses, role: editor }
+switch:
+  env: { DEFECT: duplicate_write }
+  exclusive: expense-defect   # the app takes one DEFECT value at a time
+found_by:
+  - kind: value
+    note: "Two identical rows appear after one save"
+  - kind: value
+    category: consistency
+    note: "List count or total jumps by two entries after one save"
+tolerance: { route: prefix, region_px: 48 }
+split: public
+upstream_ref: "Touchstone fixtures/expense-app, DEFECT=duplicate_write. VERIFY selectors and routes against the source at first pull (placeholder written from docs/APPS.md)."

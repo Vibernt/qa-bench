@@ -1,0 +1,19 @@
+id: expense.ignored-filter
+app: expense-app
+title: "Category filter is ignored"
+description: "Choosing a category leaves every expense in the list."
+track: regression
+kind: defect
+category: functional
+class: deterministic
+severity: major
+where: { route: /expenses, role: viewer }
+switch:
+  env: { DEFECT: ignored_filter }
+  exclusive: expense-defect   # the app takes one DEFECT value at a time
+found_by:
+  - kind: value
+    note: "Rows of other categories remain after filtering"
+tolerance: { route: prefix, region_px: 48 }
+split: public
+upstream_ref: "Touchstone fixtures/expense-app, DEFECT=ignored_filter. VERIFY selectors and routes against the source at first pull (placeholder written from docs/APPS.md)."

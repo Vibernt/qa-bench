@@ -1,0 +1,10 @@
+{
+  "app": "expense-app",
+  "repo": "private:touchstone",
+  "pin": { "ref": "main", "path": "fixtures/expense-app" },
+  "licence": "proprietary-ours",
+  "licence_checked": "2026-11-05",
+  "use": "private-pull",
+  "tracks": ["regression"],
+  "notes": "Our own fixture, private until BD2 is answered. Pulled at setup from a local checkout of the Touchstone repo (QA_BENCH_EXPENSE_APP_DIR); never committed here. Pin to a commit sha the first time it is pulled. Do not bring VARIANT=hostile or fixture-credentials.json (docs/APPS.md)."
+}

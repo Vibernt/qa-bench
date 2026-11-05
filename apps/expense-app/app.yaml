@@ -1,0 +1,65 @@
+# Expense app (ours). Placeholder until BD2: the source is pulled at setup, never committed.
+# VERIFY at first pull: the routes, selectors, port, start command and account env below are taken from
+# docs/APPS.md and BRIEF.md §6.2, not from the source (which this repo can't see). Fix them here and in the labels.
+app: expense-app
+title: Expense app (two roles, SQLite, deterministic reset)
+label_prefix: expense
+available:
+  requires_env: [QA_BENCH_EXPENSE_APP_DIR]
+  fetch: fetch.sh
+targets:
+  - name: expense-app
+    service: app
+    port: 3000
+    path: /expenses
+    health_path: /expenses
+roles:
+  - role: viewer
+    accounts: 1
+    username_prefix: viewer
+    env: QA_BENCH_VIEWER_ACCOUNTS
+  - role: editor
+    accounts: 1
+    username_prefix: editor
+    env: QA_BENCH_EDITOR_ACCOUNTS
+journeys:
+  - id: expense.list
+    title: View the expense list and its total
+    role: viewer
+    start: /expenses
+    steps:
+      - Sign in as the viewer
+      - Open the expense list
+      - Check that the total equals the sum of the listed amounts
+  - id: expense.filter
+    title: Filter expenses by category
+    role: viewer
+    start: /expenses
+    steps:
+      - Sign in as the viewer
+      - Choose a category in the filter
+      - Check that only expenses of that category are listed
+  - id: expense.add
+    title: Add an expense
+    role: editor
+    start: /expenses
+    steps:
+      - Sign in as the editor
+      - Choose "Add expense", fill in title, amount and category, and save
+      - Check the success message, that exactly one new row appears in the list, and that it is still there after a reload
+  - id: expense.edit
+    title: Edit an expense
+    role: editor
+    start: /expenses
+    steps:
+      - Sign in as the editor
+      - Open an expense, change its amount and save
+      - Check that the list and the total show the new amount straight away
+  - id: expense.viewer-readonly
+    title: Viewer cannot edit
+    role: viewer
+    start: /expenses
+    steps:
+      - Sign in as the viewer
+      - Check that no edit or add controls are offered and that a direct edit request is refused
+pages: [/expenses]

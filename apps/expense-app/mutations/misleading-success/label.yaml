@@ -1,0 +1,22 @@
+id: expense.misleading-success
+app: expense-app
+title: "Wrong success message"
+description: "The confirmation after a save says the wrong thing."
+track: regression
+kind: defect
+category: copy
+class: deterministic
+severity: minor
+where: { route: /expenses, role: editor }
+switch:
+  env: { DEFECT: misleading_success }
+  exclusive: expense-defect   # the app takes one DEFECT value at a time
+found_by:
+  - kind: text
+    note: "Success message does not describe what happened"
+  - kind: text
+    category: functional
+    note: "Success feedback contradicts the action taken"
+tolerance: { route: prefix, region_px: 48 }
+split: public
+upstream_ref: "Touchstone fixtures/expense-app, DEFECT=misleading_success. VERIFY selectors and routes against the source at first pull (placeholder written from docs/APPS.md)."

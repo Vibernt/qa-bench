@@ -1,0 +1,19 @@
+# Expense app. Builds from .fetched/ (see fetch.sh). A fresh container is a fresh seed: the app's SQLite database
+# is created and seeded at start, and there are no volumes.
+# VERIFY at first pull: start command and port.
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      PORT: "3000"
+      DEFECT: ${DEFECT:-}
+      VARIANT: ${VARIANT:-}
+      QA_BENCH_VIEWER_ACCOUNTS: ${QA_BENCH_VIEWER_ACCOUNTS:-}
+      QA_BENCH_EDITOR_ACCOUNTS: ${QA_BENCH_EDITOR_ACCOUNTS:-}
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/expenses').then(r=>process.exit(r.status<500?0:1)).catch(()=>process.exit(1))"]
+      interval: 2s
+      timeout: 3s
+      retries: 30

@@ -1,0 +1,21 @@
+id: expense.permission-bypass
+app: expense-app
+title: "Viewer can edit expenses"
+description: "With DEFECT=permission_bypass the viewer role can change an expense, which only editors may do."
+track: regression
+kind: defect
+category: permission
+class: deterministic
+severity: critical
+where: { route: /expenses, role: viewer }
+switch:
+  env: { DEFECT: permission_bypass }
+  exclusive: expense-defect   # the app takes one DEFECT value at a time
+found_by:
+  - kind: behaviour
+    note: "Viewer edits or saves an expense and the change is accepted"
+  - kind: element
+    note: "Edit or save controls are offered to the viewer"
+tolerance: { route: prefix, region_px: 48 }
+split: public
+upstream_ref: "Touchstone fixtures/expense-app, DEFECT=permission_bypass. VERIFY selectors and routes against the source at first pull (placeholder written from docs/APPS.md)."

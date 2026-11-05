@@ -1,0 +1,19 @@
+id: expense.stale-state
+app: expense-app
+title: "List is stale after a write"
+description: "After a save the list is served from a 60-second cache, so the new or edited row doesn't show."
+track: regression
+kind: defect
+category: consistency
+class: deterministic
+severity: major
+where: { route: /expenses, role: editor }
+switch:
+  env: { DEFECT: stale_state }
+  exclusive: expense-defect   # the app takes one DEFECT value at a time
+found_by:
+  - kind: value
+    note: "After saving, the list (or its total) doesn't reflect the write until about 60 s later"
+tolerance: { route: prefix, region_px: 48 }
+split: public
+upstream_ref: "Touchstone fixtures/expense-app, DEFECT=stale_state. VERIFY selectors and routes against the source at first pull (placeholder written from docs/APPS.md)."
