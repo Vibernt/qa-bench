@@ -1,6 +1,8 @@
 name: ci
 on:
+  # Pull requests run on their own trigger; pushes are checked only on main, so a PR branch isn't checked twice.
   push:
+    branches: [main]
   pull_request:
 jobs:
   check:
