@@ -48,7 +48,7 @@ export function check(name: SchemaName, value: unknown): string[] {
 }
 
 /** Validate or throw with every error listed. */
-export function assertValid<T>(name: SchemaName, value: unknown, where = name): T {
+export function assertValid<T>(name: SchemaName, value: unknown, where: string = name): T {
   const errors = check(name, value);
   if (errors.length) throw new Error(`${where} is not a valid ${name}:\n  ${errors.join('\n  ')}`);
   return value as T;
