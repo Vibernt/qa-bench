@@ -3,6 +3,7 @@
 # and session live in the browser (localStorage and a cookie), so a fresh container plus a fresh browser is a reset.
 app: swag-labs
 title: Swag Labs (small shop; upstream's faulty users as switchable defects)
+purpose: "An online shop: customers sign in, browse products, fill a cart and check out."
 label_prefix: swag
 targets:
   - name: swag-labs

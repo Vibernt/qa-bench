@@ -2,6 +2,7 @@
 # swaps the seed logins for the episode's generated accounts.
 app: expense-app
 title: Expense app (two roles, SQLite, deterministic reset)
+purpose: "An expense tracker for a small team: viewers read the expenses and their total, editors also add and edit them."
 label_prefix: expense
 targets:
   - name: expense-app

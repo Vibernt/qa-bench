@@ -4,21 +4,55 @@
   "title": "tracks/<track>.yaml: which apps, mutations and changes make up a track",
   "type": "object",
   "additionalProperties": false,
-  "required": ["id", "number", "title", "apps", "episodes"],
+  "required": [
+    "id",
+    "number",
+    "title",
+    "apps",
+    "episodes"
+  ],
   "properties": {
-    "id": { "$ref": "defs.schema.json#/$defs/slug" },
-    "number": { "type": "string", "pattern": "^7\\.[0-9]+$" },
-    "title": { "type": "string" },
-    "description": { "type": "string" },
+    "id": {
+      "$ref": "defs.schema.json#/$defs/slug"
+    },
+    "number": {
+      "type": "string",
+      "pattern": "^7\\.[0-9]+$"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
     "brief": {
       "type": "object",
       "additionalProperties": false,
       "description": "What every brief in this track includes",
       "properties": {
-        "journeys": { "type": "boolean", "default": false },
-        "goal": { "type": "string" },
-        "wall_time_s": { "type": "integer", "minimum": 1 },
-        "money_usd": { "type": "number", "minimum": 0 }
+        "journeys": {
+          "type": "boolean",
+          "default": false
+        },
+        "goal": {
+          "type": "string"
+        },
+        "wall_time_s": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "money_usd": {
+          "type": "number",
+          "minimum": 0
+        },
+        "mode": {
+          "enum": [
+            "regression",
+            "exploratory"
+          ],
+          "default": "regression",
+          "description": "exploratory briefs drop journeys and pages and carry the app's purpose"
+        }
       }
     },
     "apps": {
@@ -27,16 +61,44 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["app"],
+        "required": [
+          "app"
+        ],
         "properties": {
-          "app": { "$ref": "defs.schema.json#/$defs/slug" },
-          "weight": { "type": "number", "exclusiveMinimum": 0, "default": 1 },
+          "app": {
+            "$ref": "defs.schema.json#/$defs/slug"
+          },
+          "weight": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "default": 1
+          },
           "mutations": {
-            "oneOf": [ { "const": "*" }, { "type": "array", "items": { "$ref": "defs.schema.json#/$defs/labelId" } } ],
+            "oneOf": [
+              {
+                "const": "*"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "$ref": "defs.schema.json#/$defs/labelId"
+                }
+              }
+            ],
             "default": "*"
           },
           "changes": {
-            "oneOf": [ { "const": "*" }, { "type": "array", "items": { "$ref": "defs.schema.json#/$defs/labelId" } } ],
+            "oneOf": [
+              {
+                "const": "*"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "$ref": "defs.schema.json#/$defs/labelId"
+                }
+              }
+            ],
             "default": "*"
           }
         }
@@ -45,14 +107,41 @@
     "episodes": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["count", "seed"],
+      "required": [
+        "count",
+        "seed"
+      ],
       "properties": {
-        "count": { "type": "integer", "minimum": 1 },
-        "seed": { "type": "integer" },
-        "mutations_per_episode": { "$ref": "#/$defs/range" },
-        "changes_per_episode": { "$ref": "#/$defs/range" },
-        "clean_episodes": { "type": "integer", "minimum": 0, "description": "Episodes with no mutations and no changes", "default": 0 },
-        "twin_episodes": { "type": "integer", "minimum": 0, "description": "Episodes with only deliberate changes switched on", "default": 0 }
+        "count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "seed": {
+          "type": "integer"
+        },
+        "mutations_per_episode": {
+          "$ref": "#/$defs/range"
+        },
+        "changes_per_episode": {
+          "$ref": "#/$defs/range"
+        },
+        "clean_episodes": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Episodes with no mutations and no changes",
+          "default": 0
+        },
+        "twin_episodes": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Episodes with only deliberate changes switched on",
+          "default": 0
+        },
+        "max_blatant_per_episode": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "At most this many labels with difficulty 'blatant' in one mixed episode"
+        }
       }
     },
     "live": {
@@ -61,20 +150,50 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["name", "url", "rules"],
+        "required": [
+          "name",
+          "url",
+          "rules"
+        ],
         "properties": {
-          "name": { "type": "string" },
-          "url": { "type": "string", "format": "uri" },
-          "pages": { "type": "array", "items": { "type": "string" } },
-          "rules": { "$ref": "brief.schema.json#/$defs/rules" }
+          "name": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "pages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "rules": {
+            "$ref": "brief.schema.json#/$defs/rules"
+          }
         }
       }
     }
   },
   "$defs": {
     "range": {
-      "type": "object", "additionalProperties": false, "required": ["min", "max"],
-      "properties": { "min": { "type": "integer", "minimum": 0 }, "max": { "type": "integer", "minimum": 0 } }
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "min",
+        "max"
+      ],
+      "properties": {
+        "min": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "max": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
     }
   }
 }

@@ -12,6 +12,8 @@ kind: defect
 category: error-handling
 class: deterministic
 severity: critical
+difficulty: blatant
+exposure: known
 where: { route: /inventory.html, role: customer }
 switch:
   env: { QA_BENCH_MUTATIONS: error_user }

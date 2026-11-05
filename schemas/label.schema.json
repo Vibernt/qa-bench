@@ -52,6 +52,22 @@
     "severity": {
       "$ref": "defs.schema.json#/$defs/severity"
     },
+    "difficulty": {
+      "enum": [
+        "blatant",
+        "subtle"
+      ],
+      "default": "blatant",
+      "description": "blatant: shows on the main path for any data (a button that does nothing). subtle: shows only for some data, roles or sequences (rounding on some amounts, after an edit, under a filter). Tracks can cap blatant bugs per episode"
+    },
+    "exposure": {
+      "enum": [
+        "novel",
+        "known"
+      ],
+      "default": "novel",
+      "description": "known: the defect is publicly documented (e.g. Swag Labs' built-in faulty users), so systems may have seen it; scored apart from the novel headline"
+    },
     "where": {
       "$ref": "defs.schema.json#/$defs/where"
     },

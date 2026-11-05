@@ -57,6 +57,7 @@ export interface Journey { id: string; title: string; role: string; start?: stri
 export interface AppConfig {
   app: string;
   title: string;
+  purpose?: string;
   label_prefix?: string;
   noise_only?: boolean;
   available?: { requires_env?: string[]; fetch?: string };
@@ -102,6 +103,8 @@ export interface Label {
   category: Category;
   class: LabelClass;
   severity: Severity;
+  difficulty?: 'blatant' | 'subtle';
+  exposure?: 'novel' | 'known';
   where: Where;
   switch?: { env?: Record<string, string>; exclusive?: string };
   found_by: FoundBy[];
@@ -126,7 +129,7 @@ export interface Track {
   number: string;
   title: string;
   description?: string;
-  brief?: { journeys?: boolean; goal?: string; wall_time_s?: number; money_usd?: number };
+  brief?: { journeys?: boolean; goal?: string; wall_time_s?: number; money_usd?: number; mode?: 'regression' | 'exploratory' };
   apps: TrackApp[];
   episodes: {
     count: number;
@@ -135,6 +138,7 @@ export interface Track {
     changes_per_episode?: Range;
     clean_episodes?: number;
     twin_episodes?: number;
+    max_blatant_per_episode?: number;
   };
   live?: { name: string; url: string; pages?: string[]; rules: Rules }[];
 }
@@ -171,6 +175,8 @@ export interface Brief {
   bench_version: string;
   app: string;
   track: string;
+  mode?: 'regression' | 'exploratory';
+  purpose?: string;
   targets: { name: string; url: string }[];
   roles: { role: string; accounts: { username: string; password: string }[] }[];
   inbox?: { address: string; api: string };
@@ -244,6 +250,8 @@ export interface LabelOutcome {
   category: Category;
   class: LabelClass;
   severity?: Severity;
+  exposure?: 'novel' | 'known';
+  difficulty?: 'blatant' | 'subtle';
   hit: boolean;
   finding_ids?: string[];
 }
@@ -313,6 +321,7 @@ export interface Report {
     by_track: Record<string, Metrics>;
     by_category: Record<string, Metrics>;
     by_class: Record<string, Metrics>;
+    by_exposure?: Record<string, Metrics>;
     breakdown: { track: string; category: string; class: string; metrics: Metrics }[];
   };
 }

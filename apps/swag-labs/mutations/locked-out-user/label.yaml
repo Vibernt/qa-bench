@@ -10,6 +10,8 @@ kind: defect
 category: functional
 class: deterministic
 severity: critical
+difficulty: blatant
+exposure: known
 where: { route: /, role: customer }
 switch:
   env: { QA_BENCH_MUTATIONS: locked_out_user }
