@@ -16,7 +16,7 @@ export interface RunningApp {
 }
 
 export async function startApp(defect: Defect = ''): Promise<RunningApp> {
-  const directory = await mkdtemp(join(tmpdir(), 'cri-expense-app-'));
+  const directory = await mkdtemp(join(tmpdir(), 'qab-expense-app-'));
   const dbPath = join(directory, 'fixture.sqlite');
   seed(dbPath);
   const server = createServer({ dbPath, defect });

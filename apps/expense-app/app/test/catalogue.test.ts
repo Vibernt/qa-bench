@@ -14,7 +14,7 @@ afterEach(async () => {
   for (const root of roots.splice(0)) await rm(root, { recursive: true, force: true });
 });
 async function allocate(options: Record<string, unknown> = {}) {
-  const root = await mkdtemp(join(tmpdir(), 'cri-catalogue-')); roots.push(root);
+  const root = await mkdtemp(join(tmpdir(), 'qab-catalogue-')); roots.push(root);
   const fixture = await ExpenseFixture.create({ ...EXPENSE_CATALOGUE, ...options }, root);
   fixtures.push(fixture); return fixture;
 }
@@ -41,7 +41,7 @@ it('parses only reviewed data and rejects unresolved or executable hooks without
 it('rejects top-level and nested accessors without invoking them', () => {
   let reads = 0;
   const topLevel = { ...EXPENSE_CATALOGUE };
-  Object.defineProperty(topLevel, 'schema', { enumerable: true, get() { reads++; return 'cri.fixture/v1'; } });
+  Object.defineProperty(topLevel, 'schema', { enumerable: true, get() { reads++; return 'qa-bench.fixture/v1'; } });
   const nestedHooks = { ...EXPENSE_CATALOGUE.hooks };
   Object.defineProperty(nestedHooks, 'start', { enumerable: true, get() { reads++; return EXPENSE_CATALOGUE.hooks.start; } });
   expect(() => parseCatalogueEntry(topLevel)).toThrow(FixtureError);

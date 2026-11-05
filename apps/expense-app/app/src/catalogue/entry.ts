@@ -7,7 +7,7 @@ export class FixtureError extends Error {
 export const FIXTURE_VERSION = 'expense-app/v1';
 export const FIXTURE_HOOKS = Object.freeze({ start: 'expense-start-v1', reset: 'expense-reset-v1', evidence: 'expense-evidence-v1' });
 export interface CatalogueEntry {
-  schema: 'cri.fixture/v1'; application: 'expense-app'; version: typeof FIXTURE_VERSION;
+  schema: 'qa-bench.fixture/v1'; application: 'expense-app'; version: typeof FIXTURE_VERSION;
   hooks: typeof FIXTURE_HOOKS;
   roles: readonly ('viewer' | 'editor')[];
   variant: '' | 'relabel' | 'hostile';
@@ -16,7 +16,7 @@ export interface CatalogueEntry {
 }
 
 export const EXPENSE_CATALOGUE: Readonly<CatalogueEntry> = Object.freeze({
-  schema: 'cri.fixture/v1', application: 'expense-app', version: FIXTURE_VERSION,
+  schema: 'qa-bench.fixture/v1', application: 'expense-app', version: FIXTURE_VERSION,
   hooks: FIXTURE_HOOKS, roles: Object.freeze(['viewer', 'editor'] as const),
   variant: '', defect: '', idempotency: false, delayedJobs: false, mailSink: false,
 });
@@ -47,7 +47,7 @@ export function parseCatalogueEntry(input: unknown): Readonly<CatalogueEntry> {
   if (!input || typeof input !== 'object' || Array.isArray(input)) return fail();
   const value = input as Record<string, unknown>;
   if (Object.keys(value).some(key => !Object.hasOwn(EXPENSE_CATALOGUE, key))) return fail();
-  if (value.schema !== 'cri.fixture/v1' || value.application !== 'expense-app' || value.version !== FIXTURE_VERSION) return fail();
+  if (value.schema !== 'qa-bench.fixture/v1' || value.application !== 'expense-app' || value.version !== FIXTURE_VERSION) return fail();
   const hooks = value.hooks as Record<string, unknown> | undefined;
   if (!hooks || typeof hooks !== 'object' || Object.keys(hooks).length !== 3 ||
     Object.entries(FIXTURE_HOOKS).some(([key, ref]) => hooks[key] !== ref)) return fail();

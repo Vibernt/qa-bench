@@ -6,4 +6,4 @@ page's template (the answer key: never read by the site). Run with `node app/ser
 loopback origin. `sitePages('cosmetic')` is the deliberate-change control (editorial text only);
 `sitePages('structural')` adds a Phone field and a "Request callback" action to the contact page.
 
-Copied from the Touchstone fixture on 5 Nov 2026.
+Not wired into a track yet (planned for the noise track in B1).

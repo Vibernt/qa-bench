@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { check } from '../../../../lib/schemas.ts';
-import { httpApi, PATHS, type TouchstoneApi } from './client.ts';
-import { isLocalApi, toCategory, toFinding, toRoute, toRunRequest, type TouchstoneRunStatus } from './map.ts';
+import { httpApi, PATHS, type SystemApi } from './client.ts';
+import { isLocalApi, toCategory, toFinding, toRoute, toRunRequest, type RunStatus } from './map.ts';
 import { runAdapter } from './run.ts';
 import type { Brief } from './types.ts';
 
@@ -16,10 +16,10 @@ const brief: Brief = {
   journeys: [{ id: 'login', title: 'Sign in', role: 'customer', steps: ['Sign in'] }],
 };
 
-function fakeApi(statuses: TouchstoneRunStatus['status'][], findings = [{ id: '1', url: 'http://127.0.0.1:40123/cart.html?x=1', kind: 'invariant', title: 'Total wrong', confidence: 0.9 }]) {
+function fakeApi(statuses: RunStatus['status'][], findings = [{ id: '1', url: 'http://127.0.0.1:40123/cart.html?x=1', kind: 'invariant', title: 'Total wrong', confidence: 0.9 }]) {
   const calls: string[] = [];
   let i = 0;
-  const api: TouchstoneApi = {
+  const api: SystemApi = {
     startRun: async (req) => { calls.push(`start promote=${req.promote}`); return { id: 'r1' }; },
     getRun: async () => { calls.push('status'); const s = statuses[Math.min(i++, statuses.length - 1)]!; return { id: 'r1', status: s, cost: { model_usd: 0.12, compute_usd: 0.03 } }; },
     getFindings: async () => { calls.push('findings'); return findings; },
@@ -27,7 +27,7 @@ function fakeApi(statuses: TouchstoneRunStatus['status'][], findings = [{ id: '1
   return { api, calls };
 }
 
-describe('touchstone adapter mapping', () => {
+describe('http-api adapter mapping', () => {
   it('builds a run request that never promotes and carries the accounts', () => {
     const req = toRunRequest(brief, 'bench');
     expect(req.promote).toBe(false);
@@ -51,7 +51,7 @@ describe('touchstone adapter mapping', () => {
   it('treats only this machine as a local API', () => {
     expect(isLocalApi('http://127.0.0.1:8787')).toBe(true);
     expect(isLocalApi('http://localhost:8787')).toBe(true);
-    expect(isLocalApi('https://touchstone.example.com')).toBe(false);
+    expect(isLocalApi('https://qa-system.example.com')).toBe(false);
   });
 
   it('has no API call that promotes or approves anything', () => {
@@ -60,19 +60,19 @@ describe('touchstone adapter mapping', () => {
   });
 });
 
-describe('touchstone adapter run', () => {
+describe('http-api adapter run', () => {
   const quick = { sleep: async () => {}, pollMs: 1 };
 
-  it('refuses a hosted Touchstone without approval, and does nothing', async () => {
+  it('refuses a remote system without approval, and does nothing', async () => {
     const { api, calls } = fakeApi(['done']);
-    const r = await runAdapter(brief, { apiUrl: 'https://touchstone.example.com', makeApi: () => api, ...quick });
+    const r = await runAdapter(brief, { apiUrl: 'https://qa-system.example.com', makeApi: () => api, ...quick });
     expect(r.ok).toBe(false);
     expect(calls).toEqual([]);
     expect(r.findings.notes).toMatch(/go-ahead/);
     expect(check('findings', r.findings)).toEqual([]);
   });
 
-  it('polls to completion and writes schema-valid findings with Touchstone\'s cost', async () => {
+  it('polls to completion and writes schema-valid findings with the system\'s reported cost', async () => {
     const { api, calls } = fakeApi(['queued', 'running', 'done']);
     const r = await runAdapter(brief, { apiUrl: 'http://127.0.0.1:8787', makeApi: () => api, ...quick });
     expect(r.ok).toBe(true);
@@ -88,6 +88,12 @@ describe('touchstone adapter run', () => {
     const r = await runAdapter(brief, { apiUrl: 'http://127.0.0.1:8787', makeApi: () => api, now: () => (t += 20_000), ...quick });
     expect(r.findings.notes).toMatch(/budget reached/);
     expect(r.findings.findings).toHaveLength(1);
+  });
+
+  it('names the system under test when told to', async () => {
+    const { api } = fakeApi(['done']);
+    const r = await runAdapter(brief, { apiUrl: 'http://127.0.0.1:8787', system: { name: 'acme-qa', version: '2.1' }, makeApi: () => api, ...quick });
+    expect(r.findings.system).toEqual({ name: 'acme-qa', version: '2.1' });
   });
 
   it('reports a missing API URL without failing schema validation', async () => {

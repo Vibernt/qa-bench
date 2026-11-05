@@ -1,12 +1,12 @@
-// Pure mapping between the bench's brief/findings and Touchstone's run API.
+// Pure mapping between the bench's brief/findings and the bench's run API (see README.md).
 //
-// VERIFY against Touchstone's docs/HANDOFF.md before the first real run: the request and response shapes below are
-// the adapter's assumption of Touchstone's run API (this repo can't see Touchstone's code). Everything
-// Touchstone-specific is in this file and client.ts, so fixing the shapes is a local change.
+// The request and response shapes below ARE the contract: a QA system that serves them can be scored through this
+// adapter with no code of its own in the bench. Field names are kept loose where systems differ (url or route,
+// category or kind), and toCategory accepts common synonyms.
 import { CATEGORIES, type Brief, type Category, type Cost, type Finding } from './types.ts';
 
-/** What the adapter sends to start a run. Briefs and goals only; nothing that changes Touchstone's own state. */
-export interface TouchstoneRunRequest {
+/** What the adapter sends to start a run. Briefs and goals only; nothing that changes the system's stored state. */
+export interface RunRequest {
   source: 'qa-bench';
   external_id: string;
   project?: string;
@@ -19,13 +19,13 @@ export interface TouchstoneRunRequest {
   rules?: Record<string, unknown>;
   categories?: string[];
   budget: { wall_time_s: number; money_usd?: number };
-  /** The bench must never promote journeys (docs/HANDOFF.md, "Watch out for"). */
+  /** The bench never asks a system to promote what it learns into approved checks or journeys. */
   promote: false;
-  /** Ask Touchstone to keep anything it learns in this run out of its approved baselines. */
+  /** Ask the system to keep anything it learns in this run out of its approved baselines. */
   ephemeral: true;
 }
 
-export interface TouchstoneRunStatus {
+export interface RunStatus {
   id: string;
   status: 'queued' | 'running' | 'done' | 'failed' | 'cancelled';
   error?: string;
@@ -34,7 +34,7 @@ export interface TouchstoneRunStatus {
   finished_at?: string;
 }
 
-export interface TouchstoneFinding {
+export interface SystemFinding {
   id: string;
   url?: string;
   route?: string;
@@ -53,8 +53,8 @@ export interface TouchstoneFinding {
 }
 
 /** Brief → run request. Pure. */
-export function toRunRequest(brief: Brief, project?: string): TouchstoneRunRequest {
-  const req: TouchstoneRunRequest = {
+export function toRunRequest(brief: Brief, project?: string): RunRequest {
+  const req: RunRequest = {
     source: 'qa-bench',
     external_id: brief.episode_id,
     targets: brief.targets,
@@ -73,7 +73,7 @@ export function toRunRequest(brief: Brief, project?: string): TouchstoneRunReque
   return req;
 }
 
-// Touchstone's own names for kinds of problem, mapped to bench categories. Unknown kinds fall back to 'functional'.
+// Systems' own names for kinds of problem, mapped to bench categories. Unknown kinds fall back to 'functional'.
 const SYNONYMS: Record<string, Category> = {
   functional: 'functional', behaviour: 'functional', behavior: 'functional', journey: 'functional', replay: 'functional',
   consistency: 'consistency', invariant: 'consistency', calculation: 'consistency', mismatch: 'consistency',
@@ -111,21 +111,21 @@ function clamp01(n: number | undefined, fallback: number): number {
   return Math.min(1, Math.max(0, n));
 }
 
-/** Touchstone finding → bench finding. Pure. `runStartedMs` turns detected_at into seconds after start. */
-export function toFinding(t: TouchstoneFinding, index: number, runStartedMs?: number): Finding {
+/** System finding → bench finding. Pure. `runStartedMs` turns detected_at into seconds after start. */
+export function toFinding(t: SystemFinding, index: number, runStartedMs?: number): Finding {
   const where: Finding['where'] = { route: toRoute(t.route ?? t.url) };
   if (t.role) where.role = t.role;
   if (t.step) where.step = t.step;
   if (t.selector) where.selector = t.selector;
   if (t.region) where.region = t.region;
-  const description = [t.title, t.detail].filter(Boolean).join(': ') || `Touchstone finding ${t.id}`;
+  const description = [t.title, t.detail].filter(Boolean).join(': ') || `Finding ${t.id}`;
   const f: Finding = {
     id: `ts-${t.id || index + 1}`,
     where,
     category: toCategory(t.category ?? t.kind),
     description,
     confidence: clamp01(t.confidence, 0.5),
-    check: t.kind ?? t.category ?? 'touchstone',
+    check: t.kind ?? t.category ?? 'http-api',
   };
   if (t.screenshots?.length) f.evidence = t.screenshots.map((s) => ({ kind: 'screenshot' as const, note: s }));
   if (t.repro?.length) f.repro = t.repro;
@@ -136,21 +136,21 @@ export function toFinding(t: TouchstoneFinding, index: number, runStartedMs?: nu
   return f;
 }
 
-/** Touchstone owns its own cost metering; record what it reports. */
-export function toCost(status: TouchstoneRunStatus | undefined): Cost {
+/** The system meters its own cost; record what it reports. */
+export function toCost(status: RunStatus | undefined): Cost {
   const c = status?.cost;
-  if (!c) return { notes: 'Touchstone reported no cost for this run' };
-  const cost: Cost = { notes: 'As reported by Touchstone' };
+  if (!c) return { notes: 'The system reported no cost for this run' };
+  const cost: Cost = { notes: 'As reported by the system' };
   if (typeof c.model_usd === 'number') cost.model_usd = c.model_usd;
   if (typeof c.compute_usd === 'number') cost.compute_usd = c.compute_usd;
   if (cost.model_usd === undefined && cost.compute_usd === undefined && typeof c.total_usd === 'number') {
     cost.compute_usd = c.total_usd;
-    cost.notes = 'Touchstone reported only a total; recorded as compute_usd';
+    cost.notes = 'The system reported only a total; recorded as compute_usd';
   }
   return cost;
 }
 
-/** True when the API URL points at this machine (no approval needed for a local Touchstone). */
+/** True when the API URL points at this machine (no approval needed for a system on this machine). */
 export function isLocalApi(apiUrl: string): boolean {
   try {
     const host = new URL(apiUrl).hostname;

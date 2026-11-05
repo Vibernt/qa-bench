@@ -1,4 +1,4 @@
-// Ported from spikes/sp30/fixtures/site/server.mjs and data.mjs (SP30, adopted 29 Oct 2026).
+// Survey site pages: global navigation, collection variants, volatile controls and a form change.
 // Small deterministic fixture: global navigation, collection variants, volatile controls and a form change.
 export function sitePages(variant = 'baseline') {
   if (!['baseline','cosmetic','structural'].includes(variant)) throw new Error('Unknown site variant');

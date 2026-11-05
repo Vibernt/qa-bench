@@ -19,7 +19,7 @@
     "repo": {
       "type": "string",
       "minLength": 1,
-      "description": "Upstream repository URL, or 'private:<name>' for a private source"
+      "description": "Upstream repository URL. For our own apps, this repository, with pin.path pointing at the app"
     },
     "pin": {
       "type": "object",
@@ -28,8 +28,7 @@
       "properties": {
         "commit": {
           "type": "string",
-          "pattern": "^[0-9a-f]{7,40}$",
-          "description": "Full 40-character sha for third-party sources; a short sha is accepted only for our own apps copied from Touchstone"
+          "pattern": "^[0-9a-f]{40}$"
         },
         "image": {
           "type": "string",

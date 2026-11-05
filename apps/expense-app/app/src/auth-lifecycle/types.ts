@@ -2,7 +2,7 @@ import type { Role } from '../db.js';
 
 export interface AuthAccount { id: number; username: string; role: Role; expiresAt?: number }
 export interface FixtureMail { account: string; token: string; expiresAt: number }
-/** SP23 opt-in only. Never expose this object through observations or evidence. */
+/** Auth-lifecycle opt-in only. Never expose this object through observations or evidence. */
 export interface AuthLifecycleOptions {
   mode: 'multi-step' | 'totp' | 'magic-link';
   tenant: string;

@@ -3,8 +3,8 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { expect, it } from 'vitest';
 import { createServer, seed } from '../src/server.js';
-it('exposes SP20 injection and redirect only in the hostile variant', async () => {
-  const dir = await mkdtemp(join(tmpdir(), 'cri-sp20-hostile-'));
+it('exposes injection and redirect only in the hostile variant', async () => {
+  const dir = await mkdtemp(join(tmpdir(), 'qab-expense-hostile-'));
   try {
     for (const variant of ['', 'hostile'] as const) {
       const dbPath = join(dir, `${variant || 'normal'}.sqlite`); seed(dbPath);
