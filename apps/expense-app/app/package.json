@@ -1,0 +1,33 @@
+{
+  "name": "@qa-bench/expense-app",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p .",
+    "test": "vitest run test"
+  },
+  "types": "./dist/db.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/db.d.ts",
+      "default": "./dist/db.js"
+    },
+    "./server": {
+      "types": "./dist/server.d.ts",
+      "default": "./dist/server.js"
+    },
+    "./catalogue": {
+      "types": "./dist/catalogue/index.d.ts",
+      "default": "./dist/catalogue/index.js"
+    }
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.7"
+  },
+  "engines": {
+    "node": ">=26"
+  }
+}

@@ -4,3 +4,4 @@ dist/
 episodes/
 *.log
 .DS_Store
+*.tsbuildinfo
