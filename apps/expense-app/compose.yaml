@@ -1,6 +1,7 @@
 # Expense app. A fresh container is a fresh seed (bench-entry.mjs); there are no volumes.
 services:
   app:
+    image: qa-bench-app-expense-app:local
     build:
       context: .
       dockerfile: Dockerfile
