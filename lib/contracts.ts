@@ -165,6 +165,7 @@ export interface AnswerKey {
 export interface Brief {
   episode_id: string;
   bench_version: string;
+  app: string;
   track: string;
   targets: { name: string; url: string }[];
   roles: { role: string; accounts: { username: string; password: string }[] }[];
