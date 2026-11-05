@@ -1,0 +1,36 @@
+{
+  "name": "qa-bench",
+  "version": "0.1.0",
+  "description": "An open, tool-agnostic benchmark for QA systems on self-hosted web apps",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "bin": {
+    "qa-bench": "bin/qa-bench.ts"
+  },
+  "scripts": {
+    "qa-bench": "tsx bin/qa-bench.ts",
+    "lint": "tsc --noEmit && eslint .",
+    "validate": "tsx scripts/validate.ts",
+    "test": "vitest run",
+    "check": "npm run lint && npm run validate && npm test"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@types/node": "22.20.5",
+    "eslint": "10.14.0",
+    "playwright": "1.63.0",
+    "tsx": "4.23.15",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.72.1",
+    "vitest": "5.1.0"
+  },
+  "dependencies": {
+    "ajv": "8.20.0",
+    "ajv-formats": "3.0.1",
+    "yaml": "2.9.1"
+  }
+}
