@@ -1,0 +1,5 @@
+node_modules
+test
+it.ts
+README.md
+*.test.ts

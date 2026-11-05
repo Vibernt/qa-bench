@@ -37,6 +37,13 @@ the-internet, run only (not redistributed)
             MIT) rewrites the home page heading at run time when QA_BENCH_CHANGES
             includes welcome-heading.
 
+Playwright, a dependency of the playwright-suite adapter (not vendored)
+  Source:   https://github.com/microsoft/playwright (npm package playwright@1.63.0) and the
+            container image mcr.microsoft.com/playwright:v1.63.0-noble
+  Licence:  Apache-2.0, Copyright (c) Microsoft Corporation (LICENSE read on 5 Nov 2026)
+  Folder:   none. Installed at image build time by harness/adapters/playwright-suite/Dockerfile.
+  Changed:  nothing.
+
 Planned entries (see docs/REFERENCES.md and docs/APPS.md for the licence checks):
 - WebTestBench (Apache-2.0): apps and labels for the natural-defects track.
 - W3C ACT rules test cases (W3C Software and Document License): accessibility ground truth.
