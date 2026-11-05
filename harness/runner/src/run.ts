@@ -631,3 +631,87 @@ export async function runEpisodes(sel: RunSelection, opts: RunnerOptions = {}): 
   writeJson(join(ctx.runDir, 'run.json'), runJson);
   return { runId, runDir: ctx.runDir, results };
 }
+
+// ---------------------------------------------------------------------------------------------------------------
+// Sessions: bring one episode up for a person (the `human` adapter), and take it down again
+
+export interface SessionJson {
+  session_id: string;
+  episode_id: string;
+  app: string;
+  project: string;
+  compose_files: string[];
+  app_dir: string;
+  started_at: string;
+  brief: string;
+  findings: string;
+}
+
+/**
+ * Bring an episode up with its targets published on 127.0.0.1 and write the brief a person tests from. The app keeps
+ * running until `downEpisode`. Writes <runsRoot>/<sessionId>/<episode>/{brief/brief.json,out/,session.json}; the
+ * person writes out/findings.json, then scores it with `qa-bench run --adapter human --episodes <id> --findings <file>`.
+ */
+export async function upEpisode(episodeId: string, opts: RunnerOptions & { sessionId?: string } = {}): Promise<{ session: SessionJson; brief: Brief }> {
+  const sessionId = opts.sessionId ?? `human-${utcStamp(new Date())}`;
+  const ctx = createRunContext('human', sessionId, opts);
+  const epDir = join(ctx.runDir, episodeId);
+  mkdirSync(epDir, { recursive: true });
+  const dir = findEpisodeDir(episodeId, ctx.roots);
+  if (!dir) throw new Error(`episode '${episodeId}' not found under ${ctx.roots.join(', ')}`);
+  const episode = assertValid<Episode>('episode', readData(join(dir, 'episode.json')), join(dir, 'episode.json'));
+  if (episode.live) throw new Error('live episodes have no app to bring up: open the site from the brief instead');
+  const app = loadAppConfig(ctx.appsRoot, episode.app);
+  if (!app) throw new Error(`app '${episode.app}' not found under ${ctx.appsRoot}`);
+  const appDir = join(ctx.appsRoot, episode.app);
+  const composeFile = findComposeFile(appDir);
+  if (!composeFile) throw new Error(`app '${episode.app}' has no compose.yaml`);
+  const built = await ensureAppImage(ctx, episode.app);
+  if (!built.ok) throw new Error(`app image unavailable: ${built.reason}`);
+
+  const project = projectName(ctx.projectPrefix, sessionId, episodeId);
+  const envFile = join(epDir, 'compose.env');
+  writeFileSync(envFile, envFileText(episode.env), { mode: 0o600 });
+  const override = join(epDir, 'compose.override.yaml');
+  writeFileSync(override, hostPortOverride(app.targets));
+  const files = [composeFile, override];
+  const base = composeBase(project, files, envFile);
+  const dEnv = dockerEnv(ctx.env);
+  try {
+    const up = await ctx.exec('docker', composeUpArgs(base), { env: dEnv, cwd: appDir, logFile: join(epDir, 'compose.log') });
+    if (up.code !== 0) throw new Error(`compose up failed (exit ${up.code ?? up.error}): ${redactor(episode)(tail(up.stderr))}`);
+    const targets: { name: string; url: string }[] = [];
+    for (const t of app.targets) {
+      const r = await ctx.exec('docker', [...base, 'port', t.service, String(t.port)], { env: dEnv, cwd: appDir });
+      const port = parsePublishedPort(r.stdout);
+      if (r.code !== 0 || !port) throw new Error(`could not read the published port of ${t.service}:${t.port}`);
+      targets.push({ name: t.name, url: `http://127.0.0.1:${port}${t.path ?? '/'}` });
+    }
+    const track = loadTrackFile(ctx.tracksRoot, episode.track);
+    const dirs = prepareOut(epDir);
+    const brief = buildBrief({ episode, app, track, targets, categories: categoriesFor(ctx, track) });
+    writeBrief(dirs.briefDir, brief);
+    const session: SessionJson = {
+      session_id: sessionId, episode_id: episodeId, app: episode.app, project, compose_files: files, app_dir: appDir,
+      started_at: new Date().toISOString(), brief: join(dirs.briefDir, 'brief.json'), findings: join(dirs.outDir, 'findings.json'),
+    };
+    writeJson(join(epDir, 'session.json'), session);
+    return { session, brief };
+  } catch (e) {
+    await ctx.exec('docker', composeDownArgs(base), { env: dEnv, cwd: appDir }).catch(() => undefined);
+    rmSync(envFile, { force: true });
+    throw e;
+  }
+}
+
+/** Take down an episode brought up by `upEpisode`. `sessionEpisodeDir` is <runsRoot>/<session>/<episode>. */
+export async function downEpisode(sessionEpisodeDir: string, opts: Pick<RunnerOptions, 'env' | 'exec'> = {}): Promise<void> {
+  const session = readData<SessionJson>(join(sessionEpisodeDir, 'session.json'));
+  const envFile = join(sessionEpisodeDir, 'compose.env');
+  const exec = opts.exec ?? realExec;
+  const env = dockerEnv(opts.env ?? process.env);
+  if (!existsSync(envFile)) writeFileSync(envFile, '', { mode: 0o600 });
+  const r = await exec('docker', composeDownArgs(composeBase(session.project, session.compose_files, envFile)), { env, cwd: session.app_dir });
+  rmSync(envFile, { force: true });
+  if (r.code !== 0) throw new Error(`compose down failed for ${session.project} (exit ${r.code ?? r.error})`);
+}

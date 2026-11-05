@@ -7,7 +7,7 @@ import { REPO_ROOT } from '../lib/io.ts';
 import { validateRepo } from '../scripts/validate.ts';
 import { scoreRun } from '../scorer/src/index.ts';
 import { DEFAULT_APPS_ROOT, DEFAULT_TRACKS_ROOT, generateTrack, listTrackFiles } from '../harness/generator/src/index.ts';
-import { buildAppImage, runEpisodes } from '../harness/runner/src/index.ts';
+import { buildAppImage, downEpisode, runEpisodes, upEpisode } from '../harness/runner/src/index.ts';
 
 const USAGE = `usage: qa-bench <command> [options]
 
@@ -18,6 +18,8 @@ const USAGE = `usage: qa-bench <command> [options]
   run --adapter <name> (--track T | --episodes id,id) [--run-id X] [--parallel N] [--limit N] [--no-score]
       [--findings F] [--grace S] [--episodes-root D] [--runs-root D]
                                              run episodes with an adapter, then score them
+  up <episode> [--session S]                 bring one episode up on 127.0.0.1 for a person; prints the brief
+  down <session>/<episode>                   take it down again (folder under runs/)
   score <runDir> [--episodes-root D]         score a run: writes score.json, report.json, report.md
   report <runDir> [--episodes-root D]        score a run and print report.md
 
@@ -65,6 +67,7 @@ async function main(argv: string[]): Promise<number> {
       track: { type: 'string' },
       episodes: { type: 'string' },
       'run-id': { type: 'string' },
+      session: { type: 'string' },
       parallel: { type: 'string' },
       limit: { type: 'string' },
       'no-score': { type: 'boolean' },
@@ -135,6 +138,32 @@ async function main(argv: string[]): Promise<number> {
         scoreRun(summary.runDir, { episodesRoot });
         console.log(`scored: ${join(summary.runDir, 'report.md')}`);
       }
+      return 0;
+    }
+
+    case 'up': {
+      const id = positionals[0];
+      if (!id) fail('up: name an episode (e.g. regression-004)');
+      const { session, brief } = await upEpisode(id, {
+        episodesRoot, sessionId: o.session, runsRoot: o['runs-root'] ? resolve(o['runs-root']) : undefined, log: () => {},
+      });
+      console.log(`episode ${id} is up (session ${session.session_id})\n`);
+      for (const t of brief.targets) console.log(`  open      ${t.url}`);
+      for (const r of brief.roles) for (const a of r.accounts) console.log(`  sign in   ${r.role}: ${a.username} / ${a.password}`);
+      console.log(`  budget    ${brief.budget.wall_time_s} s`);
+      console.log(`\n  brief     ${session.brief}`);
+      console.log(`  findings  write them to ${session.findings} (see harness/adapters/human/README.md)`);
+      console.log(`\nwhen done:\n  npx tsx bin/qa-bench.ts down ${session.session_id}/${id}`);
+      console.log(`  npx tsx bin/qa-bench.ts run --adapter human --episodes ${id} --findings ${session.findings}`);
+      return 0;
+    }
+
+    case 'down': {
+      const target = positionals[0];
+      if (!target) fail('down: give <session>/<episode> (a folder under runs/)');
+      const dir = existsSync(target) ? resolve(target) : join(REPO_ROOT, 'runs', target);
+      await downEpisode(dir);
+      console.log(`down: ${target}`);
       return 0;
     }
 

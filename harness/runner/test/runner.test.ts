@@ -8,7 +8,7 @@ import { check } from '../../../lib/schemas.ts';
 import { generateTrack, loadApps } from '../../generator/src/index.ts';
 import {
   ADAPTER_FIXED_ENV, adapterRunArgs, buildArgs, envFileText, hostPortOverride, parsePublishedPort, projectName, redactArgs,
-  runEpisodes, type Exec, type ExecOptions, type ExecResult,
+  runEpisodes, upEpisode, downEpisode, type Exec, type ExecOptions, type ExecResult,
 } from '../src/index.ts';
 
 const FX = join(REPO_ROOT, 'harness', 'generator', 'test', 'fixtures');
@@ -304,3 +304,30 @@ describe('runEpisodes', () => {
     expect(calls.filter((c) => c.args[0] !== 'info')).toEqual([]);
   });
 });
+
+describe('human sessions (up / down)', () => {
+  it('brings an episode up on 127.0.0.1, writes a sealed brief, and takes it down by project name', async () => {
+    const { episodesRoot, runsRoot } = setup();
+    const id = 'mix-001';
+    const ep = readEp(episodesRoot, 'mix', id);
+    const { exec, calls } = fakeDocker();
+    const env = { PATH: process.env.PATH };
+    const { session, brief } = await upEpisode(id, { appsRoot: APPS, tracksRoot: TRACKS, episodesRoot, runsRoot, sessionId: 's1', exec, env, log: () => {} });
+    expect(check('brief', brief)).toEqual([]);
+    expect(brief.targets.every((t) => t.url.startsWith('http://127.0.0.1:49999'))).toBe(true);
+    const text = readFileSync(session.brief, 'utf8');
+    for (const lid of [...ep.active.mutations, ...ep.active.changes]) expect(text).not.toContain(lid);
+    const up = calls.find((c) => c.args.includes('up'))!;
+    expect(up.envFileMode).toBe(0o600);
+    expect(up.args.some((a) => a.endsWith('compose.override.yaml'))).toBe(true);
+    expect(existsSync(join(runsRoot, 's1', id, 'session.json'))).toBe(true);
+    expect(calls.some((c) => c.args[0] === 'run')).toBe(false); // no adapter container for a person
+
+    await downEpisode(join(runsRoot, 's1', id), { exec, env });
+    const down = calls.at(-1)!;
+    expect(down.args).toContain('down');
+    expect(down.args[2]).toBe(session.project);
+    expect(existsSync(join(runsRoot, 's1', id, 'compose.env'))).toBe(false);
+  });
+});
+
