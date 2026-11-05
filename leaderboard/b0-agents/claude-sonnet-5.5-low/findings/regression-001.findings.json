@@ -1,0 +1,14 @@
+{
+  "episode_id": "regression-001",
+  "system": {
+    "name": "claude-sonnet-5.5-low",
+    "version": "claude-sonnet-5-5@low"
+  },
+  "findings": [],
+  "notes": "Checked all five journeys: list total, category filter (list and totals), add (flash, one new row, persists after reload), edit (list and total update immediately), viewer (no controls, direct GET edit/new and POST delete return 403). No defects found. Viewer POST to /expenses and /expenses/:id was not tested because the shell blocked the final script.",
+  "cost": {
+    "model_usd": 0.059173,
+    "notes": "estimate from 68015 total tokens (85% cache read / 10% input / 5% output); range $0.0136-$0.1632"
+  },
+  "wall_time_s": 52.5
+}

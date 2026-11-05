@@ -1,0 +1,128 @@
+{
+  "episode_id": "regression-011",
+  "system": {
+    "name": "claude-sonnet-5.5-high",
+    "version": "claude-sonnet-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"inventory-item-price\"]"
+      },
+      "category": "functional",
+      "description": "Product list prices are random: they change on every page load and every time a sort order is chosen, so sorting by price does not order the list, and the list prices never match the detail page, cart or checkout (e.g. Backpack shows $32.78, $73.15, $57.42... but is $29.99 on the detail page and in the cart).",
+      "confidence": 0.9,
+      "repro": [
+        "Sign in as customer",
+        "Note the prices on /inventory.html",
+        "Reload the page or pick Price (low to high) - prices change and are not in ascending order",
+        "Open the Backpack detail page: price is $29.99"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "inventory.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"inventory-item\"] img"
+      },
+      "category": "visual",
+      "description": "The Sauce Labs Backpack shows a photo of a dog with a tennis ball instead of the backpack (image file sl-404); the detail page shows the correct backpack photo.",
+      "confidence": 0.85,
+      "repro": [
+        "Sign in as customer",
+        "Look at the first product card on /inventory.html",
+        "Compare with /inventory-item.html?id=4"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "inventory.png"
+        }
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"inventory-item-name\"]"
+      },
+      "category": "visual",
+      "description": "Names of Sauce Labs Bolt T-Shirt and Sauce Labs Fleece Jacket are right-aligned (text-align right) while the other product names are left-aligned, so the cards look inconsistent.",
+      "confidence": 0.6,
+      "repro": [
+        "Sign in as customer",
+        "Compare title alignment of the product cards on /inventory.html"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "inventory.png"
+        }
+      ]
+    },
+    {
+      "id": "f4",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"add-to-cart-test.allthethings()-t-shirt-(red)\"]"
+      },
+      "category": "visual",
+      "description": "On the Test.allTheThings() T-Shirt (Red) card the Add to cart button sticks out past the right edge of the card (card ends at x=1170, button at 1189), unlike the other cards; at 390px width it overflows the viewport.",
+      "confidence": 0.55,
+      "repro": [
+        "Sign in as customer",
+        "Look at the last product card on /inventory.html at 1280px width"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "inventory.png"
+        },
+        {
+          "kind": "screenshot",
+          "path": "inv_390.png"
+        }
+      ]
+    },
+    {
+      "id": "f5",
+      "where": {
+        "route": "/cart.html",
+        "role": "customer",
+        "selector": "[data-test=\"checkout\"]"
+      },
+      "category": "visual",
+      "description": "The Checkout button is rendered at the very top-right of the page, overlapping the header area, instead of sitting with the cart footer actions next to Continue Shopping.",
+      "confidence": 0.6,
+      "repro": [
+        "Sign in as customer",
+        "Add a product",
+        "Open /cart.html and look at the position of Checkout"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "cart.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Tested all journeys over Playwright. Checkout totals (8% tax), error messages, logout redirect, sort of names, add/remove and badge counts behaved correctly. The cart icon sits mid-header rather than at the far right on all pages; not reported as it may be baseline design.",
+  "cost": {
+    "model_usd": 0.08582,
+    "notes": "estimate from 98644 total tokens (85% cache read / 10% input / 5% output); range $0.0197-$0.2367"
+  },
+  "wall_time_s": 117.8
+}

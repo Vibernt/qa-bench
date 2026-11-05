@@ -1,0 +1,49 @@
+{
+  "episode_id": "noise-001",
+  "system": {
+    "name": "claude-haiku-5.5-high",
+    "version": "claude-haiku-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/notification_message_rendered",
+        "selector": "#flash-messages"
+      },
+      "category": "copy",
+      "description": "The rotating notification message reads 'Action unsuccesful, please try again' (misspelled). The page's own description text spells the same phrase correctly as 'unsuccessful'.",
+      "confidence": 0.6,
+      "repro": [
+        "Open /notification_message_rendered.",
+        "Click the 'Click here' link to load a new message, repeating until the message 'Action unsuccesful, please try again' appears.",
+        "Read the flash message and compare it with the page text 'Action unsuccessful, please try again'."
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/shifting_content/menu"
+      },
+      "category": "copy",
+      "description": "Instruction paragraph has misspellings: 'To specify a differant numbor of pixels' should read 'a different number of pixels'.",
+      "confidence": 0.75,
+      "repro": [
+        "Open /shifting_content/menu.",
+        "Read the paragraph beginning 'To specify a differant numbor of pixels to shift the example'."
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "shifting_content_menu.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Functional checks passed on add/remove elements, checkboxes, dropdown, dynamic controls, dynamic loading, key presses, JS alerts, login (good and bad password), sortable tables, hovers, disappearing elements, broken images, challenging DOM, status codes, context menu, entry ad, infinite scroll and floating menu. Most pages took about 30 s to reach the load event in this sandbox because an external Optimizely script hangs without network access; that is environmental and not reported. The /slow page's 30 s delay is by design. Visual and perf checks were limited to screenshots and load timing within the time budget.",
+  "cost": {
+    "model_usd": 0.004394,
+    "notes": "estimate from 101016 total tokens (85% cache read / 10% input / 5% output); range $0.0010-$0.0121"
+  },
+  "wall_time_s": 996.9
+}

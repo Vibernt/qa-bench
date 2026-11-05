@@ -1,6 +1,6 @@
 # Leaderboard
 
-Each folder is `<bench version>/<system>/<track>/` and holds the scorer's `report.json` (schema
+Each folder is `<bench version>/<system>/<track>/`, or `b0-agents/<configuration>/` for the agent sample runs, and holds the scorer's `report.json` (schema
 [`report.schema.json`](../schemas/report.schema.json)) and `report.md`. Every report records:
 - the upstream pin of each app;
 - each track's seed;
@@ -48,10 +48,18 @@ Both systems ran on one machine with `--parallel 4` (regression) and `--parallel
   We confirmed each one in the app source, completed the labels and checked them with `apps/swag-labs/verify.ts`
   (155 of 155 checks pass), then re-scored. No episode was re-run; only the answer keys changed.
 
+- **Re-scored with matcher `deterministic-2`** (categories match within a family, and change labels count only
+  findings that point at the changed element). The scripted suite's numbers didn't move.
+
+### Agent runs
+Claude Haiku 5.5 and Sonnet 5.5, each at low and high effort, were run on a 10-episode sample:
+[`b0-agents/`](b0-agents/README.md). All four found all 6 planted defects. Sonnet 5.5 at high effort had the best
+precision (88%) with no false alarms. Haiku 5.5 was about 15 to 20 times cheaper. They also found real bugs that
+nobody planted, which are listed there.
+
 ### Not yet scored
 - **QA services:** none were scored in B0. The `http-api` adapter is ready: a system that serves its three
   endpoints can run these same 23 episodes.
-- **AI agents:** a BrowserGym-style agent adapter is B1 work.
 - **Paid human baseline:** that is B4, and it uses the `human` adapter.
 
 ### Reproduce

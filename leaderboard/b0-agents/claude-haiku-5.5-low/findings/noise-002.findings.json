@@ -1,0 +1,29 @@
+{
+  "episode_id": "noise-002",
+  "system": {
+    "name": "claude-haiku-5.5-low",
+    "version": "claude-haiku-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/slow",
+        "selector": "body"
+      },
+      "category": "perf",
+      "description": "The /slow page responds and finishes loading in about 6 ms server time and about 0.3 s in the browser, so it does not show the slow-page delay its name implies. Lower confidence: the expected delay is not stated in the brief.",
+      "confidence": 0.35,
+      "repro": [
+        "curl -w '%{time_starttransfer}' http://127.0.0.1:32777/slow",
+        "Open /slow in Chromium and measure the load event (about 260-300 ms)."
+      ]
+    }
+  ],
+  "notes": "Checked all 27 pages for status, console errors and broken images; ran functional checks on login (valid and invalid), checkboxes, tables sorting (Last Name and First Name), dropdown, inputs, add/remove elements, status code links, dynamic loading and dynamic controls. Broken images on /broken_images, the JavaScript error on /javascript_error and the typo on /typos are deliberate and were not reported. ERR_NAME_NOT_RESOLVED console errors come from the external GitHub ribbon and were not reported. The Due and Web Site column sorts were not verified in depth. Time budget was mostly used.",
+  "cost": {
+    "model_usd": 0.003202,
+    "notes": "estimate from 73608 total tokens (85% cache read / 10% input / 5% output); range $0.0007-$0.0088"
+  },
+  "wall_time_s": 105.4
+}

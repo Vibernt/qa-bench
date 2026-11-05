@@ -262,6 +262,17 @@ These are the B0 exit-check results, on 17 regression and 6 noise episodes. Deta
 | `playwright-suite` 0.1.0 | noise | — | — | 0.0 | 0.00 | 121 s |
 | `noop` (floor) | regression | 0% | — | 0.0 | 0.00 | 9 s |
 
+These are agent runs on a 10-episode sample (8 regression, 2 noise) with the same scorer. Details are in
+[leaderboard/b0-agents/README.md](leaderboard/b0-agents/README.md).
+
+| System | Recall | Precision | False alarms /100 ep | Est. model cost (10 ep) |
+|---|---|---|---|---|
+| Claude Sonnet 5.5, high effort | 100% (6/6) | 88.0% | 0 | $0.75 |
+| Claude Sonnet 5.5, low effort | 100% (6/6) | 87.5% | 10 | $0.59 |
+| Claude Haiku 5.5, low effort | 100% (6/6) | 85.7% | 0 | $0.04 |
+| Claude Haiku 5.5, high effort | 100% (6/6) | 66.7% | 0 | $0.04 |
+| `playwright-suite`, same 10 episodes | 100% (6/6) | 78.0% | 50 | $0 |
+
 ## Repository layout
 
 ```
@@ -271,6 +282,7 @@ episodes/              generated, not committed (regenerate with `generate --all
 harness/generator/     episode generator
 harness/runner/        brings episodes up, runs adapters sealed, tears down
 harness/adapters/      playwright-suite, http-api, human, noop
+harness/agents/        orchestrator-driven agent runs: configs, episode sets, one prompt, prepare/finish
 scorer/                deterministic matcher, metrics, JSON and Markdown reports
 schemas/               JSON Schemas for every contract
 leaderboard/           checked-in results per bench version

@@ -1,0 +1,129 @@
+{
+  "episode_id": "regression-009",
+  "system": {
+    "name": "claude-sonnet-5.5-low",
+    "version": "claude-sonnet-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"product-sort-container\"]"
+      },
+      "category": "functional",
+      "description": "Sort dropdown has no effect: list stays in the same order for all four sort options.",
+      "confidence": 0.85,
+      "repro": [
+        "Sign in as customer",
+        "Open /inventory.html",
+        "Choose Name (Z to A) / Price low to high",
+        "List order unchanged"
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer"
+      },
+      "category": "functional",
+      "description": "Clicking Remove on a product in the list does not remove it: button stays Remove and badge stays 2.",
+      "confidence": 0.8,
+      "repro": [
+        "Sign in as customer",
+        "Open /inventory.html",
+        "Add to cart on two products",
+        "Click Remove on the second one",
+        "Badge still 2"
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "#item_4_title_link"
+      },
+      "category": "functional",
+      "description": "Opening Sauce Labs Backpack via its name link shows the detail page of a different product (Sauce Labs Fleece Jacket, id=5).",
+      "confidence": 0.8,
+      "repro": [
+        "Sign in as customer",
+        "Open /inventory.html",
+        "Click Sauce Labs Backpack name"
+      ]
+    },
+    {
+      "id": "f4",
+      "where": {
+        "route": "/inventory-item.html",
+        "role": "customer"
+      },
+      "category": "functional",
+      "description": "Add to cart / Remove on the product detail page does not work: button stays Add and the cart badge never appears.",
+      "confidence": 0.75,
+      "repro": [
+        "Sign in as customer",
+        "Open /inventory.html",
+        "Open a product",
+        "Click Add to cart"
+      ]
+    },
+    {
+      "id": "f5",
+      "where": {
+        "route": "/checkout-step-one.html",
+        "role": "customer"
+      },
+      "category": "functional",
+      "description": "Checkout information form loses typed input: after filling First Name, Last Name and Zip, Continue says \"Last Name is required\" and field values are wrong/empty, so checkout cannot be completed.",
+      "confidence": 0.8,
+      "repro": [
+        "Sign in as customer",
+        "Open /inventory.html",
+        "Add two products, open cart, Checkout",
+        "Type first name, last name, zip",
+        "Click Continue"
+      ]
+    },
+    {
+      "id": "f6",
+      "where": {
+        "route": "/checkout-step-one.html",
+        "role": "customer",
+        "selector": "[data-test=\"firstName\"]"
+      },
+      "category": "visual",
+      "description": "All three checkout input fields show the error style (input_error) before any submission.",
+      "confidence": 0.5,
+      "repro": [
+        "Sign in as customer",
+        "Open /inventory.html",
+        "Add product, open cart, Checkout"
+      ]
+    },
+    {
+      "id": "f7",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": ".inventory_item_img"
+      },
+      "category": "visual",
+      "description": "Every product shows the same placeholder image (sl-404) instead of its own photo.",
+      "confidence": 0.7,
+      "repro": [
+        "Sign in as customer",
+        "Open /inventory.html",
+        "Look at product images"
+      ]
+    }
+  ],
+  "cost": {
+    "model_usd": 0.063493,
+    "notes": "estimate from 72980 total tokens (85% cache read / 10% input / 5% output); range $0.0146-$0.1752"
+  },
+  "wall_time_s": 170.3
+}

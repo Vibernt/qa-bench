@@ -1,0 +1,44 @@
+{
+  "episode_id": "regression-014",
+  "system": {
+    "name": "claude-haiku-5.5-low",
+    "version": "claude-haiku-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "table[aria-label=\"Expenses\"]"
+      },
+      "category": "functional",
+      "description": "After a successful add or edit the expense list and total do not show the change straight away. A new expense is missing from the list on reload and the total is unchanged, and an edited amount still shows the old value. The change shows up only after roughly 20 seconds, so the list is stale after writes even though the edit form and the saved record already hold the new value.",
+      "confidence": 0.85,
+      "repro": [
+        "Sign in as editor-9532 at /login.",
+        "Open /expenses/new, enter title 'QA Test Taxi', category travel, amount 10.00 and click 'Save expense'. The page shows 'Expense saved'.",
+        "Reload /expenses. The list still has 8 rows and no 'QA Test Taxi'; the total is unchanged at $399.99.",
+        "Open /expenses/9/edit: the saved record exists with amount 10.00.",
+        "Open /expenses/2/edit, set amount to 77.77 and save. Reload /expenses at once: 'Team lunch' still shows $68.40 and the total is unchanged.",
+        "Wait about 20 seconds and reload /expenses: the new row, the 77.77 amount and the new total are shown."
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "add-after-save.png"
+        },
+        {
+          "kind": "screenshot",
+          "path": "after-edit.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Tested all five journeys. Viewer list total and category filters are correct once the list has caught up (filter totals checked: travel 185.25, meals 177.25, office 37.49). Viewer gets 403 on /expenses/new, /expenses/1/edit and POST /expenses, and no edit or add controls are shown. The editor view also has a Delete button per row, which the brief does not mention; I did not treat it as a bug. Test writes were made to expenses 1, 2 and new expense 9 (QA Test Taxi), so the list now has 9 rows. Note that the 20-second lag was measured at one point in time; I did not repeat the measurement.",
+  "cost": {
+    "model_usd": 0.003608,
+    "notes": "estimate from 82938 total tokens (85% cache read / 10% input / 5% output); range $0.0008-$0.0100"
+  },
+  "wall_time_s": 275.7
+}

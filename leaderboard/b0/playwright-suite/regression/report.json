@@ -1,6 +1,6 @@
 {
   "bench_version": "0.1.0-b0",
-  "generated_at": "2026-11-05T03:54:53.036Z",
+  "generated_at": "2026-11-05T05:12:27.503Z",
   "system": {
     "name": "playwright-suite",
     "version": "0.1.0"
@@ -30,7 +30,7 @@
         }
       }
     },
-    "matcher": "deterministic-1"
+    "matcher": "deterministic-2"
   },
   "episodes": [
     {
@@ -109,7 +109,7 @@
       "track": "regression",
       "app": "expense-app",
       "split": "public",
-      "answer_key_sha256": "82b7f44ac894ef4335b72ec106b8eec5d328801fa416339a57b52e1323ba0b60",
+      "answer_key_sha256": "f6009be73996563e8caa1e76b660f7657b94a854379b427da9f87feea54a9cab",
       "status": "scored",
       "wall_time_s": 9.09,
       "cost": {
@@ -124,7 +124,7 @@
           "decision": "false_alarm_change",
           "label_id": "expense.relabel",
           "category": "copy",
-          "reason": "flags deliberate change expense.relabel: matches expense.relabel[0]: route, role, category; locators not comparable"
+          "reason": "flags deliberate change expense.relabel: matches expense.relabel[3]: route, role, category and selector"
         }
       ],
       "labels": [
@@ -345,7 +345,7 @@
       "track": "regression",
       "app": "expense-app",
       "split": "public",
-      "answer_key_sha256": "41865735705ba14e0e78c194227dba9a26a80bc89e252f766864f9e0839d6bc8",
+      "answer_key_sha256": "f8492f43dbf77b5a1facdb156178a4b0843caa9d8f762a7470850fd70bfff904",
       "status": "scored",
       "wall_time_s": 7.4,
       "cost": {
@@ -369,7 +369,7 @@
           "kind": "defect",
           "category": "functional",
           "class": "deterministic",
-          "severity": "major",
+          "severity": "critical",
           "hit": true,
           "finding_ids": [
             "pw-001-expense-edit-message-matches"
@@ -382,7 +382,7 @@
       "track": "regression",
       "app": "swag-labs",
       "split": "public",
-      "answer_key_sha256": "217e5b76de19cc37719b676a24434028cf0452ad4b949abd8f319fefab06d725",
+      "answer_key_sha256": "f4cbcd24803a74cf2a178c473f9c54db79dbffff8359ef43f70e4c2c1b0f8dc1",
       "status": "scored",
       "wall_time_s": 30.65,
       "cost": {
@@ -501,7 +501,7 @@
       "track": "regression",
       "app": "expense-app",
       "split": "public",
-      "answer_key_sha256": "5804878bdd0c829d7e0a1e11589b614cad19b8fa97bfe8be6de19a673f3dcde7",
+      "answer_key_sha256": "9576a7dc62d2acabd16edf878fd338b5779a9e80c5a084bb440f59df3457a05e",
       "status": "scored",
       "wall_time_s": 7.65,
       "cost": {
@@ -516,7 +516,7 @@
           "decision": "false_alarm_change",
           "label_id": "expense.relabel",
           "category": "copy",
-          "reason": "flags deliberate change expense.relabel: matches expense.relabel[0]: route, role, category; locators not comparable"
+          "reason": "flags deliberate change expense.relabel: matches expense.relabel[3]: route, role, category and selector"
         },
         {
           "finding_id": "pw-002-expense-add-one-row",
@@ -532,7 +532,7 @@
           "kind": "defect",
           "category": "functional",
           "class": "deterministic",
-          "severity": "major",
+          "severity": "critical",
           "hit": true,
           "finding_ids": [
             "pw-002-expense-add-one-row"
@@ -556,7 +556,7 @@
       "track": "regression",
       "app": "swag-labs",
       "split": "public",
-      "answer_key_sha256": "bc7ce371a45c3e3bb1a987e2896592e51c3809fa1235d3a181e59e3d901f8cbd",
+      "answer_key_sha256": "2c3de972dbefcf3f0d7972f8c49177b8ed1cb1effd65b59eb258588fe7d45819",
       "status": "scored",
       "wall_time_s": 30.8,
       "cost": {
@@ -683,7 +683,7 @@
       "track": "regression",
       "app": "expense-app",
       "split": "public",
-      "answer_key_sha256": "ecd119e0ca6827fbb4f04d199f2ce601e002e00442c08354ce3c1ec3bc989e0a",
+      "answer_key_sha256": "bf1fea28facf5dcc19ee4a69dc869c31d9307862be6adeb45481a5f54c39d92f",
       "status": "scored",
       "wall_time_s": 8.44,
       "cost": {
@@ -773,7 +773,7 @@
       "track": "regression",
       "app": "expense-app",
       "split": "public",
-      "answer_key_sha256": "ee54e28af23776bf1cea18e59b9f5ef138495434b11a4c13240c9f6b88a1ca77",
+      "answer_key_sha256": "bf521cd987419257aced5a56a04da23f3650b072ad2a6ef33183b6a4d4788b9f",
       "status": "scored",
       "wall_time_s": 8.2,
       "cost": {
@@ -788,7 +788,7 @@
           "decision": "false_alarm_change",
           "label_id": "expense.relabel",
           "category": "copy",
-          "reason": "flags deliberate change expense.relabel: matches expense.relabel[0]: route, role, category; locators not comparable"
+          "reason": "flags deliberate change expense.relabel: matches expense.relabel[3]: route, role, category and selector"
         },
         {
           "finding_id": "pw-002-expense-add-shows-now",
@@ -836,7 +836,7 @@
       "track": "regression",
       "app": "swag-labs",
       "split": "public",
-      "answer_key_sha256": "f63adca9c434f90e5e95b6bd41b78613c478e8ecc89829897df459e84ba9129f",
+      "answer_key_sha256": "6badcf8beaf3a10ab7b6d5a229e5a7400a24c10f665993c6c8bf33303c5b6b7e",
       "status": "scored",
       "wall_time_s": 1.66,
       "cost": {
@@ -881,7 +881,7 @@
       "track": "regression",
       "app": "swag-labs",
       "split": "public",
-      "answer_key_sha256": "18a666c28ada7216ae3891cd3499321c0d784714d8170f94fc3286721bbd4fb4",
+      "answer_key_sha256": "5998441a532f598234d1b04659726ea8f267a1b54076b9332722fa987fc6bf33",
       "status": "scored",
       "wall_time_s": 22.98,
       "cost": {
@@ -952,7 +952,7 @@
       "track": "regression",
       "app": "swag-labs",
       "split": "public",
-      "answer_key_sha256": "136d796dc0bebeefb9d22e40a9221b0b16b3b9650d3cdcc8bbd777feeb2b9d63",
+      "answer_key_sha256": "9511b9d23d76f2b92f78436a9f7f8d874096b7c6703b097ec4c6e50933fcfe2e",
       "status": "scored",
       "wall_time_s": 10.14,
       "cost": {
@@ -981,11 +981,15 @@
       "defects_planted": 12,
       "defects_found": 12,
       "recall": 1,
+      "weighted_defects_planted": 50,
+      "weighted_defects_found": 50,
+      "weighted_recall": 1,
       "findings": 50,
       "findings_matched": 39,
       "findings_excused": 0,
       "precision": 0.78,
       "f1": 0.8764044943820225,
+      "weighted_f1": 0.8764044943820225,
       "changes_active": 11,
       "changes_flagged": 7,
       "change_flag_rate": 0.6363636363636364,
@@ -998,7 +1002,9 @@
       "cost_usd_total": 0,
       "human_hours_total": null,
       "cost_per_defect_found_usd": 0,
-      "repro_rate": null
+      "repro_rate": null,
+      "severity_judged": 0,
+      "severity_agreement": null
     },
     "by_track": {
       "regression": {
@@ -1007,11 +1013,15 @@
         "defects_planted": 12,
         "defects_found": 12,
         "recall": 1,
+        "weighted_defects_planted": 50,
+        "weighted_defects_found": 50,
+        "weighted_recall": 1,
         "findings": 50,
         "findings_matched": 39,
         "findings_excused": 0,
         "precision": 0.78,
         "f1": 0.8764044943820225,
+        "weighted_f1": 0.8764044943820225,
         "changes_active": 11,
         "changes_flagged": 7,
         "change_flag_rate": 0.6363636363636364,
@@ -1024,7 +1034,9 @@
         "cost_usd_total": 0,
         "human_hours_total": null,
         "cost_per_defect_found_usd": 0,
-        "repro_rate": null
+        "repro_rate": null,
+        "severity_judged": 0,
+        "severity_agreement": null
       }
     },
     "by_category": {
@@ -1034,11 +1046,15 @@
         "defects_planted": 2,
         "defects_found": 2,
         "recall": 1,
+        "weighted_defects_planted": 6,
+        "weighted_defects_found": 6,
+        "weighted_recall": 1,
         "findings": 6,
         "findings_matched": 6,
         "findings_excused": 0,
         "precision": 1,
         "f1": 1,
+        "weighted_f1": 1,
         "changes_active": 1,
         "changes_flagged": 0,
         "change_flag_rate": 0,
@@ -1051,7 +1067,9 @@
         "cost_usd_total": null,
         "human_hours_total": null,
         "cost_per_defect_found_usd": null,
-        "repro_rate": null
+        "repro_rate": null,
+        "severity_judged": 0,
+        "severity_agreement": null
       },
       "copy": {
         "episodes": 17,
@@ -1059,11 +1077,15 @@
         "defects_planted": 0,
         "defects_found": 0,
         "recall": null,
+        "weighted_defects_planted": 0,
+        "weighted_defects_found": 0,
+        "weighted_recall": null,
         "findings": 12,
         "findings_matched": 1,
         "findings_excused": 0,
         "precision": 0.08333333333333333,
         "f1": null,
+        "weighted_f1": null,
         "changes_active": 8,
         "changes_flagged": 7,
         "change_flag_rate": 0.875,
@@ -1076,7 +1098,9 @@
         "cost_usd_total": null,
         "human_hours_total": null,
         "cost_per_defect_found_usd": null,
-        "repro_rate": null
+        "repro_rate": null,
+        "severity_judged": 0,
+        "severity_agreement": null
       },
       "error-handling": {
         "episodes": 17,
@@ -1084,11 +1108,15 @@
         "defects_planted": 1,
         "defects_found": 1,
         "recall": 1,
+        "weighted_defects_planted": 5,
+        "weighted_defects_found": 5,
+        "weighted_recall": 1,
         "findings": 5,
         "findings_matched": 5,
         "findings_excused": 0,
         "precision": 1,
         "f1": 1,
+        "weighted_f1": 1,
         "changes_active": 0,
         "changes_flagged": 0,
         "change_flag_rate": null,
@@ -1101,7 +1129,9 @@
         "cost_usd_total": null,
         "human_hours_total": null,
         "cost_per_defect_found_usd": null,
-        "repro_rate": null
+        "repro_rate": null,
+        "severity_judged": 0,
+        "severity_agreement": null
       },
       "functional": {
         "episodes": 17,
@@ -1109,11 +1139,15 @@
         "defects_planted": 6,
         "defects_found": 6,
         "recall": 1,
+        "weighted_defects_planted": 28,
+        "weighted_defects_found": 28,
+        "weighted_recall": 1,
         "findings": 18,
         "findings_matched": 18,
         "findings_excused": 0,
         "precision": 1,
         "f1": 1,
+        "weighted_f1": 1,
         "changes_active": 0,
         "changes_flagged": 0,
         "change_flag_rate": null,
@@ -1126,7 +1160,9 @@
         "cost_usd_total": null,
         "human_hours_total": null,
         "cost_per_defect_found_usd": null,
-        "repro_rate": null
+        "repro_rate": null,
+        "severity_judged": 0,
+        "severity_agreement": null
       },
       "perf": {
         "episodes": 17,
@@ -1134,11 +1170,15 @@
         "defects_planted": 1,
         "defects_found": 1,
         "recall": 1,
+        "weighted_defects_planted": 3,
+        "weighted_defects_found": 3,
+        "weighted_recall": 1,
         "findings": 1,
         "findings_matched": 1,
         "findings_excused": 0,
         "precision": 1,
         "f1": 1,
+        "weighted_f1": 1,
         "changes_active": 0,
         "changes_flagged": 0,
         "change_flag_rate": null,
@@ -1151,7 +1191,9 @@
         "cost_usd_total": null,
         "human_hours_total": null,
         "cost_per_defect_found_usd": null,
-        "repro_rate": null
+        "repro_rate": null,
+        "severity_judged": 0,
+        "severity_agreement": null
       },
       "permission": {
         "episodes": 17,
@@ -1159,11 +1201,15 @@
         "defects_planted": 1,
         "defects_found": 1,
         "recall": 1,
+        "weighted_defects_planted": 5,
+        "weighted_defects_found": 5,
+        "weighted_recall": 1,
         "findings": 1,
         "findings_matched": 1,
         "findings_excused": 0,
         "precision": 1,
         "f1": 1,
+        "weighted_f1": 1,
         "changes_active": 0,
         "changes_flagged": 0,
         "change_flag_rate": null,
@@ -1176,7 +1222,9 @@
         "cost_usd_total": null,
         "human_hours_total": null,
         "cost_per_defect_found_usd": null,
-        "repro_rate": null
+        "repro_rate": null,
+        "severity_judged": 0,
+        "severity_agreement": null
       },
       "visual": {
         "episodes": 17,
@@ -1184,11 +1232,15 @@
         "defects_planted": 1,
         "defects_found": 1,
         "recall": 1,
+        "weighted_defects_planted": 3,
+        "weighted_defects_found": 3,
+        "weighted_recall": 1,
         "findings": 7,
         "findings_matched": 7,
         "findings_excused": 0,
         "precision": 1,
         "f1": 1,
+        "weighted_f1": 1,
         "changes_active": 2,
         "changes_flagged": 0,
         "change_flag_rate": 0,
@@ -1201,7 +1253,9 @@
         "cost_usd_total": null,
         "human_hours_total": null,
         "cost_per_defect_found_usd": null,
-        "repro_rate": null
+        "repro_rate": null,
+        "severity_judged": 0,
+        "severity_agreement": null
       }
     },
     "by_class": {
@@ -1211,11 +1265,15 @@
         "defects_planted": 11,
         "defects_found": 11,
         "recall": 1,
+        "weighted_defects_planted": 47,
+        "weighted_defects_found": 47,
+        "weighted_recall": 1,
         "findings": 31,
         "findings_matched": 31,
         "findings_excused": 0,
         "precision": 1,
         "f1": 1,
+        "weighted_f1": 1,
         "changes_active": 0,
         "changes_flagged": 0,
         "change_flag_rate": null,
@@ -1228,7 +1286,9 @@
         "cost_usd_total": null,
         "human_hours_total": null,
         "cost_per_defect_found_usd": null,
-        "repro_rate": null
+        "repro_rate": null,
+        "severity_judged": 0,
+        "severity_agreement": null
       },
       "judged": {
         "episodes": 17,
@@ -1236,11 +1296,15 @@
         "defects_planted": 1,
         "defects_found": 1,
         "recall": 1,
+        "weighted_defects_planted": 3,
+        "weighted_defects_found": 3,
+        "weighted_recall": 1,
         "findings": 19,
         "findings_matched": 8,
         "findings_excused": 0,
         "precision": 0.42105263157894735,
         "f1": 0.5925925925925926,
+        "weighted_f1": 0.5925925925925926,
         "changes_active": 11,
         "changes_flagged": 7,
         "change_flag_rate": 0.6363636363636364,
@@ -1253,7 +1317,9 @@
         "cost_usd_total": null,
         "human_hours_total": null,
         "cost_per_defect_found_usd": null,
-        "repro_rate": null
+        "repro_rate": null,
+        "severity_judged": 0,
+        "severity_agreement": null
       }
     },
     "breakdown": [
@@ -1267,11 +1333,15 @@
           "defects_planted": 2,
           "defects_found": 2,
           "recall": 1,
+          "weighted_defects_planted": 6,
+          "weighted_defects_found": 6,
+          "weighted_recall": 1,
           "findings": 5,
           "findings_matched": 5,
           "findings_excused": 0,
           "precision": 1,
           "f1": 1,
+          "weighted_f1": 1,
           "changes_active": 0,
           "changes_flagged": 0,
           "change_flag_rate": null,
@@ -1284,7 +1354,9 @@
           "cost_usd_total": null,
           "human_hours_total": null,
           "cost_per_defect_found_usd": null,
-          "repro_rate": null
+          "repro_rate": null,
+          "severity_judged": 0,
+          "severity_agreement": null
         }
       },
       {
@@ -1297,11 +1369,15 @@
           "defects_planted": 0,
           "defects_found": 0,
           "recall": null,
+          "weighted_defects_planted": 0,
+          "weighted_defects_found": 0,
+          "weighted_recall": null,
           "findings": 1,
           "findings_matched": 1,
           "findings_excused": 0,
           "precision": 1,
           "f1": null,
+          "weighted_f1": null,
           "changes_active": 1,
           "changes_flagged": 0,
           "change_flag_rate": 0,
@@ -1314,7 +1390,9 @@
           "cost_usd_total": null,
           "human_hours_total": null,
           "cost_per_defect_found_usd": null,
-          "repro_rate": null
+          "repro_rate": null,
+          "severity_judged": 0,
+          "severity_agreement": null
         }
       },
       {
@@ -1327,11 +1405,15 @@
           "defects_planted": 0,
           "defects_found": 0,
           "recall": null,
+          "weighted_defects_planted": 0,
+          "weighted_defects_found": 0,
+          "weighted_recall": null,
           "findings": 11,
           "findings_matched": 0,
           "findings_excused": 0,
           "precision": 0,
           "f1": null,
+          "weighted_f1": null,
           "changes_active": 8,
           "changes_flagged": 7,
           "change_flag_rate": 0.875,
@@ -1344,7 +1426,9 @@
           "cost_usd_total": null,
           "human_hours_total": null,
           "cost_per_defect_found_usd": null,
-          "repro_rate": null
+          "repro_rate": null,
+          "severity_judged": 0,
+          "severity_agreement": null
         }
       },
       {
@@ -1357,11 +1441,15 @@
           "defects_planted": 1,
           "defects_found": 1,
           "recall": 1,
+          "weighted_defects_planted": 5,
+          "weighted_defects_found": 5,
+          "weighted_recall": 1,
           "findings": 5,
           "findings_matched": 5,
           "findings_excused": 0,
           "precision": 1,
           "f1": 1,
+          "weighted_f1": 1,
           "changes_active": 0,
           "changes_flagged": 0,
           "change_flag_rate": null,
@@ -1374,7 +1462,9 @@
           "cost_usd_total": null,
           "human_hours_total": null,
           "cost_per_defect_found_usd": null,
-          "repro_rate": null
+          "repro_rate": null,
+          "severity_judged": 0,
+          "severity_agreement": null
         }
       },
       {
@@ -1387,11 +1477,15 @@
           "defects_planted": 6,
           "defects_found": 6,
           "recall": 1,
+          "weighted_defects_planted": 28,
+          "weighted_defects_found": 28,
+          "weighted_recall": 1,
           "findings": 17,
           "findings_matched": 17,
           "findings_excused": 0,
           "precision": 1,
           "f1": 1,
+          "weighted_f1": 1,
           "changes_active": 0,
           "changes_flagged": 0,
           "change_flag_rate": null,
@@ -1404,7 +1498,9 @@
           "cost_usd_total": null,
           "human_hours_total": null,
           "cost_per_defect_found_usd": null,
-          "repro_rate": null
+          "repro_rate": null,
+          "severity_judged": 0,
+          "severity_agreement": null
         }
       },
       {
@@ -1417,11 +1513,15 @@
           "defects_planted": 1,
           "defects_found": 1,
           "recall": 1,
+          "weighted_defects_planted": 3,
+          "weighted_defects_found": 3,
+          "weighted_recall": 1,
           "findings": 1,
           "findings_matched": 1,
           "findings_excused": 0,
           "precision": 1,
           "f1": 1,
+          "weighted_f1": 1,
           "changes_active": 0,
           "changes_flagged": 0,
           "change_flag_rate": null,
@@ -1434,7 +1534,9 @@
           "cost_usd_total": null,
           "human_hours_total": null,
           "cost_per_defect_found_usd": null,
-          "repro_rate": null
+          "repro_rate": null,
+          "severity_judged": 0,
+          "severity_agreement": null
         }
       },
       {
@@ -1447,11 +1549,15 @@
           "defects_planted": 1,
           "defects_found": 1,
           "recall": 1,
+          "weighted_defects_planted": 5,
+          "weighted_defects_found": 5,
+          "weighted_recall": 1,
           "findings": 1,
           "findings_matched": 1,
           "findings_excused": 0,
           "precision": 1,
           "f1": 1,
+          "weighted_f1": 1,
           "changes_active": 0,
           "changes_flagged": 0,
           "change_flag_rate": null,
@@ -1464,7 +1570,9 @@
           "cost_usd_total": null,
           "human_hours_total": null,
           "cost_per_defect_found_usd": null,
-          "repro_rate": null
+          "repro_rate": null,
+          "severity_judged": 0,
+          "severity_agreement": null
         }
       },
       {
@@ -1477,11 +1585,15 @@
           "defects_planted": 1,
           "defects_found": 1,
           "recall": 1,
+          "weighted_defects_planted": 3,
+          "weighted_defects_found": 3,
+          "weighted_recall": 1,
           "findings": 6,
           "findings_matched": 6,
           "findings_excused": 0,
           "precision": 1,
           "f1": 1,
+          "weighted_f1": 1,
           "changes_active": 2,
           "changes_flagged": 0,
           "change_flag_rate": 0,
@@ -1494,7 +1606,9 @@
           "cost_usd_total": null,
           "human_hours_total": null,
           "cost_per_defect_found_usd": null,
-          "repro_rate": null
+          "repro_rate": null,
+          "severity_judged": 0,
+          "severity_agreement": null
         }
       }
     ]

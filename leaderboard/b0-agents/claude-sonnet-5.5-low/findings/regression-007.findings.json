@@ -1,0 +1,80 @@
+{
+  "episode_id": "regression-007",
+  "system": {
+    "name": "claude-sonnet-5.5-low",
+    "version": "claude-sonnet-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"product-sort-container\"]"
+      },
+      "category": "functional",
+      "description": "Choosing any sort order (Z to A, price low/high, high/low) does not re-order the product list; it always stays in Name A to Z order.",
+      "confidence": 0.9,
+      "repro": [
+        "Sign in as customer",
+        "Choose Name (Z to A) or Price (low to high) in the sort dropdown",
+        "List order does not change"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "inv.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/inventory-item.html",
+        "role": "customer"
+      },
+      "category": "functional",
+      "description": "Product detail page shows no description (name and price only), unlike the list which shows a description.",
+      "confidence": 0.7,
+      "repro": [
+        "Sign in",
+        "Open /inventory-item.html?id=4",
+        "No description is shown"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "detail4.png"
+        }
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/checkout-step-two.html",
+        "role": "customer",
+        "selector": "[data-test=\"finish\"]"
+      },
+      "category": "functional",
+      "description": "Finish on the checkout overview does nothing: no navigation to the confirmation page and the cart is not emptied.",
+      "confidence": 0.85,
+      "repro": [
+        "Sign in, add a product, go through checkout to overview",
+        "Click Finish",
+        "Page stays on overview with badge still showing"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "co2.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Did not test sign out, permissions, or visual details in depth.",
+  "cost": {
+    "model_usd": 0.060725,
+    "notes": "estimate from 69799 total tokens (85% cache read / 10% input / 5% output); range $0.0140-$0.1675"
+  },
+  "wall_time_s": 87.3
+}

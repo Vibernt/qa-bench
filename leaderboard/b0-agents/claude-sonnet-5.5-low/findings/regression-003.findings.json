@@ -1,0 +1,35 @@
+{
+  "episode_id": "regression-003",
+  "system": {
+    "name": "claude-sonnet-5.5-low",
+    "version": "claude-sonnet-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses/1/edit",
+        "role": "viewer"
+      },
+      "category": "permission",
+      "description": "A viewer requesting the edit URL directly gets 200 and the full edit form instead of being refused (403), although /expenses/new returns 403 for the viewer.",
+      "confidence": 0.85,
+      "repro": [
+        "Sign in as viewer",
+        "GET /expenses/1/edit directly"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "f1.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Total, filter, add, edit all behaved correctly.",
+  "cost": {
+    "model_usd": 0.05796,
+    "notes": "estimate from 66621 total tokens (85% cache read / 10% input / 5% output); range $0.0133-$0.1599"
+  },
+  "wall_time_s": 53.3
+}

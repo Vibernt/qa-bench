@@ -1,0 +1,84 @@
+{
+  "episode_id": "regression-003",
+  "system": {
+    "name": "claude-haiku-5.5-high",
+    "version": "claude-haiku-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses/2/edit",
+        "role": "viewer"
+      },
+      "category": "permission",
+      "description": "A viewer can open the edit form for any expense (GET /expenses/1/edit returns 200 with a pre-filled form) and submit it: POST /expenses/1 returns 303 'Expense updated' and changes the amount, which changes the list total. Only the list hides the edit controls; the server does not enforce the editor-only rule for edits. Add and delete are correctly refused with 403.",
+      "confidence": 0.95,
+      "repro": [
+        "Sign in as viewer-eb09 at /login and go to /expenses (no Edit links are shown)",
+        "Open /expenses/2/edit directly in the same session: the 'Edit expense' form renders pre-filled",
+        "Submit the form with amount changed (e.g. POST /expenses/1 with amount 1.00)",
+        "Response is 303 to /expenses?flash=updated; the list now shows the new amount and the total drops by the change",
+        "Compare: GET /expenses/new and POST /expenses (add) and POST /expenses/2/delete return 403 for the viewer"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "f1-viewer-edit-form.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "table[aria-label=\"Expenses\"]"
+      },
+      "category": "error-handling",
+      "description": "An expense saved with amount 99999999999999 is accepted (303 'Expense saved'), but afterwards the expense list returns 500 'Server error' for every role, both unfiltered and with category=travel, and that row's edit page also returns 500. The whole list is unusable until the row is deleted. Amounts of 1000000 are accepted and render fine, so the failure is triggered by the very large value, and the server neither rejects it nor fails gracefully.",
+      "confidence": 0.8,
+      "repro": [
+        "Sign in as editor-5014, open /expenses/new",
+        "Enter title 'Huge repro', category travel, amount 99999999999999, Save: redirected to /expenses?flash=saved",
+        "Reload /expenses: 'Server error / Something went wrong' (HTTP 500); /expenses?category=travel is also 500",
+        "Viewer's /expenses is also 500; /expenses?category=meals still renders",
+        "GET /expenses/<new id>/edit returns 500"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "f2-list-500.png"
+        }
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/expenses/new",
+        "role": "editor",
+        "selector": "form[action=\"/expenses\"]"
+      },
+      "category": "error-handling",
+      "description": "When the add form is rejected by the server (e.g. a whitespace-only title, which passes the browser 'required' check, returns 400), the response re-renders an empty Add expense form with no error message. The title and amount the user typed are lost and the category resets to travel, so the user gets no reason for the failure and must retype everything.",
+      "confidence": 0.6,
+      "repro": [
+        "Sign in as editor-5014, open /expenses/new",
+        "Enter title '   ' (spaces only), category meals, amount 12.00, click Save",
+        "Response is 400 with the 'Add expense' form shown again, all fields blank, category back to travel, and no message explaining the problem"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "f3-add-whitespace-title.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Tested as viewer and editor: list total equals sum of rows (all categories and each category filter, incl. after add and edit); add (success message, one new row, persists after reload) and edit (list and total update immediately, category edits also work) behaved correctly; viewer sees no add/edit/delete controls. Probe data was cleaned up: probe rows deleted, Train to Pune and Client taxi amounts restored to 42.50 and 18.75, final total 399.99 with 8 rows. Not tested: concurrent edits, session expiry, keyboard-only and screen-reader behaviour, and the ?flash= parameter. The page layout is unstyled plain HTML across both pages, which I treated as the baseline and did not report. Page load was about 30 ms, and there was no horizontal overflow at 375 px.",
+  "cost": {
+    "model_usd": 0.004243,
+    "notes": "estimate from 97544 total tokens (85% cache read / 10% input / 5% output); range $0.0010-$0.0117"
+  },
+  "wall_time_s": 216.1
+}

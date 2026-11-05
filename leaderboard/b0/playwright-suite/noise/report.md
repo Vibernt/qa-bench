@@ -1,25 +1,28 @@
 # QA Bench report: playwright-suite 0.1.0 (bench 0.1.0-b0)
 
 - Run: `b0-playwright-noise`
-- Generated: 2026-11-05T03:54:53.814Z
+- Generated: 2026-11-05T05:12:28.231Z
 - Tracks: noise
 - Seeds: noise=20261106
 - Upstreams: the-internet
-- Matcher: deterministic-1
+- Matcher: deterministic-2
 
 ## Headline
 
 | Metric | Value |
 |---|---|
 | Recall | — (0/0 defects) |
+| Severity-weighted recall | — (0/0 weight; critical 5, major 3, minor 1) |
 | Precision | — |
 | F1 | — |
+| Severity-weighted F1 | — |
 | False alarms per 100 episodes | 0.0 |
 | Unmatched findings per episode | 0.00 |
 | Mean time to first detection | — |
 | Cost | $0.00 (per defect found: —) |
 | Human hours | — |
 | Wall time | 120.8 s |
+| Severity agreement | — (no finding stated a severity) |
 | Episodes scored | 6/6 |
 
 ## By track

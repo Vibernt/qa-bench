@@ -1,0 +1,32 @@
+{
+  "episode_id": "regression-014",
+  "system": {
+    "name": "claude-sonnet-5.5-low",
+    "version": "claude-sonnet-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "[data-testid=\"total\"]"
+      },
+      "category": "functional",
+      "description": "After adding or editing an expense, the redirect to /expenses?flash=saved|updated shows the success message but a stale list and total: the new row is missing and the edited amount/total are unchanged. The data is only shown correctly on a later load.",
+      "confidence": 0.85,
+      "repro": [
+        "Sign in as editor",
+        "Edit expense 1, change amount 42.50 to 50.00, save",
+        "Observe list still shows $42.50 and total $399.99 with 'Expense updated'",
+        "Reload /expenses after a few seconds: $50.00 shown; same for Add expense (no new row, total unchanged right after save)"
+      ]
+    }
+  ],
+  "notes": "Filter, viewer permissions (403 on edit/post) and total sum checked OK.",
+  "cost": {
+    "model_usd": 0.061078,
+    "notes": "estimate from 70205 total tokens (85% cache read / 10% input / 5% output); range $0.0140-$0.1685"
+  },
+  "wall_time_s": 97.2
+}

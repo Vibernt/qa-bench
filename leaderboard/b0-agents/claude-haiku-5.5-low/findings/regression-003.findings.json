@@ -1,0 +1,42 @@
+{
+  "episode_id": "regression-003",
+  "system": {
+    "name": "claude-haiku-5.5-low",
+    "version": "claude-haiku-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses/1/edit",
+        "role": "viewer"
+      },
+      "category": "permission",
+      "description": "A signed-in viewer can open the edit form for an expense (GET /expenses/1/edit returns 200 with the form) and a direct POST to /expenses/1 with changed or identical fields is accepted (303 redirect to /expenses?flash=updated). The viewer role should be refused, as the list page hides Edit and the add and delete endpoints return 403.",
+      "confidence": 0.95,
+      "repro": [
+        "Sign in at /login as viewer-eb09.",
+        "Open /expenses; no Edit link or Add control is shown (correct).",
+        "Navigate to /expenses/1/edit; the Edit expense form is rendered with Title, Category and Amount fields and a Save button.",
+        "Submit a POST to /expenses/1 with title, category and amount (for example, the same values as the current row) with the viewer session cookie; the response is 303 to /expenses?flash=updated instead of 403.",
+        "Compare: POST /expenses (add) and POST /expenses/9/delete as the viewer both return 403."
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "evidence/viewer_edit_page.png"
+        },
+        {
+          "kind": "screenshot",
+          "path": "evidence/viewer_expenses.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Tested: viewer list total ($399.99) equals the sum of rows, and per-category filters (travel $185.25, meals $177.25, office $37.49) are correct in the UI and by URL. Editor add works (success message, exactly one new row, persists after reload, total updated to $409.99). Editor edit works (list, total and reload show $50.00 and $417.49). Server rejects a negative amount for editor (400). Viewer add and delete are 403. The viewer edit POST was sent with the values already stored, so the data was left unchanged. Test data added during the run: one expense 'QA Test Taxi' ($10.00, travel) is still in the list, and expense 1 is at $50.00 (changed by the edit journey) and was not reverted.",
+  "cost": {
+    "model_usd": 0.003192,
+    "notes": "estimate from 73369 total tokens (85% cache read / 10% input / 5% output); range $0.0007-$0.0088"
+  },
+  "wall_time_s": 86.4
+}

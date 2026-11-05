@@ -1,0 +1,131 @@
+{
+  "episode_id": "regression-007",
+  "system": {
+    "name": "claude-sonnet-5.5-high",
+    "version": "claude-sonnet-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"product-sort-container\"]"
+      },
+      "category": "functional",
+      "description": "Choosing a sort order (Name Z to A, Price low to high, Price high to low) does not re-order the product list; it always stays in Name A to Z order and the dropdown snaps back to Name (A to Z).",
+      "confidence": 0.9,
+      "repro": [
+        "Sign in as customer",
+        "On /inventory.html choose Price (low to high) in the sort dropdown",
+        "List remains Backpack, Bike Light, Bolt T-Shirt... (A to Z) and dropdown shows Name (A to Z)"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "inv.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"remove-sauce-labs-backpack\"]"
+      },
+      "category": "functional",
+      "description": "The Remove button on the product list does nothing: the button stays 'Remove' and the cart badge count does not decrease.",
+      "confidence": 0.9,
+      "repro": [
+        "Sign in as customer",
+        "Click Add to cart on Sauce Labs Backpack and Sauce Labs Bike Light (badge 2)",
+        "Click Remove on Bike Light",
+        "Button remains Remove and badge still shows 2"
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/inventory-item.html",
+        "role": "customer",
+        "selector": "[data-test=\"remove\"]"
+      },
+      "category": "functional",
+      "description": "On a product's detail page the Remove button does nothing: after Add to cart turns into Remove, clicking Remove leaves the button and the cart badge unchanged.",
+      "confidence": 0.9,
+      "repro": [
+        "Sign in as customer",
+        "Open /inventory-item.html?id=4",
+        "Click Add to cart (button becomes Remove, badge 1)",
+        "Click Remove: button stays Remove, badge stays 1"
+      ]
+    },
+    {
+      "id": "f4",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"add-to-cart-sauce-labs-fleece-jacket\"]"
+      },
+      "category": "functional",
+      "description": "Add to cart silently does nothing for Sauce Labs Bolt T-Shirt, Sauce Labs Fleece Jacket and Test.allTheThings() T-Shirt (Red), on both the list and their detail pages (ids 1, 5, 3): no Remove button, no badge, item never reaches the cart. Backpack, Bike Light and Onesie add fine.",
+      "confidence": 0.9,
+      "repro": [
+        "Sign in as customer",
+        "On /inventory.html click Add to cart on Sauce Labs Fleece Jacket",
+        "Button stays Add to cart and no cart badge appears; same on /inventory-item.html?id=5"
+      ]
+    },
+    {
+      "id": "f5",
+      "where": {
+        "route": "/inventory-item.html",
+        "role": "customer",
+        "selector": "[data-test=\"inventory-item\"]"
+      },
+      "category": "functional",
+      "description": "The product detail page does not show the product description (list page does); only name, price and button are shown, and the console logs 'This component failed to render!' on each detail page.",
+      "confidence": 0.85,
+      "repro": [
+        "Sign in as customer",
+        "Open /inventory-item.html?id=4",
+        "Compare with list: the description paragraph is missing"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "detail0.png"
+        }
+      ]
+    },
+    {
+      "id": "f6",
+      "where": {
+        "route": "/checkout-step-two.html",
+        "role": "customer",
+        "selector": "[data-test=\"finish\"]"
+      },
+      "category": "functional",
+      "description": "Finish on the checkout overview does nothing: the user stays on the overview, no confirmation page, cart is not emptied. Console shows a JS error 'cesetRart is not a function'.",
+      "confidence": 0.9,
+      "repro": [
+        "Sign in as customer, add Backpack and Onesie",
+        "Cart > Checkout, fill First Name, Last Name, Zip, Continue",
+        "Click Finish: page stays at /checkout-step-two.html and badge remains"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "co2.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Untested: responsive layout, accessibility audit in depth.",
+  "cost": {
+    "model_usd": 0.090919,
+    "notes": "estimate from 104505 total tokens (85% cache read / 10% input / 5% output); range $0.0209-$0.2508"
+  },
+  "wall_time_s": 526.8
+}

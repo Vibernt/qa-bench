@@ -1,0 +1,153 @@
+{
+  "episode_id": "regression-007",
+  "system": {
+    "name": "claude-haiku-5.5-low",
+    "version": "claude-haiku-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"product-sort-container\"]"
+      },
+      "category": "functional",
+      "description": "The sort control does not re-order the product list. Choosing Name (Z to A), Price (low to high) or Price (high to low) leaves the list in A-Z order and the dropdown snaps back to Name (A to Z).",
+      "confidence": 0.9,
+      "repro": [
+        "Sign in as customer-9291",
+        "Open the sort dropdown and choose Name (Z to A)",
+        "Observe the list is still A to Z and the dropdown shows Name (A to Z)",
+        "Choose Price (high to low) and observe prices are still in the original order"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "inventory.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"add-to-cart-sauce-labs-bolt-t-shirt\"]"
+      },
+      "category": "functional",
+      "description": "Add to cart fails for Sauce Labs Bolt T-Shirt, Sauce Labs Fleece Jacket and Test.allTheThings() T-Shirt (Red). The button stays Add to cart, the cart badge does not change, and the page logs 'Failed to add item to the cart.' Backpack, Bike Light and Onesie add correctly.",
+      "confidence": 0.9,
+      "repro": [
+        "Sign in as customer-9291 with an empty cart",
+        "Choose Add to cart on Sauce Labs Bolt T-Shirt",
+        "Observe the button stays Add to cart, no badge appears, and the error 'Failed to add item to the cart.' is raised",
+        "Repeat for Fleece Jacket and Test.allTheThings() T-Shirt (Red)"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "list_after_remove.png"
+        }
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"remove-sauce-labs-backpack\"]"
+      },
+      "category": "functional",
+      "description": "Remove on the product list does not remove the item. The button stays Remove, the cart badge does not decrease, the item stays in the cart, and the page raises 'Failed to remove item from cart.'",
+      "confidence": 0.9,
+      "repro": [
+        "Sign in as customer-9291 with an empty cart",
+        "Choose Add to cart on Sauce Labs Backpack, then Remove on it",
+        "Observe the button still reads Remove and the badge still counts 1",
+        "Open the cart and observe the Backpack is still listed"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "list_after_remove.png"
+        }
+      ]
+    },
+    {
+      "id": "f4",
+      "where": {
+        "route": "/inventory-item.html",
+        "role": "customer",
+        "selector": "[data-test=\"remove\"]"
+      },
+      "category": "functional",
+      "description": "On the product detail page, Remove does not remove the item from the cart. The button stays Remove and the badge does not change after clicking it.",
+      "confidence": 0.85,
+      "repro": [
+        "Sign in as customer-9291",
+        "Open Sauce Labs Bike Light from the list",
+        "Choose Add to cart, then Remove",
+        "Observe the button still reads Remove and the cart badge still counts 1"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "detail_bikelight.png"
+        }
+      ]
+    },
+    {
+      "id": "f5",
+      "where": {
+        "route": "/inventory-item.html",
+        "role": "customer",
+        "selector": "[data-test=\"inventory-item-name\"]"
+      },
+      "category": "consistency",
+      "description": "The product detail page shows no description. The list shows a description for every product, but the detail page has no description element at all, so it does not match the list as the brief requires.",
+      "confidence": 0.85,
+      "repro": [
+        "Sign in as customer-9291 on /inventory.html",
+        "Choose Sauce Labs Backpack's name",
+        "Observe name, price and image are shown but no description appears, while the list shows one"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "detail.png"
+        }
+      ]
+    },
+    {
+      "id": "f6",
+      "where": {
+        "route": "/checkout-step-two.html",
+        "role": "customer",
+        "selector": "[data-test=\"finish\"]"
+      },
+      "category": "functional",
+      "description": "Finish does not complete the order. The page stays on Checkout: Overview with no confirmation, the cart still holds its items (badge still counts 2), and the page raises 'Cannot read properties of undefined (reading 'value')'.",
+      "confidence": 0.9,
+      "repro": [
+        "Sign in as customer-9291 and add Sauce Labs Backpack and Sauce Labs Onesie",
+        "Open the cart and choose Checkout",
+        "Fill First Name, Last Name and Zip/Postal Code and choose Continue",
+        "Choose Finish",
+        "Observe the URL stays on /checkout-step-two.html, no confirmation appears, and the cart badge still counts 2"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "after_finish.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Tested the sign-in, list layout, product detail navigation, sort, add/remove, cart contents, checkout totals (item total, 8% tax and total were correct on the overview), logout and route guards. Checkout Finish could not be reached past the overview, so the confirmation page and Back Home were not checked. Performance was not measured beyond one login load of about 0.65 s. Not tested: cart-page Continue Shopping after a removal, and the mobile layout.",
+  "cost": {
+    "model_usd": 0.003808,
+    "notes": "estimate from 87547 total tokens (85% cache read / 10% input / 5% output); range $0.0009-$0.0105"
+  },
+  "wall_time_s": 274.9
+}

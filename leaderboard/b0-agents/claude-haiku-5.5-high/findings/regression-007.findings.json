@@ -1,0 +1,128 @@
+{
+  "episode_id": "regression-007",
+  "system": {
+    "name": "claude-haiku-5.5-high",
+    "version": "claude-haiku-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"remove-sauce-labs-backpack\"]"
+      },
+      "category": "functional",
+      "description": "Clicking Remove on a product card in the product list fails with 'Failed to remove item from cart.' The item stays in the cart, the button stays Remove and the cart badge does not decrease. The same failure happens on the product detail page (Remove button there). Removing from the cart page works, so the fault is in the list and detail controls only.",
+      "confidence": 0.9,
+      "repro": [
+        "Sign in as customer-9291",
+        "Click Add to cart on Sauce Labs Backpack (badge becomes 1)",
+        "Click Remove on Sauce Labs Backpack",
+        "Observe: error 'Failed to remove item from cart.', button still says Remove, badge still 1"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "evidence/f1-remove-fails.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"add-to-cart-sauce-labs-fleece-jacket\"]"
+      },
+      "category": "functional",
+      "description": "Add to cart fails for Sauce Labs Bolt T-Shirt, Sauce Labs Fleece Jacket and Test.allTheThings() T-Shirt (Red): 'Failed to add item to the cart.' is raised, the button stays Add to cart and the badge does not change. Other products add normally.",
+      "confidence": 0.9,
+      "repro": [
+        "Sign in as customer-9291",
+        "Click Add to cart on Sauce Labs Fleece Jacket",
+        "Observe: error 'Failed to add item to the cart.', button still says Add to cart, badge unchanged"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "evidence/f2-add-fleece-fails.png"
+        }
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"product-sort-container\"]"
+      },
+      "category": "functional",
+      "description": "The sort control does not re-order the product list. Choosing Name (Z to A), Price (low to high) or Price (high to low) leaves the list in Name (A to Z) order, and the dropdown snaps back to Name (A to Z) after the choice.",
+      "confidence": 0.9,
+      "repro": [
+        "Sign in as customer-9291",
+        "Choose Price (high to low) in the sort dropdown",
+        "Observe: list order is unchanged (Backpack, Bike Light, Bolt, Fleece, Onesie, Test.allTheThings) and the dropdown shows Name (A to Z)"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "evidence/sort-hilo.png"
+        }
+      ]
+    },
+    {
+      "id": "f4",
+      "where": {
+        "route": "/inventory-item.html",
+        "role": "customer",
+        "selector": "[data-test=\"inventory-item\"]"
+      },
+      "category": "copy",
+      "description": "The product detail page does not show the product description. The list shows a description for each product, but the detail page has no description text for any of the six products.",
+      "confidence": 0.85,
+      "repro": [
+        "Sign in as customer-9291",
+        "Choose the name Sauce Labs Backpack on the product list",
+        "Observe: name, price and image are shown but no description text appears under the price"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "evidence/f4-detail-no-desc.png"
+        }
+      ]
+    },
+    {
+      "id": "f5",
+      "where": {
+        "route": "/checkout-step-two.html",
+        "role": "customer",
+        "selector": "[data-test=\"finish\"]"
+      },
+      "category": "functional",
+      "description": "Choosing Finish on the checkout overview does nothing: the page stays on /checkout-step-two.html, the cart is not emptied and the order is not completed. A page error 'Ra.cesetRart is not a function' is raised. This happens with one item and with two items in the cart.",
+      "confidence": 0.9,
+      "repro": [
+        "Sign in as customer-9291",
+        "Add Sauce Labs Backpack to the cart and open the cart",
+        "Choose Checkout, fill First Name, Last Name and Zip/Postal Code, choose Continue",
+        "Choose Finish",
+        "Observe: still on /checkout-step-two.html, no confirmation, cart still contains the item"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "evidence/finish-state.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Tested in a Playwright browser. Login, logout, redirect guard, bad-password error, cart-page remove, Continue Shopping and checkout totals (item total, 8% tax, total) were correct; the /checkout-complete.html page renders when loaded directly. Initial blank product photos were a screenshot timing artifact; the images load on re-check and were not reported. Not tested: performance under load and deeper accessibility checks beyond spot checks.",
+  "cost": {
+    "model_usd": 0.004809,
+    "notes": "estimate from 110558 total tokens (85% cache read / 10% input / 5% output); range $0.0011-$0.0133"
+  },
+  "wall_time_s": 334.5
+}

@@ -1,0 +1,37 @@
+{
+  "episode_id": "regression-003",
+  "system": {
+    "name": "claude-sonnet-5.5-high",
+    "version": "claude-sonnet-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses/1/edit",
+        "role": "viewer"
+      },
+      "category": "permission",
+      "description": "A viewer who opens /expenses/<id>/edit directly gets the full edit form (HTTP 200) and can submit it: POST /expenses/<id> returns 303 to /expenses?flash=updated and the amount really changes in the list and total. Add, delete and POST /expenses are correctly refused with 403, but editing is not.",
+      "confidence": 0.95,
+      "repro": [
+        "Sign in as viewer-eb09",
+        "Open /expenses/3/edit directly",
+        "Change the amount to 21.00 and click Save",
+        "Observe 'Expense updated' and the Notebooks row and total change"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "viewer-edit-done.png"
+        }
+      ]
+    }
+  ],
+  "notes": "List total, category filter, add (flash, one new row, persists on reload), edit (list and total update immediately), and server validation of bad amount/title/category all behaved correctly. Not tested: delete as editor, long-title layout, concurrency.",
+  "cost": {
+    "model_usd": 0.063613,
+    "notes": "estimate from 73118 total tokens (85% cache read / 10% input / 5% output); range $0.0146-$0.1755"
+  },
+  "wall_time_s": 55
+}

@@ -1,0 +1,60 @@
+{
+  "episode_id": "regression-001",
+  "system": {
+    "name": "claude-haiku-5.5-high",
+    "version": "claude-haiku-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "table[aria-label=\"Expenses\"]"
+      },
+      "category": "error-handling",
+      "description": "An expense saved with a 14-digit amount (99999999999999) is accepted, but afterwards the expense list (unfiltered and any category filter that includes it) and that expense's edit page return HTTP 500 'Server error', so the whole list is unusable until the row is removed. Amounts of 12 digits (1000000000000) render fine.",
+      "confidence": 0.85,
+      "repro": [
+        "Sign in as editor-6308 and open /expenses/new",
+        "Enter any title, pick category office, enter amount 99999999999999, click Save",
+        "Observe the save succeeds (redirect to /expenses?flash=saved), but /expenses now returns 500 'Server error'",
+        "Observe /expenses?category=office and /expenses/<new id>/edit also return 500"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "f1-list-500.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "input[name=\"title\"]"
+      },
+      "category": "error-handling",
+      "description": "A title of only spaces passes the browser's required check, the server rejects it with HTTP 400, and the page re-renders the Add expense form blank with no error message. The URL changes to /expenses and the title and amount the user typed are lost.",
+      "confidence": 0.6,
+      "repro": [
+        "Sign in as editor-6308 and open /expenses/new",
+        "Enter three spaces as the title and 4 as the amount, then click Save",
+        "Observe the form comes back empty, with no message explaining the rejection, and the URL is now /expenses"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "f2-whitespace-title.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Tested all five journeys. List, total, category filter, add (success message, one new row, persists after reload), edit (list and total update at once, persists after reload), viewer controls and viewer direct-write requests (all 403, no data change) all behaved correctly. Probe rows and the edited amount were restored afterwards; the list total is back to $399.99. Not tested: the delete action, accessibility beyond a quick look, and concurrent edits.",
+  "cost": {
+    "model_usd": 0.004239,
+    "notes": "estimate from 97444 total tokens (85% cache read / 10% input / 5% output); range $0.0010-$0.0117"
+  },
+  "wall_time_s": 232.8
+}

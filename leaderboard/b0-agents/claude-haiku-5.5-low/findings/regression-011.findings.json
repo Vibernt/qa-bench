@@ -1,0 +1,104 @@
+{
+  "episode_id": "regression-011",
+  "system": {
+    "name": "claude-haiku-5.5-low",
+    "version": "claude-haiku-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"inventory-item-price\"]"
+      },
+      "category": "functional",
+      "description": "Product prices on the product list change on every page load (e.g. Backpack showed $61.29, then $80.13 on reload), so the list shows different prices for the same products each time it is opened.",
+      "confidence": 0.9,
+      "repro": [
+        "Sign in as customer-286a",
+        "Note the prices on /inventory.html",
+        "Reload /inventory.html",
+        "Compare the prices: they differ for every product"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "evidence/list-added.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"inventory-item-price\"]"
+      },
+      "category": "consistency",
+      "description": "The price shown for a product on the product list does not match its detail page or the cart. For example, Sauce Labs Onesie is $98.54 on the list but $7.99 on its detail page and in the cart; Sauce Labs Backpack is $29.99 on its detail page but a different value on the list.",
+      "confidence": 0.9,
+      "repro": [
+        "Sign in as customer-286a",
+        "Note the Sauce Labs Onesie price on /inventory.html",
+        "Open the Onesie detail page and note its price",
+        "Add the Onesie to the cart and open /cart.html",
+        "Compare the three prices"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "evidence/cart.png"
+        }
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"add-to-cart-test.allthethings()-t-shirt-(red)\"]"
+      },
+      "category": "visual",
+      "description": "On the Test.allTheThings() T-Shirt (Red) card, the Add to cart button overflows the right edge of its card and sits outside the card border, unlike the other cards.",
+      "confidence": 0.7,
+      "repro": [
+        "Sign in as customer-286a",
+        "Look at the Test.allTheThings() T-Shirt (Red) card in the bottom-right of the product grid"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "evidence/list-added.png"
+        }
+      ]
+    },
+    {
+      "id": "f4",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"inventory-item-name\"]"
+      },
+      "category": "visual",
+      "description": "Product names on the Sauce Labs Bolt T-Shirt and Sauce Labs Fleece Jacket cards are indented to the right, while the other cards' names are left-aligned with the description, so the card layout is inconsistent.",
+      "confidence": 0.4,
+      "repro": [
+        "Sign in as customer-286a",
+        "Compare the name position on the Bolt T-Shirt and Fleece Jacket cards with the Backpack card"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "evidence/list-added.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Tested the login, browse, detail, add/remove (list and detail), sort, cart, checkout (totals: tax 8% correct on the one-item checkout), confirmation, and logout journeys with Playwright. Sort orders were correct. No console errors or HTTP errors were seen. The checkout totals were checked on a single item only. The brief's out path (/bench/out) was not used because the prompt specified the workspace path.",
+  "cost": {
+    "model_usd": 0.003522,
+    "notes": "estimate from 80965 total tokens (85% cache read / 10% input / 5% output); range $0.0008-$0.0097"
+  },
+  "wall_time_s": 186
+}

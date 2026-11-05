@@ -1,0 +1,14 @@
+{
+  "episode_id": "noise-002",
+  "system": {
+    "name": "claude-sonnet-5.5-high",
+    "version": "claude-sonnet-5-5@high"
+  },
+  "findings": [],
+  "notes": "Probed all 27 brief pages (status, console errors, timing) and exercised checkboxes, add/remove, dropdown, inputs, dynamic controls/loading, login/logout/secure access, tables sorting, status codes, alerts, hovers, key presses, context menu, notification flow, shadow DOM, floating menu, infinite scroll, entry ad, 404. Everything behaved like the stock the-internet practice site; the only anomalies (broken images, javascript_error page error, random typo, external-host resource unreachable from sandbox) are the documented deliberate behaviours of those pages, so not reported.",
+  "cost": {
+    "model_usd": 0.066777,
+    "notes": "estimate from 76755 total tokens (85% cache read / 10% input / 5% output); range $0.0154-$0.1842"
+  },
+  "wall_time_s": 157.2
+}

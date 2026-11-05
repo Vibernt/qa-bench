@@ -1,0 +1,205 @@
+{
+  "episode_id": "regression-011",
+  "system": {
+    "name": "claude-haiku-5.5-high",
+    "version": "claude-haiku-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"inventory-item-price\"]"
+      },
+      "category": "functional",
+      "description": "Product list prices are re-randomised on every page load and every sort change (e.g. Backpack showed $92.38, then $62.74, $38.58, $15.28). Because the sort uses the real prices, the displayed prices appear out of order under Price low to high / high to low.",
+      "confidence": 0.9,
+      "repro": [
+        "Sign in as customer-286a",
+        "Note the price shown for Sauce Labs Backpack on /inventory.html",
+        "Reload /inventory.html several times: the price changes each time",
+        "Choose Price low to high: displayed prices are not ascending"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "evidence/inventory.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"inventory-item-price\"]"
+      },
+      "category": "consistency",
+      "description": "Prices on the product list do not match the product detail page or the cart. Detail and cart show Sauce Labs Backpack $29.99, Bike Light $9.99, Bolt T-Shirt $15.99, Onesie $7.99, Fleece Jacket $49.99, Test.allTheThings() T-Shirt $15.99, while the list shows random values.",
+      "confidence": 0.85,
+      "repro": [
+        "Sign in as customer-286a",
+        "Read the price of Sauce Labs Backpack on the list",
+        "Open the item by its name",
+        "Detail page shows $29.99 instead"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "evidence/detail4.png"
+        }
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"shopping-cart-link\"]"
+      },
+      "category": "visual",
+      "description": "The cart icon is not inside the header bar. It sits about 39 to 81 px from the top, straddling the header's bottom border (header is 57 px tall), and the same offset appears on the product detail page.",
+      "confidence": 0.6,
+      "repro": [
+        "Sign in as customer-286a",
+        "Look at the top-right of the header on /inventory.html",
+        "The cart icon hangs below the header line, over the sub-header"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "evidence/inventory.png"
+        }
+      ]
+    },
+    {
+      "id": "f4",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"add-to-cart-test.allthethings()-t-shirt-(red)\"]"
+      },
+      "category": "visual",
+      "description": "The Add to cart button of the Test.allTheThings() T-Shirt (Red) card overflows the card's right edge (button right edge about x=1189, card right edge about x=1170). The other cards' buttons sit inside their cards.",
+      "confidence": 0.65,
+      "repro": [
+        "Sign in as customer-286a",
+        "Look at the bottom-right card on /inventory.html",
+        "Its Add to cart button extends past the card border"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "evidence/inventory.png"
+        }
+      ]
+    },
+    {
+      "id": "f5",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"inventory-item-name\"]"
+      },
+      "category": "visual",
+      "description": "The names of Sauce Labs Bolt T-Shirt and Sauce Labs Fleece Jacket are right-aligned (text-align: right) while the other product names are left-aligned, so these two titles are visibly indented out of line with the rest of the grid.",
+      "confidence": 0.6,
+      "repro": [
+        "Sign in as customer-286a",
+        "Compare the product names on /inventory.html",
+        "Bolt T-Shirt and Fleece Jacket start about 20 px further right than the rest"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "evidence/inventory.png"
+        }
+      ]
+    },
+    {
+      "id": "f6",
+      "where": {
+        "route": "/cart.html",
+        "role": "customer",
+        "selector": "[data-test=\"checkout\"]"
+      },
+      "category": "visual",
+      "description": "On the cart page the Checkout button is pinned to the top-right corner, inside the header bar, flush with the screen edge, instead of sitting with Continue Shopping below the item list.",
+      "confidence": 0.75,
+      "repro": [
+        "Sign in as customer-286a and add two products",
+        "Open the cart from the cart icon",
+        "The green Checkout button sits in the header bar at top right, not below the items"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "evidence/cart2.png"
+        }
+      ]
+    },
+    {
+      "id": "f7",
+      "where": {
+        "route": "/",
+        "role": "customer"
+      },
+      "category": "visual",
+      "description": "The error banner on the login page does not contain its longer message. The text 'Epic sadface: You can only access /checkout-step-one.html when you are logged in.' runs to four lines in a fixed 60 px red box, so the last line spills out as white text on the white card and is cut off under the Login button.",
+      "confidence": 0.35,
+      "repro": [
+        "Sign out, or open /inventory.html while signed out",
+        "Get redirected to the login page with the error banner",
+        "The banner's last line is cut off and partly hidden under the Login button"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "evidence/login-after-logout.png"
+        }
+      ]
+    },
+    {
+      "id": "f8",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"shopping-cart-link\"]"
+      },
+      "category": "a11y",
+      "description": "The cart link's accessible name is built with a plural error: it reads 'Cart, 1 items' after one product is added (it should read 'Cart, 1 item').",
+      "confidence": 0.4,
+      "repro": [
+        "Sign in as customer-286a",
+        "Choose Add to cart on one product",
+        "Inspect the cart link's aria-label: it is 'Cart, 1 items'"
+      ]
+    },
+    {
+      "id": "f9",
+      "where": {
+        "route": "/nope.html"
+      },
+      "category": "error-handling",
+      "description": "An unknown URL such as /nope.html returns HTTP 200 and renders a blank page with no not-found message or link back to the app.",
+      "confidence": 0.3,
+      "repro": [
+        "Open http://127.0.0.1:32783/nope.html",
+        "Wait a few seconds: the page is blank and the status is 200"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "evidence/unknown-route.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Covered sign-in, list, sort, detail, add/remove, cart, checkout totals (8% tax verified), logout and protected-route redirects, mobile width. Prices in the list are unstable (f1, f2), so price checks against the list were only meaningful as instability reports. Not tested: visual comparison beyond screenshots, and the reset-app-state and menu links.",
+  "cost": {
+    "model_usd": 0.004732,
+    "notes": "estimate from 108777 total tokens (85% cache read / 10% input / 5% output); range $0.0011-$0.0131"
+  },
+  "wall_time_s": 232.7
+}

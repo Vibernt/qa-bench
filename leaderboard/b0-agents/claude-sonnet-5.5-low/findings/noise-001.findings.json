@@ -1,0 +1,14 @@
+{
+  "episode_id": "noise-001",
+  "system": {
+    "name": "claude-sonnet-5.5-low",
+    "version": "claude-sonnet-5-5@low"
+  },
+  "findings": [],
+  "notes": "All pages load; observed behaviours match the standard the-internet demo quirks, so nothing reported.",
+  "cost": {
+    "model_usd": 0.055717,
+    "notes": "estimate from 64043 total tokens (85% cache read / 10% input / 5% output); range $0.0128-$0.1537"
+  },
+  "wall_time_s": 29.1
+}

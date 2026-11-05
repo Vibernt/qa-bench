@@ -1,25 +1,28 @@
 # QA Bench report: playwright-suite 0.1.0 (bench 0.1.0-b0)
 
 - Run: `b0-playwright-regression`
-- Generated: 2026-11-05T03:54:53.036Z
+- Generated: 2026-11-05T05:12:27.503Z
 - Tracks: regression
 - Seeds: regression=20261105
 - Upstreams: expense-app, swag-labs
-- Matcher: deterministic-1
+- Matcher: deterministic-2
 
 ## Headline
 
 | Metric | Value |
 |---|---|
 | Recall | 100.0% (12/12 defects) |
+| Severity-weighted recall | 100.0% (50/50 weight; critical 5, major 3, minor 1) |
 | Precision | 78.0% |
 | F1 | 87.6% |
+| Severity-weighted F1 | 87.6% |
 | False alarms per 100 episodes | 41.2 |
 | Unmatched findings per episode | 0.00 |
 | Mean time to first detection | 2.7 s |
 | Cost | $0.00 (per defect found: $0.00) |
 | Human hours | — |
 | Wall time | 306.3 s |
+| Severity agreement | — (no finding stated a severity) |
 | Episodes scored | 17/17 |
 
 ## By track
@@ -104,7 +107,7 @@ _No findings._
 
 <details><summary>regression-004: 1 finding(s), status scored</summary>
 
-- `pw-001-expense-add-control-label` **false_alarm_change** → `expense.relabel` [copy]: flags deliberate change expense.relabel: matches expense.relabel[0]: route, role, category; locators not comparable
+- `pw-001-expense-add-control-label` **false_alarm_change** → `expense.relabel` [copy]: flags deliberate change expense.relabel: matches expense.relabel[3]: route, role, category and selector
 
 </details>
 
@@ -159,7 +162,7 @@ _No findings._
 
 <details><summary>regression-010: 2 finding(s), status scored</summary>
 
-- `pw-001-expense-add-control-label` **false_alarm_change** → `expense.relabel` [copy]: flags deliberate change expense.relabel: matches expense.relabel[0]: route, role, category; locators not comparable
+- `pw-001-expense-add-control-label` **false_alarm_change** → `expense.relabel` [copy]: flags deliberate change expense.relabel: matches expense.relabel[3]: route, role, category and selector
 - `pw-002-expense-add-one-row` **true_positive** → `expense.duplicate-write` [functional]: first finding to hit defect expense.duplicate-write: matches expense.duplicate-write[0]: route, role, category; locators not comparable
 
 </details>
@@ -195,7 +198,7 @@ _No findings._
 
 <details><summary>regression-014: 3 finding(s), status scored</summary>
 
-- `pw-001-expense-add-control-label` **false_alarm_change** → `expense.relabel` [copy]: flags deliberate change expense.relabel: matches expense.relabel[0]: route, role, category; locators not comparable
+- `pw-001-expense-add-control-label` **false_alarm_change** → `expense.relabel` [copy]: flags deliberate change expense.relabel: matches expense.relabel[3]: route, role, category and selector
 - `pw-002-expense-add-shows-now` **true_positive** → `expense.stale-state` [consistency]: first finding to hit defect expense.stale-state: matches expense.stale-state[0]: route, role, category; locators not comparable
 - `pw-003-expense-edit-shows-now` **duplicate** → `expense.stale-state` [consistency]: defect expense.stale-state already found by pw-002-expense-add-shows-now: matches expense.stale-state[0]: route, role, category; locators not comparable
 

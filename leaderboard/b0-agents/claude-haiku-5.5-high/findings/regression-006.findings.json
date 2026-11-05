@@ -1,0 +1,61 @@
+{
+  "episode_id": "regression-006",
+  "system": {
+    "name": "claude-haiku-5.5-high",
+    "version": "claude-haiku-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "viewer",
+        "selector": "[data-testid=\"total\"]"
+      },
+      "category": "functional",
+      "description": "The expense total leaves out the last listed row. With no filter the Amount column sums to $399.99 but the total reads $306.74 (the $93.25 Project dinner row is left out). The same happens under each category filter (travel $61.25 vs 185.25, meals $84.00 vs 177.25, office $12.99 vs 37.49). Adding a row or editing an amount confirms it: the total always drops the final row. Editor sees the same wrong total.",
+      "confidence": 0.9,
+      "repro": [
+        "Sign in as viewer-788e and open /expenses with All categories",
+        "Sum the Amount column: 42.50+68.40+12.99+18.75+15.60+24.50+124.00+93.25 = 399.99",
+        "Read the Total line: it shows $306.74",
+        "Filter by category travel: rows 42.50, 18.75, 124.00 sum to 185.25 but the total shows $61.25",
+        "As editor-c09a, add 'QA probe add 4417' at 12.34: the rows sum to 412.33 but the total shows 399.99"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "f1.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "form[action=\"/expenses\"]"
+      },
+      "category": "error-handling",
+      "description": "When the server rejects an add (400 for a negative amount, an empty title, or an unknown category) it re-renders the blank Add expense form with no error message and no retained input. The user gets no feedback about what went wrong. This is reachable only by bypassing the browser's required and min validation.",
+      "confidence": 0.4,
+      "repro": [
+        "Sign in as editor-c09a and open /expenses/new",
+        "Disable HTML5 validation on the form, enter title 'neg probe' and amount -5, then Save",
+        "The server returns 400 and shows an empty Add expense form with no error text; the entered values are lost"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "f2.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Tested: viewer list and total, category filter (travel, meals, office, all), editor add (success flash, one new row, persists after reload), editor edit (amount change reflected in list and total after save and reload), viewer controls (no edit, add or delete controls; direct GET /expenses/new and /expenses/2/edit, POST /expenses, POST /expenses/2 and POST /expenses/2/delete all return 403 with no change), anonymous access redirects to /login, bad login shows 'Invalid credentials', error pages for unknown IDs return 404, and load time is about 10 ms. The test data change (added 'QA probe add 4417' at 12.34) was left in place. Team lunch was restored to 68.40. Not tested: delete as editor (not in the brief's journeys), and browser-level accessibility audit beyond basic label and table checks.",
+  "cost": {
+    "model_usd": 0.003842,
+    "notes": "estimate from 88312 total tokens (85% cache read / 10% input / 5% output); range $0.0009-$0.0106"
+  },
+  "wall_time_s": 119.7
+}

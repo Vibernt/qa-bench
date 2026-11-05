@@ -1,0 +1,104 @@
+{
+  "episodes": {
+    "regression-001": {
+      "audit": {
+        "sealed_path_hits": 0,
+        "checked": "9 tool inputs in the agent transcript"
+      },
+      "served_model": "claude-sonnet-5-5",
+      "total_tokens": 68015,
+      "tool_uses": 9,
+      "duration_s": 52.5
+    },
+    "regression-003": {
+      "audit": {
+        "sealed_path_hits": 0,
+        "checked": "7 tool inputs in the agent transcript"
+      },
+      "served_model": "claude-sonnet-5-5",
+      "total_tokens": 66621,
+      "tool_uses": 7,
+      "duration_s": 53.3
+    },
+    "regression-006": {
+      "audit": {
+        "sealed_path_hits": 0,
+        "checked": "7 tool inputs in the agent transcript"
+      },
+      "served_model": "claude-sonnet-5-5",
+      "total_tokens": 66528,
+      "tool_uses": 7,
+      "duration_s": 47.8
+    },
+    "regression-007": {
+      "audit": {
+        "sealed_path_hits": 0,
+        "checked": "9 tool inputs in the agent transcript"
+      },
+      "served_model": "claude-sonnet-5-5",
+      "total_tokens": 69799,
+      "tool_uses": 9,
+      "duration_s": 87.3
+    },
+    "regression-009": {
+      "audit": {
+        "sealed_path_hits": 0,
+        "checked": "9 tool inputs in the agent transcript"
+      },
+      "served_model": "claude-sonnet-5-5",
+      "total_tokens": 72980,
+      "tool_uses": 9,
+      "duration_s": 170.3
+    },
+    "regression-011": {
+      "audit": {
+        "sealed_path_hits": 0,
+        "checked": "7 tool inputs in the agent transcript"
+      },
+      "served_model": "claude-sonnet-5-5",
+      "total_tokens": 69719,
+      "tool_uses": 7,
+      "duration_s": 46.5
+    },
+    "regression-014": {
+      "audit": {
+        "sealed_path_hits": 0,
+        "checked": "13 tool inputs in the agent transcript"
+      },
+      "served_model": "claude-sonnet-5-5",
+      "total_tokens": 70205,
+      "tool_uses": 13,
+      "duration_s": 97.2
+    },
+    "regression-016": {
+      "audit": {
+        "sealed_path_hits": 0,
+        "checked": "7 tool inputs in the agent transcript"
+      },
+      "served_model": "claude-sonnet-5-5",
+      "total_tokens": 66750,
+      "tool_uses": 7,
+      "duration_s": 62.4
+    },
+    "noise-001": {
+      "audit": {
+        "sealed_path_hits": 0,
+        "checked": "4 tool inputs in the agent transcript"
+      },
+      "served_model": "claude-sonnet-5-5",
+      "total_tokens": 64043,
+      "tool_uses": 4,
+      "duration_s": 29.1
+    },
+    "noise-002": {
+      "audit": {
+        "sealed_path_hits": 0,
+        "checked": "5 tool inputs in the agent transcript"
+      },
+      "served_model": "claude-sonnet-5-5",
+      "total_tokens": 64347,
+      "tool_uses": 5,
+      "duration_s": 31.3
+    }
+  }
+}
