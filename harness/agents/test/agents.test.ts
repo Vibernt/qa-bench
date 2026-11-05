@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import type { Brief } from '../../../lib/contracts.ts';
 import { check } from '../../../lib/schemas.ts';
-import { AGENTS_ROOT, EXPLORATORY_NOTE, HARNESS_VERSION, briefSummary, estimateCost, loadConfigs, loadSet, modeNote, renderPrompt, sanitiseFindings } from '../src/index.ts';
+import { AGENTS_ROOT, EXPLORATORY_NOTE, HARNESS_VERSION, briefSummary, estimateCost, evidencePath, loadConfigs, loadSet, modeNote, renderPrompt, sanitiseFindings } from '../src/index.ts';
 
 const brief: Brief = {
   episode_id: 'regression-003', bench_version: '0.1.0-b0', app: 'expense-app', track: 'regression', mode: 'regression',
@@ -84,6 +84,14 @@ describe('sanitiseFindings', () => {
     expect(file.findings[0]).toMatchObject({ id: 'a', where: { route: '/expenses', role: 'viewer' }, category: 'consistency', description: 'Total wrong', confidence: 1 });
     expect(file.findings[1]?.where.route).toBe('*');
     expect(check('findings', file)).toEqual([]);
+  });
+  it('makes evidence paths relative to the evidence directory', () => {
+    expect(evidencePath('/tmp/qa-bench-agents/s/regression-003/evidence/f1.png')).toBe('f1.png');
+    expect(evidencePath('evidence/sub/f2.png')).toBe('sub/f2.png');
+    expect(evidencePath('./f3.png')).toBe('f3.png');
+    expect(evidencePath('/somewhere/else/f4.png')).toBe('f4.png');
+    const { file } = sanitiseFindings({ findings: [{ id: 'a', where: { route: '/' }, category: 'functional', description: 'x', evidence: [{ kind: 'screenshot', path: '/w/ep/evidence/a.png' }] }] }, 'regression-003', sys);
+    expect(file.findings[0]?.evidence).toEqual([{ kind: 'screenshot', path: 'a.png' }]);
   });
   it('turns garbage into a valid empty file', () => {
     const { file } = sanitiseFindings('nope', 'noise-001', sys);

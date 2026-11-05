@@ -151,6 +151,15 @@ export async function prepareSession(configId: string, setId: string, opts: Prep
 }
 
 /** Bring an agent's findings file into the schema: drop unknown fields and unrepairable findings. Pure. */
+/** Evidence paths are relative to the evidence directory (schema); agents often give absolute workspace paths. */
+export function evidencePath(p: string): string {
+  const s = p.replace(/\\/g, '/');
+  const i = s.lastIndexOf('/evidence/');
+  if (i >= 0) return s.slice(i + '/evidence/'.length);
+  if (s.startsWith('evidence/')) return s.slice('evidence/'.length);
+  return s.startsWith('/') ? s.slice(s.lastIndexOf('/') + 1) : s.replace(/^\.\//, '');
+}
+
 export function sanitiseFindings(raw: unknown, episodeId: string, system: { name: string; version: string }): { file: FindingsFile; dropped: number; repaired: number } {
   const src = (raw && typeof raw === 'object' ? raw : {}) as Record<string, unknown>;
   const list = Array.isArray(src.findings) ? src.findings : [];
@@ -187,7 +196,7 @@ export function sanitiseFindings(raw: unknown, episodeId: string, system: { name
         const kinds = ['screenshot', 'network', 'dom', 'console', 'text', 'timing', 'trace', 'other'];
         const kind = typeof o.kind === 'string' && kinds.includes(o.kind) ? o.kind : 'other';
         const item: NonNullable<Finding['evidence']>[number] = { kind: kind as never };
-        if (typeof o.path === 'string') item.path = o.path;
+        if (typeof o.path === 'string' && o.path) item.path = evidencePath(o.path);
         if (typeof o.excerpt === 'string') item.excerpt = o.excerpt.slice(0, 2000);
         if (typeof o.note === 'string') item.note = o.note;
         return [item];
