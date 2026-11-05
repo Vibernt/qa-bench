@@ -1,0 +1,28 @@
+id: internet.welcome-heading
+app: the-internet
+title: "Home page heading reworded (deliberate)"
+description: >-
+  QA_BENCH_CHANGES=welcome-heading rewrites the home page heading "Welcome to the-internet" to "Welcome to The Internet
+  practice site" at run time (bench/qa_bench_changes.rb; upstream files are not edited). Reporting it is a false alarm.
+track: noise
+kind: change
+category: copy
+class: judged
+severity: minor
+where: { route: / }
+switch:
+  env: { QA_BENCH_CHANGES: welcome-heading }
+found_by:
+  - kind: text
+    selector: "h1.heading"
+    note: "Reports the reworded heading as wrong copy"
+  - kind: element
+    category: functional
+    selector: "h1.heading"
+    note: "Reports the 'Welcome to the-internet' heading as missing"
+  - kind: visual
+    category: visual
+    selector: "h1.heading"
+    note: "Reports the longer heading as a visual change"
+split: public
+upstream_ref: "apps/the-internet/bench/qa_bench_changes.rb (REWRITES['welcome-heading']); checked by apps/the-internet/verify.ts"

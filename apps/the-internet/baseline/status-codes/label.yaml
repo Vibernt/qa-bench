@@ -1,0 +1,19 @@
+id: internet.status-codes
+app: the-internet
+title: "Status Codes demo: /status_codes/<code> answers with that code by design"
+description: "/status_codes links to /status_codes/200, 301, 404 and 500, each of which answers with that status on purpose (the page body explains it)."
+track: noise
+kind: baseline
+category: error-handling
+class: deterministic
+severity: minor
+where: { route: /status_codes/ }
+found_by:
+  - kind: status
+    note: "A /status_codes/<code> page answers 404 or 500"
+  - kind: status
+    category: functional
+    note: "Following a status-code link leads to an error page"
+tolerance: { route: prefix }
+split: public
+upstream_ref: "server.rb get '/status_codes/:status_code' (saucelabs/the-internet); checked by apps/the-internet/verify.ts"

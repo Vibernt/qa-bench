@@ -1,0 +1,18 @@
+id: internet.typos
+app: the-internet
+title: "Typos demo: \"won,t\" appears on some loads by design"
+description: "/typos randomly shows \"Sometimes you'll see a typo, other times you won,t.\" on about half of the loads."
+track: noise
+kind: baseline
+category: copy
+class: judged
+severity: minor
+where: { route: /typos }
+found_by:
+  - kind: text
+    note: "Typo \"won,t\" in the paragraph"
+  - kind: text
+    category: consistency
+    note: "Text differs between loads"
+split: public
+upstream_ref: "server.rb get '/typos' (saucelabs/the-internet); checked by apps/the-internet/verify.ts"

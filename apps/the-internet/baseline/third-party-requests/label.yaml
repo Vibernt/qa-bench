@@ -1,0 +1,23 @@
+id: internet.third-party-requests
+app: the-internet
+title: "Third-party requests fail without internet: Optimizely beacon on every page, Google CDN jQuery on Dynamic Controls"
+description: >-
+  Upstream's layout loads an Optimizely Classic snippet (public/js/vendor/298279967.js) that sends a beacon to
+  298279967.log.optimizely.com on every page; /dynamic_controls also loads jQuery from ajax.googleapis.com. Where those
+  hosts cannot be reached (as on an episode network) the browser logs "Failed to load resource". A quirk of the
+  unmutated app, not a planted fault.
+track: noise
+kind: baseline
+category: error-handling
+class: deterministic
+severity: minor
+where: { route: "*" }
+found_by:
+  - kind: network
+    note: "Request to 298279967.log.optimizely.com fails (net::ERR_NAME_NOT_RESOLVED or similar); console 'Failed to load resource'"
+  - kind: network
+    route: /dynamic_controls
+    category: functional
+    note: "jQuery from ajax.googleapis.com fails to load"
+split: public
+upstream_ref: "views/layout.erb (298279967.js), views/dynamic_controls.erb (saucelabs/the-internet); checked by apps/the-internet/verify.ts"

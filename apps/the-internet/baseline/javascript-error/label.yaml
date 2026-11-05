@@ -1,0 +1,18 @@
+id: internet.javascript-error
+app: the-internet
+title: "JavaScript onload error demo: TypeError on load by design"
+description: "/javascript_error throws \"Cannot read properties of undefined (reading 'xyz')\" from its onload handler on purpose."
+track: noise
+kind: baseline
+category: error-handling
+class: deterministic
+severity: minor
+where: { route: /javascript_error }
+found_by:
+  - kind: console
+    note: "Uncaught TypeError: Cannot read properties of undefined (reading 'xyz') on load"
+  - kind: console
+    category: functional
+    note: "Page script fails on load"
+split: public
+upstream_ref: "views/javascript_error.erb (saucelabs/the-internet); checked by apps/the-internet/verify.ts"

@@ -1,0 +1,21 @@
+id: internet.shifting-content
+app: the-internet
+title: "Shifting Content demo: elements move between loads by design"
+description: >-
+  /shifting_content/menu and /shifting_content/image move an element by 25 px on alternate loads (or at random with
+  ?mode=random), and /shifting_content/list shuffles its lines on every load. This simulates a layout bug on purpose.
+track: noise
+kind: baseline
+category: visual
+class: judged
+severity: minor
+where: { route: /shifting_content }
+found_by:
+  - kind: visual
+    note: "An element (menu item, image or text line) is shifted or in a different place from the last load"
+  - kind: visual
+    category: consistency
+    note: "Layout or order differs between loads"
+tolerance: { route: prefix }
+split: public
+upstream_ref: "server.rb shift_tracker and get '/shifting_content/*' (saucelabs/the-internet); checked by apps/the-internet/verify.ts"

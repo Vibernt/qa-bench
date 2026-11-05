@@ -1,0 +1,15 @@
+# the-internet (run only: the pinned upstream commit is fetched at build time). Stateless apart from /upload, which
+# writes inside the container, so a fresh container is a reset. No volumes, no published ports.
+services:
+  app:
+    image: qa-bench-app-the-internet:local
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      QA_BENCH_CHANGES: ${QA_BENCH_CHANGES:-}
+    healthcheck:
+      test: ["CMD", "ruby", "-rnet/http", "-e", "exit Net::HTTP.get_response(URI('http://127.0.0.1:5000/')).is_a?(Net::HTTPSuccess) ? 0 : 1"]
+      interval: 2s
+      timeout: 5s
+      retries: 30

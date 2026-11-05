@@ -1,0 +1,15 @@
+{
+  "app": "the-internet",
+  "repo": "https://github.com/saucelabs/the-internet",
+  "pin": { "commit": "412661999056d1cc302a920f8ec1b177eaa8ae3d", "ref": "main" },
+  "licence": "Apache-2.0",
+  "licence_checked": "2026-11-05",
+  "licence_file": "LICENSE",
+  "use": "run-only",
+  "tracks": ["noise"],
+  "changes_from_upstream": [
+    "None to upstream files. The image fetches the pinned commit at build time (Dockerfile) and runs upstream's config.ru inside our own Rack wrapper (bench/config.ru, bench/qa_bench_changes.rb, MIT), which applies the deliberate change 'welcome-heading' to responses when QA_BENCH_CHANGES asks for it.",
+    "The image drops upstream's spec/ and .github/ folders and installs gems without the test and e2e groups, as upstream's own Dockerfile does."
+  ],
+  "notes": "Canonical upstream is saucelabs/the-internet: tourdedave/the-internet (where docs/APPS.md points) was transferred to Sauce Labs and now redirects there; on 5 Nov 2026 both URLs served the same HEAD (412661999056d1cc302a920f8ec1b177eaa8ae3d, v0.62.1). LICENSE is Apache-2.0 (Copyright 2020 Sauce Labs); the repo also carries an older license.txt (MIT, Copyright 2015-2016 Arrgyle LLC). Vendored front-end files inside it (jQuery, jQuery UI, TinyMCE 6.8.6 and others) keep their own licences. Nothing from upstream is committed here."
+}
