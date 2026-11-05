@@ -9,17 +9,18 @@ You can resume from this file with no earlier conversation. Read this, then [BRI
 | This repo | `Vibernt/qa-bench` (private), local checkout `/Users/vid/vibernt/qa-bench` |
 | Touchstone (the first system scored) | `Vibernt/touchstone` (private), local `/Users/vid/vibernt/touchstone` |
 | Touchstone documents behind this brief | `docs/BENCH.md` (the plan this brief came from) and `docs/QA_PARITY.md` (human-QA gaps, the deterministic/judged/human split, spikes SP34–SP46). Board cards QA0–QA12 are in `docs/BOARD.md` |
-| Touchstone's own fixtures we'll adopt | `fixtures/expense-app` and `fixtures/survey-site` in the Touchstone repo (BD2) |
+| Our own apps | `apps/expense-app` and `apps/survey-site` in this repo (copied from Touchstone on 5 Nov) |
 | Touchstone's live operations (stacks, run scripts) | `/Users/vid/vibernt/touchstone-live` (not git). Start with `stack-env.zsh` and Touchstone's `docs/HANDOFF.md` |
 
 ## State
 - **Done:**
   - intent, research and licence checks (4 Nov);
   - the full brief, the app list, references, requirements and decisions, all in this repo.
-- **Not done:** everything else. There is no code, no app is pinned and nothing is vendored. `NOTICE` lists only
+- **Also done (5 Nov):** our expense app and survey site are in `apps/` (BD2); the expense app builds and its 34
+  standalone tests pass.
+- **Not done:** everything else. No harness code yet, no upstream app is pinned and nothing third-party is vendored. `NOTICE` lists only
   planned entries.
-- **Open decisions:** BD1–BD8 in [DECISIONS.md](DECISIONS.md). Only BD2 blocks B0, and only for the expense app;
-  the plan below works around it.
+- **Open decisions:** BD1–BD8 in [DECISIONS.md](DECISIONS.md). None blocks B0.
 
 ## Next step: phase B0 (BRIEF.md §12)
 Do these in order. Each step is a small commit.
@@ -31,9 +32,8 @@ Do these in order. Each step is a small commit.
    - `apps/swag-labs`: pin a commit after reading its LICENSE; write `compose.yaml`; label each faulty user; add a
      deliberate-change twin.
    - `apps/the-internet`: pin it; write `compose.yaml`; mark it as noise only.
-4. **Expense app.** Until BD2 is answered, add `apps/expense-app/upstream.json` with
-   `use: private-pull`, pulled from the Touchstone repo at setup. Write labels for its 7 defects and the `relabel`
-   deliberate change (APPS.md).
+4. **Expense app.** The code is in `apps/expense-app/app` (BD2, 5 Nov). Write labels for its 7 defects and the
+   `relabel` deliberate change (APPS.md), plus `compose.yaml`.
 5. **Runner.** `harness/runner`: bring up an episode on a docker network, reset the seed, issue the brief, collect
    findings with a timeout, tear down. The adapter must never be able to read the answer key.
 6. **Scorer.** `scorer/`: the deterministic matcher, the metrics (BRIEF.md §9), and a JSON plus Markdown report.

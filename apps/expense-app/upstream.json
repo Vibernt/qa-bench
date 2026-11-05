@@ -1,10 +1,11 @@
 {
   "app": "expense-app",
-  "repo": "private:touchstone",
-  "pin": { "ref": "main", "path": "fixtures/expense-app" },
-  "licence": "proprietary-ours",
+  "repo": "https://github.com/Vibernt/touchstone",
+  "pin": { "commit": "f7ccf91", "path": "fixtures/expense-app" },
+  "licence": "MIT",
   "licence_checked": "2026-11-05",
-  "use": "private-pull",
+  "use": "adopt",
+  "vendored_at": "app",
   "tracks": ["regression"],
-  "notes": "Our own fixture, private until BD2 is answered. Pulled at setup from a local checkout of the Touchstone repo (QA_BENCH_EXPENSE_APP_DIR); never committed here. Pin to a commit sha the first time it is pulled. Do not bring VARIANT=hostile or fixture-credentials.json (docs/APPS.md)."
+  "notes": "Ours. Copied into the bench on 5 Nov 2026 (BD2); this copy is now the bench's source of truth. Touchstone keeps its own copy for its conformance suite."
 }

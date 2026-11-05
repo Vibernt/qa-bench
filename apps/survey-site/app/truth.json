@@ -1,0 +1,89 @@
+{
+  "schema": "cri.survey-site.truth/v1",
+  "pages": [
+    {
+      "url": "/",
+      "template": "home"
+    },
+    {
+      "url": "/contact",
+      "template": "contact"
+    },
+    {
+      "url": "/search",
+      "template": "search"
+    },
+    {
+      "url": "/blog/post-0",
+      "template": "article"
+    },
+    {
+      "url": "/blog/post-1",
+      "template": "article"
+    },
+    {
+      "url": "/blog/post-2",
+      "template": "article"
+    },
+    {
+      "url": "/blog/post-3",
+      "template": "article"
+    },
+    {
+      "url": "/blog/post-4",
+      "template": "article"
+    },
+    {
+      "url": "/blog/post-5",
+      "template": "article"
+    },
+    {
+      "url": "/blog/post-6",
+      "template": "article"
+    },
+    {
+      "url": "/blog/post-7",
+      "template": "article"
+    },
+    {
+      "url": "/blog/post-8",
+      "template": "article"
+    },
+    {
+      "url": "/blog/post-9",
+      "template": "article"
+    },
+    {
+      "url": "/blog/post-10",
+      "template": "article"
+    },
+    {
+      "url": "/blog/post-11",
+      "template": "article"
+    },
+    {
+      "url": "/about",
+      "template": "about"
+    },
+    {
+      "url": "/team",
+      "template": "team"
+    },
+    {
+      "url": "/pricing",
+      "template": "pricing"
+    },
+    {
+      "url": "/help",
+      "template": "help"
+    },
+    {
+      "url": "/terms",
+      "template": "terms"
+    },
+    {
+      "url": "/news",
+      "template": "news"
+    }
+  ]
+}

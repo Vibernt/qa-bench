@@ -13,8 +13,8 @@ record them in each `apps/<app>/upstream.json`.
 
 | App | Kind | Licence | Use | Phase | Tracks |
 |---|---|---|---|---|---|
-| Expense app (ours) | Signed-in, 2 roles | Ours (private today) | Adopt (BD2) | B0 | 7.1, 7.3, 7.5, 7.8 |
-| Survey site (ours) | Public site, templates | Ours (private today) | Adopt (BD2) | B1 | 7.4 |
+| Expense app (ours) | Signed-in, 2 roles | MIT (ours) | Adopt: in `apps/expense-app` | B0 | 7.1, 7.3, 7.5, 7.8 |
+| Survey site (ours) | Public site, templates | MIT (ours) | Adopt: in `apps/survey-site` | B1 | 7.4 |
 | Swag Labs (`saucelabs/sample-app-web`) | Small shop with faulty users | MIT | Adopt | B0 | 7.1, 7.3 |
 | the-internet (`tourdedave/the-internet`) | Tricky UI patterns | Apache-2.0 | Run only | B0 | 7.4 |
 | UI Test Automation Playground (`Inflectra/ui-test-automation-playground`) | Timing, dynamic IDs, shadow DOM | Apache-2.0 | Run only | B1 | 7.4 |
@@ -45,7 +45,7 @@ We may run these unmodified if one becomes useful (BD7).
 ## Per app
 
 ### Expense app (ours)
-- **Source:** Touchstone `fixtures/expense-app` (TypeScript and SQLite, no runtime dependencies).
+- **Source:** `apps/expense-app/app` (TypeScript and SQLite, no runtime dependencies), copied from Touchstone's fixture.
 - **Why:** a signed-in app with two roles (viewer and editor), eight seeded expenses, a deterministic reset and
   trusted read-only evidence queries (`expense.byTitle`, `byId`, `list`, `sum`). It is the core of the regression
   track.
@@ -70,10 +70,10 @@ We may run these unmodified if one becomes useful (BD7).
 - **Don't bring:**
   - `VARIANT=hostile`: an open redirect plus injection routes, built for Touchstone's own security tests;
   - `fixture-credentials.json`: generate test accounts per episode instead.
-- **Blocked on BD2** (open-sourcing it). Until then the bench pulls it from the private Touchstone repo at setup.
+- **In this repo** at `apps/expense-app/app` since 5 Nov (BD2).
 
 ### Survey site (ours)
-- **Source:** Touchstone `fixtures/survey-site`.
+- **Source:** `apps/survey-site/app`, copied from Touchstone's fixture.
 - **Contents:**
   - a home page, 12 blog articles, contact, search, about and team pages;
   - two landmark variants;
@@ -84,7 +84,7 @@ We may run these unmodified if one becomes useful (BD7).
 - **Variants:**
   - `cosmetic`: editorial text changes. This is the deliberate-change control.
   - `structural`: adds a Phone field and a "Request callback" action to the contact page.
-- **Blocked on BD2.**
+- **In this repo** at `apps/survey-site/app` since 5 Nov (BD2).
 
 ### Swag Labs
 - **Built-in faulty users:** `problem_user`, `error_user`, `visual_user`, `performance_glitch_user` and

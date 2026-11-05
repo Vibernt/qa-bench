@@ -369,8 +369,7 @@ The matcher's own agreement with people is published.
 **B0 in detail** (the next work):
 1. `schemas/` for every contract in section 6, with a CI job that validates every YAML and JSON file in the repo.
 2. `apps/swag-labs/` and `apps/the-internet/`: `upstream.json`, `compose.yaml` and a seed or reset script.
-3. `apps/expense-app/`: blocked on BD2. Until vid agrees to open it, use a placeholder that pulls it from the private
-   Touchstone repo at setup.
+3. `apps/expense-app/`: the code is in `apps/expense-app/app` (BD2, 5 Nov).
    - Its 7 switchable defects map directly to labels: `permission_bypass`, `stale_state`, `ignored_filter`,
      `wrong_total`, `missing_persistence`, `duplicate_write` and `misleading_success`.
    - Its `VARIANT=relabel` mode is the first deliberate change. It renames buttons and titles but leaves behaviour

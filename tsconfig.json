@@ -13,5 +13,5 @@
     "types": ["node"]
   },
   "include": ["bin", "lib", "scripts", "harness", "scorer"],
-  "exclude": ["node_modules", "apps/*/upstream", "runs", "**/node_modules"]
+  "exclude": ["node_modules", "apps/*/upstream", "apps/*/app", "runs", "**/node_modules"]
 }
