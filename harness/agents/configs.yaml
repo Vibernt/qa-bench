@@ -1,0 +1,26 @@
+# Agent configurations the bench can drive (harness/agents/README.md). Add a model or effort level by adding an entry.
+# driver: how the agent is run.
+#   claude-code-subagent: an orchestrating Claude Code session starts one subagent per episode with this model and
+#     effort, hands it prompt.md, and reports its usage to `qa-bench agents finish`.
+# price: USD per million tokens, used for the cost estimate when only total tokens are known.
+configs:
+  - id: claude-haiku-5.5-low
+    driver: claude-code-subagent
+    model: claude-haiku-5-5
+    effort: low
+    price: { input: 0.10, output: 0.50, cache_read: 0.01 }
+  - id: claude-haiku-5.5-high
+    driver: claude-code-subagent
+    model: claude-haiku-5-5
+    effort: high
+    price: { input: 0.10, output: 0.50, cache_read: 0.01 }
+  - id: claude-sonnet-5.5-low
+    driver: claude-code-subagent
+    model: claude-sonnet-5-5
+    effort: low
+    price: { input: 2.00, output: 10.00, cache_read: 0.20 }
+  - id: claude-sonnet-5.5-high
+    driver: claude-code-subagent
+    model: claude-sonnet-5-5
+    effort: high
+    price: { input: 2.00, output: 10.00, cache_read: 0.20 }

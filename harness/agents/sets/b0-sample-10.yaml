@@ -1,0 +1,16 @@
+# A fixed 10-episode sample of the B0 tracks for comparing agent configurations cheaply.
+# Chosen by the maintainers for balance across apps and episode kinds (mixed, twin, clean). The ids are public;
+# what each episode switches on stays in its sealed answer key.
+id: b0-sample-10
+description: 8 regression episodes (6 mixed, 1 twin, 1 clean; 4 per app) and 2 noise episodes (1 clean, 1 twin)
+episodes:
+  - regression-001
+  - regression-003
+  - regression-006
+  - regression-007
+  - regression-009
+  - regression-011
+  - regression-014
+  - regression-016
+  - noise-001
+  - noise-002

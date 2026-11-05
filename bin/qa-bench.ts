@@ -8,6 +8,7 @@ import { validateRepo } from '../scripts/validate.ts';
 import { scoreRun } from '../scorer/src/index.ts';
 import { DEFAULT_APPS_ROOT, DEFAULT_TRACKS_ROOT, generateTrack, listTrackFiles } from '../harness/generator/src/index.ts';
 import { buildAppImage, downEpisode, runEpisodes, upEpisode } from '../harness/runner/src/index.ts';
+import { finishSession, loadConfigs, prepareSession, type UsageFile } from '../harness/agents/src/index.ts';
 
 const USAGE = `usage: qa-bench <command> [options]
 
@@ -20,6 +21,10 @@ const USAGE = `usage: qa-bench <command> [options]
                                              run episodes with an adapter, then score them
   up <episode> [--session S]                 bring one episode up on 127.0.0.1 for a person; prints the brief
   down <session>/<episode>                   take it down again (folder under runs/)
+  agents list                                agent configs and episode sets (harness/agents)
+  agents prepare --config C --set S [--session X] [--budget S]
+                                             bring a set up for agents; writes workspaces + runs/<session>/agents.json
+  agents finish <session> [--usage usage.json] collect findings, record usage and audit, tear down, score
   score <runDir> [--episodes-root D]         score a run: writes score.json, report.json, report.md
   report <runDir> [--episodes-root D]        score a run and print report.md
 
@@ -68,6 +73,10 @@ async function main(argv: string[]): Promise<number> {
       episodes: { type: 'string' },
       'run-id': { type: 'string' },
       session: { type: 'string' },
+      config: { type: 'string' },
+      set: { type: 'string' },
+      usage: { type: 'string' },
+      budget: { type: 'string' },
       parallel: { type: 'string' },
       limit: { type: 'string' },
       'no-score': { type: 'boolean' },
@@ -165,6 +174,32 @@ async function main(argv: string[]): Promise<number> {
       await downEpisode(dir);
       console.log(`down: ${target}`);
       return 0;
+    }
+
+    case 'agents': {
+      const sub = positionals[0];
+      if (sub === 'list') {
+        for (const c of loadConfigs()) console.log(`config  ${c.id}  (${c.driver}, ${c.model}, effort ${c.effort ?? 'default'})`);
+        const setsDir = join(REPO_ROOT, 'harness', 'agents', 'sets');
+        for (const f of readdirSync(setsDir).filter((x) => x.endsWith('.yaml')).sort()) console.log(`set     ${f.replace(/\.yaml$/, '')}`);
+        return 0;
+      }
+      if (sub === 'prepare') {
+        if (!o.config || !o.set) fail('agents prepare: give --config and --set (see `agents list`)');
+        const m = await prepareSession(o.config, o.set, { episodesRoot, session: o.session, budgetS: int(o.budget, 'budget') });
+        console.log(JSON.stringify({ session: m.session, manifest: join(REPO_ROOT, 'runs', m.session, 'agents.json'), episodes: m.episodes.map((e) => ({ episode: e.episode_id, prompt: e.prompt, findings: e.findings })) }, null, 2));
+        return 0;
+      }
+      if (sub === 'finish') {
+        const session = positionals[1];
+        if (!session) fail('agents finish: give the session id');
+        const usage = o.usage ? (JSON.parse(readFileSync(resolve(o.usage), 'utf8')) as UsageFile) : undefined;
+        const report = await finishSession(session, { episodesRoot, usage });
+        const m = report.metrics.overall;
+        console.log(`${session}: recall ${m.recall ?? '—'}, precision ${m.precision ?? '—'}, false alarms/100 ep ${m.false_alarms_per_100_episodes ?? '—'} -> ${join(REPO_ROOT, 'runs', session, 'report.md')}`);
+        return 0;
+      }
+      return fail('agents: list | prepare | finish');
     }
 
     case 'score':
