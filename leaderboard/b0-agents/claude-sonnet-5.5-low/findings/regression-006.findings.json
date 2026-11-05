@@ -1,0 +1,38 @@
+{
+  "episode_id": "regression-006",
+  "system": {
+    "name": "claude-sonnet-5.5-low",
+    "version": "claude-sonnet-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "viewer",
+        "selector": "[data-testid=\"total\"]"
+      },
+      "category": "functional",
+      "description": "The total omits the last listed expense. With 8 rows summing to $399.99 the page shows $306.74; filtered totals are also short (travel shows $61.25 instead of $185.25, office $12.99 instead of $37.49). After adding or editing, the total is likewise short by the last row.",
+      "confidence": 0.9,
+      "repro": [
+        "Sign in as viewer",
+        "Open /expenses",
+        "Sum the listed amounts (399.99) and compare with Total ($306.74)",
+        "Filter by travel: total $61.25 vs rows 185.25"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "v.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Add, edit and viewer permission checks (403 on edit/post) looked correct.",
+  "cost": {
+    "model_usd": 0.057879,
+    "notes": "estimate from 66528 total tokens (85% cache read / 10% input / 5% output); range $0.0133-$0.1597"
+  },
+  "wall_time_s": 47.8
+}

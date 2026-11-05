@@ -1,0 +1,14 @@
+{
+  "episode_id": "noise-001",
+  "system": {
+    "name": "claude-sonnet-5.5-high",
+    "version": "claude-sonnet-5-5@high"
+  },
+  "findings": [],
+  "notes": "Loaded all 27 pages (all 200, fast) and exercised login (valid/invalid), checkboxes, dropdown, status codes, inputs, add/remove, dynamic controls/loading, key presses, challenging DOM, hovers, tables. Everything behaved as the stock demo app does. Broken images, the JS error page, the random typo and the slow page are intentional demo behaviours, so not reported. Console ERR_NAME_NOT_RESOLVED errors are external resources blocked in the sandbox. Not tested in depth: infinite scroll, shadowdom, context menu, entry ad, floating menu, javascript alerts.",
+  "cost": {
+    "model_usd": 0.063599,
+    "notes": "estimate from 73102 total tokens (85% cache read / 10% input / 5% output); range $0.0146-$0.1754"
+  },
+  "wall_time_s": 59.5
+}

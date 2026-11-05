@@ -33,7 +33,7 @@ export interface ServerOptions {
   /** Reviewed idempotency and commit barrier opt-ins; disabled by default. */
   idempotency?: boolean;
   afterCreateCommit?: () => Promise<void>;
-  /** SP23 probe only; absent leaves the released authentication routes unchanged. */
+  /** Auth-lifecycle probe only; absent leaves the released authentication routes unchanged. */
   authLifecycle?: AuthLifecycleOptions;
 }
 
@@ -207,7 +207,7 @@ export function createServer(options: ServerOptions): Server {
       const expiresAt = Math.min(account.expiresAt ?? Infinity, authLifecycle.now() + authLifecycle.ttlMs);
       sessions.set(token, { userId: actual.id, username: actual.username, role: actual.role, expiresAt,
         ...(authLifecycle.options.wrongUser ? { displayName: account.username } : {}) });
-      response.setHeader('set-cookie', [`${cookieName}=${token}; HttpOnly; SameSite=Lax; Path=/`, 'sp23_challenge=; HttpOnly; SameSite=Strict; Path=/auth; Max-Age=0']);
+      response.setHeader('set-cookie', [`${cookieName}=${token}; HttpOnly; SameSite=Lax; Path=/`, 'auth_challenge=; HttpOnly; SameSite=Strict; Path=/auth; Max-Age=0']);
       redirect(response, '/expenses');
     }, () => {
       const session = currentSession(request);

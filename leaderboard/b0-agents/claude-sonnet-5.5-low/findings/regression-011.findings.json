@@ -1,0 +1,59 @@
+{
+  "episode_id": "regression-011",
+  "system": {
+    "name": "claude-sonnet-5.5-low",
+    "version": "claude-sonnet-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"inventory-item-price\"]"
+      },
+      "category": "consistency",
+      "description": "Prices on the product list do not match the detail page, cart or overview (e.g. Backpack $53.97 in list vs $29.99 elsewhere), and they change on every re-render, such as after changing the sort order. The price sort order is therefore also not meaningful.",
+      "confidence": 0.9,
+      "repro": [
+        "Sign in as customer",
+        "Note the list prices (Backpack $53.97)",
+        "Open the Backpack detail page: $29.99",
+        "Change sort order: prices change again"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "inv.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"inventory-item-sauce-labs-backpack-img\"]"
+      },
+      "category": "visual",
+      "description": "The Sauce Labs Backpack shows a placeholder 404 image (sl-404) instead of its own photo.",
+      "confidence": 0.8,
+      "repro": [
+        "Sign in as customer",
+        "Look at the Backpack image in the list"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "inv.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Did not test sign-out, remove flows or visual layout in depth.",
+  "cost": {
+    "model_usd": 0.060656,
+    "notes": "estimate from 69719 total tokens (85% cache read / 10% input / 5% output); range $0.0139-$0.1673"
+  },
+  "wall_time_s": 46.5
+}

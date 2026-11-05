@@ -1,0 +1,42 @@
+# the-internet (saucelabs/the-internet, Apache-2.0): run only, fetched at the pinned commit when the image is built.
+# Noise track only: pages that are hard but not broken. Any finding that does not match a baseline label (a page
+# broken on purpose) is a false alarm.
+app: the-internet
+title: the-internet (tricky UI patterns; noise only)
+label_prefix: internet
+noise_only: true
+targets:
+  - name: the-internet
+    service: app
+    port: 5000
+    path: /
+    health_path: /
+roles: []
+pages:
+  - /
+  - /add_remove_elements/
+  - /broken_images
+  - /challenging_dom
+  - /checkboxes
+  - /context_menu
+  - /disappearing_elements
+  - /dropdown
+  - /dynamic_content
+  - /dynamic_controls
+  - /dynamic_loading/1
+  - /entry_ad
+  - /floating_menu
+  - /hovers
+  - /infinite_scroll
+  - /inputs
+  - /javascript_alerts
+  - /javascript_error
+  - /key_presses
+  - /login
+  - /notification_message_rendered
+  - /shadowdom
+  - /shifting_content/menu
+  - /slow
+  - /status_codes
+  - /tables
+  - /typos

@@ -6,7 +6,7 @@ import type { AuthAccount, AuthLifecycleOptions } from './types.js';
 export type { AuthLifecycleOptions } from './types.js';
 interface Challenge { username: string; expiresAt: number; account?: AuthAccount; token?: string }
 const escape = (value: string) => value.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
-const cookie = (req: IncomingMessage) => req.headers.cookie?.split(';').map(x => x.trim()).find(x => x.startsWith('sp23_challenge='))?.slice(15);
+const cookie = (req: IncomingMessage) => req.headers.cookie?.split(';').map(x => x.trim()).find(x => x.startsWith('auth_challenge='))?.slice(15);
 
 export class AuthLifecycle {
   private readonly pending = new Map<string, Challenge>();
@@ -14,13 +14,13 @@ export class AuthLifecycle {
   readonly ttlMs: number;
   private readonly challengeTtlMs: number;
   constructor(readonly options: AuthLifecycleOptions) {
-    if (!['multi-step', 'totp', 'magic-link'].includes(options.mode) || !options.tenant) throw new Error('Invalid SP23 auth mode or tenant');
+    if (!['multi-step', 'totp', 'magic-link'].includes(options.mode) || !options.tenant) throw new Error('Invalid auth-lifecycle mode or tenant');
     this.now = options.now ?? Date.now;
     this.ttlMs = options.ttlMs ?? 60_000;
     this.challengeTtlMs = options.challengeTtlMs ?? 30_000;
-    for (const value of [this.ttlMs, this.challengeTtlMs]) if (!Number.isSafeInteger(value) || value < 1 || value > 300_000) throw new Error('SP23 TTL must be 1..300000 ms');
-    if (options.mode === 'totp' && (!options.totpSecret || options.totpSecret.length < 20)) throw new Error('SP23 TOTP requires host fixture secret bytes (at least 20)');
-    if (options.mode === 'magic-link' && !options.mailSink) throw new Error('SP23 magic link requires a host fixture mail sink');
+    for (const value of [this.ttlMs, this.challengeTtlMs]) if (!Number.isSafeInteger(value) || value < 1 || value > 300_000) throw new Error('Auth-lifecycle TTL must be 1..300000 ms');
+    if (options.mode === 'totp' && (!options.totpSecret || options.totpSecret.length < 20)) throw new Error('Auth-lifecycle TOTP requires host fixture secret bytes (at least 20)');
+    if (options.mode === 'magic-link' && !options.mailSink) throw new Error('Auth-lifecycle magic link requires a host fixture mail sink');
   }
   clear(): void { this.pending.clear(); if (this.options.mailSink) this.options.mailSink.length = 0; }
 
@@ -57,7 +57,7 @@ export class AuthLifecycle {
       if (!username || username.length > 128 || this.pending.size >= 100) { html(400, 'Sign in rejected', 'Start a new sign-in'); return true; }
       const id = randomBytes(24).toString('hex');
       this.pending.set(id, { username, expiresAt: this.now() + this.challengeTtlMs });
-      res.setHeader('set-cookie', `sp23_challenge=${id}; HttpOnly; SameSite=Strict; Path=/auth`);
+      res.setHeader('set-cookie', `auth_challenge=${id}; HttpOnly; SameSite=Strict; Path=/auth`);
       html(200, 'Password', form('/auth/password', 'password', 'Password', 'password')); return true;
     }
     const id = cookie(req); const challenge = id ? this.pending.get(id) : undefined;

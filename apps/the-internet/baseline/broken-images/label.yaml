@@ -1,0 +1,25 @@
+id: internet.broken-images
+app: the-internet
+title: "Broken Images demo: two images 404 on purpose"
+description: "/broken_images shows three images; asdf.jpg and hjkl.jpg do not exist (404) by design. Findings about them are excused."
+track: noise
+kind: baseline
+category: visual
+class: deterministic
+severity: minor
+where: { route: /broken_images }
+found_by:
+  - kind: visual
+    selector: "img[src=asdf.jpg]"
+    note: "First image is broken"
+  - kind: visual
+    selector: "img[src=hjkl.jpg]"
+    note: "Second image is broken"
+  - kind: network
+    category: error-handling
+    note: "GET /asdf.jpg and /hjkl.jpg return 404; 'Failed to load resource' in the console"
+  - kind: network
+    category: functional
+    note: "Images fail to load"
+split: public
+upstream_ref: "views/broken_images.erb (saucelabs/the-internet); checked by apps/the-internet/verify.ts"

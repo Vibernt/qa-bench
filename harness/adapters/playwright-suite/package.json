@@ -1,0 +1,11 @@
+{
+  "name": "qa-bench-adapter-playwright-suite",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "description": "QA Bench adapter: a fixed scripted Playwright suite per app (Node runs the TypeScript directly)",
+  "dependencies": {
+    "playwright": "1.63.0"
+  }
+}

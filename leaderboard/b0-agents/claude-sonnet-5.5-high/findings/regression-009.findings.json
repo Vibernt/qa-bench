@@ -1,0 +1,190 @@
+{
+  "episode_id": "regression-009",
+  "system": {
+    "name": "claude-sonnet-5.5-high",
+    "version": "claude-sonnet-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"product-sort-container\"]"
+      },
+      "category": "functional",
+      "description": "The sort dropdown does nothing: choosing Name (Z to A), Price (low to high) or Price (high to low) leaves the list in the A-to-Z order and the active option label still reads Name (A to Z).",
+      "confidence": 0.9,
+      "repro": [
+        "Sign in as customer",
+        "On /inventory.html choose Price (low to high) in the sort dropdown",
+        "The list order and the shown option do not change"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "f1.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"inventory-item-sauce-labs-backpack-img\"]"
+      },
+      "category": "visual",
+      "description": "Every product card on the list shows the same placeholder dog image (sl-404 fallback) instead of its own product photo, while the detail pages show the correct photos.",
+      "confidence": 0.85,
+      "repro": [
+        "Sign in as customer",
+        "Look at the product images on /inventory.html",
+        "All six show the same dog photo"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "f1.png"
+        }
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"item-4-title-link\"]"
+      },
+      "category": "functional",
+      "description": "Clicking a product name or photo opens the wrong product: the link for id N opens /inventory-item.html?id=N+1 (Backpack opens Fleece Jacket, Bike Light opens Bolt T-Shirt, Fleece Jacket opens ITEM NOT FOUND, Test T-Shirt opens Backpack).",
+      "confidence": 0.9,
+      "repro": [
+        "Sign in as customer",
+        "On /inventory.html click the name Sauce Labs Backpack",
+        "Detail page shows Sauce Labs Fleece Jacket (id=5) instead"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "detail4.png"
+        }
+      ]
+    },
+    {
+      "id": "f4",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"remove-sauce-labs-bike-light\"]"
+      },
+      "category": "functional",
+      "description": "Remove does not work on the product list or on the product detail page: after Add to cart then Remove the button stays Remove and the cart badge does not decrease. Remove works only inside the cart.",
+      "confidence": 0.85,
+      "repro": [
+        "Sign in as customer",
+        "Click Add to basket on two products (badge 2)",
+        "Click Remove on one of them",
+        "Button stays Remove and badge stays 2; same on /inventory-item.html?id=4"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "added.png"
+        }
+      ]
+    },
+    {
+      "id": "f5",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer"
+      },
+      "category": "functional",
+      "description": "The cart silently holds at most two products: adding a third or fourth product leaves its button as Add to basket and the badge stays 2; the extra products never reach the cart.",
+      "confidence": 0.75,
+      "repro": [
+        "Sign in as customer",
+        "Add Backpack, Onesie and Fleece Jacket",
+        "Badge shows 2, the Fleece Jacket button is still Add to basket and the cart lists only two items"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "three-adds.png"
+        }
+      ]
+    },
+    {
+      "id": "f6",
+      "where": {
+        "route": "/checkout-step-one.html",
+        "role": "customer",
+        "selector": "[data-test=\"lastName\"]"
+      },
+      "category": "functional",
+      "description": "The Last Name field is wired to the First Name state: text typed in Last Name appears in First Name and Last Name stays empty, so Continue always fails with 'Error: Last Name is required' and checkout cannot be completed through the form.",
+      "confidence": 0.9,
+      "repro": [
+        "Sign in as customer, add a product, open cart and choose Checkout",
+        "Type Ann in First Name, Tester in Last Name, 12345 in Zip",
+        "First Name shows the last name text, Last Name is empty; Continue shows 'Error: Last Name is required'"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "step1-typed.png"
+        }
+      ]
+    },
+    {
+      "id": "f7",
+      "where": {
+        "route": "/checkout-step-two.html",
+        "role": "customer",
+        "selector": "[data-test=\"subtotal-label\"]"
+      },
+      "category": "functional",
+      "description": "Item total on the overview is double the sum of the item prices (one $7.99 item shows $15.98; $29.99 + $7.99 shows $75.96 instead of $37.98), so tax and total are inflated as well.",
+      "confidence": 0.85,
+      "repro": [
+        "Sign in as customer, add Backpack and Onesie, open cart and reach /checkout-step-two.html",
+        "Item total reads $75.96 instead of $37.98"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "step2-direct.png"
+        }
+      ]
+    },
+    {
+      "id": "f8",
+      "where": {
+        "route": "/checkout-complete.html",
+        "role": "customer",
+        "selector": "[data-test=\"shopping-cart-badge\"]"
+      },
+      "category": "functional",
+      "description": "After Finish the cart is not emptied: the cart badge still shows 2 on the confirmation page and the products stay marked Remove on the product list after Back Home.",
+      "confidence": 0.85,
+      "repro": [
+        "Sign in as customer, add two products, go to the overview and choose Finish",
+        "Badge still shows 2 on the confirmation page",
+        "Choose Back Home: the same products still show Remove and the badge is 2"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "complete.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Checkout overview was reached by direct URL because the Last Name bug blocks the form. Not tested: mobile layout, performance beyond casual timing.",
+  "cost": {
+    "model_usd": 0.094047,
+    "notes": "estimate from 108100 total tokens (85% cache read / 10% input / 5% output); range $0.0216-$0.2594"
+  },
+  "wall_time_s": 311.1
+}

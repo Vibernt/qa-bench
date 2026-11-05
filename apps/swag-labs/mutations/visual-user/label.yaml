@@ -1,0 +1,56 @@
+id: swag.visual-user
+app: swag-labs
+title: "visual_user behaviour: moved cart icon, misplaced buttons, odd alignment, wrong image and random prices"
+description: >-
+  Upstream's visual_user, applied to the generated customer account. On the product list the cart icon sits lower and
+  further left, over the sort control; the menu icon is tilted; the first product (Backpack) shows the placeholder
+  photo; two product names are right-aligned; the last card's Add to cart button sticks out of its card; prices are
+  random on every render and disagree with the detail page and the cart. On the cart page the Checkout button sits in
+  the top-right corner over the header. The price mismatch is deterministic; the rest needs a judgement (defect vs
+  redesign) unless a baseline is used.
+track: regression
+kind: defect
+category: visual
+class: judged
+severity: major
+where: { route: /inventory.html, role: customer }
+switch:
+  env: { QA_BENCH_MUTATIONS: visual_user }
+  exclusive: swag-user   # faulty users mask each other (if/else in upstream; locked out hides everything)
+found_by:
+  - kind: visual
+    selector: "[data-test=shopping-cart-link]"
+    region: { x: 1034, y: 39, w: 42, h: 42, viewport: 1280x720 }
+    note: "Cart icon is displaced down and left (over the sort control) instead of the header's top-right corner"
+  - kind: visual
+    selector: "[data-test=open-menu]"
+    note: "Menu (burger) icon is rotated"
+  - kind: visual
+    selector: "[data-test=inventory-item-sauce-labs-backpack-img]"
+    note: "First product (Sauce Labs Backpack) shows the placeholder dog photo instead of the backpack"
+  - kind: visual
+    selector: "[data-test=inventory-item-name]"
+    note: "Some product names (Bolt T-Shirt, Fleece Jacket) are right-aligned, unlike the others"
+  - kind: visual
+    selector: "[data-test=add-to-cart-test.allthethings()-t-shirt-(red)]"
+    note: "Last card's Add to cart button is misaligned and overflows its card"
+  - kind: value
+    category: consistency
+    selector: "[data-test=inventory-item-price]"
+    note: "List prices are random, change on each visit and differ from the detail page and cart (Backpack $29.99)"
+  - kind: visual
+    route: /cart.html
+    selector: "[data-test=checkout]"
+    region: { x: 1060, y: 0, w: 220, h: 32, viewport: 1280x720 }
+    note: "Checkout button is pinned to the top-right corner over the header, not in the cart footer"
+  - kind: visual
+    route: /cart.html
+    selector: "[data-test=shopping-cart-link]"
+    note: "Cart icon displaced on the cart page too"
+  - kind: behaviour
+    category: functional
+    also_categories: [consistency]
+    selector: "[data-test=product-sort-container]"
+    note: "Sorting by price looks broken: the displayed prices are random, so the list is not in price order after Price (low to high)"
+split: public
+upstream_ref: "apps/swag-labs/upstream/src (isVisualUser in pages/Inventory.jsx, Cart.jsx, components/HeaderContainer.jsx, DrawerMenu.jsx; CSS .visual_failure, .btn_visual_failure, .btn_inventory_misaligned, .align_right); checked by apps/swag-labs/verify.ts"

@@ -1,0 +1,21 @@
+id: expense.permission-bypass
+app: expense-app
+title: "Viewer can open the edit form and save changes"
+description: "The list hides Edit from the viewer, but /expenses/:id/edit serves the form (200, not 403) and POST /expenses/:id saves the change."
+track: regression
+kind: defect
+category: permission
+class: deterministic
+severity: critical
+where: { route: /expenses/, role: viewer }
+switch:
+  env: { DEFECT: permission_bypass }
+  exclusive: expense-defect   # the app takes one DEFECT value at a time
+found_by:
+  - kind: behaviour
+    note: "Viewer opens /expenses/:id/edit directly and gets the form instead of 403"
+  - kind: network
+    note: "Viewer's POST /expenses/:id is accepted (303) and the amount changes"
+tolerance: { route: prefix }
+split: public
+upstream_ref: "apps/expense-app/app/src/server.ts (DEFECT=permission_bypass); checked by apps/expense-app/verify.ts"

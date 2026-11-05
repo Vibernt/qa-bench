@@ -1,0 +1,31 @@
+# Track 7.4 Noise (BRIEF §7): pages that are hard but not broken. Any finding not matching a baseline label is a
+# false alarm. The live sites below are generated only with `generate noise --live` and run only with
+# QA_BENCH_ALLOW_LIVE=1; never in CI. Their rules are AGENTS.md rule 4 and BRIEF §7.4, and every live brief
+# carries them.
+id: noise
+number: "7.4"
+title: Noise
+description: >-
+  the-internet's tricky-but-working pages, plus two real sites by existing permission (read-only, GET only, no
+  forms, robots.txt honoured, at least 1 s between page loads).
+brief:
+  journeys: false
+  wall_time_s: 300
+apps:
+  - { app: the-internet, weight: 1 }
+episodes:
+  count: 6
+  seed: 20261106
+  clean_episodes: 4
+  twin_episodes: 2
+  changes_per_episode: { min: 1, max: 1 }
+live:
+  - name: fragmatic.ai
+    url: https://fragmatic.ai/
+    pages: [/]
+    # Read-only. The tagged test contact form exists but the bench never uses it.
+    rules: { methods: [GET], forms: false, robots_txt: honour, min_interval_ms: 1000, max_pages: 25 }
+  - name: opensenselabs.com
+    url: https://opensenselabs.com/
+    pages: [/]
+    rules: { methods: [GET], forms: false, robots_txt: honour, min_interval_ms: 1000, max_pages: 25 }

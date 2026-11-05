@@ -1,0 +1,38 @@
+id: swag.checkout-copy
+app: swag-labs
+title: "Checkout copy reworded (deliberate)"
+description: >-
+  QA_BENCH_CHANGES=checkout-copy rewords the checkout: "Checkout: Your Information" becomes "Checkout: Your details",
+  "Checkout: Overview" becomes "Checkout: Review your order", "Thank you for your order!" becomes "Order placed. Thank
+  you!", and the dispatch note becomes "Your order is on its way and will reach you as fast as the pony can carry it."
+  Behaviour is unchanged. Reporting it is a false alarm.
+track: regression
+kind: change
+category: copy
+class: judged
+severity: minor
+where: { route: /checkout-complete.html, role: customer }
+switch:
+  env: { QA_BENCH_CHANGES: checkout-copy }
+found_by:
+  - kind: text
+    route: /checkout-step-one.html
+    selector: "[data-test=title]"
+    note: "Reports the step-one title 'Checkout: Your details' as wrong copy"
+  - kind: text
+    route: /checkout-step-two.html
+    selector: "[data-test=title]"
+    note: "Reports the overview title 'Checkout: Review your order' as wrong copy"
+  - kind: text
+    selector: "[data-test=complete-header]"
+    note: "Reports the confirmation heading 'Order placed. Thank you!' as wrong copy"
+  - kind: text
+    selector: "[data-test=complete-text]"
+    note: "Reports the reworded dispatch note as wrong copy"
+  - kind: element
+    category: functional
+    selector: "[data-test=complete-header]"
+    note: "Reports the order confirmation as missing because 'Thank you for your order!' is not shown"
+tolerance: { route: exact, role: any, require_locator: true }
+split: public
+upstream_ref: "apps/swag-labs/upstream/src/utils/QaBench.js (COPY[\"checkout-copy\"]), pages/Finish.jsx; checked by apps/swag-labs/verify.ts"

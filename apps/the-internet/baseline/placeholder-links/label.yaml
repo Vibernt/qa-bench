@@ -1,0 +1,42 @@
+id: internet.placeholder-links
+app: the-internet
+title: "Placeholder links: Hovers' View profile pages 404; table and Challenging DOM edit/delete links do nothing"
+description: >-
+  Demo scaffolding that does not lead anywhere on purpose: /hovers' "View profile" links open /users/1..3, which are
+  Not Found (404); the edit and delete links on /tables and /challenging_dom point at #edit and #delete and do nothing.
+track: noise
+kind: baseline
+category: functional
+class: deterministic
+severity: minor
+where: { route: /hovers }
+found_by:
+  - kind: element
+    selector: "a[href=/users/1]"
+    note: "View profile leads to a Not Found page"
+  - kind: status
+    route: /users/
+    note: "/users/<n> is Not Found (404)"
+  - kind: status
+    route: /users/
+    category: error-handling
+    note: "/users/<n> answers 404"
+  - kind: behaviour
+    route: /tables
+    selector: "a[href=#edit]"
+    note: "Edit link does nothing"
+  - kind: behaviour
+    route: /tables
+    selector: "a[href=#delete]"
+    note: "Delete link does nothing"
+  - kind: behaviour
+    route: /challenging_dom
+    selector: "a[href=#edit]"
+    note: "Edit link does nothing"
+  - kind: behaviour
+    route: /challenging_dom
+    selector: "a[href=#delete]"
+    note: "Delete link does nothing"
+tolerance: { route: prefix }
+split: public
+upstream_ref: "views/hovers.erb, views/tables.erb, views/challenging_dom.erb (saucelabs/the-internet); checked by apps/the-internet/verify.ts"

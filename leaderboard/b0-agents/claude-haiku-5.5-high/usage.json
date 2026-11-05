@@ -1,0 +1,106 @@
+{
+  "episodes": {
+    "regression-001": {
+      "audit": {
+        "sealed_path_hits": 0,
+        "checked": "22 tool inputs in the agent transcript"
+      },
+      "served_model": "claude-haiku-5-5",
+      "total_tokens": 97444,
+      "tool_uses": 22,
+      "duration_s": 232.8
+    },
+    "regression-003": {
+      "audit": {
+        "sealed_path_hits": 0,
+        "checked": "27 tool inputs in the agent transcript"
+      },
+      "served_model": "claude-haiku-5-5",
+      "total_tokens": 97544,
+      "tool_uses": 27,
+      "duration_s": 216.1
+    },
+    "regression-006": {
+      "audit": {
+        "sealed_path_hits": 0,
+        "checked": "21 tool inputs in the agent transcript"
+      },
+      "served_model": "claude-haiku-5-5",
+      "total_tokens": 88312,
+      "tool_uses": 21,
+      "duration_s": 119.7
+    },
+    "regression-007": {
+      "audit": {
+        "sealed_path_hits": 0,
+        "checked": "30 tool inputs in the agent transcript"
+      },
+      "served_model": "claude-haiku-5-5",
+      "total_tokens": 110558,
+      "tool_uses": 30,
+      "duration_s": 334.5
+    },
+    "regression-009": {
+      "audit": {
+        "sealed_path_hits": 0,
+        "checked": "34 tool inputs in the agent transcript",
+        "notes": "one denied attempt to interrupt its own background shell via a session tool; no effect"
+      },
+      "served_model": "claude-haiku-5-5",
+      "total_tokens": 127727,
+      "tool_uses": 34,
+      "duration_s": 424.3
+    },
+    "regression-011": {
+      "audit": {
+        "sealed_path_hits": 0,
+        "checked": "24 tool inputs in the agent transcript"
+      },
+      "served_model": "claude-haiku-5-5",
+      "total_tokens": 108777,
+      "tool_uses": 24,
+      "duration_s": 232.7
+    },
+    "regression-014": {
+      "audit": {
+        "sealed_path_hits": 0,
+        "checked": "21 tool inputs in the agent transcript"
+      },
+      "served_model": "claude-haiku-5-5",
+      "total_tokens": 87720,
+      "tool_uses": 21,
+      "duration_s": 326.0
+    },
+    "regression-016": {
+      "audit": {
+        "sealed_path_hits": 0,
+        "checked": "15 tool inputs in the agent transcript"
+      },
+      "served_model": "claude-haiku-5-5",
+      "total_tokens": 109769,
+      "tool_uses": 15,
+      "duration_s": 184.3
+    },
+    "noise-001": {
+      "audit": {
+        "sealed_path_hits": 0,
+        "checked": "23 tool inputs in the agent transcript",
+        "notes": "two stray tool calls with empty input (cross-session message, docs batch); both failed with errors, no effect"
+      },
+      "served_model": "claude-haiku-5-5",
+      "total_tokens": 101016,
+      "tool_uses": 23,
+      "duration_s": 996.9
+    },
+    "noise-002": {
+      "audit": {
+        "sealed_path_hits": 0,
+        "checked": "12 tool inputs in the agent transcript"
+      },
+      "served_model": "claude-haiku-5-5",
+      "total_tokens": 88004,
+      "tool_uses": 12,
+      "duration_s": 146.4
+    }
+  }
+}

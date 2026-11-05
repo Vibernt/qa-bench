@@ -1,0 +1,37 @@
+{
+  "episode_id": "regression-016",
+  "system": {
+    "name": "claude-haiku-5.5-low",
+    "version": "claude-haiku-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/inventory-item.html",
+        "role": "customer",
+        "selector": "[data-test=\"inventory-item-desc\"]"
+      },
+      "category": "error-handling",
+      "description": "Requesting a product that does not exist (?id=99) shows 'ITEM NOT FOUND' but the body is garbled: it carries telephone-IVR text ('your call could not be completed as dialled... dial 0... This is a recording. 4 T 1.'), a price of '$√-1', a stock dog photo, and a live 'Add to basket' button.",
+      "confidence": 0.85,
+      "repro": [
+        "Sign in as customer-e50d at /",
+        "Open http://127.0.0.1:32775/inventory-item.html?id=99",
+        "Observe the 'ITEM NOT FOUND' panel: unrelated IVR copy, a '$√-1' price, a product photo and an enabled Add to basket button"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "evidence/item99.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Tested all seven journeys on desktop (1280px) and a 375px width. Sign-in, product list (six products, photos, names, descriptions, prices), sort orders (A-Z, Z-A, low-high, high-low), add/remove from list and detail, detail-vs-list consistency for all six products, cart contents and badge, checkout totals (subtotal, 8% tax, total), finish/confirmation, logout and redirect-when-logged-out all behaved correctly. Login errors for empty and wrong credentials read correctly. No horizontal overflow at 375px. No console errors or HTTP 4xx/5xx during the flows. Button text reads 'Add to basket' and the cart page is 'Your Basket' rather than 'Add to cart'; treated as deliberate copy and not reported. Login inputs rely on aria-label and placeholder with no visible label element; treated as stock behaviour and not reported. Not tested: performance under load, multi-tab sessions, and the Reset App State and About menu items.",
+  "cost": {
+    "model_usd": 0.003811,
+    "notes": "estimate from 87608 total tokens (85% cache read / 10% input / 5% output); range $0.0009-$0.0105"
+  },
+  "wall_time_s": 107.9
+}

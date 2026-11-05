@@ -1,0 +1,8 @@
+{
+  "name": "playwright-suite",
+  "version": "0.1.0",
+  "description": "A fixed scripted Playwright suite per app (expense-app, swag-labs, the-internet; generic page checks for anything else): the floor a scripted QA team would reach. Deterministic, no model calls.",
+  "mode": "container",
+  "build": "Dockerfile",
+  "network": "episode"
+}

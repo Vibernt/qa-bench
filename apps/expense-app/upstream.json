@@ -1,9 +1,15 @@
 {
   "app": "expense-app",
-  "repo": "https://github.com/Vibernt/touchstone",
-  "pin": { "commit": "f7ccf91", "path": "fixtures/expense-app" },
+  "repo": "https://github.com/Vibernt/qa-bench",
+  "pin": {
+    "path": "apps/expense-app/app"
+  },
   "licence": "MIT",
   "licence_checked": "2026-11-05",
   "use": "adopt",
-  "notes": "Ours. Copied into the bench on 5 Nov 2026 (BD2); this copy is now the bench's source of truth. Touchstone keeps its own copy for its conformance suite."
+  "vendored_at": "app",
+  "tracks": [
+    "regression"
+  ],
+  "notes": "Ours, maintained in this repository (the source of truth). MIT like the rest of the bench."
 }

@@ -1,0 +1,35 @@
+{
+  "episode_id": "regression-016",
+  "system": {
+    "name": "claude-sonnet-5.5-low",
+    "version": "claude-sonnet-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer"
+      },
+      "category": "copy",
+      "description": "Product add buttons read 'Add to basket' while the brief and cart terminology (cart icon, Add to cart) say 'Add to cart'.",
+      "confidence": 0.6,
+      "repro": [
+        "Sign in as customer",
+        "Look at the buttons on the product cards"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "inv.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Checked sign-in, list content, sorting, cart and checkout totals (correct). Did not test detail page, sign-out or permissions.",
+  "cost": {
+    "model_usd": 0.058073,
+    "notes": "estimate from 66750 total tokens (85% cache read / 10% input / 5% output); range $0.0134-$0.1602"
+  },
+  "wall_time_s": 62.4
+}

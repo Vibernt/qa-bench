@@ -3,12 +3,47 @@ Copyright (c) 2026 Vibernt. Our own code and data are MIT-licensed (see LICENSE)
 
 Third-party material
 --------------------
-Nothing third-party is vendored yet (4 Nov 2026). When something is added, list it
-here with: source URL, pinned commit or digest, licence, the folder it lives in,
-and what we changed. Material we may not redistribute is never committed; it is
+Each entry lists: source URL, pinned commit or digest, licence, the folder it lives
+in, and what we changed. Material we may not redistribute is never committed; it is
 fetched at setup time by pinned digest (see docs/APPS.md, "run only").
+
+Swag Labs (sample-app-web), vendored ("adopt")
+  Source:   https://github.com/saucelabs/sample-app-web
+  Commit:   ad62bb2d7950bc5747af46a75aa1fb1bd6b8622a (main, 28 Oct 2026)
+  Licence:  MIT, Copyright (c) 2019 Sauce Labs. The full text is in
+            apps/swag-labs/upstream/LICENSE (read on 5 Nov 2026).
+  Folder:   apps/swag-labs/upstream
+  Changed:  - Only the app source is kept: upstream test suites, Storybook, CI, git
+              hooks, the Dockerfile, the CRA service worker and GitHub Pages files
+              were removed; package.json and package-lock.json were trimmed to match.
+            - Added @fontsource/dm-sans and @fontsource/dm-mono (OFL-1.1) so the
+              fonts are bundled instead of loaded from Google Fonts.
+            - Bench mode, marked "QA-BENCH:" in the source: generated accounts
+              replace the built-in usernames; the built-in faulty users' behaviour
+              is switched on by QA_BENCH_MUTATIONS; deliberate changes (relabel,
+              seasonal banner, checkout copy, a price change) by QA_BENCH_CHANGES;
+              error reports go to a local endpoint instead of Backtrace.
+            The full list is in apps/swag-labs/upstream.json, "changes_from_upstream".
+
+the-internet, run only (not redistributed)
+  Source:   https://github.com/saucelabs/the-internet (formerly tourdedave/the-internet)
+  Commit:   412661999056d1cc302a920f8ec1b177eaa8ae3d (main, v0.62.1)
+  Licence:  Apache-2.0, Copyright 2020 Sauce Labs (LICENSE, read on 5 Nov 2026). The
+            repository also carries license.txt (MIT, Copyright (c) 2015-2016 Arrgyle
+            LLC) and vendored front-end libraries under their own licences.
+  Folder:   none. apps/the-internet/Dockerfile fetches the pinned commit at build
+            time; no upstream file is committed here.
+  Changed:  nothing in upstream files. Our own Rack wrapper (apps/the-internet/bench,
+            MIT) rewrites the home page heading at run time when QA_BENCH_CHANGES
+            includes welcome-heading.
+
+Playwright, a dependency of the playwright-suite adapter (not vendored)
+  Source:   https://github.com/microsoft/playwright (npm package playwright@1.63.0) and the
+            container image mcr.microsoft.com/playwright:v1.63.0-noble
+  Licence:  Apache-2.0, Copyright (c) Microsoft Corporation (LICENSE read on 5 Nov 2026)
+  Folder:   none. Installed at image build time by harness/adapters/playwright-suite/Dockerfile.
+  Changed:  nothing.
 
 Planned entries (see docs/REFERENCES.md and docs/APPS.md for the licence checks):
 - WebTestBench (Apache-2.0): apps and labels for the natural-defects track.
 - W3C ACT rules test cases (W3C Software and Document License): accessibility ground truth.
-- Swag Labs / sample-app-web (MIT).

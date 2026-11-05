@@ -1,0 +1,14 @@
+id: mix
+number: "7.1"
+title: Mixed fixture track
+brief: { journeys: true, wall_time_s: 120, money_usd: 1 }
+apps:
+  - { app: alpha, weight: 2, mutations: '*', changes: '*' }
+  - { app: beta, mutations: '*', changes: '*' }
+episodes:
+  count: 12
+  seed: 20261104
+  mutations_per_episode: { min: 1, max: 2 }
+  changes_per_episode: { min: 0, max: 1 }
+  clean_episodes: 2
+  twin_episodes: 2

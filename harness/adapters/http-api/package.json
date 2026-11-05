@@ -1,0 +1,8 @@
+{
+  "name": "qa-bench-adapter-http-api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "description": "QA Bench adapter for any QA system that serves the bench run API (no runtime dependencies; Node 22 runs the TypeScript directly)"
+}

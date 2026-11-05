@@ -1,0 +1,27 @@
+id: internet.notification-message
+app: the-internet
+title: "Notification Message demo: random \"Action unsuccesful, please try again\" by design"
+description: >-
+  /notification_message redirects to /notification_message_rendered with a flash that is "Action successful" or, on
+  about half of the loads, "Action unsuccesful, please try again" (misspelt upstream). Both the random failure and the
+  typo are by design.
+track: noise
+kind: baseline
+category: functional
+class: deterministic
+severity: minor
+where: { route: /notification_message_rendered }
+found_by:
+  - kind: text
+    selector: "#flash"
+    note: "Flash says the action was unsuccessful"
+  - kind: text
+    category: copy
+    selector: "#flash"
+    note: "Typo 'unsuccesful' in the flash message"
+  - kind: text
+    category: consistency
+    selector: "#flash"
+    note: "Message differs between loads"
+split: public
+upstream_ref: "server.rb random_notification_message (saucelabs/the-internet); checked by apps/the-internet/verify.ts"

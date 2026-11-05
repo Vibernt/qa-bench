@@ -1,0 +1,11 @@
+id: alpha.real-bug
+app: alpha
+title: "Fixture alpha.real-bug"
+kind: natural
+category: error-handling
+class: deterministic
+severity: major
+where: { route: /home }
+found_by:
+  - kind: status
+split: public

@@ -1,0 +1,37 @@
+{
+  "episode_id": "regression-006",
+  "system": {
+    "name": "claude-sonnet-5.5-high",
+    "version": "claude-sonnet-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "viewer",
+        "selector": "[data-testid=\"total\"]"
+      },
+      "category": "functional",
+      "description": "The total does not equal the sum of the listed amounts: it leaves out the last listed row. Unfiltered list sums to $399.99 but shows $306.74 (Project dinner $93.25 missing); filtered totals are also short (travel shows $61.25, should be $185.25; meals $84.00 vs $177.25; office $12.99 vs $37.49).",
+      "confidence": 0.9,
+      "repro": [
+        "Sign in as viewer",
+        "Open /expenses",
+        "Add up the 8 listed amounts (399.99) and compare with the Total line (306.74)"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "viewer-list.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Add, edit, filter, viewer read-only, validation and permission checks otherwise behaved correctly. The total always omits the last row, also after add (399.99 shown vs 409.99) and edit.",
+  "cost": {
+    "model_usd": 0.065193,
+    "notes": "estimate from 74934 total tokens (85% cache read / 10% input / 5% output); range $0.0150-$0.1798"
+  },
+  "wall_time_s": 70.6
+}

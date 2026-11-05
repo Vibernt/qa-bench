@@ -1,0 +1,8 @@
+{
+  "name": "noop",
+  "version": "0.1.0",
+  "description": "The runner's smoke test and the zero-finding floor: reads the brief, fetches the first target once (honouring live-site rules), and reports no findings.",
+  "mode": "container",
+  "build": "Dockerfile",
+  "network": "episode"
+}

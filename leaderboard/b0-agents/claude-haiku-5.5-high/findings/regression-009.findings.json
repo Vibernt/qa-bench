@@ -1,0 +1,221 @@
+{
+  "episode_id": "regression-009",
+  "system": {
+    "name": "claude-haiku-5.5-high",
+    "version": "claude-haiku-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"inventory-item-sauce-labs-backpack-img\"]"
+      },
+      "category": "visual",
+      "description": "Every product card in the product list shows the same dog photo (the sl-404 asset) instead of its own product photo. The detail pages show distinct photos for the same products.",
+      "confidence": 0.9,
+      "repro": [
+        "Sign in as customer-447e",
+        "Look at the six product cards on /inventory.html",
+        "Compare with /inventory-item.html?id=4 (Backpack), which shows its own photo"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "inventory.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"product-sort-container\"]"
+      },
+      "category": "functional",
+      "description": "The sort dropdown does not re-order the list. Name (Z to A), Price (low to high) and Price (high to low) all leave the list in Name (A to Z) order, and the dropdown snaps back to Name (A to Z).",
+      "confidence": 0.9,
+      "repro": [
+        "Sign in as customer-447e",
+        "Choose Name (Z to A): the dropdown returns to Name (A to Z) and the list is unchanged",
+        "Choose Price (low to high) and Price (high to low): the list stays in name order ($29.99, $9.99, $15.99, $49.99, $7.99, $15.99)"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "sort_lohi.png"
+        }
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"remove-sauce-labs-backpack\"]"
+      },
+      "category": "functional",
+      "description": "Remove on a product card in the product list does nothing. The button stays Remove, the cart badge stays at 1, and the item is still in the cart after reload and on the cart page.",
+      "confidence": 0.9,
+      "repro": [
+        "Sign in as customer-447e",
+        "Choose Add to basket on Sauce Labs Backpack (button becomes Remove, badge 1)",
+        "Choose Remove on the same card",
+        "Button still says Remove and badge still shows 1; reload and open the cart: Backpack is still there"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "list_after_remove.png"
+        }
+      ]
+    },
+    {
+      "id": "f4",
+      "where": {
+        "route": "/inventory-item.html",
+        "role": "customer",
+        "selector": "[data-test=\"remove\"]"
+      },
+      "category": "functional",
+      "description": "On the product detail page, Remove after Add to basket does nothing. The button stays Remove and the cart badge stays at 1.",
+      "confidence": 0.85,
+      "repro": [
+        "Sign in as customer-447e",
+        "Open /inventory-item.html?id=0 (Bike Light)",
+        "Choose Add to basket (button becomes Remove, badge 1)",
+        "Choose Remove: button still says Remove, badge still 1"
+      ]
+    },
+    {
+      "id": "f5",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"item-4-title-link\"]"
+      },
+      "category": "functional",
+      "description": "Opening a product from the list by its name or photo opens the neighbouring product instead. Backpack opens Fleece Jacket (id=5), Bike Light opens Bolt T-Shirt (id=1), Fleece Jacket opens an ITEM NOT FOUND page (id=6), and Test.allTheThings() T-Shirt opens Backpack (id=4). The detail pages are correct when opened by id.",
+      "confidence": 0.9,
+      "repro": [
+        "Sign in as customer-447e",
+        "Choose the name Sauce Labs Backpack on /inventory.html",
+        "Detail page opened is Sauce Labs Fleece Jacket (/inventory-item.html?id=5), not the Backpack (id=4)"
+      ]
+    },
+    {
+      "id": "f6",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"add-to-cart-sauce-labs-fleece-jacket\"]"
+      },
+      "category": "functional",
+      "description": "Add to basket does nothing for Sauce Labs Bolt T-Shirt, Sauce Labs Fleece Jacket and Test.allTheThings() T-Shirt (Red), on both the list and the detail page. The button does not change to Remove, the badge does not change and nothing is saved to the cart. The other products add correctly.",
+      "confidence": 0.9,
+      "repro": [
+        "Sign in as customer-447e",
+        "Choose Add to basket on Sauce Labs Fleece Jacket",
+        "Button stays Add to basket and the cart badge stays empty",
+        "Same result on /inventory-item.html?id=5, id=1 and id=3; id=0, 2 and 4 add correctly"
+      ]
+    },
+    {
+      "id": "f7",
+      "where": {
+        "route": "/checkout-step-one.html",
+        "role": "customer",
+        "selector": "[data-test=\"lastName\"]"
+      },
+      "category": "functional",
+      "description": "The Last Name field does not accept typing. Keystrokes go into the First Name field instead, so the Last Name stays empty and Continue fails with \"Last Name is required\". Checkout cannot be completed through the form.",
+      "confidence": 0.95,
+      "repro": [
+        "Sign in as customer-447e, add a product and choose Checkout",
+        "Click First Name and type Alex: it shows Alex",
+        "Click Last Name and type Tester: First Name changes to \"r\" and Last Name stays empty",
+        "Fill Zip/Postal Code and choose Continue: error \"Last Name is required\""
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "checkout_step1_keyboard.png"
+        }
+      ]
+    },
+    {
+      "id": "f8",
+      "where": {
+        "route": "/checkout-step-two.html",
+        "role": "customer",
+        "selector": "[data-test=\"subtotal-label\"]"
+      },
+      "category": "functional",
+      "description": "The overview item total is doubled. With Sauce Labs Backpack ($29.99) and Sauce Labs Onesie ($7.99) in the cart, the list shows the two items but Item total is $75.96 (should be $37.98), so Tax ($6.08) and Total ($82.04) are also wrong (should be $3.04 and $41.02).",
+      "confidence": 0.95,
+      "repro": [
+        "Sign in as customer-447e and add Sauce Labs Backpack and Sauce Labs Onesie",
+        "Open the cart and choose Checkout (Last Name cannot be entered, so go straight to /checkout-step-two.html)",
+        "Item total shows $75.96; the two prices sum to $37.98; tax should be $3.04 and total $41.02"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "checkout_overview.png"
+        }
+      ]
+    },
+    {
+      "id": "f9",
+      "where": {
+        "route": "/checkout-complete.html",
+        "role": "customer",
+        "selector": "[data-test=\"shopping-cart-link\"]"
+      },
+      "category": "functional",
+      "description": "Finish on the overview does not empty the cart. The confirmation page still shows the cart badge at 2, the cart stays at 2 items and the cart contents remain stored after the order is placed.",
+      "confidence": 0.85,
+      "repro": [
+        "Sign in as customer-447e and add Sauce Labs Backpack and Sauce Labs Onesie",
+        "Go to /checkout-step-two.html and choose Finish",
+        "The confirmation shows the badge at 2; open /cart.html: both products are still listed"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "checkout_complete.png"
+        }
+      ]
+    },
+    {
+      "id": "f10",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"about-sidebar-link\"]"
+      },
+      "category": "functional",
+      "description": "The About link in the side menu points to https://saucelabs.com/error/404, which is an error URL, so the link leads to a 404 page.",
+      "confidence": 0.5,
+      "repro": [
+        "Sign in as customer-447e",
+        "Open the menu",
+        "Read the About link target: https://saucelabs.com/error/404"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "menu_open.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Not tested: Add/Remove on the cart page worked (Remove on the cart removed the item). Checkout could not be completed through the form because of f7, so the overview and confirmation were reached by going directly to /checkout-step-two.html with items in the cart. Sign-out, logged-out redirects, login errors and the mobile (375px) layout looked correct. The Add to basket wording (brief says Add to cart) and the \"$√-1\" on the not-found page were treated as deliberate. Image load times were under 1 s. The journeys could not be completed through the UI, and this is noted here.",
+  "cost": {
+    "model_usd": 0.005556,
+    "notes": "estimate from 127727 total tokens (85% cache read / 10% input / 5% output); range $0.0013-$0.0153"
+  },
+  "wall_time_s": 424.3
+}

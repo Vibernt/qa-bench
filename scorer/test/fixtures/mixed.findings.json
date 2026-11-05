@@ -1,0 +1,14 @@
+{
+  "episode_id": "regression-001",
+  "system": { "name": "hand-written", "version": "1" },
+  "wall_time_s": 42,
+  "cost": { "model_usd": 0.5, "compute_usd": 0.25, "human_hours": 0.5, "human_rate_usd_per_hour": 60 },
+  "findings": [
+    { "id": "f1", "where": { "route": "http://app.test/inventory.html?sort=az#top", "role": "standard_user", "selector": "[data-test='price']" },
+      "category": "functional", "description": "Price of item 3 is wrong", "confidence": 0.9, "detected_at_s": 30 },
+    { "id": "f2", "where": { "route": "/inventory.html/" }, "category": "functional", "description": "Same price problem, no locator", "confidence": 0.6, "detected_at_s": 12 },
+    { "id": "f3", "where": { "route": "/cart.html" }, "category": "copy", "description": "Typo in the cart heading", "confidence": 0.5 },
+    { "id": "f4", "where": { "route": "/login" }, "category": "a11y", "description": "Login button lacks a name", "confidence": 0.7 },
+    { "id": "f5", "where": { "route": "/checkout.html" }, "category": "visual", "description": "Something looks off", "confidence": 0.2 }
+  ]
+}

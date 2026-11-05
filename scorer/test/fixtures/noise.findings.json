@@ -1,0 +1,8 @@
+{
+  "episode_id": "noise-001",
+  "system": { "name": "hand-written", "version": "1" },
+  "findings": [
+    { "id": "n1", "where": { "route": "/" }, "category": "visual", "description": "Banner overlaps nav", "confidence": 0.4 },
+    { "id": "n2", "where": { "route": "/pricing" }, "category": "copy", "description": "Broken sentence", "confidence": 0.4 }
+  ]
+}

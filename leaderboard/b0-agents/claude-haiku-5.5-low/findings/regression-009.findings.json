@@ -1,0 +1,146 @@
+{
+  "episode_id": "regression-009",
+  "system": {
+    "name": "claude-haiku-5.5-low",
+    "version": "claude-haiku-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"inventory-item-img\"]"
+      },
+      "category": "visual",
+      "description": "Every product card on the product list shows the same dog photo instead of its own product photo (all six images point to the same asset).",
+      "confidence": 0.9,
+      "repro": [
+        "Sign in as customer-447e",
+        "Look at the six product cards on /inventory.html",
+        "Observe that all six images are identical"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "evidence/list-full.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"remove-sauce-labs-bike-light\"]"
+      },
+      "category": "functional",
+      "description": "Choosing Remove on a product card does not remove it: the button stays as Remove and the cart badge stays at 2.",
+      "confidence": 0.9,
+      "repro": [
+        "Sign in as customer-447e",
+        "Choose Add to basket on Sauce Labs Backpack and Sauce Labs Bike Light; badge shows 2",
+        "Choose Remove on Sauce Labs Bike Light",
+        "Observe the button still reads Remove and the badge still shows 2"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "evidence/after-remove.png"
+        }
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"product-sort-container\"]"
+      },
+      "category": "functional",
+      "description": "Only Name (A to Z) sorts correctly. Choosing Name (Z to A), Price (low to high) or Price (high to low) leaves the list in the A to Z order and the dropdown snaps back to Name (A to Z).",
+      "confidence": 0.9,
+      "repro": [
+        "Sign in as customer-447e",
+        "Open the sort dropdown and choose Name (Z to A)",
+        "Observe the list order is unchanged and the dropdown shows Name (A to Z)",
+        "Repeat with Price (low to high) and Price (high to low)"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "evidence/sort-hilo.png"
+        }
+      ]
+    },
+    {
+      "id": "f4",
+      "where": {
+        "route": "/inventory-item.html",
+        "role": "customer",
+        "selector": "[data-test=\"inventory-item-name\"]"
+      },
+      "category": "functional",
+      "description": "The product detail page shows 'Sauce Labs Backpack' as the name for every product, regardless of which product was opened from the list.",
+      "confidence": 0.9,
+      "repro": [
+        "Sign in as customer-447e",
+        "Choose the name of Sauce Labs Bike Light on /inventory.html",
+        "Observe the detail page title reads Sauce Labs Backpack",
+        "Repeat for other products"
+      ]
+    },
+    {
+      "id": "f5",
+      "where": {
+        "route": "/inventory-item.html",
+        "role": "customer",
+        "selector": "[data-test=\"inventory-item-price\"]"
+      },
+      "category": "functional",
+      "description": "Detail pages show the wrong price and description for products. For example, the list product Test.allTheThings() T-Shirt (Red) at $15.99 opens as the Backpack at $29.99 with the Backpack description and photo, and the Fleece Jacket ($49.99) detail shows $29.99.",
+      "confidence": 0.85,
+      "repro": [
+        "Sign in as customer-447e",
+        "Choose Test.allTheThings() T-Shirt (Red) on /inventory.html and note its $15.99 price",
+        "Observe the detail page shows Backpack, $29.99 and the Backpack description",
+        "Choose Sauce Labs Fleece Jacket ($49.99) and observe the detail page shows $29.99"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "evidence/detail-id4.png"
+        }
+      ]
+    },
+    {
+      "id": "f6",
+      "where": {
+        "route": "/checkout-step-one.html",
+        "role": "customer",
+        "selector": "[data-test=\"lastName\"]"
+      },
+      "category": "functional",
+      "description": "The Last Name field cannot be filled: text typed into it lands in the First Name field and the Last Name field stays empty, so Continue fails with 'Last Name is required' and checkout is blocked.",
+      "confidence": 0.9,
+      "repro": [
+        "Sign in as customer-447e and add a product to the cart",
+        "Choose Checkout",
+        "Type Ann into First Name, Tester into Last Name, and 12345 into Zip/Postal Code",
+        "Observe First Name reads Tester, Last Name is empty, and Continue shows 'Error: Last Name is required'"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "evidence/checkout-form.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Tested login, product list layout, add to cart on the list and detail page, cart contents, cart remove, Continue Shopping and logout. Logout redirects correctly. Not tested: checkout overview totals and tax, the confirmation page and Back Home, because the Last Name bug blocks checkout. Also not tested: the Add to basket label where the brief says Add to cart, which I treated as deliberate copy and did not report.",
+  "cost": {
+    "model_usd": 0.004056,
+    "notes": "estimate from 93243 total tokens (85% cache read / 10% input / 5% output); range $0.0009-$0.0112"
+  },
+  "wall_time_s": 331.6
+}

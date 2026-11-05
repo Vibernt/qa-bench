@@ -1,0 +1,66 @@
+{
+  "episode_id": "regression-014",
+  "system": {
+    "name": "claude-haiku-5.5-high",
+    "version": "claude-haiku-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "table[aria-label=\"Expenses\"]"
+      },
+      "category": "functional",
+      "description": "After saving a new expense the app shows 'Expense saved' and redirects to the list, but the unfiltered expense table and the total do not include the new row, and it is still missing after a reload. The row appears in the unfiltered list only minutes later, while the category-filtered list shows it straight away, so the default list is stale.",
+      "confidence": 0.75,
+      "repro": [
+        "Sign in as editor-9532 and open /expenses/new",
+        "Enter title 'QA Probe Taxi', category travel, amount 33.33 and click 'Save expense'",
+        "Land on /expenses?flash=saved: 'Expense saved' is shown but the table still has 8 rows and the total is $399.99 (no new row)",
+        "Reload /expenses: still 8 rows and $399.99",
+        "Re-check the unfiltered list a few minutes later: the row and total $433.32 appear"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "evidence/editor-add-after-save.png"
+        },
+        {
+          "kind": "screenshot",
+          "path": "evidence/editor-add-after-reload.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "[data-testid=\"total\"]"
+      },
+      "category": "functional",
+      "description": "After editing an expense amount and saving (redirect to /expenses?flash=updated), the list still shows the old amount ($42.50) and the total still shows the old sum ($438.32). The new amount ($45.00) and total ($440.82) only appear after a reload, so the edit is not reflected straight away.",
+      "confidence": 0.7,
+      "repro": [
+        "Sign in as editor-9532 and open /expenses/1/edit (Train to Pune, $42.50)",
+        "Change amount to 45.00 and click 'Save expense'",
+        "Land on /expenses?flash=updated: the row shows $42.50 and the total shows $438.32",
+        "Reload: the row shows $45.00 and the total shows $440.82"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "evidence/editor-edit-after-save.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Checked and found no problem: viewer sees the 8 seeded rows and the total $399.99 matching the sum of the amounts; per-category filters for travel, meals and office show the right rows and subtotals; the viewer page has no add or edit controls and direct GET /expenses/1/edit, GET /expenses/new, POST /expenses, POST /expenses/1 and POST /expenses/1/delete all return 403; the editor's list and edit forms work; pages load in under 100 ms. Not reported: the editor's button reads 'New expense' rather than the brief's 'Add expense' (wording only). Side effects: the test created two probe expenses ('QA Probe Taxi' 33.33 travel and 'QA Probe Two' 5.00 meals) and changed 'Train to Pune' from 42.50 to 45.00 in the regression-014 data. A background probe run was also started and finished. Not tested: the flash message text after edit, and the case sensitivity of ?category= (?category=TRAVEL returns no rows, which is minor and not reported).",
+  "cost": {
+    "model_usd": 0.003816,
+    "notes": "estimate from 87720 total tokens (85% cache read / 10% input / 5% output); range $0.0009-$0.0105"
+  },
+  "wall_time_s": 326
+}

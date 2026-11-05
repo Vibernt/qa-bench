@@ -1,0 +1,52 @@
+{
+  "episode_id": "noise-002",
+  "system": {
+    "name": "claude-haiku-5.5-high",
+    "version": "claude-haiku-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/tables",
+        "selector": "#table1 thead th"
+      },
+      "category": "functional",
+      "description": "Sorting table1 is inconsistent. On a fresh page, the first click on the Due header leaves the rows unchanged but sets the descending arrow. The first click on Last Name then reorders rows by Due descending (Doe, Bach, Smith, Conway) with no indicator on Last Name. Only the second click sorts by the clicked column.",
+      "confidence": 0.7,
+      "repro": [
+        "Open /tables",
+        "Click the 'Due' header: rows stay Smith, Bach, Doe, Conway and the header shows a sort-down class",
+        "Click the 'Last Name' header once: rows become Doe, Bach, Smith, Conway, which is not sorted by last name",
+        "Click 'Last Name' again: rows become Bach, Conway, Doe, Smith"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "f1.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/notification_message_rendered",
+        "selector": "#flash"
+      },
+      "category": "copy",
+      "description": "The failure notification reads 'Action unsuccesful, please try again'. The word should be 'unsuccessful'.",
+      "confidence": 0.5,
+      "repro": [
+        "Open /notification_message_rendered",
+        "Click 'Click here' to render a notification",
+        "Read the message; some renders show 'Action unsuccesful, please try again'"
+      ]
+    }
+  ],
+  "notes": "Optimizely and other third-party requests fail with ERR_NAME_NOT_RESOLVED because the sandbox has no internet; not reported. /broken_images, /javascript_error and /slow (30 s rogue request) are intentional fixtures, not reported.",
+  "cost": {
+    "model_usd": 0.003828,
+    "notes": "estimate from 88004 total tokens (85% cache read / 10% input / 5% output); range $0.0009-$0.0106"
+  },
+  "wall_time_s": 146.4
+}

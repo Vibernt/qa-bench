@@ -1,0 +1,14 @@
+{
+  "episode_id": "noise-002",
+  "system": {
+    "name": "claude-sonnet-5.5-low",
+    "version": "claude-sonnet-5-5@low"
+  },
+  "findings": [],
+  "notes": "Page loads checked; no confirmed defects beyond stock the-internet quirks.",
+  "cost": {
+    "model_usd": 0.055982,
+    "notes": "estimate from 64347 total tokens (85% cache read / 10% input / 5% output); range $0.0129-$0.1544"
+  },
+  "wall_time_s": 31.3
+}

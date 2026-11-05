@@ -1,0 +1,11 @@
+id: quiet
+number: "7.4"
+title: Noise fixture track
+apps:
+  - { app: gamma }
+episodes: { count: 3, seed: 7 }
+live:
+  - name: example.org
+    url: https://example.org/
+    pages: [/]
+    rules: { methods: [GET], forms: false, robots_txt: honour, min_interval_ms: 1000 }

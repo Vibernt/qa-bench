@@ -1,5 +1,5 @@
 {
-  "schema": "cri.survey-site.truth/v1",
+  "schema": "qa-bench.survey-site.truth/v1",
   "pages": [
     {
       "url": "/",

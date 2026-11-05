@@ -1,0 +1,31 @@
+{
+  "episode_id": "regression-001",
+  "system": {
+    "name": "claude-haiku-5.5-low",
+    "version": "claude-haiku-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "form[action=\"/expenses\"]"
+      },
+      "category": "error-handling",
+      "description": "When the server rejects an add request (for example an empty title, an unknown category, or a non-positive-step amount such as 1.005), it returns HTTP 400 and re-renders the blank Add expense form with no error message explaining what was wrong.",
+      "confidence": 0.4,
+      "repro": [
+        "Sign in as editor-6308",
+        "POST /expenses with form fields title='' category='travel' amount='5' (bypassing the browser's required attribute)",
+        "Observe status 400 and the blank Add expense form with no error text"
+      ]
+    }
+  ],
+  "notes": "Tested: viewer list total ($399.99) and category filters (travel $185.25, meals $177.25, office $37.49) match the rows. Editor add shows 'Expense saved', adds exactly one row, and persists after reload (total $410.24). Editor edit of Team lunch 68.40 to 75.00 updates the list and total straight away ($416.84). Viewer sees no edit, add or delete controls, and GET/POST edit and new routes return 403. Mobile width (375px) has no horizontal scroll. Side effects on test data: added 'QA Test Taxi' ($10.25) and a $0 expense titled 'Zero' via direct POST. Not tested: the Delete button, the perf category beyond one page load (682 ms), and the Edit flash message.",
+  "cost": {
+    "model_usd": 0.003328,
+    "notes": "estimate from 76496 total tokens (85% cache read / 10% input / 5% output); range $0.0008-$0.0092"
+  },
+  "wall_time_s": 77.8
+}

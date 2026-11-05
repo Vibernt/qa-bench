@@ -16,10 +16,10 @@ Changed payload/user returns 409; missing token returns 400. Reset clears tokens
 `afterCreateCommit` is a trusted test barrier after commit and before response.
 It never establishes that cancellation undid a committed write.
 
-## Reviewed catalogue API (E1 WP2)
+## Catalogue API
 
 Import `@qa-bench/expense-app/catalogue`. No runtime dependencies were added.
-`parseCatalogueEntry(unknown)` accepts `cri.fixture/v1` data with exact reviewed hook
+`parseCatalogueEntry(unknown)` accepts `qa-bench.fixture/v1` data with exact reviewed hook
 references. Unknown hooks, versions, roles, options and executable values fail with
 `FixtureError`. Parsing performs no I/O or hook execution. Hooks cannot be supplied
 as shell commands, module paths or generated functions.
@@ -76,17 +76,10 @@ roll back committed effects or kill arbitrary external workers. A new origin may
 be assigned after reset. Mail and delayed jobs are local test sinks only, not
 external-provider emulations. Trusted filesystem/host access remains required.
 
-## Verification and handoff
-
-See [WP2.md](WP2.md) for acceptance, compatibility and qualification limits.
-From repository root:
+## Tests
 
 ```sh
-npx tsc -b
-npx vitest run
-node tools/boundary-check/check.mjs
+npm install && npm run build && npm test
 ```
 
-Focused smoke tests: `npx vitest run --root fixtures/expense-app --maxWorkers=1`.
-They use real HTTP and SQLite without a browser substitution. Chromium/container
-and clean-checkout qualification are orchestrator/release checks.
+The tests use real HTTP and SQLite, with no browser.

@@ -1,0 +1,31 @@
+{
+  "episode_id": "regression-001",
+  "system": {
+    "name": "claude-sonnet-5.5-high",
+    "version": "claude-sonnet-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "form[action=\"/expenses\"]"
+      },
+      "category": "error-handling",
+      "description": "Submitting an invalid expense (for example a negative amount, bypassing the browser's min attribute) returns HTTP 400 with the form re-rendered empty: there is no error message saying what was wrong and the title, category and amount the user typed are discarded.",
+      "confidence": 0.4,
+      "repro": [
+        "Sign in as editor-6308",
+        "POST /expenses with title=bad, amount=-5, category=meals",
+        "Observe a 400 page showing only an empty Add expense form, with no error text and none of the entered values kept"
+      ]
+    }
+  ],
+  "notes": "Covered: list total (sum matches), category filter incl. totals, add/edit/delete as editor with reload, viewer read-only (no controls; direct GET/POST edit, add, delete refused with 403), unauthenticated redirects, bad login, validation. List, filter, add, edit and permission journeys behaved correctly. Not tested: browser-level a11y audit, visual layout at other viewport sizes.",
+  "cost": {
+    "model_usd": 0.067145,
+    "notes": "estimate from 77178 total tokens (85% cache read / 10% input / 5% output); range $0.0154-$0.1852"
+  },
+  "wall_time_s": 80.3
+}

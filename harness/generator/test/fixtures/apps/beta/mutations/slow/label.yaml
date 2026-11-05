@@ -1,0 +1,14 @@
+id: beta.slow
+app: beta
+title: "Fixture beta.slow"
+kind: defect
+category: perf
+class: deterministic
+severity: minor
+where: { route: /home }
+switch:
+  env: { BETA_USER: zq_beta_slow }
+
+found_by:
+  - kind: text
+split: public

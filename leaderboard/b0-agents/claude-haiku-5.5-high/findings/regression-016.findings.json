@@ -1,0 +1,14 @@
+{
+  "episode_id": "regression-016",
+  "system": {
+    "name": "claude-haiku-5.5-high",
+    "version": "claude-haiku-5-5@high"
+  },
+  "findings": [],
+  "notes": "Covered all eight journeys in the brief as customer-e50d on desktop (1280), tablet (768, 1024) and mobile (375) widths. Checked: login success and error messages (wrong password, empty username); six products on the list with photo, name, description, price and add button, with no overflow at any width; all four sort orders; add/remove on list and detail pages with badge counts; detail pages for ids 0-5 matching the list on name, description and price; cart contents, quantities and prices; continue shopping; checkout validation (empty First Name); overview totals for a 2-item order (79.98 / 6.40 / 86.38) and a 6-item order (129.94 / 10.40 / 140.34), both matching 8% tax with rounding; finish, confirmation, empty cart and Back Home; logout and redirect to login; unauthenticated access to protected pages redirects to login; cart persistence across reload; page load timings (all under 50 ms locally). No real defects found. Deliberately not reported: the button and cart labels read 'Add to basket' and 'Basket' where the brief says 'Add to cart' (consistent across the app, so treated as a deliberate copy change); the Dynamic Catalog submenu is not in the brief; the /inventory-item.html?id=999 not-found page shows an Add to basket button and an odd phone-recording joke paragraph, which I could not confirm as a defect. Direct access to /checkout-step-two.html with an empty cart shows a $0.00 total, and /checkout-complete.html loads without an order, which I judged as upstream behaviour. Not tested: real Docker or hosted episode content, and screen-reader or keyboard a11y audits beyond inspection of the rendered labels.",
+  "cost": {
+    "model_usd": 0.004775,
+    "notes": "estimate from 109769 total tokens (85% cache read / 10% input / 5% output); range $0.0011-$0.0132"
+  },
+  "wall_time_s": 184.3
+}

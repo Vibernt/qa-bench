@@ -1,0 +1,38 @@
+{
+  "episode_id": "regression-006",
+  "system": {
+    "name": "claude-haiku-5.5-low",
+    "version": "claude-haiku-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "viewer",
+        "selector": "[data-testid=\"total\"]"
+      },
+      "category": "functional",
+      "description": "The expense total is the sum of all listed amounts except the last row. On the unfiltered list the rows sum to $399.99 but the total shows $306.74 (the last row, Project dinner $93.25, is left out). The same off-by-one appears under category filters (travel shows $61.25 instead of $185.25; meals shows $84.00 instead of $177.25; office shows $12.99 instead of $37.49) and for the editor after an add or edit.",
+      "confidence": 0.9,
+      "repro": [
+        "Sign in as viewer-788e at /login and open /expenses.",
+        "Add the amounts of all rows in the table: they sum to $399.99.",
+        "Read the total: 'Total: $306.74'. The last row's $93.25 is not included.",
+        "Choose category 'travel' and Apply: the rows are $42.50, $18.75 and $124.00 (sum $185.25), but the total reads $61.25."
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "evidence/viewer-expenses.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Tested as editor and viewer. Filter results are correct. Add expense works: the success message shows, exactly one row is added, and it survives a reload, though the total still omits the last row. Edit works: the new amount appears in the list and total straight away, and persists after reload. Viewer sees no add or edit controls. Direct GET /expenses/new and /expenses/1/edit return 403 to the viewer, and direct POST to /expenses, /expenses/1 and /expenses/1/delete return 403 with no change to data. Page loads were about 24 ms. Test data was changed: a row 'QA Test Taxi' ($10.00) was added and 'Team lunch' was changed from $68.40 to $75.00.",
+  "cost": {
+    "model_usd": 0.003246,
+    "notes": "estimate from 74610 total tokens (85% cache read / 10% input / 5% output); range $0.0007-$0.0090"
+  },
+  "wall_time_s": 74.2
+}

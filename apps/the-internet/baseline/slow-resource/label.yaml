@@ -1,0 +1,18 @@
+id: internet.slow-resource
+app: the-internet
+title: "Slow Resources demo: a request that takes 30 s by design"
+description: "/slow starts GET /slow_external, which the server holds for 30 seconds on purpose (it simulates a slow third-party script)."
+track: noise
+kind: baseline
+category: perf
+class: deterministic
+severity: minor
+where: { route: /slow }
+found_by:
+  - kind: timing
+    note: "GET /slow_external takes about 30 s; the page never reaches network idle quickly"
+  - kind: network
+    category: error-handling
+    note: "Pending or timed-out request to /slow_external"
+split: public
+upstream_ref: "server.rb get '/slow_external' (sleep 30), views/slow.erb (saucelabs/the-internet); checked by apps/the-internet/verify.ts"

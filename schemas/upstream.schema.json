@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://qa-bench.dev/schemas/upstream.schema.json",
+  "title": "upstream.json: where an app comes from and under what licence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "app",
+    "repo",
+    "pin",
+    "licence",
+    "licence_checked",
+    "use"
+  ],
+  "properties": {
+    "app": {
+      "$ref": "defs.schema.json#/$defs/slug"
+    },
+    "repo": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Upstream repository URL. For our own apps, this repository, with pin.path pointing at the app"
+    },
+    "pin": {
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "commit": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "image": {
+          "type": "string",
+          "description": "Image reference with an @sha256 digest",
+          "pattern": "@sha256:[0-9a-f]{64}$"
+        },
+        "ref": {
+          "type": "string",
+          "description": "Branch or tag the commit was taken from (informational)"
+        },
+        "path": {
+          "type": "string",
+          "description": "Subdirectory inside the upstream repo"
+        }
+      }
+    },
+    "licence": {
+      "type": "string",
+      "minLength": 1,
+      "description": "SPDX identifier, or 'proprietary-ours' for our own code that is not yet open"
+    },
+    "licence_checked": {
+      "type": "string",
+      "format": "date"
+    },
+    "licence_file": {
+      "type": "string",
+      "description": "Path of the LICENSE file that was read, relative to the upstream root"
+    },
+    "use": {
+      "enum": [
+        "adopt",
+        "mutate",
+        "run-only",
+        "private-pull"
+      ],
+      "description": "adopt: vendored and redistributed; mutate: pinned upstream plus our published patches; run-only: fetched at setup, never redistributed; private-pull: our own private source, pulled at setup until it is opened (BD2)"
+    },
+    "vendored_at": {
+      "type": "string",
+      "description": "Folder holding vendored code (adopt only), relative to the app folder"
+    },
+    "changes_from_upstream": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "What we changed, for NOTICE"
+    },
+    "tracks": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "use": {
+            "const": "adopt"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "vendored_at"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "episode_id": "regression-014",
+  "system": {
+    "name": "claude-sonnet-5.5-high",
+    "version": "claude-sonnet-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "[data-testid=\"total\"]"
+      },
+      "category": "functional",
+      "description": "After editing an expense amount and saving, the 'Expense updated' message appears but the list row and the total still show the old amount, even after reload. The edit form for the same expense does show the new amount (e.g. 50.00), so the list is out of sync with the saved data.",
+      "confidence": 0.85,
+      "repro": [
+        "Sign in as editor-9532",
+        "Open Edit for 'Train to Pune' (42.50), set amount 50.00, Save expense",
+        "Observe list row still $42.50 and Total: $399.99, also after reload",
+        "Open /expenses/1/edit again: amount field shows 50.00"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "after-add.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses",
+        "role": "editor"
+      },
+      "category": "functional",
+      "description": "Adding an expense shows 'Expense saved' but no new row appears in the list and the total is unchanged, also after reload. The save is acknowledged but the new expense is never listed.",
+      "confidence": 0.8,
+      "repro": [
+        "Sign in as editor-9532",
+        "Open New expense, enter title 'QA Test item', category office, amount 10.10, Save expense",
+        "Observe flash 'Expense saved' but still 8 rows and Total: $399.99",
+        "Reload /expenses: row still missing"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "after-add.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Viewer list total (399.99) matched the sum; category filter correct; viewer has no edit/add controls and direct GET/POST edit, new, add, delete return 403. Validation rejects bad input with 400 but shows no error message text (not reported).",
+  "cost": {
+    "model_usd": 0.066338,
+    "notes": "estimate from 76251 total tokens (85% cache read / 10% input / 5% output); range $0.0153-$0.1830"
+  },
+  "wall_time_s": 82.9
+}

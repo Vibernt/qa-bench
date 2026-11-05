@@ -1,0 +1,32 @@
+id: expense.relabel
+app: expense-app
+title: Visible labels renamed (deliberate)
+description: "VARIANT=relabel renames visible labels: Title becomes \"Expense title\", Save becomes \"Save expense\" and \"Add expense\" becomes \"New expense\". Behaviour is unchanged. Reporting it is a false alarm."
+track: regression
+kind: change
+category: copy
+class: judged
+severity: minor
+where: { route: /expenses }
+switch:
+  env: { VARIANT: relabel }
+  exclusive: expense-variant
+found_by:
+  - kind: text
+    note: "Reports the renamed button or field labels as a copy fault"
+  - kind: element
+    category: functional
+    selector: "a[href=/expenses/new]"
+    note: "Reports the Add expense link as missing or wrong because it now reads New expense"
+  - kind: element
+    category: functional
+    route: /expenses/new
+    selector: "button[type=submit]"
+    note: "Reports the Save button as missing or wrong because it now reads Save expense"
+  - kind: element
+    category: usability
+    selector: "a[href=/expenses/new]"
+    note: "Reports the renamed controls as confusing or a usability regression"
+tolerance: { route: prefix, role: any, require_locator: true }
+split: public
+upstream_ref: "apps/expense-app/app/src/variant.ts (VARIANT=relabel); checked by apps/expense-app/verify.ts"

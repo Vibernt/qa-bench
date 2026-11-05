@@ -1,0 +1,38 @@
+{
+  "episode_id": "regression-016",
+  "system": {
+    "name": "claude-sonnet-5.5-high",
+    "version": "claude-sonnet-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/checkout-step-two.html",
+        "role": "customer",
+        "selector": "[data-test=\"subtotal-label\"]"
+      },
+      "category": "functional",
+      "description": "The checkout overview shows an unrounded floating-point item total for some product combinations, e.g. 'Item total: $59.980000000000004' (Bike Light $9.99 + Fleece Jacket $49.99) and '$57.980000000000004' (Fleece Jacket + Onesie). Money should be shown with two decimals.",
+      "confidence": 0.85,
+      "repro": [
+        "Sign in as customer-e50d",
+        "On /inventory.html choose Add to basket on Sauce Labs Bike Light and Sauce Labs Fleece Jacket",
+        "Open the cart, choose Checkout, fill First Name, Last Name, Zip and choose Continue",
+        "Look at the Item total line on /checkout-step-two.html"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "f1.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Checked login (and its errors), inventory, sort orders, detail pages, add/remove, cart, checkout totals for all 15 two-item pairs, logout and redirects, mobile width. Everything else behaved correctly. The app says 'basket' where the brief says 'cart', consistently on every page, so I treated it as deliberate wording and did not report it.",
+  "cost": {
+    "model_usd": 0.084828,
+    "notes": "estimate from 97503 total tokens (85% cache read / 10% input / 5% output); range $0.0195-$0.2340"
+  },
+  "wall_time_s": 143.8
+}

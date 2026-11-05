@@ -12,7 +12,7 @@ afterEach(async () => {
 });
 
 it('creates, seeds, and resets the fixture database', async () => {
-  const directory = await mkdtemp(join(tmpdir(), 'cri-expense-db-'));
+  const directory = await mkdtemp(join(tmpdir(), 'qab-expense-db-'));
   directories.push(directory);
   const dbPath = join(directory, 'fixture.sqlite');
   createDatabase(dbPath).close();

@@ -1,0 +1,33 @@
+id: swag.seasonal-banner
+app: swag-labs
+title: "Seasonal banner on the product list (deliberate)"
+description: >-
+  QA_BENCH_CHANGES=seasonal-banner adds a note above the product grid: "Winter sale: every order ships free by Pony
+  Express this season." It moves the grid down by about 56 px. It is true (shipping is always free) and changes no
+  behaviour. Reporting it is a false alarm.
+track: regression
+kind: change
+category: visual
+class: judged
+severity: minor
+where: { route: /inventory.html, role: customer }
+switch:
+  env: { QA_BENCH_CHANGES: seasonal-banner }
+found_by:
+  - kind: visual
+    selector: "[data-test=seasonal-banner]"
+    note: "Reports the banner as an unexpected element or a layout change"
+  - kind: visual
+    selector: "[data-test=inventory-list]"
+    note: "Reports the product grid as shifted down"
+  - kind: text
+    category: copy
+    selector: "[data-test=seasonal-banner]"
+    note: "Reports the banner text as unexpected or wrong copy"
+  - kind: element
+    category: usability
+    selector: "[data-test=seasonal-banner]"
+    note: "Reports the banner as clutter or a distraction"
+tolerance: { route: exact, role: any, require_locator: true }
+split: public
+upstream_ref: "apps/swag-labs/upstream/src/pages/Inventory.jsx (benchChange(\"seasonal-banner\")); checked by apps/swag-labs/verify.ts"

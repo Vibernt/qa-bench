@@ -9,7 +9,7 @@ import { fixtureTotp } from '../src/auth-lifecycle/totp.js';
 const cleanup: (() => Promise<void>)[] = [];
 afterEach(async () => { for (const close of cleanup.splice(0)) await close(); });
 async function app(flags: Partial<AuthLifecycleOptions> = {}) {
-  const dir = await mkdtemp(join(tmpdir(), 'sp23-auth-')); const dbPath = join(dir, 'db'); seed(dbPath);
+  const dir = await mkdtemp(join(tmpdir(), 'qab-auth-')); const dbPath = join(dir, 'db'); seed(dbPath);
   const options: AuthLifecycleOptions = { mode: 'multi-step', tenant: 'tenant-a', ...flags };
   const server = createServer({ dbPath, authLifecycle: options });
   cleanup.push(async () => { await new Promise<void>(resolve => server.close(() => resolve())); await rm(dir, { recursive: true }); });

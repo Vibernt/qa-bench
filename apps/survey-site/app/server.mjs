@@ -1,4 +1,4 @@
-// Ported from spikes/sp30/fixtures/site/server.mjs (SP30, adopted 29 Oct 2026).
+// Survey site server: serves sitePages() on a random loopback port; every non-GET request returns 405.
 import { createServer } from 'node:http';
 import { pathToFileURL } from 'node:url';
 import { sitePages } from './pages.mjs';

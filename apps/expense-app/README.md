@@ -10,5 +10,5 @@ Planted defects (`DEFECT=`), one label each: `permission_bypass`, `stale_state`,
 Deliberate change: `VARIANT=relabel`. `VARIANT=hostile` (open redirect and injection routes) is not part of any
 track. `app/fixture-credentials.json` holds the seed's test logins only.
 
-Copied from the Touchstone fixture on 5 Nov 2026. Three tests that needed Touchstone's credential broker or a browser
-were left out (`idempotency`, `variant`, `sign-in`); 7 test files, 34 tests pass standalone.
+For the bench, `bench-entry.mjs` seeds a fresh database at every container start and swaps the seed logins for each
+episode's generated accounts; `verify.ts` checks every label against the running app (`npx tsx apps/expense-app/verify.ts`).

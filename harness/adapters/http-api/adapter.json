@@ -1,0 +1,10 @@
+{
+  "name": "http-api",
+  "version": "0.1.0",
+  "description": "For any QA system that serves the bench's run API (README.md): hands it the brief, polls until done, and maps its findings and reported cost into bench findings. It never asks the system to promote checks or change stored baselines.",
+  "mode": "container",
+  "build": "Dockerfile",
+  "network": "host",
+  "env_passthrough": ["QA_SYSTEM_API_URL", "QA_SYSTEM_API_TOKEN", "QA_SYSTEM_PROJECT", "QA_SYSTEM_NAME", "QA_SYSTEM_VERSION", "QA_BENCH_REMOTE_APPROVED"],
+  "needs_approval": "A system that is not on this machine may spend money; the adapter refuses a non-local API URL unless QA_BENCH_REMOTE_APPROVED=1."
+}

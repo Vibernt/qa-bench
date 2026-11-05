@@ -1,0 +1,18 @@
+{
+  "episode_id": "REPLACE-with-the-episode-id-from-the-brief",
+  "system": { "name": "human-tester", "version": "your-name-or-team" },
+  "findings": [
+    {
+      "id": "h1",
+      "where": { "route": "/expenses", "role": "viewer", "selector": "[data-testid=total]" },
+      "category": "consistency",
+      "description": "Total is $399.99 but the listed amounts add up to $492.99",
+      "evidence": [{ "kind": "screenshot", "path": "total.png" }],
+      "confidence": 0.9,
+      "repro": ["Sign in as the viewer", "Open /expenses", "Add up the Amount column and compare it with Total"],
+      "detected_at_s": 240
+    }
+  ],
+  "cost": { "human_hours": 0.5, "human_rate_usd_per_hour": 40 },
+  "wall_time_s": 1800
+}

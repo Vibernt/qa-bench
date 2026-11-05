@@ -1,0 +1,29 @@
+{
+  "episode_id": "noise-001",
+  "system": {
+    "name": "claude-haiku-5.5-low",
+    "version": "claude-haiku-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/notification_message_rendered",
+        "selector": "#flash"
+      },
+      "category": "copy",
+      "description": "The notification message 'Action unsuccesful, please try again' is misspelled ('unsuccesful'); the intended word is 'unsuccessful', as used in the page's other copy.",
+      "confidence": 0.3,
+      "repro": [
+        "Open /notification_message_rendered",
+        "Click 'Click here' repeatedly (reload between clicks) until the message reads 'Action unsuccesful, please try again'"
+      ]
+    }
+  ],
+  "notes": "Tested all 27 brief pages over HTTP and in Chromium: status codes, console and page errors, broken images, login and logout, dynamic controls, add/remove, dropdown, checkboxes, inputs, key presses, status codes, table sorting, dynamic loading, hovers, JS dialogs, notifications, and load timings (no slow pages found on repeat runs). Expected test-fixture behaviour was not reported: /broken_images 404s, /javascript_error page error, /typos, and external resource ERR_NAME_NOT_RESOLVED (no network). Copy typo 'differant numbor' on /shifting_content/menu was seen but not reported, as it is probably upstream copy.",
+  "cost": {
+    "model_usd": 0.003563,
+    "notes": "estimate from 81917 total tokens (85% cache read / 10% input / 5% output); range $0.0008-$0.0098"
+  },
+  "wall_time_s": 246.6
+}

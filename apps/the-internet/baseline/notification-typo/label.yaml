@@ -1,0 +1,16 @@
+id: internet.notification-typo
+app: the-internet
+title: "Notification message misspells 'unsuccessful'"
+description: "One of the rotating flash messages on /notification_message_rendered reads 'Action unsuccesful, please try again'. Upstream copy, outside the /typos demo; excused on the noise track."
+track: noise
+kind: baseline
+category: copy
+class: deterministic
+severity: minor
+where: { route: /notification_message_rendered }
+found_by:
+  - kind: text
+    note: "'unsuccesful' in the flash message"
+tolerance: { route: prefix, role: any }
+split: public
+upstream_ref: "upstream app.rb (notification messages); checked by apps/the-internet/verify.ts"

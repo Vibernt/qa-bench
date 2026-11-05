@@ -1,0 +1,7 @@
+{
+  "name": "human",
+  "version": "0.1.0",
+  "description": "A person tests the episode from its brief and files findings in the bench's findings format. Bring the episode up with `qa-bench up`, then import the findings with `qa-bench run --adapter human --findings <file>`.",
+  "mode": "manual",
+  "network": "host"
+}

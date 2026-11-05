@@ -1,0 +1,19 @@
+id: expense.stale-state
+app: expense-app
+title: "List is stale after a write"
+description: "The list is served from a 60-second cache per filter, so a new or edited expense doesn't show until it expires."
+track: regression
+kind: defect
+category: consistency
+class: deterministic
+severity: major
+where: { route: /expenses, role: editor }
+switch:
+  env: { DEFECT: stale_state }
+  exclusive: expense-defect   # the app takes one DEFECT value at a time
+found_by:
+  - kind: value
+    note: "After saving, the list (and its total) doesn't show the write; it appears about 60 s later"
+tolerance: { route: prefix }
+split: public
+upstream_ref: "apps/expense-app/app/src/server.ts (DEFECT=stale_state); checked by apps/expense-app/verify.ts"

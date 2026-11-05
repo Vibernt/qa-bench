@@ -1,0 +1,48 @@
+{
+  "name": "sample-app-web",
+  "homepage": "https://www.saucedemo.com",
+  "version": "3.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=24.9.0"
+  },
+  "dependencies": {
+    "@backtrace/react": "^0.5.1",
+    "@fontsource/dm-mono": "5.3.0",
+    "@fontsource/dm-sans": "5.3.0",
+    "@fortawesome/fontawesome-svg-core": "^6.7.2",
+    "@fortawesome/free-solid-svg-icons": "^6.7.2",
+    "@fortawesome/react-fontawesome": "^3.3.1",
+    "@react-pdf/renderer": "^4.5.1",
+    "js-cookie": "^3.0.8",
+    "react": "^19.2.7",
+    "react-burger-menu": "^3.0.6",
+    "react-dom": "^19.2.7",
+    "react-router-dom": "^7.18.3"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.0.3",
+    "prop-types": "^15.7.2",
+    "vite": "^8.3.5"
+  },
+  "scripts": {
+    "start": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "volta": {
+    "node": "24.9.0"
+  }
+}

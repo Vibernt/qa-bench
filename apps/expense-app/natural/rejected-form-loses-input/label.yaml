@@ -1,0 +1,18 @@
+id: expense.rejected-form-loses-input
+app: expense-app
+title: "A form the server rejects comes back blank, with no error message"
+description: "When the server rejects an add (for example a whitespace-only title, which passes the browser's required check), it answers 400 with an empty Add expense form: no message says what was wrong and everything typed is lost. Found by agents in the B0 sample runs; not planted."
+track: regression
+kind: natural
+category: error-handling
+class: deterministic
+severity: minor
+where: { route: /expenses, role: editor }
+found_by:
+  - kind: behaviour
+    description_pattern: "(reject|400|invalid|whitespace|blank|empty|bypass).*(no (error|message|feedback|explanation)|without (an? )?(error|message)|lost|loses|cleared|discard|blank|empty form)"
+    also_categories: [usability]
+    note: "A rejected add re-renders a blank form with no error message and the typed values gone"
+tolerance: { route: prefix, role: any }
+split: public
+upstream_ref: "apps/expense-app/app/src/server.ts (POST /expenses renders expenseForm(undefined) on 400); checked by apps/expense-app/verify.ts"

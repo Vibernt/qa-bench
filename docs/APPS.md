@@ -1,8 +1,8 @@
 # Apps we run or maintain
 
 Licences were checked on 4 Nov 2026 from each project's own LICENSE file (via the GitHub API, or by reading the file
-when the API said NOASSERTION). **Recheck at every pin bump.** Nothing is pinned yet. Pick the pins in B0/B1 and
-record them in each `apps/<app>/upstream.json`.
+when the API said NOASSERTION). **Recheck at every pin bump.** The B0 apps are pinned (expense-app, swag-labs, the-internet); pick the
+others' pins in B1 and record them in each `apps/<app>/upstream.json`.
 
 **What each "use" means:**
 - **Adopt:** vendor the code here, modify it and redistribute it.
@@ -16,7 +16,7 @@ record them in each `apps/<app>/upstream.json`.
 | Expense app (ours) | Signed-in, 2 roles | MIT (ours) | Adopt: in `apps/expense-app` | B0 | 7.1, 7.3, 7.5, 7.8 |
 | Survey site (ours) | Public site, templates | MIT (ours) | Adopt: in `apps/survey-site` | B1 | 7.4 |
 | Swag Labs (`saucelabs/sample-app-web`) | Small shop with faulty users | MIT | Adopt | B0 | 7.1, 7.3 |
-| the-internet (`tourdedave/the-internet`) | Tricky UI patterns | Apache-2.0 | Run only | B0 | 7.4 |
+| the-internet (`saucelabs/the-internet`, formerly `tourdedave/the-internet`) | Tricky UI patterns | Apache-2.0 | Run only | B0 | 7.4 |
 | UI Test Automation Playground (`Inflectra/ui-test-automation-playground`) | Timing, dynamic IDs, shadow DOM | Apache-2.0 | Run only | B1 | 7.4 |
 | RealWorld "Conduit" (`gothinkster/realworld`) | Medium-style social and content app | MIT (spec); check each chosen implementation | Mutate | B1 | 7.1, 7.5, 7.8 |
 | ParaBank (`parasoft/parabank`) | Online bank | Apache-2.0 | Mutate | B1 | 7.1 |
@@ -45,7 +45,7 @@ We may run these unmodified if one becomes useful (BD7).
 ## Per app
 
 ### Expense app (ours)
-- **Source:** `apps/expense-app/app` (TypeScript and SQLite, no runtime dependencies), copied from Touchstone's fixture.
+- **Source:** `apps/expense-app/app` (TypeScript and SQLite, no runtime dependencies).
 - **Why:** a signed-in app with two roles (viewer and editor), eight seeded expenses, a deterministic reset and
   trusted read-only evidence queries (`expense.byTitle`, `byId`, `list`, `sum`). It is the core of the regression
   track.
@@ -53,13 +53,13 @@ We may run these unmodified if one becomes useful (BD7).
 
   | Toggle | What goes wrong | Category | Class |
   |---|---|---|---|
-  | `permission_bypass` | Viewer can edit | permission | deterministic |
+  | `permission_bypass` | Viewer can open the edit form and save, though no Edit link is shown | permission | deterministic |
   | `stale_state` | List served from a 60-second cache after a write | consistency | deterministic |
   | `ignored_filter` | Category filter ignored | functional | deterministic |
   | `wrong_total` | Total omits the last row | consistency | deterministic |
   | `missing_persistence` | Save shows success but nothing is written | functional | deterministic |
   | `duplicate_write` | One save writes two rows | functional | deterministic |
-  | `misleading_success` | Wrong success message | copy/functional | deterministic |
+  | `misleading_success` | Edit says "Expense updated" but nothing is saved | functional (copy) | deterministic |
 
 - **Deliberate change already built:** `VARIANT=relabel` changes the visible labels. Title becomes "Expense title",
   Save becomes "Save expense" and "Add expense" becomes "New expense". Behaviour stays the same.
@@ -68,12 +68,12 @@ We may run these unmodified if one becomes useful (BD7).
   - accessibility mutations (focus trap, missing label, reflow);
   - usability mutations (extra step, hidden primary action).
 - **Don't bring:**
-  - `VARIANT=hostile`: an open redirect plus injection routes, built for Touchstone's own security tests;
+  - `VARIANT=hostile`: an open redirect plus injection routes, for security-tool tests outside the bench's scope;
   - `fixture-credentials.json`: generate test accounts per episode instead.
-- **In this repo** at `apps/expense-app/app` since 5 Nov (BD2).
+- **In the bench** since 5 Nov: `bench-entry.mjs` generates accounts per episode; `verify.ts` checks all 8 labels.
 
 ### Survey site (ours)
-- **Source:** `apps/survey-site/app`, copied from Touchstone's fixture.
+- **Source:** `apps/survey-site/app`.
 - **Contents:**
   - a home page, 12 blog articles, contact, search, about and team pages;
   - two landmark variants;
@@ -84,7 +84,7 @@ We may run these unmodified if one becomes useful (BD7).
 - **Variants:**
   - `cosmetic`: editorial text changes. This is the deliberate-change control.
   - `structural`: adds a Phone field and a "Request callback" action to the contact page.
-- **In this repo** at `apps/survey-site/app` since 5 Nov (BD2).
+- **Not wired into a track yet** (B1, noise track).
 
 ### Swag Labs
 - **Built-in faulty users:** `problem_user`, `error_user`, `visual_user`, `performance_glitch_user` and
@@ -110,7 +110,7 @@ We may run these unmodified if one becomes useful (BD7).
 ### ParaBank
 - **Coverage:** transfers, bill pay, loans and balances.
 - **Plant:** calculation and consistency bugs, such as a balance that doesn't match its transactions, or rounding
-  errors. This feeds invariant mining (SP39).
+  errors. This feeds invariant mining (RQ6).
 
 ### Ghost
 - **Coverage:** members sign-up, magic-link sign-in, newsletters and paid tiers. Mail goes through Mailpit.
@@ -130,7 +130,7 @@ We may run these unmodified if one becomes useful (BD7).
 ### WebTestBench
 - **Source:** import the apps and their natural-defect labels, keeping their Apache-2.0 NOTICE and marking every
   change we make.
-- **Comparison:** their headline is that every model scored < 30% F1. SP43 compares against it.
+- **Comparison:** their headline is that every model scored < 30% F1. RQ10 compares against it.
 
 ### ACT rules
 - **Source:** adopt the passing and failing test cases as rule-level accessibility ground truth.
@@ -157,7 +157,7 @@ We may run these unmodified if one becomes useful (BD7).
   - non-EE code only.
 
 ### WebArena; VisualWebArena
-- **Use:** run only, for goal-only usability agents (SP42).
+- **Use:** run only, for goal-only usability agents (RQ9).
 - **Licence caveat:** never redistribute their images or content. Pull them from upstream at setup.
 
 ### fragmatic.ai; opensenselabs.com

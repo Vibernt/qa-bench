@@ -1,0 +1,22 @@
+id: expense.duplicate-write
+app: expense-app
+title: "One save writes two rows"
+description: "Saving a new expense once inserts it twice."
+track: regression
+kind: defect
+category: functional
+class: deterministic
+severity: critical
+where: { route: /expenses, role: editor }
+switch:
+  env: { DEFECT: duplicate_write }
+  exclusive: expense-defect   # the app takes one DEFECT value at a time
+found_by:
+  - kind: value
+    note: "Two identical rows appear after one save"
+  - kind: value
+    category: consistency
+    note: "Row count or total grows by two entries after one save"
+tolerance: { route: prefix }
+split: public
+upstream_ref: "apps/expense-app/app/src/server.ts (DEFECT=duplicate_write); checked by apps/expense-app/verify.ts"

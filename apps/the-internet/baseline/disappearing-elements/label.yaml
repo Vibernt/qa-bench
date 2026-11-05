@@ -1,0 +1,54 @@
+id: internet.disappearing-elements
+app: the-internet
+title: "Disappearing Elements demo: the Gallery link comes and goes, and the menu links 404"
+description: >-
+  /disappearing_elements shows a menu whose Gallery item appears on about half of the loads; About, Contact Us,
+  Portfolio and Gallery all lead to "Not Found" (404) pages. Both are by design.
+track: noise
+kind: baseline
+category: functional
+class: deterministic
+severity: minor
+where: { route: /disappearing_elements }
+found_by:
+  - kind: element
+    selector: "a[href=/gallery/]"
+    note: "Gallery menu item is missing on some loads"
+  - kind: element
+    category: consistency
+    note: "Menu differs between loads"
+  - kind: status
+    note: "Menu links lead to Not Found pages"
+  - kind: status
+    category: error-handling
+    note: "Menu links answer 404"
+  - kind: status
+    route: /about/
+    note: "About page is Not Found (404)"
+  - kind: status
+    route: /contact-us/
+    note: "Contact Us page is Not Found (404)"
+  - kind: status
+    route: /portfolio/
+    note: "Portfolio page is Not Found (404)"
+  - kind: status
+    route: /gallery/
+    note: "Gallery page is Not Found (404)"
+  - kind: status
+    route: /about/
+    category: error-handling
+    note: "About answers 404"
+  - kind: status
+    route: /contact-us/
+    category: error-handling
+    note: "Contact Us answers 404"
+  - kind: status
+    route: /portfolio/
+    category: error-handling
+    note: "Portfolio answers 404"
+  - kind: status
+    route: /gallery/
+    category: error-handling
+    note: "Gallery answers 404"
+split: public
+upstream_ref: "server.rb get '/disappearing_elements' (saucelabs/the-internet); checked by apps/the-internet/verify.ts"
