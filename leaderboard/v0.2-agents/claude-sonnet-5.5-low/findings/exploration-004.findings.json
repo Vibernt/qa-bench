@@ -1,0 +1,32 @@
+{
+  "episode_id": "exploration-004",
+  "system": {
+    "name": "claude-sonnet-5.5-low",
+    "version": "claude-sonnet-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "viewer",
+        "selector": "[data-testid=\"total\"]"
+      },
+      "category": "functional",
+      "description": "When filtering by category the total still shows the all-expenses total ($399.99) instead of the total of the visible rows (e.g. meals should be $177.25).",
+      "confidence": 0.6,
+      "severity": "major",
+      "repro": [
+        "Sign in as viewer",
+        "Open /expenses?category=meals",
+        "Total reads $399.99 though only 3 meals rows ($68.40+$15.60+$93.25) are shown"
+      ]
+    }
+  ],
+  "notes": "Permissions for viewer (403 on new/edit/delete) and server validation looked fine. Totals unfiltered correct.",
+  "cost": {
+    "model_usd": 0.014305,
+    "notes": "estimate from 16442 total tokens (85% cache read / 10% input / 5% output); range $0.0033-$0.0395"
+  },
+  "wall_time_s": 28.7
+}

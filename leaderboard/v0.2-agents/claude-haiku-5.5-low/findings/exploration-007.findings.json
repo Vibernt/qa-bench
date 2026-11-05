@@ -1,0 +1,55 @@
+{
+  "episode_id": "exploration-007",
+  "system": {
+    "name": "claude-haiku-5.5-low",
+    "version": "claude-haiku-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/runtime-config.js",
+        "role": "customer"
+      },
+      "category": "security-hygiene",
+      "description": "The public /runtime-config.js file served to every visitor (including signed-out users) contains the customer's username and password in base64 (field a decodes to customer-acbb:xaSnbnjubn3NtRgb).",
+      "confidence": 0.9,
+      "severity": "critical",
+      "repro": [
+        "GET http://127.0.0.1:32778/runtime-config.js without signing in",
+        "Base64-decode the value of field a: Y3VzdG9tZXItYWNiYjp4YVNuYm5qdWJuM050Umdi gives customer-acbb:xaSnbnjubn3NtRgb"
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"add-to-cart-sauce-labs-bike-light\"]"
+      },
+      "category": "functional",
+      "description": "After 'Reset App State' with an item in the cart, the product list keeps showing 'Remove' on Sauce Labs Bike Light even though the cart badge is cleared and the cart is empty. The stale state only goes away after a reload.",
+      "confidence": 0.8,
+      "severity": "major",
+      "repro": [
+        "Sign in as customer",
+        "Click Add to cart on Sauce Labs Bike Light",
+        "Open the menu and click Reset App State",
+        "Observe the Bike Light button still reads Remove and the cart badge is gone",
+        "Reload the page and observe the button reads Add to cart"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "10-reset-stale-button.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Tested sign-in, inventory listing and sorting (price and name), product detail pages, add to cart and badge, cart contents, checkout totals (tax 8 percent and total checked), order completion, logout, and anonymous access to protected routes (redirect to login works). Not tested in depth: checkout field validation, cart quantity edits, performance timing, accessibility.",
+  "cost": {
+    "model_usd": 0.0011,
+    "notes": "estimate from 25285 total tokens (85% cache read / 10% input / 5% output); range $0.0003-$0.0030"
+  },
+  "wall_time_s": 271.4
+}

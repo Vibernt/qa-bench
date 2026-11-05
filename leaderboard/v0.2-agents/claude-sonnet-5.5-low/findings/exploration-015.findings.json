@@ -1,0 +1,55 @@
+{
+  "episode_id": "exploration-015",
+  "system": {
+    "name": "claude-sonnet-5.5-low",
+    "version": "claude-sonnet-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/checkout-step-one.html",
+        "role": "customer",
+        "selector": "[data-test=\"lastName\"]"
+      },
+      "category": "functional",
+      "description": "Last Name field loses its value; checkout step one always fails with 'Error: Last Name is required' even when filled, so checkout is blocked.",
+      "confidence": 0.8,
+      "severity": "critical",
+      "repro": [
+        "Sign in",
+        "Add an item, open cart, Checkout",
+        "Fill first name, last name, postal code",
+        "Click Continue"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "sum.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer"
+      },
+      "category": "functional",
+      "description": "Adding a third item to the cart from the inventory page is ignored: badge stays at 2 and the item is not in the cart.",
+      "confidence": 0.5,
+      "severity": "major",
+      "repro": [
+        "Sign in",
+        "Click Add to cart on first, second, then third product",
+        "Badge shows 2 and cart has 2 items"
+      ]
+    }
+  ],
+  "notes": "Limited time; only inventory/cart/checkout step one explored.",
+  "cost": {
+    "model_usd": 0.014177,
+    "notes": "estimate from 16295 total tokens (85% cache read / 10% input / 5% output); range $0.0033-$0.0391"
+  },
+  "wall_time_s": 74.5
+}

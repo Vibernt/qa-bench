@@ -1,0 +1,14 @@
+{
+  "episode_id": "regression-009",
+  "system": {
+    "name": "claude-sonnet-5.5-low",
+    "version": "claude-sonnet-5-5@low"
+  },
+  "findings": [],
+  "notes": "All five journeys behaved correctly (totals, filter, add, edit, viewer read-only).",
+  "cost": {
+    "model_usd": 0.018107,
+    "notes": "estimate from 20813 total tokens (85% cache read / 10% input / 5% output); range $0.0042-$0.0500"
+  },
+  "wall_time_s": 72
+}

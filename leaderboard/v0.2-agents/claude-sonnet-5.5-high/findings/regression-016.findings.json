@@ -1,0 +1,39 @@
+{
+  "episode_id": "regression-016",
+  "system": {
+    "name": "claude-sonnet-5.5-high",
+    "version": "claude-sonnet-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses/new",
+        "role": "editor",
+        "selector": "form[action=\"/expenses\"]"
+      },
+      "category": "error-handling",
+      "description": "Submitting the add (or edit) form with a value the server rejects (e.g. a whitespace-only title, or an amount with more than 2 decimals such as 1.999 or 1e3 sent without browser validation) returns HTTP 400 and re-renders the form with every field cleared and no error message, so the user gets no explanation and loses what they typed.",
+      "confidence": 0.5,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor-640c",
+        "Open /expenses/new",
+        "Enter title '   ' (spaces) and amount 5, save",
+        "Observe a blank form, no error message, entered data lost (server answered 400)"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "invalid.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Checked: total equals sum of rows (all, filtered, after add/edit/delete), category filter, add flow with flash and persistence after reload, edit flow with immediate list/total update, viewer 403 on direct GET/POST edit/add/delete and no controls, XSS escaping, login errors. No other defects found. Amount/title length have no upper bound (not reported).",
+  "cost": {
+    "model_usd": 0.026611,
+    "notes": "estimate from 30587 total tokens (85% cache read / 10% input / 5% output); range $0.0061-$0.0734"
+  },
+  "wall_time_s": 98
+}

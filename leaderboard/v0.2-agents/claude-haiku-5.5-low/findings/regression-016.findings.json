@@ -1,0 +1,14 @@
+{
+  "episode_id": "regression-016",
+  "system": {
+    "name": "claude-haiku-5.5-low",
+    "version": "claude-haiku-5-5@low"
+  },
+  "findings": [],
+  "notes": "Covered all five journeys. Viewer list total matched the row sum ($399.99); category filter (travel, meals, office, and the form Apply) listed only matching rows with correct subtotals; viewer had no edit/add/new controls and direct GET /expenses/1/edit, POST /expenses/1 and POST /expenses returned 403. Editor add saved with flash 'Expense saved', exactly one new row, total updated to $410.24, and the row persisted after reload. Editor edit of expense 1 from $42.50 to $50.00 updated the list and total immediately ($417.74) and after reload. Server validation rejected negative amount, bogus category and non-numeric amount with 400. Missing expense returned 404. Page loads were under 100 ms. Side effects on the shared app: added 'QA Test Item' (office, $10.25) and changed expense 1 to $50.00. No defects were found.",
+  "cost": {
+    "model_usd": 0.000971,
+    "notes": "estimate from 22313 total tokens (85% cache read / 10% input / 5% output); range $0.0002-$0.0027"
+  },
+  "wall_time_s": 78.2
+}

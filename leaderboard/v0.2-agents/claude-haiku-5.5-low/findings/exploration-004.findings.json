@@ -1,0 +1,71 @@
+{
+  "episode_id": "exploration-004",
+  "system": {
+    "name": "claude-haiku-5.5-low",
+    "version": "claude-haiku-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "viewer",
+        "selector": "[data-testid=\"total\"]"
+      },
+      "category": "functional",
+      "description": "The Total does not follow the category filter. With category=travel, meals or office, or a category with no rows, the table shows only the filtered rows but the total still reads $399.99 (the total of all expenses). Travel rows sum to $185.25.",
+      "confidence": 0.9,
+      "severity": "major",
+      "repro": [
+        "Sign in as viewer-691c",
+        "Open /expenses; Total reads $399.99",
+        "Select category 'travel' and click Apply",
+        "Table shows 3 travel rows (sum $185.25) but Total still reads $399.99"
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses/new",
+        "role": "editor",
+        "selector": "form[action=\"/expenses\"]"
+      },
+      "category": "functional",
+      "description": "A new expense is reported as saved ('Expense saved') but is not persisted: it does not appear in the expenses list for the editor or the viewer, and the total does not change. Saves are silently lost.",
+      "confidence": 0.9,
+      "severity": "critical",
+      "repro": [
+        "Sign in as editor-ac77",
+        "Open /expenses/new",
+        "Enter title 'QA UI Add', category office, amount 10.00, click Save",
+        "Page shows 'Expense saved'",
+        "Open /expenses: no 'QA UI Add' row, total still $399.99; same result in a fresh session and as viewer"
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/expenses/3/edit",
+        "role": "editor",
+        "selector": "input[name=\"amount\"]"
+      },
+      "category": "consistency",
+      "description": "Editing an expense reports 'updated' but the change is not shown in the list: Notebooks still shows $12.99 and the total is unchanged, while the edit form for the same expense now shows 100.00. The list and the edit form disagree and the stored value is lost.",
+      "confidence": 0.9,
+      "severity": "critical",
+      "repro": [
+        "Sign in as editor-ac77",
+        "Open /expenses/3/edit, set amount to 100, click Save",
+        "Page redirects with 'updated' flash",
+        "Open /expenses: Notebooks still $12.99, total still $399.99",
+        "Open /expenses/3/edit again: amount shows 100.00"
+      ]
+    }
+  ],
+  "notes": "Verified: viewer gets 403 on /expenses/new, edit pages and POST writes (create, edit, delete); editor gets Edit/Delete controls and an Add link; the unfiltered total equals the sum of rows ($399.99). Not tested: delete flow, performance timings, accessibility beyond the form labels, and the accepted-but-not-listed rows from direct POSTs (0/opaqueredirect responses for zero, huge and HTML-title inputs, which likely share the f2 cause). Screenshots were not saved to evidence/.",
+  "cost": {
+    "model_usd": 0.001123,
+    "notes": "estimate from 25818 total tokens (85% cache read / 10% input / 5% output); range $0.0003-$0.0031"
+  },
+  "wall_time_s": 77.9
+}

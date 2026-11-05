@@ -1,0 +1,44 @@
+{
+  "episode_id": "regression-012",
+  "system": {
+    "name": "claude-haiku-5.5-low",
+    "version": "claude-haiku-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "[data-testid=\"total\"]"
+      },
+      "category": "consistency",
+      "description": "After saving an add or an edit, the expense list and the total still show the old data for about 10-15 seconds, even though the success message ('Expense saved' / 'Expense updated') is shown. A newly added row is missing from the list and the total, and a reload right after saving still shows the old amount. The data is saved correctly and appears on the list after about 15 seconds, so the list is served stale.",
+      "confidence": 0.85,
+      "severity": "major",
+      "repro": [
+        "Sign in as editor-9b65 at /login.",
+        "Open /expenses/2/edit (Team lunch, $68.40), change Amount to 71.11 and click 'Save expense'.",
+        "The page redirects to /expenses?flash=saved with 'Expense updated' shown, but the Team lunch row still shows $68.40 and the total still shows $417.49.",
+        "Reload /expenses at 0 s, 5 s and 10 s: the old values remain. At about 15 s the row shows $71.11 and the total shows $420.20.",
+        "Add flow: click 'New expense', enter 'QA test taxi', travel, 10.00, save. The success message appears, but the list shows 8 rows (no new row) with the old total, and it stays that way on reload for a while. After about 15 s the new row appears."
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "after-add.png"
+        },
+        {
+          "kind": "screenshot",
+          "path": "after-edit.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Tested: viewer total equals sum of rows (399.99 before my writes); viewer category filter lists only the chosen category and per-filter totals are correct; viewer gets 403 for GET /expenses/new, GET /expenses/9/edit, POST /expenses and POST /expenses/1; the viewer page has no edit or add controls. Editor sees Edit and Delete buttons, which the brief does not mention; I did not treat them as a bug. Test data was changed during testing (one expense added, one amount edited). I did not test delete, login error handling, a11y or perf in depth because of the time budget.",
+  "cost": {
+    "model_usd": 0.001205,
+    "notes": "estimate from 27708 total tokens (85% cache read / 10% input / 5% output); range $0.0003-$0.0033"
+  },
+  "wall_time_s": 171.8
+}

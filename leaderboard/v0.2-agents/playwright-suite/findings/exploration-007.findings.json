@@ -1,0 +1,99 @@
+{
+  "episode_id": "exploration-007",
+  "system": {
+    "name": "playwright-suite",
+    "version": "0.1.0"
+  },
+  "findings": [
+    {
+      "id": "pw-001-swag-page-copy",
+      "where": {
+        "route": "/checkout-step-one.html",
+        "role": "customer",
+        "step": "checkout-info",
+        "selector": "[data-test=\"title\"]",
+        "region": {
+          "x": 20,
+          "y": -69,
+          "w": 190,
+          "h": 48,
+          "viewport": "1280x720"
+        }
+      },
+      "category": "copy",
+      "description": "[data-test=\"title\"] reads \"Checkout: Your details\", expected \"Checkout: Your Information\"",
+      "confidence": 0.5,
+      "detected_at_s": 7.8,
+      "check": "swag.page-copy",
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "pw-001-swag-page-copy.png"
+        }
+      ]
+    },
+    {
+      "id": "pw-002-swag-page-copy",
+      "where": {
+        "route": "/checkout-step-two.html",
+        "role": "customer",
+        "step": "overview",
+        "selector": "[data-test=\"title\"]",
+        "region": {
+          "x": 20,
+          "y": -69,
+          "w": 244,
+          "h": 48,
+          "viewport": "1280x720"
+        }
+      },
+      "category": "copy",
+      "description": "[data-test=\"title\"] reads \"Checkout: Review your order\", expected \"Checkout: Overview\"",
+      "confidence": 0.5,
+      "detected_at_s": 11.3,
+      "check": "swag.page-copy",
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "pw-002-swag-page-copy.png"
+        }
+      ]
+    },
+    {
+      "id": "pw-003-swag-page-copy",
+      "where": {
+        "route": "/checkout-complete.html",
+        "role": "customer",
+        "step": "finish",
+        "selector": "[data-test=\"complete-header\"]",
+        "region": {
+          "x": 472,
+          "y": 296,
+          "w": 336,
+          "h": 32,
+          "viewport": "1280x720"
+        }
+      },
+      "category": "copy",
+      "description": "[data-test=\"complete-header\"] reads \"Order placed. Thank you!\", expected \"Thank you for your order!\"",
+      "confidence": 0.5,
+      "detected_at_s": 14.5,
+      "check": "swag.page-copy",
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "pw-003-swag-page-copy.png"
+        }
+      ]
+    }
+  ],
+  "cost": {
+    "compute_usd": 0,
+    "model_usd": 0,
+    "notes": "Scripted Playwright suite: no model calls; local compute only, not metered."
+  },
+  "wall_time_s": 18.7,
+  "started_at": "2026-11-05T15:10:23.723Z",
+  "finished_at": "2026-11-05T15:10:42.428Z",
+  "notes": "suite swag-labs for app swag-labs"
+}

@@ -1,0 +1,98 @@
+{
+  "episode_id": "exploration-010",
+  "system": {
+    "name": "claude-haiku-5.5-high",
+    "version": "claude-haiku-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "editor"
+      },
+      "category": "functional",
+      "description": "The add form accepts an amount with 14 integer digits (99999999999999.99) and saves it. After that, the expense list (All categories and the travel filter) returns a 500 'Server error' page for every user, and that expense's edit page also returns 500. Amounts up to about 10 billion (9999999999.99) work, so there is no upper bound on amount.",
+      "confidence": 0.85,
+      "severity": "critical",
+      "repro": [
+        "Sign in as editor-9a25 and open /expenses/new.",
+        "Enter title 'Large amount test', category travel, amount 99999999999999.99 and click Save. The app redirects to /expenses?flash=saved.",
+        "Open /expenses. It returns HTTP 500 with 'Server error / Something went wrong' instead of the table.",
+        "Open /expenses?category=travel. Same 500. Filters for meals and office still load.",
+        "Sign in as viewer-a924 and open /expenses. The same 500 appears, so the whole list is down for all users until the row is deleted."
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "f1-list-500.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses/new",
+        "role": "editor"
+      },
+      "category": "error-handling",
+      "description": "When the server rejects an add (for example a whitespace-only title, which passes the browser 'required' check), the app re-renders the blank Add form with HTTP 400 and no error message. The user's category and amount are cleared and nothing says why the save failed.",
+      "confidence": 0.6,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor-9a25 and open /expenses/new.",
+        "Enter title three spaces, category meals, amount 5, then click Save.",
+        "The page reloads as an empty 'Add expense' form. No error text appears and the entered values are lost."
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "f3-whitespace-title.png"
+        }
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/expenses",
+        "role": "editor"
+      },
+      "category": "consistency",
+      "description": "Saving a new expense shows 'Expense saved' and saving an edit shows 'Expense updated', but deleting an expense redirects to /expenses with no confirmation message, so the user gets no feedback that the delete worked.",
+      "confidence": 0.4,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor-9a25 and open /expenses.",
+        "Click Delete on any row.",
+        "The page reloads at /expenses and the row is gone, but there is no status message. Add and Edit both show one."
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "f4-after-delete.png"
+        }
+      ]
+    },
+    {
+      "id": "f4",
+      "where": {
+        "route": "/expenses",
+        "role": "viewer"
+      },
+      "category": "security-hygiene",
+      "description": "Pages send no hardening headers: there is no Content-Security-Policy, X-Frame-Options (or frame-ancestors), or X-Content-Type-Options on /expenses or /login responses. The app can be framed by other sites, which matters for a page that shows totals and has forms.",
+      "confidence": 0.35,
+      "severity": "minor",
+      "repro": [
+        "Sign in as viewer-a924.",
+        "Request /expenses and inspect the response headers. Only content-type, cache-control and connection are present."
+      ]
+    }
+  ],
+  "notes": "Tested in headless Chromium and over HTTP. Permissions held: the viewer gets 403 on /expenses/new, /expenses/:id/edit and POST add, edit and delete, and sees no Add/Edit/Delete controls. Totals matched the row sums in every filter, and the edit forms pre-fill correctly. Escaping of HTML in titles is correct. Login errors are generic and logout invalidates the session. Test data was added and cleaned up, but the seeded rows remain (plus test rows such as 'y...' titles, 'Load item N' and 'Bulk item N'). The category filter is dropped after add/edit, which I did not report as a bug. Zero-amount expenses are accepted because min=0, which I did not report either. Not tested: login rate limiting and concurrency. Evidence screenshots are in the evidence folder next to this file.",
+  "cost": {
+    "model_usd": 0.003326,
+    "notes": "estimate from 76464 total tokens (85% cache read / 10% input / 5% output); range $0.0008-$0.0092"
+  },
+  "wall_time_s": 283.9
+}

@@ -1,0 +1,83 @@
+{
+  "episode_id": "exploration-001",
+  "system": {
+    "name": "claude-haiku-5.5-high",
+    "version": "claude-haiku-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "[aria-label=\"Expenses\"]"
+      },
+      "category": "functional",
+      "description": "Saving a new expense once (a single POST /expenses, 303 response) stores two identical records: the list shows the expense twice and the total rises by twice the amount (adding 'Dupe probe', office, $5.00 raised the total by $10.00). Every create I tried produced a duplicate, and deleting one copy leaves the other.",
+      "confidence": 0.9,
+      "severity": "critical",
+      "repro": [
+        "Sign in as editor-4826",
+        "Open /expenses/new",
+        "Enter title 'Dupe probe', category office, amount 5.00",
+        "Click 'Save expense' once",
+        "Open /expenses: 'Dupe probe office $5.00' appears twice and the Total increases by $10.00"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "after-add.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses",
+        "role": "viewer",
+        "selector": "tbody tr td:first-child"
+      },
+      "category": "security-hygiene",
+      "description": "Expense titles are inserted into the expenses table as raw HTML, not escaped. A title such as '<b>BOLDTEXT</b>' is rendered as bold markup in the list for every signed-in user (including viewers), so a stored title can inject markup into other users' pages and break table rows. Script execution was not confirmed because titles are cut to 20 characters (see f3).",
+      "confidence": 0.75,
+      "severity": "critical",
+      "repro": [
+        "Sign in as editor-4826",
+        "Open /expenses/new, enter title '<b>BOLDTEXT</b>', category office, amount 2.00, click Save expense",
+        "Sign in as viewer-bcea and open /expenses",
+        "The title cell contains a real <b> element (cell innerHTML is '<b>BOLDTEXT</b>') instead of the literal text",
+        "Edit form for the same record shows the raw string '<b>BOLDTEXT</b>', so the list is not escaping it"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "f2-title-html.png"
+        }
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/expenses/new",
+        "role": "editor",
+        "selector": "[name=\"title\"]"
+      },
+      "category": "functional",
+      "description": "Expense titles are silently truncated to 20 characters on both create and edit. The form has no maxlength and shows no warning, so 'New expense with a long title 0123456789' is saved as 'New expense with a l' and 'Edited title that is quite long 0123456789' as 'Edited title that is'.",
+      "confidence": 0.85,
+      "severity": "major",
+      "repro": [
+        "Sign in as editor-4826",
+        "Open /expenses/new and enter the title 'New expense with a long title 0123456789', category office, amount 3.00",
+        "Click Save expense",
+        "The list shows 'New expense with a l' with no warning; opening Edit shows the truncated 20-character title"
+      ]
+    }
+  ],
+  "notes": "Time budget ~10 min. Testing created many junk expense records in the shared instance (QA add test, Dupe probe, Zero test, Big test, Ital, Longxxx, QA3 and others) and changed Notebooks to 'Notebooks (renamed)' / 13.00 and Team lunch to 70.00; the injected titles also broke some rows in the list. Verified OK: viewer and editor see identical totals; category filter sums correct; viewer gets 403 on /expenses/new, /expenses/N/edit, POST /expenses, POST /expenses/N and POST /expenses/N/delete; anonymous access redirects to /login; logout invalidates the session cookie; login error message is shown; edit form values match list rows; a delete removes only one row; server rejects negative, empty, non-numeric and unknown-category values on edit. Not tested: load under concurrency, accessibility tooling (axe), and mobile layout.",
+  "cost": {
+    "model_usd": 0.003054,
+    "notes": "estimate from 70215 total tokens (85% cache read / 10% input / 5% output); range $0.0007-$0.0084"
+  },
+  "wall_time_s": 289
+}

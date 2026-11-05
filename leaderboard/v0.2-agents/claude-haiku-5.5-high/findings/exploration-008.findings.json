@@ -1,0 +1,86 @@
+{
+  "episode_id": "exploration-008",
+  "system": {
+    "name": "claude-haiku-5.5-high",
+    "version": "claude-haiku-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses/1/edit",
+        "role": "viewer",
+        "selector": "form[action=\"/expenses/1\"]"
+      },
+      "category": "permission",
+      "description": "Viewers can edit expenses. The list hides the Edit link from viewers, but the server accepts POST /expenses/{id} from a viewer session (303 to /expenses?flash=updated) and the row changes. The GET /expenses/{id}/edit page also renders the full editable form (with Save button) for viewers.",
+      "confidence": 0.95,
+      "severity": "critical",
+      "repro": [
+        "Sign in as viewer-9f08 at /login.",
+        "Open /expenses/1/edit directly: the \"Edit expense\" form with title, category, amount and \"Save expense\" is rendered (HTTP 200).",
+        "Submit POST /expenses/{id} with title, category and amount (e.g. title \"Viewer Edited Probe\", category office, amount 11.00) from the viewer session.",
+        "Response is 303 to /expenses?flash=updated, and the list now shows the changed row. The same POST for create (/expenses) and delete (/expenses/{id}/delete) returns 403, so only the edit route lacks the role check."
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses/1/edit",
+        "role": "editor",
+        "selector": "select[name=\"category\"]"
+      },
+      "category": "functional",
+      "description": "Saving an existing expense in the edit form silently changes its category to travel. The edit form does not pre-select the saved category (no selected option), so the browser shows \"travel\" for every expense. Example: \"Cat Probe\" saved as office, edited by changing only the title, came back as travel. Affects any expense not in travel, including the seeded Team lunch (meals), Notebooks and Printer paper (office).",
+      "confidence": 0.95,
+      "severity": "critical",
+      "repro": [
+        "Sign in as editor-f577 and open /expenses/new. Create \"Cat Probe\", category office, amount 3.00.",
+        "Open its Edit page from the list. The Category select shows \"travel\" instead of \"office\".",
+        "Change only the title to \"Cat Probe edited\" and click Save expense.",
+        "The list row now shows category travel. The category was silently overwritten.",
+        "Also open /expenses/2/edit (Team lunch, meals): the form shows travel."
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "form[action=\"/expenses\"]"
+      },
+      "category": "error-handling",
+      "description": "When the server rejects a new expense (for example a whitespace-only title, or a negative or non-numeric amount), it returns a 400 page that re-renders an empty New expense form with no error message and no retained input. The user cannot tell what was wrong or what to fix.",
+      "confidence": 0.5,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor-f577 and open /expenses/new.",
+        "Enter title \"   \" (spaces only), category travel, amount 5, and click Save expense.",
+        "The server returns 400 and the form is shown blank with no message explaining the error."
+      ]
+    },
+    {
+      "id": "f4",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "form[action$=\"/delete\"] button"
+      },
+      "category": "consistency",
+      "description": "Save and edit show a flash confirmation (\"Expense saved\", \"Expense updated\") but deleting an expense redirects to /expenses with no confirmation message, so the user gets no feedback that the delete happened.",
+      "confidence": 0.4,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor-f577 and open /expenses.",
+        "Click Delete on any row (no confirmation dialog appears).",
+        "The page reloads at /expenses with no \"Expense deleted\" message, while create and edit show one."
+      ]
+    }
+  ],
+  "notes": "Tested as viewer and editor: login and logout, session cookie reuse after logout, anonymous redirects, category filter and totals (correct; totals match row sums, decimals correct), create/edit/delete via UI and HTTP, server-side validation of negative, zero, non-numeric, NaN/Infinity, bogus category and whitespace title, XSS-style title escaped in list, GET delete returns 404, unknown routes return 404, response times all under 15 ms. Not reported: no upper bound on amount (accepted 99999999999) and zero amount accepted, since these may be by design; no security headers (CSP, X-Frame-Options) and no CSRF tokens on forms, which were judged low-impact for this app. Test data created during the run was deleted, and the seeded totals were restored to $399.99. The brief lists /bench/out as the output path, but the prompt asked for the workspace findings.json, which was used.",
+  "cost": {
+    "model_usd": 0.002167,
+    "notes": "estimate from 49816 total tokens (85% cache read / 10% input / 5% output); range $0.0005-$0.0060"
+  },
+  "wall_time_s": 189.2
+}

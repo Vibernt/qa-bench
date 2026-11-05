@@ -1,0 +1,17 @@
+{
+  "episode_id": "regression-009",
+  "system": {
+    "name": "playwright-suite",
+    "version": "0.1.0"
+  },
+  "findings": [],
+  "cost": {
+    "compute_usd": 0,
+    "model_usd": 0,
+    "notes": "Scripted Playwright suite: no model calls; local compute only, not metered."
+  },
+  "wall_time_s": 32.8,
+  "started_at": "2026-11-05T15:09:32.592Z",
+  "finished_at": "2026-11-05T15:10:05.386Z",
+  "notes": "suite expense-app for app expense-app"
+}

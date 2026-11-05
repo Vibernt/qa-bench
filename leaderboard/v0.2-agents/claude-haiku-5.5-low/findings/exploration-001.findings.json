@@ -1,0 +1,33 @@
+{
+  "episode_id": "exploration-001",
+  "system": {
+    "name": "claude-haiku-5.5-low",
+    "version": "claude-haiku-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "editor"
+      },
+      "category": "functional",
+      "description": "Saving a new expense once creates two identical rows in the list and counts the amount twice in the total. One POST to /expenses produced two stored records (reproduced with title 'Dup check', $1.00, meals: two rows, and the total rose by $2.00). The duplicate is visible to viewers too, so the data is corrupted server-side.",
+      "confidence": 0.9,
+      "severity": "critical",
+      "repro": [
+        "Sign in as editor-4826 / vCTqtpjENHKniSqN.",
+        "Open /expenses/new.",
+        "Enter title 'Dup check', amount 1.00, category meals, and click 'Save expense' once.",
+        "Observe the redirect to /expenses?flash=saved, then two 'Dup check | meals | $1.00' rows and a total that includes both.",
+        "Sign in as viewer-bcea and observe the same two rows."
+      ]
+    }
+  ],
+  "notes": "Tested: viewer sign-in and read-only view, totals on the base list and per category filter (all correct), viewer 403 on /expenses/new, /expenses/:id/edit and POST create/delete, editor create and edit flows, 404 for unknown ids. Not tested in depth: performance timing, accessibility, delete flow for duplicate rows, and visual review beyond the screenshots. Test data created during the run: 'QA test item' (edited to $20.00) and 'Dup check' rows (two).",
+  "cost": {
+    "model_usd": 0.001096,
+    "notes": "estimate from 25202 total tokens (85% cache read / 10% input / 5% output); range $0.0003-$0.0030"
+  },
+  "wall_time_s": 89.8
+}

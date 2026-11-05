@@ -1,0 +1,66 @@
+{
+  "episode_id": "regression-003",
+  "system": {
+    "name": "playwright-suite",
+    "version": "0.1.0"
+  },
+  "findings": [
+    {
+      "id": "pw-001-expense-add-control-label",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "step": "add",
+        "selector": "a[href=\"/expenses/new\"]"
+      },
+      "category": "copy",
+      "description": "The add control reads \"New expense\"; the journey calls it \"Add expense\"",
+      "confidence": 0.5,
+      "detected_at_s": 27.6,
+      "check": "expense.add-control-label",
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "pw-001-expense-add-control-label.png"
+        }
+      ]
+    },
+    {
+      "id": "pw-002-expense-edit-message-matches",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "step": "edit",
+        "selector": "[role=\"status\"]"
+      },
+      "category": "functional",
+      "description": "The app says \"Expense updated\" but the change was not saved: \"Train to Pune\" still has $43.00, not $43.50",
+      "confidence": 0.85,
+      "repro": [
+        "Sign in as editor",
+        "Open /expenses/1/edit",
+        "Change the amount of \"Train to Pune\" from $42.50 to $43.50",
+        "Save",
+        "Read the row and the total",
+        "Open /expenses/1/edit again: the old amount is still there"
+      ],
+      "detected_at_s": 29.6,
+      "check": "expense.edit-message-matches",
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "pw-002-expense-edit-message-matches.png"
+        }
+      ]
+    }
+  ],
+  "cost": {
+    "compute_usd": 0,
+    "model_usd": 0,
+    "notes": "Scripted Playwright suite: no model calls; local compute only, not metered."
+  },
+  "wall_time_s": 32.3,
+  "started_at": "2026-11-05T15:09:32.591Z",
+  "finished_at": "2026-11-05T15:10:04.902Z",
+  "notes": "suite expense-app for app expense-app"
+}

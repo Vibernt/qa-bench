@@ -1,0 +1,150 @@
+{
+  "episode_id": "regression-011",
+  "system": {
+    "name": "claude-sonnet-5.5-high",
+    "version": "claude-sonnet-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"product-sort-container\"]"
+      },
+      "category": "functional",
+      "description": "Changing the sort order does nothing. The list stays in Name (A to Z) order for Z to A, price low to high and price high to low.",
+      "confidence": 0.9,
+      "severity": "major",
+      "repro": [
+        "Sign in as customer",
+        "On /inventory.html choose each of Name (Z to A), Price (low to high), Price (high to low)",
+        "The product order never changes"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "inventory.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test^=\"remove-\"]"
+      },
+      "category": "functional",
+      "description": "Remove on the product list does nothing. The button stays Remove and the cart badge does not drop, so a product can only be removed from the cart page.",
+      "confidence": 0.9,
+      "severity": "major",
+      "repro": [
+        "Sign in as customer",
+        "Click Add to basket on two products (badge 2)",
+        "Click Remove on one of them",
+        "Button stays Remove and badge stays 2"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "added.png"
+        }
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/inventory-item.html",
+        "role": "customer",
+        "selector": "[data-test=\"remove\"]"
+      },
+      "category": "functional",
+      "description": "Remove on the product detail page does nothing. After Add to basket the button turns to Remove, but clicking it leaves the item in the cart and the badge unchanged.",
+      "confidence": 0.85,
+      "severity": "major",
+      "repro": [
+        "Sign in as customer",
+        "Open /inventory-item.html?id=4",
+        "Click Add to basket (badge increments)",
+        "Click Remove; the button and badge do not change"
+      ]
+    },
+    {
+      "id": "f4",
+      "where": {
+        "route": "/inventory-item.html",
+        "role": "customer"
+      },
+      "category": "functional",
+      "description": "The product detail page shows no description, although the list shows one. The console logs 'This component failed to render!'.",
+      "confidence": 0.85,
+      "severity": "major",
+      "repro": [
+        "Sign in as customer",
+        "Open /inventory-item.html?id=4 or click a product name",
+        "Name, price and photo show but the description is missing"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "detail4.png"
+        }
+      ]
+    },
+    {
+      "id": "f5",
+      "where": {
+        "route": "/checkout-step-one.html",
+        "role": "customer",
+        "selector": "[data-test=\"lastName\"]"
+      },
+      "category": "functional",
+      "description": "Last Name is not validated. With First Name and Zip filled and Last Name empty, Continue goes to the overview. With only First Name filled the error says 'Postal Code is required' and never mentions Last Name.",
+      "confidence": 0.85,
+      "severity": "major",
+      "repro": [
+        "Sign in, add a product, open the cart, Checkout",
+        "Fill First Name and Zip, leave Last Name empty, Continue",
+        "The overview opens without an error",
+        "Alternatively fill only First Name and Continue: the error is 'Postal Code is required'"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "step1.png"
+        }
+      ]
+    },
+    {
+      "id": "f6",
+      "where": {
+        "route": "/checkout-step-two.html",
+        "role": "customer",
+        "selector": "[data-test=\"finish\"]"
+      },
+      "category": "functional",
+      "description": "Finish does not complete the order. The page stays on the overview, the cart keeps its items, and the console logs a page error 'Ra.cesetRart is not a function'. Checkout cannot be completed through the UI.",
+      "confidence": 0.9,
+      "severity": "critical",
+      "repro": [
+        "Sign in, add two products, open the cart, Checkout",
+        "Fill in the details and Continue",
+        "On the overview click Finish",
+        "Nothing happens; the URL stays /checkout-step-two.html and the badge still shows the items"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "afterfinish.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Sign-in, logout, auth redirects, tax and totals (8%), cart page Remove and Continue Shopping checked and fine. Copy says 'basket' where the brief says 'cart'; treated as deliberate and not reported.",
+  "cost": {
+    "model_usd": 0.039481,
+    "notes": "estimate from 45381 total tokens (85% cache read / 10% input / 5% output); range $0.0091-$0.1089"
+  },
+  "wall_time_s": 268.4
+}

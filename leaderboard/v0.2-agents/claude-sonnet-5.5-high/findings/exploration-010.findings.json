@@ -1,0 +1,76 @@
+{
+  "episode_id": "exploration-010",
+  "system": {
+    "name": "claude-sonnet-5.5-high",
+    "version": "claude-sonnet-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses/new",
+        "role": "editor",
+        "selector": "form[action=\"/expenses\"]"
+      },
+      "category": "error-handling",
+      "description": "Submitting the add/edit expense form with invalid data (e.g. negative amount or empty title, bypassing browser validation) returns a bare 400 page with an empty form: no error message says what was wrong, and everything the user typed is discarded. The same happens on the edit form.",
+      "confidence": 0.6,
+      "severity": "major",
+      "repro": [
+        "Sign in as editor",
+        "Open /expenses/new",
+        "Enter title 'Err', amount -3 (or POST with an empty title)",
+        "Submit",
+        "Page reloads as an empty form with HTTP 400 and no error text; values are lost"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "f1.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "form[action$=\"/delete\"] button"
+      },
+      "category": "usability",
+      "description": "Delete removes the expense immediately with no confirmation, and gives no feedback afterwards (add shows 'Expense saved', edit shows 'Expense updated', delete shows nothing). Deleting a non-existent id also silently redirects as if it succeeded instead of returning 404.",
+      "confidence": 0.4,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor",
+        "Open /expenses",
+        "Click Delete on any row",
+        "Row vanishes with no confirmation and no status message",
+        "POST /expenses/999/delete returns 303 rather than 404"
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/expenses/new",
+        "role": "editor",
+        "selector": "input[name=\"amount\"]"
+      },
+      "category": "functional",
+      "description": "Amount validation is too loose: zero-amount expenses and absurd values (e.g. 99999999999) are accepted and inflate the total (to $100000000409.09), with no upper bound.",
+      "confidence": 0.3,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor",
+        "POST /expenses with title=Big, category=meals, amount=99999999999",
+        "Row is saved and Total shows $100000000409.09"
+      ]
+    }
+  ],
+  "notes": "Totals (all, per category), permissions (viewer 403 on create/edit/delete, anon redirected to login), filtering, login errors, XSS escaping all behaved correctly. No JS in app. I added and deleted test rows as editor.",
+  "cost": {
+    "model_usd": 0.025816,
+    "notes": "estimate from 29674 total tokens (85% cache read / 10% input / 5% output); range $0.0059-$0.0712"
+  },
+  "wall_time_s": 89.5
+}

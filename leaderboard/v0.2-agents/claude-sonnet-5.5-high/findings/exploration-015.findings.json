@@ -1,0 +1,144 @@
+{
+  "episode_id": "exploration-015",
+  "system": {
+    "name": "claude-sonnet-5.5-high",
+    "version": "claude-sonnet-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/checkout-step-one.html",
+        "role": "customer",
+        "selector": "[data-test=\"lastName\"]"
+      },
+      "category": "functional",
+      "description": "Checkout step one cannot be completed: text typed in the Last Name field is written into the First Name field (Last Name stays empty), so 'Error: Last Name is required' is always shown even with all fields filled. Customers cannot check out.",
+      "confidence": 0.9,
+      "severity": "critical",
+      "repro": [
+        "Sign in as customer",
+        "Add Sauce Labs Backpack to cart",
+        "Open cart, click Checkout",
+        "Type Alice in First Name, Smith in Last Name, 12345 in Zip",
+        "Observe First Name now shows Smith, Last Name empty",
+        "Click Continue: 'Error: Last Name is required'"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "co2.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"product-sort-container\"]"
+      },
+      "category": "functional",
+      "description": "Product sort dropdown has no effect: choosing Name (Z to A), Price (low to high) or Price (high to low) leaves the list in A-Z order and the control reverts to 'Name (A to Z)'.",
+      "confidence": 0.85,
+      "severity": "major",
+      "repro": [
+        "Sign in as customer",
+        "On Products page choose 'Price (low to high)' in the sort dropdown",
+        "Order of products does not change and dropdown shows Name (A to Z)"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "inv.png"
+        }
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"add-to-cart-sauce-labs-bolt-t-shirt\"]"
+      },
+      "category": "functional",
+      "description": "Add to cart does nothing for Sauce Labs Bolt T-Shirt, Sauce Labs Fleece Jacket and Test.allTheThings() T-Shirt (Red) (item ids 1, 5, 3): button stays 'Add to cart', badge not incremented, item not in cart; the Add button on the detail page of these items also does nothing. Backpack, Bike Light and Onesie add fine.",
+      "confidence": 0.85,
+      "severity": "major",
+      "repro": [
+        "Sign in as customer",
+        "Click Add to cart on Sauce Labs Bolt T-Shirt (or Fleece Jacket / Red T-Shirt)",
+        "Cart badge does not change; open cart: item missing"
+      ]
+    },
+    {
+      "id": "f4",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"remove-sauce-labs-backpack\"]"
+      },
+      "category": "functional",
+      "description": "Remove button on the products list and on the product detail page does nothing: item stays in cart, badge count unchanged and button stays 'Remove'. Removing only works from the cart page.",
+      "confidence": 0.8,
+      "severity": "major",
+      "repro": [
+        "Sign in as customer",
+        "Add Sauce Labs Backpack",
+        "Click Remove on the products page (or on /inventory-item.html?id=4)",
+        "Badge remains 1, button remains Remove"
+      ]
+    },
+    {
+      "id": "f5",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"about-sidebar-link\"]"
+      },
+      "category": "functional",
+      "description": "The About link in the side menu points to https://saucelabs.com/error/404 (a 404 page) instead of a valid About page.",
+      "confidence": 0.6,
+      "severity": "minor",
+      "repro": [
+        "Sign in as customer",
+        "Open the burger menu",
+        "Inspect/click About: href is https://saucelabs.com/error/404"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "menu.png"
+        }
+      ]
+    },
+    {
+      "id": "f6",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"inventory-item-sauce-labs-backpack-img\"]"
+      },
+      "category": "visual",
+      "description": "All six products show the same placeholder photo (a dog with a tennis ball, asset 'sl-404') instead of their own product images, on the list.",
+      "confidence": 0.4,
+      "severity": "minor",
+      "repro": [
+        "Sign in as customer",
+        "Look at product images on Products page: all identical"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "inv.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Could not test checkout overview/complete because step one is blocked (f1). Dynamic Catalog menu entry not explored in depth.",
+  "cost": {
+    "model_usd": 0.03803,
+    "notes": "estimate from 43713 total tokens (85% cache read / 10% input / 5% output); range $0.0087-$0.1049"
+  },
+  "wall_time_s": 386.6
+}

@@ -1,0 +1,80 @@
+{
+  "episode_id": "regression-003",
+  "system": {
+    "name": "claude-haiku-5.5-high",
+    "version": "claude-haiku-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "viewer",
+        "selector": "[aria-label=\"Expenses\"] tbody tr:last-child td:first-child"
+      },
+      "category": "security-hygiene",
+      "description": "Expense titles are rendered as raw HTML. A title such as <img src=x onerror=alert(1)> saved by an editor is stored and executes script in every user's browser when the list is opened (confirmed: an alert dialog fired in the viewer session). This is stored XSS.",
+      "confidence": 0.9,
+      "severity": "critical",
+      "repro": [
+        "Sign in as editor-5014 and open /expenses/new",
+        "Enter title <img src=x onerror=alert(1)>XSS, category travel, amount 5, and save",
+        "Sign in as viewer-eb09 and open /expenses",
+        "Observe a JavaScript dialog fires and the title cell contains a live img element instead of the literal text"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "xss-viewer-list.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses/2/edit",
+        "role": "editor",
+        "selector": "input[name=\"amount\"]"
+      },
+      "category": "functional",
+      "description": "Saving an expense edit silently truncates the amount to whole dollars. Expense 'Team lunch' at $68.40 became $68.00 after saving a title-only change; setting 68.45 or 68.99 stored $68.00, and 12.5 stored $12.00. The list and total then show the wrong amounts. Adding an expense with cents (e.g. 10.25, 0.10) is stored correctly, so the bug is specific to the edit path.",
+      "confidence": 0.9,
+      "severity": "critical",
+      "repro": [
+        "Sign in as editor-5014 and open /expenses/2/edit (amount shows 68.40)",
+        "Change only the title to 'Team lunch' and click Save expense",
+        "Open /expenses: the Team lunch row now shows $68.00 and the total drops by 0.40",
+        "Open /expenses/2/edit and enter 68.45, save: the row shows $68.00 instead of $68.45"
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/expenses/new",
+        "role": "editor",
+        "selector": "[name=\"title\"]"
+      },
+      "category": "error-handling",
+      "description": "When the server rejects a new expense (for example a whitespace-only title, which passes the browser 'required' check), the form silently reloads with every field cleared and no error message is shown. The user gets no explanation of what was wrong.",
+      "confidence": 0.6,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor-5014 and open /expenses/new",
+        "Enter three spaces as the title, choose meals, enter amount 7, and click Save expense",
+        "Observe the page returns to a blank New expense form with no error text, and the title, category and amount are cleared"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "blank-title-400.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Test data was changed during the run: rows 'QA Test Add', 'ZeroTest', an XSS-title row, 'Huge' ($99999999999), 'FloatA' (deleted), 'FloatB' were added; 'Team lunch' and 'Notebooks' (now 'Notebooks A4', travel, $12.00) were edited. Not tested: concurrency, pagination (none seen), accessibility beyond quick label checks. Also observed but not filed: the Delete button gives no confirmation and no success message; after editing from a filtered list the redirect drops the category filter; amount accepts 0 and very large values (99999999999 stored and shown as $99999999999.00) with no upper bound. Pages are unstyled plain HTML. Login is a plain form with no error check performed.",
+  "cost": {
+    "model_usd": 0.00175,
+    "notes": "estimate from 40241 total tokens (85% cache read / 10% input / 5% output); range $0.0004-$0.0048"
+  },
+  "wall_time_s": 152.2
+}

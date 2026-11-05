@@ -1,0 +1,112 @@
+{
+  "episode_id": "regression-011",
+  "system": {
+    "name": "claude-haiku-5.5-low",
+    "version": "claude-haiku-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"product-sort-container\"]"
+      },
+      "category": "functional",
+      "description": "The sort dropdown does not re-order the product list. Choosing Name (Z to A), Price (low to high) or Price (high to low) leaves the list in A to Z order, and the dropdown snaps back to Name (A to Z). A page error (onChange reading 'value') fires on each change.",
+      "confidence": 0.9,
+      "severity": "major",
+      "repro": [
+        "Sign in as customer-286a",
+        "Open the sort dropdown and choose Name (Z to A)",
+        "Observe the list stays Backpack, Bike Light, Bolt T-Shirt... and the dropdown shows Name (A to Z)",
+        "Choose Price (low to high) and Price (high to low) with the same result"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "sort_za.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"remove-sauce-labs-backpack\"]"
+      },
+      "category": "functional",
+      "description": "Choosing Remove on a product in the list does not restore its Add button. The button stays as Remove and the cart badge keeps the old count (2), while the cart page lists no items. The same happens on the product detail page.",
+      "confidence": 0.8,
+      "severity": "major",
+      "repro": [
+        "Sign in as customer-286a",
+        "Choose Add to basket on Sauce Labs Backpack and on Sauce Labs Bike Light; badge shows 2",
+        "Choose Remove on Sauce Labs Backpack",
+        "Observe the button still reads Remove and the badge still shows 2",
+        "Open the cart from the cart icon: no items are listed although the badge says 2"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "remove_onesie.png"
+        }
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/inventory-item.html",
+        "role": "customer",
+        "selector": "[data-test=\"inventory-item-desc\"]"
+      },
+      "category": "functional",
+      "description": "The product detail page shows no product description. The description element is missing, while the product list shows one for each product.",
+      "confidence": 0.8,
+      "severity": "major",
+      "repro": [
+        "Sign in as customer-286a",
+        "Choose the Sauce Labs Backpack name on the list",
+        "Observe the detail page shows name and price but no description"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "detail_backpack.png"
+        }
+      ]
+    },
+    {
+      "id": "f4",
+      "where": {
+        "route": "/checkout-step-two.html",
+        "role": "customer",
+        "selector": "[data-test=\"finish\"]"
+      },
+      "category": "functional",
+      "description": "Choosing Finish on the checkout overview does not complete the order. The page throws a TypeError ('Ra.cesetRart is not a function'), the URL stays on /checkout-step-two.html, and the confirmation page never appears.",
+      "confidence": 0.9,
+      "severity": "critical",
+      "repro": [
+        "Sign in as customer-286a",
+        "Add Sauce Labs Backpack and Sauce Labs Onesie and open the cart",
+        "Choose Checkout, fill First Name, Last Name and Zip, and choose Continue",
+        "On the overview, choose Finish",
+        "Observe no navigation to /checkout-complete.html and a page error in the console"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "overview.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Verified correct: product list shows six products with names, prices and images; detail page name and price match the list; add to cart badge counts 2; cart lines show quantity 1 and matching prices; overview totals are correct (37.98 item total, 3.04 tax at 8%, 41.02 total); logout returns to the login page and /inventory.html redirects to / when logged out. Not reached because of the Finish bug: confirmation page, cart clearing after order, Back Home. The 'Add to basket' button label was not reported because it may be deliberate copy.",
+  "cost": {
+    "model_usd": 0.001488,
+    "notes": "estimate from 34204 total tokens (85% cache read / 10% input / 5% output); range $0.0003-$0.0041"
+  },
+  "wall_time_s": 152.1
+}

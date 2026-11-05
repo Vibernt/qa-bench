@@ -1,0 +1,98 @@
+{
+  "episode_id": "regression-019",
+  "system": {
+    "name": "playwright-suite",
+    "version": "0.1.0"
+  },
+  "findings": [
+    {
+      "id": "pw-001-expense-add-control-label",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "step": "add",
+        "selector": "a[href=\"/expenses/new\"]"
+      },
+      "category": "copy",
+      "description": "The add control reads \"New expense\"; the journey calls it \"Add expense\"",
+      "confidence": 0.5,
+      "detected_at_s": 27.8,
+      "check": "expense.add-control-label",
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "pw-001-expense-add-control-label.png"
+        }
+      ]
+    },
+    {
+      "id": "pw-002-expense-add-one-row",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "step": "add",
+        "selector": "table[aria-label=\"Expenses\"]"
+      },
+      "category": "functional",
+      "description": "Saving one new expense added 2 rows to the list",
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "pw-002-expense-add-one-row.png"
+        },
+        {
+          "kind": "dom",
+          "excerpt": "Train to Pune | travel | $42.50\nTeam lunch | meals | $68.40\nNotebooks | office | $12.99\nClient taxi | travel | $18.75\nCoffee with team | meals | $15.60\nPrinter paper | office | $24.50\nHotel booking | travel | $124.00\nProject dinner | meals | $93.25\nQA suite check expense | office | $12.34\nQA suite check expense | office | $12.34"
+        }
+      ],
+      "confidence": 0.9,
+      "repro": [
+        "Sign in as editor",
+        "Open /expenses and note the rows",
+        "Choose \"Add expense\"",
+        "Save title \"QA suite check expense\", category office, amount 12.34",
+        "Count the rows with that title"
+      ],
+      "detected_at_s": 28.2,
+      "check": "expense.add-one-row"
+    },
+    {
+      "id": "pw-003-expense-total-equals-sum",
+      "where": {
+        "route": "/expenses",
+        "role": "viewer",
+        "step": "filter",
+        "selector": "[data-testid=\"total\"]"
+      },
+      "category": "consistency",
+      "description": "Expense total is wrong: the total shows $425.67 but the 3 listed amounts add up to $186.25",
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "pw-003-expense-total-equals-sum.png"
+        },
+        {
+          "kind": "dom",
+          "excerpt": "Total: $425.67\nTrain to Pune | travel | $43.50\nClient taxi | travel | $18.75\nHotel booking | travel | $124.00"
+        }
+      ],
+      "confidence": 0.95,
+      "repro": [
+        "Sign in as viewer",
+        "Open /expenses?category=travel",
+        "Add up the Amount column and compare it with the total under the table"
+      ],
+      "detected_at_s": 30.8,
+      "check": "expense.total-equals-sum"
+    }
+  ],
+  "cost": {
+    "compute_usd": 0,
+    "model_usd": 0,
+    "notes": "Scripted Playwright suite: no model calls; local compute only, not metered."
+  },
+  "wall_time_s": 32.4,
+  "started_at": "2026-11-05T15:09:32.639Z",
+  "finished_at": "2026-11-05T15:10:05.062Z",
+  "notes": "suite expense-app for app expense-app"
+}

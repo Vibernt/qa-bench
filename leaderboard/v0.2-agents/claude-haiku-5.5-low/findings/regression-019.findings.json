@@ -1,0 +1,50 @@
+{
+  "episode_id": "regression-019",
+  "system": {
+    "name": "claude-haiku-5.5-low",
+    "version": "claude-haiku-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "[data-testid=\"total\"]"
+      },
+      "category": "functional",
+      "description": "Saving one new expense creates two identical rows in the list and the total counts it twice. A single submit of 'QA Test Item' (meals, 10.25) produced two rows at $10.25 each, and the total rose by 20.50 instead of 10.25. The duplicate persists after reload.",
+      "confidence": 0.9,
+      "severity": "critical",
+      "repro": [
+        "Sign in as editor-b6a1 and note the list (8 rows, total $399.99).",
+        "Open /expenses/new, enter title 'QA Test Item', category meals, amount 10.25, and click 'Save expense' once.",
+        "Redirect to /expenses?flash=saved shows 'Expense saved'. The list now has 10 rows, two of them 'QA Test Item | $10.25', and the total is $420.49.",
+        "Reload /expenses. The two 'QA Test Item' rows and the total (now $420.49) remain, so the duplicate is persisted."
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses",
+        "role": "viewer",
+        "selector": "[data-testid=\"total\"]"
+      },
+      "category": "consistency",
+      "description": "The total does not change when a category filter is applied. Filtering to travel lists 3 rows that sum to $185.25, but the total still shows $399.99 (the same is true for meals and office).",
+      "confidence": 0.6,
+      "severity": "major",
+      "repro": [
+        "Sign in as viewer-0139 and open /expenses.",
+        "Choose 'travel' in the Category filter and click Apply.",
+        "Three travel rows are listed (42.50, 18.75, 124.00), but the total still reads 'Total: $399.99' instead of $185.25."
+      ]
+    }
+  ],
+  "notes": "Viewer: the list total matches the sum of rows on the unfiltered page; direct GET /expenses/1/edit, POST /expenses/1 and POST /expenses from the viewer session each returned 403. Editor: edit of expense 1 from 42.50 to 50.00 updated the row and total immediately and after reload. Not tested: performance timings, accessibility beyond the markup, and deleting the QA test rows (the two 'QA Test Item' rows were left in the app). The editor page labels the button 'New expense' while the brief says 'Add expense'; I did not report it as the wording may be intended.",
+  "cost": {
+    "model_usd": 0.000955,
+    "notes": "estimate from 21961 total tokens (85% cache read / 10% input / 5% output); range $0.0002-$0.0026"
+  },
+  "wall_time_s": 73.5
+}

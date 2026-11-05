@@ -1,0 +1,96 @@
+{
+  "episode_id": "exploration-008",
+  "system": {
+    "name": "claude-sonnet-5.5-high",
+    "version": "claude-sonnet-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses/1",
+        "role": "viewer"
+      },
+      "category": "permission",
+      "description": "A read-only viewer can modify expenses: POST /expenses/{id} is accepted (303 to ?flash=updated) and changes the title/category/amount, which also changes the shown total. Add (POST /expenses) and delete correctly return 403 for viewers, so the edit endpoint is missing the role check.",
+      "confidence": 0.95,
+      "severity": "critical",
+      "repro": [
+        "Sign in as viewer-9f08",
+        "POST /expenses/1 with title=HACK&category=meals&amount=1 using the viewer session cookie",
+        "Open /expenses: row 1 now reads HACK / $1.00 and the total dropped from $399.99 to $358.49"
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses/1/edit",
+        "role": "viewer"
+      },
+      "category": "permission",
+      "description": "A viewer can open the edit form for an expense by URL (200 with a full editable form and Save button), while /expenses/new returns 403 Forbidden for the same role.",
+      "confidence": 0.8,
+      "severity": "major",
+      "repro": [
+        "Sign in as viewer-9f08",
+        "Open /expenses/1/edit directly",
+        "The Edit expense form is shown instead of 403"
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/expenses/2/edit",
+        "role": "editor",
+        "selector": "select[name=\"category\"]"
+      },
+      "category": "functional",
+      "description": "The edit form does not preselect the expense's current category; the select always defaults to the first option (travel). Editing only the amount of a meals or office expense and saving silently changes its category to travel, corrupting data and the per-category filter and totals.",
+      "confidence": 0.9,
+      "severity": "major",
+      "repro": [
+        "Sign in as editor-f577",
+        "Open /expenses/2/edit (Team lunch, meals)",
+        "Observe the Category select shows 'travel'",
+        "Change only Amount to 70 and click Save expense",
+        "The list now shows Team lunch under travel"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "f-edit-category.png"
+        }
+      ]
+    },
+    {
+      "id": "f4",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "form[action=\"/expenses\"]"
+      },
+      "category": "error-handling",
+      "description": "Submitting invalid data on the New/Edit expense form (blank title, non-numeric amount, negative amount, invalid category) returns a 400 page with no error message at all, and the form is re-rendered empty so the user's input is lost and they get no hint what was wrong.",
+      "confidence": 0.7,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor-f577",
+        "Open /expenses/new",
+        "Enter a whitespace-only title and amount 5, submit",
+        "A blank New expense form is shown with no error text and the typed values are cleared"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "f-new-validation.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Totals and category filters were arithmetically correct; login errors, 404s, unauthenticated redirects and HTML escaping checked OK. Amount 0 is accepted (not reported). Browser UI testing was limited to the editor flows.",
+  "cost": {
+    "model_usd": 0.023325,
+    "notes": "estimate from 26810 total tokens (85% cache read / 10% input / 5% output); range $0.0054-$0.0643"
+  },
+  "wall_time_s": 70
+}
