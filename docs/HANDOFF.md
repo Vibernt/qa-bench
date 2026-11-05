@@ -114,6 +114,15 @@ systems, and the planted bugs are easier than real ones. These steps, in order, 
    - the WebTestBench import (7.2);
    - the held-out split (BD3).
 
+## Release checklist (before the repository goes public)
+- [ ] Decide whether public history starts fresh. Early commits mention the system the bench was first planned
+      around and personal paths; the current tree doesn't.
+- [ ] Recheck every licence in `NOTICE` and `upstream.json` (AGENTS.md rule 2).
+- [ ] Rerun every `verify.ts` and `npm run check` on the release commit.
+- [ ] Move the held-out split (BD3) to its private repository before any held-out label exists.
+- [ ] Update the repository description, which still says "plan stage", and its topics.
+- [ ] Tag `v0.1.0-b0` and write a GitHub release from `CHANGELOG.md`.
+
 ## Watch out for
 - **The noise track is the only part that touches live sites.** Keep their rules in the track file, and never run
   them in CI.
