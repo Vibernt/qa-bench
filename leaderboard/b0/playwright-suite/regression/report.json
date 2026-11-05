@@ -1,0 +1,1502 @@
+{
+  "bench_version": "0.1.0-b0",
+  "generated_at": "2026-11-05T03:54:53.036Z",
+  "system": {
+    "name": "playwright-suite",
+    "version": "0.1.0"
+  },
+  "run": {
+    "id": "b0-playwright-regression",
+    "tracks": [
+      "regression"
+    ],
+    "seeds": {
+      "regression": 20261105
+    },
+    "upstreams": {
+      "expense-app": {
+        "repo": "https://github.com/Vibernt/qa-bench",
+        "use": "adopt",
+        "pin": {
+          "path": "apps/expense-app/app"
+        }
+      },
+      "swag-labs": {
+        "repo": "https://github.com/saucelabs/sample-app-web",
+        "use": "adopt",
+        "pin": {
+          "commit": "ad62bb2d7950bc5747af46a75aa1fb1bd6b8622a",
+          "ref": "main"
+        }
+      }
+    },
+    "matcher": "deterministic-1"
+  },
+  "episodes": [
+    {
+      "episode_id": "regression-001",
+      "track": "regression",
+      "app": "expense-app",
+      "split": "public",
+      "answer_key_sha256": "7408c7a5613b0ec527eb14fea519c890175873ee4e342d6869f2ce7736bbf639",
+      "status": "scored",
+      "wall_time_s": 9.02,
+      "cost": {
+        "compute_usd": 0,
+        "model_usd": 0,
+        "notes": "Scripted Playwright suite: no model calls; local compute only, not metered."
+      },
+      "time_to_first_detection_s": null,
+      "decisions": [],
+      "labels": []
+    },
+    {
+      "episode_id": "regression-002",
+      "track": "regression",
+      "app": "swag-labs",
+      "split": "public",
+      "answer_key_sha256": "efee7f5be3343f7fd47042b4c59318c9a2ef179d41f5f27d79ad509845cd15a8",
+      "status": "scored",
+      "wall_time_s": 10.91,
+      "cost": {
+        "compute_usd": 0,
+        "model_usd": 0,
+        "notes": "Scripted Playwright suite: no model calls; local compute only, not metered."
+      },
+      "time_to_first_detection_s": null,
+      "decisions": [],
+      "labels": []
+    },
+    {
+      "episode_id": "regression-003",
+      "track": "regression",
+      "app": "expense-app",
+      "split": "public",
+      "answer_key_sha256": "df6b56b415261ceef1cadf54374b4d53d41edb1cef28459817003d0920b2a0e1",
+      "status": "scored",
+      "wall_time_s": 9.06,
+      "cost": {
+        "compute_usd": 0,
+        "model_usd": 0,
+        "notes": "Scripted Playwright suite: no model calls; local compute only, not metered."
+      },
+      "time_to_first_detection_s": 2.9,
+      "decisions": [
+        {
+          "finding_id": "pw-001-expense-viewer-endpoints-refused",
+          "decision": "true_positive",
+          "label_id": "expense.permission-bypass",
+          "category": "permission",
+          "reason": "first finding to hit defect expense.permission-bypass: matches expense.permission-bypass[0]: route, role, category; finding has no locator"
+        }
+      ],
+      "labels": [
+        {
+          "label_id": "expense.permission-bypass",
+          "kind": "defect",
+          "category": "permission",
+          "class": "deterministic",
+          "severity": "critical",
+          "hit": true,
+          "finding_ids": [
+            "pw-001-expense-viewer-endpoints-refused"
+          ]
+        }
+      ]
+    },
+    {
+      "episode_id": "regression-004",
+      "track": "regression",
+      "app": "expense-app",
+      "split": "public",
+      "answer_key_sha256": "82b7f44ac894ef4335b72ec106b8eec5d328801fa416339a57b52e1323ba0b60",
+      "status": "scored",
+      "wall_time_s": 9.09,
+      "cost": {
+        "compute_usd": 0,
+        "model_usd": 0,
+        "notes": "Scripted Playwright suite: no model calls; local compute only, not metered."
+      },
+      "time_to_first_detection_s": null,
+      "decisions": [
+        {
+          "finding_id": "pw-001-expense-add-control-label",
+          "decision": "false_alarm_change",
+          "label_id": "expense.relabel",
+          "category": "copy",
+          "reason": "flags deliberate change expense.relabel: matches expense.relabel[0]: route, role, category; locators not comparable"
+        }
+      ],
+      "labels": [
+        {
+          "label_id": "expense.relabel",
+          "kind": "change",
+          "category": "copy",
+          "class": "judged",
+          "severity": "minor",
+          "hit": true,
+          "finding_ids": [
+            "pw-001-expense-add-control-label"
+          ]
+        }
+      ]
+    },
+    {
+      "episode_id": "regression-005",
+      "track": "regression",
+      "app": "expense-app",
+      "split": "public",
+      "answer_key_sha256": "c890877e95b1aa05522d9600329fc6127dd8cdf0bf0a9481a36dfc7900dd6736",
+      "status": "scored",
+      "wall_time_s": 8.12,
+      "cost": {
+        "compute_usd": 0,
+        "model_usd": 0,
+        "notes": "Scripted Playwright suite: no model calls; local compute only, not metered."
+      },
+      "time_to_first_detection_s": 5.9,
+      "decisions": [
+        {
+          "finding_id": "pw-001-expense-filter-only-chosen",
+          "decision": "true_positive",
+          "label_id": "expense.ignored-filter",
+          "category": "functional",
+          "reason": "first finding to hit defect expense.ignored-filter: matches expense.ignored-filter[0]: route, role, category; locators not comparable"
+        }
+      ],
+      "labels": [
+        {
+          "label_id": "expense.ignored-filter",
+          "kind": "defect",
+          "category": "functional",
+          "class": "deterministic",
+          "severity": "major",
+          "hit": true,
+          "finding_ids": [
+            "pw-001-expense-filter-only-chosen"
+          ]
+        }
+      ]
+    },
+    {
+      "episode_id": "regression-006",
+      "track": "regression",
+      "app": "expense-app",
+      "split": "public",
+      "answer_key_sha256": "bcc461b14f4cf7d9f36c6da60b46b619b809431ef46d72fefcacc8a82a28badc",
+      "status": "scored",
+      "wall_time_s": 8.17,
+      "cost": {
+        "compute_usd": 0,
+        "model_usd": 0,
+        "notes": "Scripted Playwright suite: no model calls; local compute only, not metered."
+      },
+      "time_to_first_detection_s": 1.6,
+      "decisions": [
+        {
+          "finding_id": "pw-001-expense-total-equals-sum",
+          "decision": "true_positive",
+          "label_id": "expense.wrong-total",
+          "category": "consistency",
+          "reason": "first finding to hit defect expense.wrong-total: matches expense.wrong-total[0]: route, role, category and selector"
+        }
+      ],
+      "labels": [
+        {
+          "label_id": "expense.wrong-total",
+          "kind": "defect",
+          "category": "consistency",
+          "class": "deterministic",
+          "severity": "major",
+          "hit": true,
+          "finding_ids": [
+            "pw-001-expense-total-equals-sum"
+          ]
+        }
+      ]
+    },
+    {
+      "episode_id": "regression-007",
+      "track": "regression",
+      "app": "swag-labs",
+      "split": "public",
+      "answer_key_sha256": "f2ffee27eed4eb645d2ece9539799634e232d40ce24287cdb774a5819fbc7d76",
+      "status": "scored",
+      "wall_time_s": 29.03,
+      "cost": {
+        "compute_usd": 0,
+        "model_usd": 0,
+        "notes": "Scripted Playwright suite: no model calls; local compute only, not metered."
+      },
+      "time_to_first_detection_s": 1.5,
+      "decisions": [
+        {
+          "finding_id": "pw-001-swag-sort",
+          "decision": "true_positive",
+          "label_id": "swag.error-user",
+          "category": "functional",
+          "reason": "first finding to hit defect swag.error-user: matches swag.error-user[8]: route, role, category and selector"
+        },
+        {
+          "finding_id": "pw-002-page-console",
+          "decision": "duplicate",
+          "label_id": "swag.error-user",
+          "category": "error-handling",
+          "reason": "defect swag.error-user already found by pw-001-swag-sort: matches swag.error-user[9]: route, role, category; finding has no locator"
+        },
+        {
+          "finding_id": "pw-003-page-pageerror",
+          "decision": "duplicate",
+          "label_id": "swag.error-user",
+          "category": "error-handling",
+          "reason": "defect swag.error-user already found by pw-001-swag-sort: matches swag.error-user[9]: route, role, category; finding has no locator"
+        },
+        {
+          "finding_id": "pw-004-swag-detail-cart",
+          "decision": "duplicate",
+          "label_id": "swag.error-user",
+          "category": "functional",
+          "reason": "defect swag.error-user already found by pw-001-swag-sort: matches swag.error-user[10]: route, role, category; locators not comparable"
+        },
+        {
+          "finding_id": "pw-005-swag-detail-description",
+          "decision": "duplicate",
+          "label_id": "swag.error-user",
+          "category": "consistency",
+          "reason": "defect swag.error-user already found by pw-001-swag-sort: matches swag.error-user[10]: route, role, category; locators not comparable"
+        },
+        {
+          "finding_id": "pw-006-page-pageerror",
+          "decision": "duplicate",
+          "label_id": "swag.error-user",
+          "category": "error-handling",
+          "reason": "defect swag.error-user already found by pw-001-swag-sort: matches swag.error-user[0]: route, role, category; finding has no locator"
+        },
+        {
+          "finding_id": "pw-007-swag-cart-add",
+          "decision": "duplicate",
+          "label_id": "swag.error-user",
+          "category": "functional",
+          "reason": "defect swag.error-user already found by pw-001-swag-sort: matches swag.error-user[1]: route, role, category and selector"
+        },
+        {
+          "finding_id": "pw-008-swag-cart-remove",
+          "decision": "duplicate",
+          "label_id": "swag.error-user",
+          "category": "functional",
+          "reason": "defect swag.error-user already found by pw-001-swag-sort: matches swag.error-user[4]: route, role, category and selector"
+        },
+        {
+          "finding_id": "pw-009-page-pageerror",
+          "decision": "duplicate",
+          "label_id": "swag.error-user",
+          "category": "error-handling",
+          "reason": "defect swag.error-user already found by pw-001-swag-sort: matches swag.error-user[11]: route, role, category; finding has no locator"
+        },
+        {
+          "finding_id": "pw-010-swag-checkout-fields-kept",
+          "decision": "duplicate",
+          "label_id": "swag.error-user",
+          "category": "functional",
+          "reason": "defect swag.error-user already found by pw-001-swag-sort: matches swag.error-user[12]: route, role, category and selector"
+        },
+        {
+          "finding_id": "pw-011-page-pageerror",
+          "decision": "duplicate",
+          "label_id": "swag.error-user",
+          "category": "error-handling",
+          "reason": "defect swag.error-user already found by pw-001-swag-sort: matches swag.error-user[13]: route, role, category; finding has no locator"
+        },
+        {
+          "finding_id": "pw-012-swag-finish",
+          "decision": "duplicate",
+          "label_id": "swag.error-user",
+          "category": "functional",
+          "reason": "defect swag.error-user already found by pw-001-swag-sort: matches swag.error-user[14]: route, role, category and selector"
+        }
+      ],
+      "labels": [
+        {
+          "label_id": "swag.error-user",
+          "kind": "defect",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "critical",
+          "hit": true,
+          "finding_ids": [
+            "pw-001-swag-sort",
+            "pw-002-page-console",
+            "pw-003-page-pageerror",
+            "pw-004-swag-detail-cart",
+            "pw-005-swag-detail-description",
+            "pw-006-page-pageerror",
+            "pw-007-swag-cart-add",
+            "pw-008-swag-cart-remove",
+            "pw-009-page-pageerror",
+            "pw-010-swag-checkout-fields-kept",
+            "pw-011-page-pageerror",
+            "pw-012-swag-finish"
+          ]
+        }
+      ]
+    },
+    {
+      "episode_id": "regression-008",
+      "track": "regression",
+      "app": "expense-app",
+      "split": "public",
+      "answer_key_sha256": "41865735705ba14e0e78c194227dba9a26a80bc89e252f766864f9e0839d6bc8",
+      "status": "scored",
+      "wall_time_s": 7.4,
+      "cost": {
+        "compute_usd": 0,
+        "model_usd": 0,
+        "notes": "Scripted Playwright suite: no model calls; local compute only, not metered."
+      },
+      "time_to_first_detection_s": 4.1,
+      "decisions": [
+        {
+          "finding_id": "pw-001-expense-edit-message-matches",
+          "decision": "true_positive",
+          "label_id": "expense.misleading-success",
+          "category": "functional",
+          "reason": "first finding to hit defect expense.misleading-success: matches expense.misleading-success[0]: route, role, category; locators not comparable"
+        }
+      ],
+      "labels": [
+        {
+          "label_id": "expense.misleading-success",
+          "kind": "defect",
+          "category": "functional",
+          "class": "deterministic",
+          "severity": "major",
+          "hit": true,
+          "finding_ids": [
+            "pw-001-expense-edit-message-matches"
+          ]
+        }
+      ]
+    },
+    {
+      "episode_id": "regression-009",
+      "track": "regression",
+      "app": "swag-labs",
+      "split": "public",
+      "answer_key_sha256": "217e5b76de19cc37719b676a24434028cf0452ad4b949abd8f319fefab06d725",
+      "status": "scored",
+      "wall_time_s": 30.65,
+      "cost": {
+        "compute_usd": 0,
+        "model_usd": 0,
+        "notes": "Scripted Playwright suite: no model calls; local compute only, not metered."
+      },
+      "time_to_first_detection_s": 0.6,
+      "decisions": [
+        {
+          "finding_id": "pw-001-swag-product-images-distinct",
+          "decision": "true_positive",
+          "label_id": "swag.problem-user",
+          "category": "visual",
+          "reason": "first finding to hit defect swag.problem-user: matches swag.problem-user[0]: route, role, category; locators not comparable"
+        },
+        {
+          "finding_id": "pw-002-swag-sort",
+          "decision": "duplicate",
+          "label_id": "swag.problem-user",
+          "category": "functional",
+          "reason": "defect swag.problem-user already found by pw-001-swag-product-images-distinct: matches swag.problem-user[7]: route, role, category and selector"
+        },
+        {
+          "finding_id": "pw-003-swag-detail-matches",
+          "decision": "duplicate",
+          "label_id": "swag.problem-user",
+          "category": "functional",
+          "reason": "defect swag.problem-user already found by pw-001-swag-product-images-distinct: matches swag.problem-user[8]: route, role, category; locators not comparable"
+        },
+        {
+          "finding_id": "pw-004-swag-cart-add",
+          "decision": "duplicate",
+          "label_id": "swag.problem-user",
+          "category": "functional",
+          "reason": "defect swag.problem-user already found by pw-001-swag-product-images-distinct: matches swag.problem-user[1]: route, role, category and selector"
+        },
+        {
+          "finding_id": "pw-005-swag-cart-remove",
+          "decision": "duplicate",
+          "label_id": "swag.problem-user",
+          "category": "functional",
+          "reason": "defect swag.problem-user already found by pw-001-swag-product-images-distinct: matches swag.problem-user[4]: route, role, category and selector"
+        },
+        {
+          "finding_id": "pw-006-swag-page-copy",
+          "decision": "false_alarm_change",
+          "label_id": "swag.relabel",
+          "category": "copy",
+          "reason": "flags deliberate change swag.relabel: matches swag.relabel[4]: route, role, category and selector"
+        },
+        {
+          "finding_id": "pw-007-swag-checkout-fields-kept",
+          "decision": "duplicate",
+          "label_id": "swag.problem-user",
+          "category": "functional",
+          "reason": "defect swag.problem-user already found by pw-001-swag-product-images-distinct: matches swag.problem-user[12]: route, role, category and selector"
+        },
+        {
+          "finding_id": "pw-008-swag-overview-item-total",
+          "decision": "duplicate",
+          "label_id": "swag.problem-user",
+          "category": "consistency",
+          "reason": "defect swag.problem-user already found by pw-001-swag-product-images-distinct: matches swag.problem-user[14]: route, role, category and selector"
+        },
+        {
+          "finding_id": "pw-009-swag-finish-empties-cart",
+          "decision": "duplicate",
+          "label_id": "swag.problem-user",
+          "category": "functional",
+          "reason": "defect swag.problem-user already found by pw-001-swag-product-images-distinct: matches swag.problem-user[16]: route, role, category and selector"
+        }
+      ],
+      "labels": [
+        {
+          "label_id": "swag.problem-user",
+          "kind": "defect",
+          "category": "functional",
+          "class": "deterministic",
+          "severity": "critical",
+          "hit": true,
+          "finding_ids": [
+            "pw-001-swag-product-images-distinct",
+            "pw-002-swag-sort",
+            "pw-003-swag-detail-matches",
+            "pw-004-swag-cart-add",
+            "pw-005-swag-cart-remove",
+            "pw-007-swag-checkout-fields-kept",
+            "pw-008-swag-overview-item-total",
+            "pw-009-swag-finish-empties-cart"
+          ]
+        },
+        {
+          "label_id": "swag.relabel",
+          "kind": "change",
+          "category": "copy",
+          "class": "judged",
+          "severity": "minor",
+          "hit": true,
+          "finding_ids": [
+            "pw-006-swag-page-copy"
+          ]
+        },
+        {
+          "label_id": "swag.seasonal-banner",
+          "kind": "change",
+          "category": "visual",
+          "class": "judged",
+          "severity": "minor",
+          "hit": false
+        }
+      ]
+    },
+    {
+      "episode_id": "regression-010",
+      "track": "regression",
+      "app": "expense-app",
+      "split": "public",
+      "answer_key_sha256": "5804878bdd0c829d7e0a1e11589b614cad19b8fa97bfe8be6de19a673f3dcde7",
+      "status": "scored",
+      "wall_time_s": 7.65,
+      "cost": {
+        "compute_usd": 0,
+        "model_usd": 0,
+        "notes": "Scripted Playwright suite: no model calls; local compute only, not metered."
+      },
+      "time_to_first_detection_s": 2.9,
+      "decisions": [
+        {
+          "finding_id": "pw-001-expense-add-control-label",
+          "decision": "false_alarm_change",
+          "label_id": "expense.relabel",
+          "category": "copy",
+          "reason": "flags deliberate change expense.relabel: matches expense.relabel[0]: route, role, category; locators not comparable"
+        },
+        {
+          "finding_id": "pw-002-expense-add-one-row",
+          "decision": "true_positive",
+          "label_id": "expense.duplicate-write",
+          "category": "functional",
+          "reason": "first finding to hit defect expense.duplicate-write: matches expense.duplicate-write[0]: route, role, category; locators not comparable"
+        }
+      ],
+      "labels": [
+        {
+          "label_id": "expense.duplicate-write",
+          "kind": "defect",
+          "category": "functional",
+          "class": "deterministic",
+          "severity": "major",
+          "hit": true,
+          "finding_ids": [
+            "pw-002-expense-add-one-row"
+          ]
+        },
+        {
+          "label_id": "expense.relabel",
+          "kind": "change",
+          "category": "copy",
+          "class": "judged",
+          "severity": "minor",
+          "hit": true,
+          "finding_ids": [
+            "pw-001-expense-add-control-label"
+          ]
+        }
+      ]
+    },
+    {
+      "episode_id": "regression-011",
+      "track": "regression",
+      "app": "swag-labs",
+      "split": "public",
+      "answer_key_sha256": "bc7ce371a45c3e3bb1a987e2896592e51c3809fa1235d3a181e59e3d901f8cbd",
+      "status": "scored",
+      "wall_time_s": 30.8,
+      "cost": {
+        "compute_usd": 0,
+        "model_usd": 0,
+        "notes": "Scripted Playwright suite: no model calls; local compute only, not metered."
+      },
+      "time_to_first_detection_s": 0.5,
+      "decisions": [
+        {
+          "finding_id": "pw-001-swag-layout-grid",
+          "decision": "true_positive",
+          "label_id": "swag.visual-user",
+          "category": "visual",
+          "reason": "first finding to hit defect swag.visual-user: matches swag.visual-user[2]: route, role, category and selector"
+        },
+        {
+          "finding_id": "pw-002-swag-layout-grid",
+          "decision": "duplicate",
+          "label_id": "swag.visual-user",
+          "category": "visual",
+          "reason": "defect swag.visual-user already found by pw-001-swag-layout-grid: matches swag.visual-user[3]: route, role, category and selector"
+        },
+        {
+          "finding_id": "pw-003-swag-layout-grid",
+          "decision": "duplicate",
+          "label_id": "swag.visual-user",
+          "category": "visual",
+          "reason": "defect swag.visual-user already found by pw-001-swag-layout-grid: matches swag.visual-user[4]: route, role, category and selector"
+        },
+        {
+          "finding_id": "pw-004-swag-layout-container",
+          "decision": "duplicate",
+          "label_id": "swag.visual-user",
+          "category": "visual",
+          "reason": "defect swag.visual-user already found by pw-001-swag-layout-grid: matches swag.visual-user[0]: route, role, category and selector"
+        },
+        {
+          "finding_id": "pw-005-swag-layout-rotated",
+          "decision": "duplicate",
+          "label_id": "swag.visual-user",
+          "category": "visual",
+          "reason": "defect swag.visual-user already found by pw-001-swag-layout-grid: matches swag.visual-user[1]: route, role, category and selector"
+        },
+        {
+          "finding_id": "pw-006-swag-sort",
+          "decision": "duplicate",
+          "label_id": "swag.visual-user",
+          "category": "functional",
+          "reason": "defect swag.visual-user already found by pw-001-swag-layout-grid: matches swag.visual-user[8]: route, role, category and selector"
+        },
+        {
+          "finding_id": "pw-007-swag-detail-price",
+          "decision": "duplicate",
+          "label_id": "swag.visual-user",
+          "category": "consistency",
+          "reason": "defect swag.visual-user already found by pw-001-swag-layout-grid: matches swag.visual-user[5]: route, role, category and selector"
+        },
+        {
+          "finding_id": "pw-008-swag-layout-container",
+          "decision": "duplicate",
+          "label_id": "swag.visual-user",
+          "category": "visual",
+          "reason": "defect swag.visual-user already found by pw-001-swag-layout-grid: matches swag.visual-user[6]: route, role, category and selector"
+        },
+        {
+          "finding_id": "pw-009-swag-page-copy",
+          "decision": "false_alarm_change",
+          "label_id": "swag.checkout-copy",
+          "category": "copy",
+          "reason": "flags deliberate change swag.checkout-copy: matches swag.checkout-copy[0]: route, role, category and selector"
+        },
+        {
+          "finding_id": "pw-010-swag-page-copy",
+          "decision": "false_alarm_change",
+          "label_id": "swag.checkout-copy",
+          "category": "copy",
+          "reason": "flags deliberate change swag.checkout-copy: matches swag.checkout-copy[1]: route, role, category and selector"
+        },
+        {
+          "finding_id": "pw-011-swag-page-copy",
+          "decision": "false_alarm_change",
+          "label_id": "swag.checkout-copy",
+          "category": "copy",
+          "reason": "flags deliberate change swag.checkout-copy: matches swag.checkout-copy[2]: route, role, category and selector"
+        }
+      ],
+      "labels": [
+        {
+          "label_id": "swag.visual-user",
+          "kind": "defect",
+          "category": "visual",
+          "class": "judged",
+          "severity": "major",
+          "hit": true,
+          "finding_ids": [
+            "pw-001-swag-layout-grid",
+            "pw-002-swag-layout-grid",
+            "pw-003-swag-layout-grid",
+            "pw-004-swag-layout-container",
+            "pw-005-swag-layout-rotated",
+            "pw-006-swag-sort",
+            "pw-007-swag-detail-price",
+            "pw-008-swag-layout-container"
+          ]
+        },
+        {
+          "label_id": "swag.checkout-copy",
+          "kind": "change",
+          "category": "copy",
+          "class": "judged",
+          "severity": "minor",
+          "hit": true,
+          "finding_ids": [
+            "pw-009-swag-page-copy",
+            "pw-010-swag-page-copy",
+            "pw-011-swag-page-copy"
+          ]
+        }
+      ]
+    },
+    {
+      "episode_id": "regression-012",
+      "track": "regression",
+      "app": "expense-app",
+      "split": "public",
+      "answer_key_sha256": "ecd119e0ca6827fbb4f04d199f2ce601e002e00442c08354ce3c1ec3bc989e0a",
+      "status": "scored",
+      "wall_time_s": 8.44,
+      "cost": {
+        "compute_usd": 0,
+        "model_usd": 0,
+        "notes": "Scripted Playwright suite: no model calls; local compute only, not metered."
+      },
+      "time_to_first_detection_s": 2.5,
+      "decisions": [
+        {
+          "finding_id": "pw-001-expense-add-control-label",
+          "decision": "true_positive",
+          "label_id": "expense.missing-persistence",
+          "category": "copy",
+          "reason": "first finding to hit defect expense.missing-persistence: matches expense.missing-persistence[1]: route, role, category; locators not comparable"
+        },
+        {
+          "finding_id": "pw-002-expense-add-persists",
+          "decision": "duplicate",
+          "label_id": "expense.missing-persistence",
+          "category": "functional",
+          "reason": "defect expense.missing-persistence already found by pw-001-expense-add-control-label: matches expense.missing-persistence[0]: route, role, category; locators not comparable"
+        }
+      ],
+      "labels": [
+        {
+          "label_id": "expense.missing-persistence",
+          "kind": "defect",
+          "category": "functional",
+          "class": "deterministic",
+          "severity": "critical",
+          "hit": true,
+          "finding_ids": [
+            "pw-001-expense-add-control-label",
+            "pw-002-expense-add-persists"
+          ]
+        },
+        {
+          "label_id": "expense.relabel",
+          "kind": "change",
+          "category": "copy",
+          "class": "judged",
+          "severity": "minor",
+          "hit": false
+        }
+      ]
+    },
+    {
+      "episode_id": "regression-013",
+      "track": "regression",
+      "app": "swag-labs",
+      "split": "public",
+      "answer_key_sha256": "7c82c4f29d8426edc34ff7e4fced300d8aff6a029b4ee9f9f7344d7514017ea7",
+      "status": "scored",
+      "wall_time_s": 94.94,
+      "cost": {
+        "compute_usd": 0,
+        "model_usd": 0,
+        "notes": "Scripted Playwright suite: no model calls; local compute only, not metered."
+      },
+      "time_to_first_detection_s": 5.5,
+      "decisions": [
+        {
+          "finding_id": "pw-001-swag-sign-in-time",
+          "decision": "true_positive",
+          "label_id": "swag.performance-glitch-user",
+          "category": "perf",
+          "reason": "first finding to hit defect swag.performance-glitch-user: matches swag.performance-glitch-user[0]: route, role, category; locators not comparable"
+        }
+      ],
+      "labels": [
+        {
+          "label_id": "swag.performance-glitch-user",
+          "kind": "defect",
+          "category": "perf",
+          "class": "deterministic",
+          "severity": "major",
+          "hit": true,
+          "finding_ids": [
+            "pw-001-swag-sign-in-time"
+          ]
+        }
+      ]
+    },
+    {
+      "episode_id": "regression-014",
+      "track": "regression",
+      "app": "expense-app",
+      "split": "public",
+      "answer_key_sha256": "ee54e28af23776bf1cea18e59b9f5ef138495434b11a4c13240c9f6b88a1ca77",
+      "status": "scored",
+      "wall_time_s": 8.2,
+      "cost": {
+        "compute_usd": 0,
+        "model_usd": 0,
+        "notes": "Scripted Playwright suite: no model calls; local compute only, not metered."
+      },
+      "time_to_first_detection_s": 3.9,
+      "decisions": [
+        {
+          "finding_id": "pw-001-expense-add-control-label",
+          "decision": "false_alarm_change",
+          "label_id": "expense.relabel",
+          "category": "copy",
+          "reason": "flags deliberate change expense.relabel: matches expense.relabel[0]: route, role, category; locators not comparable"
+        },
+        {
+          "finding_id": "pw-002-expense-add-shows-now",
+          "decision": "true_positive",
+          "label_id": "expense.stale-state",
+          "category": "consistency",
+          "reason": "first finding to hit defect expense.stale-state: matches expense.stale-state[0]: route, role, category; locators not comparable"
+        },
+        {
+          "finding_id": "pw-003-expense-edit-shows-now",
+          "decision": "duplicate",
+          "label_id": "expense.stale-state",
+          "category": "consistency",
+          "reason": "defect expense.stale-state already found by pw-002-expense-add-shows-now: matches expense.stale-state[0]: route, role, category; locators not comparable"
+        }
+      ],
+      "labels": [
+        {
+          "label_id": "expense.stale-state",
+          "kind": "defect",
+          "category": "consistency",
+          "class": "deterministic",
+          "severity": "major",
+          "hit": true,
+          "finding_ids": [
+            "pw-002-expense-add-shows-now",
+            "pw-003-expense-edit-shows-now"
+          ]
+        },
+        {
+          "label_id": "expense.relabel",
+          "kind": "change",
+          "category": "copy",
+          "class": "judged",
+          "severity": "minor",
+          "hit": true,
+          "finding_ids": [
+            "pw-001-expense-add-control-label"
+          ]
+        }
+      ]
+    },
+    {
+      "episode_id": "regression-015",
+      "track": "regression",
+      "app": "swag-labs",
+      "split": "public",
+      "answer_key_sha256": "f63adca9c434f90e5e95b6bd41b78613c478e8ecc89829897df459e84ba9129f",
+      "status": "scored",
+      "wall_time_s": 1.66,
+      "cost": {
+        "compute_usd": 0,
+        "model_usd": 0,
+        "notes": "Scripted Playwright suite: no model calls; local compute only, not metered."
+      },
+      "time_to_first_detection_s": 0.6,
+      "decisions": [
+        {
+          "finding_id": "pw-001-swag-sign-in",
+          "decision": "true_positive",
+          "label_id": "swag.locked-out-user",
+          "category": "functional",
+          "reason": "first finding to hit defect swag.locked-out-user: matches swag.locked-out-user[0]: route, role, category and selector"
+        }
+      ],
+      "labels": [
+        {
+          "label_id": "swag.locked-out-user",
+          "kind": "defect",
+          "category": "functional",
+          "class": "deterministic",
+          "severity": "critical",
+          "hit": true,
+          "finding_ids": [
+            "pw-001-swag-sign-in"
+          ]
+        },
+        {
+          "label_id": "swag.price-change",
+          "kind": "change",
+          "category": "consistency",
+          "class": "judged",
+          "severity": "minor",
+          "hit": false
+        }
+      ]
+    },
+    {
+      "episode_id": "regression-016",
+      "track": "regression",
+      "app": "swag-labs",
+      "split": "public",
+      "answer_key_sha256": "18a666c28ada7216ae3891cd3499321c0d784714d8170f94fc3286721bbd4fb4",
+      "status": "scored",
+      "wall_time_s": 22.98,
+      "cost": {
+        "compute_usd": 0,
+        "model_usd": 0,
+        "notes": "Scripted Playwright suite: no model calls; local compute only, not metered."
+      },
+      "time_to_first_detection_s": null,
+      "decisions": [
+        {
+          "finding_id": "pw-001-swag-page-copy",
+          "decision": "false_alarm_change",
+          "label_id": "swag.relabel",
+          "category": "copy",
+          "reason": "flags deliberate change swag.relabel: matches swag.relabel[4]: route, role, category and selector"
+        },
+        {
+          "finding_id": "pw-002-swag-page-copy",
+          "decision": "false_alarm_change",
+          "label_id": "swag.checkout-copy",
+          "category": "copy",
+          "reason": "flags deliberate change swag.checkout-copy: matches swag.checkout-copy[0]: route, role, category and selector"
+        },
+        {
+          "finding_id": "pw-003-swag-page-copy",
+          "decision": "false_alarm_change",
+          "label_id": "swag.checkout-copy",
+          "category": "copy",
+          "reason": "flags deliberate change swag.checkout-copy: matches swag.checkout-copy[1]: route, role, category and selector"
+        },
+        {
+          "finding_id": "pw-004-swag-page-copy",
+          "decision": "false_alarm_change",
+          "label_id": "swag.checkout-copy",
+          "category": "copy",
+          "reason": "flags deliberate change swag.checkout-copy: matches swag.checkout-copy[2]: route, role, category and selector"
+        }
+      ],
+      "labels": [
+        {
+          "label_id": "swag.checkout-copy",
+          "kind": "change",
+          "category": "copy",
+          "class": "judged",
+          "severity": "minor",
+          "hit": true,
+          "finding_ids": [
+            "pw-002-swag-page-copy",
+            "pw-003-swag-page-copy",
+            "pw-004-swag-page-copy"
+          ]
+        },
+        {
+          "label_id": "swag.relabel",
+          "kind": "change",
+          "category": "copy",
+          "class": "judged",
+          "severity": "minor",
+          "hit": true,
+          "finding_ids": [
+            "pw-001-swag-page-copy"
+          ]
+        }
+      ]
+    },
+    {
+      "episode_id": "regression-017",
+      "track": "regression",
+      "app": "swag-labs",
+      "split": "public",
+      "answer_key_sha256": "136d796dc0bebeefb9d22e40a9221b0b16b3b9650d3cdcc8bbd777feeb2b9d63",
+      "status": "scored",
+      "wall_time_s": 10.14,
+      "cost": {
+        "compute_usd": 0,
+        "model_usd": 0,
+        "notes": "Scripted Playwright suite: no model calls; local compute only, not metered."
+      },
+      "time_to_first_detection_s": null,
+      "decisions": [],
+      "labels": [
+        {
+          "label_id": "swag.seasonal-banner",
+          "kind": "change",
+          "category": "visual",
+          "class": "judged",
+          "severity": "minor",
+          "hit": false
+        }
+      ]
+    }
+  ],
+  "metrics": {
+    "overall": {
+      "episodes": 17,
+      "episodes_scored": 17,
+      "defects_planted": 12,
+      "defects_found": 12,
+      "recall": 1,
+      "findings": 50,
+      "findings_matched": 39,
+      "findings_excused": 0,
+      "precision": 0.78,
+      "f1": 0.8764044943820225,
+      "changes_active": 11,
+      "changes_flagged": 7,
+      "change_flag_rate": 0.6363636363636364,
+      "false_alarms_on_changes": 11,
+      "false_alarms_per_100_episodes": 41.1764705882353,
+      "unmatched_findings": 0,
+      "unmatched_per_episode": 0,
+      "mean_time_to_first_detection_s": 2.7083333333333335,
+      "wall_time_s_total": 306.26000000000005,
+      "cost_usd_total": 0,
+      "human_hours_total": null,
+      "cost_per_defect_found_usd": 0,
+      "repro_rate": null
+    },
+    "by_track": {
+      "regression": {
+        "episodes": 17,
+        "episodes_scored": 17,
+        "defects_planted": 12,
+        "defects_found": 12,
+        "recall": 1,
+        "findings": 50,
+        "findings_matched": 39,
+        "findings_excused": 0,
+        "precision": 0.78,
+        "f1": 0.8764044943820225,
+        "changes_active": 11,
+        "changes_flagged": 7,
+        "change_flag_rate": 0.6363636363636364,
+        "false_alarms_on_changes": 11,
+        "false_alarms_per_100_episodes": 41.1764705882353,
+        "unmatched_findings": 0,
+        "unmatched_per_episode": 0,
+        "mean_time_to_first_detection_s": 2.7083333333333335,
+        "wall_time_s_total": 306.26000000000005,
+        "cost_usd_total": 0,
+        "human_hours_total": null,
+        "cost_per_defect_found_usd": 0,
+        "repro_rate": null
+      }
+    },
+    "by_category": {
+      "consistency": {
+        "episodes": 17,
+        "episodes_scored": 17,
+        "defects_planted": 2,
+        "defects_found": 2,
+        "recall": 1,
+        "findings": 6,
+        "findings_matched": 6,
+        "findings_excused": 0,
+        "precision": 1,
+        "f1": 1,
+        "changes_active": 1,
+        "changes_flagged": 0,
+        "change_flag_rate": 0,
+        "false_alarms_on_changes": 0,
+        "false_alarms_per_100_episodes": 0,
+        "unmatched_findings": 0,
+        "unmatched_per_episode": 0,
+        "mean_time_to_first_detection_s": null,
+        "wall_time_s_total": null,
+        "cost_usd_total": null,
+        "human_hours_total": null,
+        "cost_per_defect_found_usd": null,
+        "repro_rate": null
+      },
+      "copy": {
+        "episodes": 17,
+        "episodes_scored": 17,
+        "defects_planted": 0,
+        "defects_found": 0,
+        "recall": null,
+        "findings": 12,
+        "findings_matched": 1,
+        "findings_excused": 0,
+        "precision": 0.08333333333333333,
+        "f1": null,
+        "changes_active": 8,
+        "changes_flagged": 7,
+        "change_flag_rate": 0.875,
+        "false_alarms_on_changes": 11,
+        "false_alarms_per_100_episodes": 41.1764705882353,
+        "unmatched_findings": 0,
+        "unmatched_per_episode": 0,
+        "mean_time_to_first_detection_s": null,
+        "wall_time_s_total": null,
+        "cost_usd_total": null,
+        "human_hours_total": null,
+        "cost_per_defect_found_usd": null,
+        "repro_rate": null
+      },
+      "error-handling": {
+        "episodes": 17,
+        "episodes_scored": 17,
+        "defects_planted": 1,
+        "defects_found": 1,
+        "recall": 1,
+        "findings": 5,
+        "findings_matched": 5,
+        "findings_excused": 0,
+        "precision": 1,
+        "f1": 1,
+        "changes_active": 0,
+        "changes_flagged": 0,
+        "change_flag_rate": null,
+        "false_alarms_on_changes": 0,
+        "false_alarms_per_100_episodes": 0,
+        "unmatched_findings": 0,
+        "unmatched_per_episode": 0,
+        "mean_time_to_first_detection_s": null,
+        "wall_time_s_total": null,
+        "cost_usd_total": null,
+        "human_hours_total": null,
+        "cost_per_defect_found_usd": null,
+        "repro_rate": null
+      },
+      "functional": {
+        "episodes": 17,
+        "episodes_scored": 17,
+        "defects_planted": 6,
+        "defects_found": 6,
+        "recall": 1,
+        "findings": 18,
+        "findings_matched": 18,
+        "findings_excused": 0,
+        "precision": 1,
+        "f1": 1,
+        "changes_active": 0,
+        "changes_flagged": 0,
+        "change_flag_rate": null,
+        "false_alarms_on_changes": 0,
+        "false_alarms_per_100_episodes": 0,
+        "unmatched_findings": 0,
+        "unmatched_per_episode": 0,
+        "mean_time_to_first_detection_s": null,
+        "wall_time_s_total": null,
+        "cost_usd_total": null,
+        "human_hours_total": null,
+        "cost_per_defect_found_usd": null,
+        "repro_rate": null
+      },
+      "perf": {
+        "episodes": 17,
+        "episodes_scored": 17,
+        "defects_planted": 1,
+        "defects_found": 1,
+        "recall": 1,
+        "findings": 1,
+        "findings_matched": 1,
+        "findings_excused": 0,
+        "precision": 1,
+        "f1": 1,
+        "changes_active": 0,
+        "changes_flagged": 0,
+        "change_flag_rate": null,
+        "false_alarms_on_changes": 0,
+        "false_alarms_per_100_episodes": 0,
+        "unmatched_findings": 0,
+        "unmatched_per_episode": 0,
+        "mean_time_to_first_detection_s": null,
+        "wall_time_s_total": null,
+        "cost_usd_total": null,
+        "human_hours_total": null,
+        "cost_per_defect_found_usd": null,
+        "repro_rate": null
+      },
+      "permission": {
+        "episodes": 17,
+        "episodes_scored": 17,
+        "defects_planted": 1,
+        "defects_found": 1,
+        "recall": 1,
+        "findings": 1,
+        "findings_matched": 1,
+        "findings_excused": 0,
+        "precision": 1,
+        "f1": 1,
+        "changes_active": 0,
+        "changes_flagged": 0,
+        "change_flag_rate": null,
+        "false_alarms_on_changes": 0,
+        "false_alarms_per_100_episodes": 0,
+        "unmatched_findings": 0,
+        "unmatched_per_episode": 0,
+        "mean_time_to_first_detection_s": null,
+        "wall_time_s_total": null,
+        "cost_usd_total": null,
+        "human_hours_total": null,
+        "cost_per_defect_found_usd": null,
+        "repro_rate": null
+      },
+      "visual": {
+        "episodes": 17,
+        "episodes_scored": 17,
+        "defects_planted": 1,
+        "defects_found": 1,
+        "recall": 1,
+        "findings": 7,
+        "findings_matched": 7,
+        "findings_excused": 0,
+        "precision": 1,
+        "f1": 1,
+        "changes_active": 2,
+        "changes_flagged": 0,
+        "change_flag_rate": 0,
+        "false_alarms_on_changes": 0,
+        "false_alarms_per_100_episodes": 0,
+        "unmatched_findings": 0,
+        "unmatched_per_episode": 0,
+        "mean_time_to_first_detection_s": null,
+        "wall_time_s_total": null,
+        "cost_usd_total": null,
+        "human_hours_total": null,
+        "cost_per_defect_found_usd": null,
+        "repro_rate": null
+      }
+    },
+    "by_class": {
+      "deterministic": {
+        "episodes": 17,
+        "episodes_scored": 17,
+        "defects_planted": 11,
+        "defects_found": 11,
+        "recall": 1,
+        "findings": 31,
+        "findings_matched": 31,
+        "findings_excused": 0,
+        "precision": 1,
+        "f1": 1,
+        "changes_active": 0,
+        "changes_flagged": 0,
+        "change_flag_rate": null,
+        "false_alarms_on_changes": 0,
+        "false_alarms_per_100_episodes": 0,
+        "unmatched_findings": 0,
+        "unmatched_per_episode": 0,
+        "mean_time_to_first_detection_s": null,
+        "wall_time_s_total": null,
+        "cost_usd_total": null,
+        "human_hours_total": null,
+        "cost_per_defect_found_usd": null,
+        "repro_rate": null
+      },
+      "judged": {
+        "episodes": 17,
+        "episodes_scored": 17,
+        "defects_planted": 1,
+        "defects_found": 1,
+        "recall": 1,
+        "findings": 19,
+        "findings_matched": 8,
+        "findings_excused": 0,
+        "precision": 0.42105263157894735,
+        "f1": 0.5925925925925926,
+        "changes_active": 11,
+        "changes_flagged": 7,
+        "change_flag_rate": 0.6363636363636364,
+        "false_alarms_on_changes": 11,
+        "false_alarms_per_100_episodes": 41.1764705882353,
+        "unmatched_findings": 0,
+        "unmatched_per_episode": 0,
+        "mean_time_to_first_detection_s": null,
+        "wall_time_s_total": null,
+        "cost_usd_total": null,
+        "human_hours_total": null,
+        "cost_per_defect_found_usd": null,
+        "repro_rate": null
+      }
+    },
+    "breakdown": [
+      {
+        "track": "regression",
+        "category": "consistency",
+        "class": "deterministic",
+        "metrics": {
+          "episodes": 17,
+          "episodes_scored": 17,
+          "defects_planted": 2,
+          "defects_found": 2,
+          "recall": 1,
+          "findings": 5,
+          "findings_matched": 5,
+          "findings_excused": 0,
+          "precision": 1,
+          "f1": 1,
+          "changes_active": 0,
+          "changes_flagged": 0,
+          "change_flag_rate": null,
+          "false_alarms_on_changes": 0,
+          "false_alarms_per_100_episodes": 0,
+          "unmatched_findings": 0,
+          "unmatched_per_episode": 0,
+          "mean_time_to_first_detection_s": null,
+          "wall_time_s_total": null,
+          "cost_usd_total": null,
+          "human_hours_total": null,
+          "cost_per_defect_found_usd": null,
+          "repro_rate": null
+        }
+      },
+      {
+        "track": "regression",
+        "category": "consistency",
+        "class": "judged",
+        "metrics": {
+          "episodes": 17,
+          "episodes_scored": 17,
+          "defects_planted": 0,
+          "defects_found": 0,
+          "recall": null,
+          "findings": 1,
+          "findings_matched": 1,
+          "findings_excused": 0,
+          "precision": 1,
+          "f1": null,
+          "changes_active": 1,
+          "changes_flagged": 0,
+          "change_flag_rate": 0,
+          "false_alarms_on_changes": 0,
+          "false_alarms_per_100_episodes": 0,
+          "unmatched_findings": 0,
+          "unmatched_per_episode": 0,
+          "mean_time_to_first_detection_s": null,
+          "wall_time_s_total": null,
+          "cost_usd_total": null,
+          "human_hours_total": null,
+          "cost_per_defect_found_usd": null,
+          "repro_rate": null
+        }
+      },
+      {
+        "track": "regression",
+        "category": "copy",
+        "class": "judged",
+        "metrics": {
+          "episodes": 17,
+          "episodes_scored": 17,
+          "defects_planted": 0,
+          "defects_found": 0,
+          "recall": null,
+          "findings": 11,
+          "findings_matched": 0,
+          "findings_excused": 0,
+          "precision": 0,
+          "f1": null,
+          "changes_active": 8,
+          "changes_flagged": 7,
+          "change_flag_rate": 0.875,
+          "false_alarms_on_changes": 11,
+          "false_alarms_per_100_episodes": 41.1764705882353,
+          "unmatched_findings": 0,
+          "unmatched_per_episode": 0,
+          "mean_time_to_first_detection_s": null,
+          "wall_time_s_total": null,
+          "cost_usd_total": null,
+          "human_hours_total": null,
+          "cost_per_defect_found_usd": null,
+          "repro_rate": null
+        }
+      },
+      {
+        "track": "regression",
+        "category": "error-handling",
+        "class": "deterministic",
+        "metrics": {
+          "episodes": 17,
+          "episodes_scored": 17,
+          "defects_planted": 1,
+          "defects_found": 1,
+          "recall": 1,
+          "findings": 5,
+          "findings_matched": 5,
+          "findings_excused": 0,
+          "precision": 1,
+          "f1": 1,
+          "changes_active": 0,
+          "changes_flagged": 0,
+          "change_flag_rate": null,
+          "false_alarms_on_changes": 0,
+          "false_alarms_per_100_episodes": 0,
+          "unmatched_findings": 0,
+          "unmatched_per_episode": 0,
+          "mean_time_to_first_detection_s": null,
+          "wall_time_s_total": null,
+          "cost_usd_total": null,
+          "human_hours_total": null,
+          "cost_per_defect_found_usd": null,
+          "repro_rate": null
+        }
+      },
+      {
+        "track": "regression",
+        "category": "functional",
+        "class": "deterministic",
+        "metrics": {
+          "episodes": 17,
+          "episodes_scored": 17,
+          "defects_planted": 6,
+          "defects_found": 6,
+          "recall": 1,
+          "findings": 17,
+          "findings_matched": 17,
+          "findings_excused": 0,
+          "precision": 1,
+          "f1": 1,
+          "changes_active": 0,
+          "changes_flagged": 0,
+          "change_flag_rate": null,
+          "false_alarms_on_changes": 0,
+          "false_alarms_per_100_episodes": 0,
+          "unmatched_findings": 0,
+          "unmatched_per_episode": 0,
+          "mean_time_to_first_detection_s": null,
+          "wall_time_s_total": null,
+          "cost_usd_total": null,
+          "human_hours_total": null,
+          "cost_per_defect_found_usd": null,
+          "repro_rate": null
+        }
+      },
+      {
+        "track": "regression",
+        "category": "perf",
+        "class": "deterministic",
+        "metrics": {
+          "episodes": 17,
+          "episodes_scored": 17,
+          "defects_planted": 1,
+          "defects_found": 1,
+          "recall": 1,
+          "findings": 1,
+          "findings_matched": 1,
+          "findings_excused": 0,
+          "precision": 1,
+          "f1": 1,
+          "changes_active": 0,
+          "changes_flagged": 0,
+          "change_flag_rate": null,
+          "false_alarms_on_changes": 0,
+          "false_alarms_per_100_episodes": 0,
+          "unmatched_findings": 0,
+          "unmatched_per_episode": 0,
+          "mean_time_to_first_detection_s": null,
+          "wall_time_s_total": null,
+          "cost_usd_total": null,
+          "human_hours_total": null,
+          "cost_per_defect_found_usd": null,
+          "repro_rate": null
+        }
+      },
+      {
+        "track": "regression",
+        "category": "permission",
+        "class": "deterministic",
+        "metrics": {
+          "episodes": 17,
+          "episodes_scored": 17,
+          "defects_planted": 1,
+          "defects_found": 1,
+          "recall": 1,
+          "findings": 1,
+          "findings_matched": 1,
+          "findings_excused": 0,
+          "precision": 1,
+          "f1": 1,
+          "changes_active": 0,
+          "changes_flagged": 0,
+          "change_flag_rate": null,
+          "false_alarms_on_changes": 0,
+          "false_alarms_per_100_episodes": 0,
+          "unmatched_findings": 0,
+          "unmatched_per_episode": 0,
+          "mean_time_to_first_detection_s": null,
+          "wall_time_s_total": null,
+          "cost_usd_total": null,
+          "human_hours_total": null,
+          "cost_per_defect_found_usd": null,
+          "repro_rate": null
+        }
+      },
+      {
+        "track": "regression",
+        "category": "visual",
+        "class": "judged",
+        "metrics": {
+          "episodes": 17,
+          "episodes_scored": 17,
+          "defects_planted": 1,
+          "defects_found": 1,
+          "recall": 1,
+          "findings": 6,
+          "findings_matched": 6,
+          "findings_excused": 0,
+          "precision": 1,
+          "f1": 1,
+          "changes_active": 2,
+          "changes_flagged": 0,
+          "change_flag_rate": 0,
+          "false_alarms_on_changes": 0,
+          "false_alarms_per_100_episodes": 0,
+          "unmatched_findings": 0,
+          "unmatched_per_episode": 0,
+          "mean_time_to_first_detection_s": null,
+          "wall_time_s_total": null,
+          "cost_usd_total": null,
+          "human_hours_total": null,
+          "cost_per_defect_found_usd": null,
+          "repro_rate": null
+        }
+      }
+    ]
+  }
+}

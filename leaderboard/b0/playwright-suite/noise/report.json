@@ -1,0 +1,1175 @@
+{
+  "bench_version": "0.1.0-b0",
+  "generated_at": "2026-11-05T03:54:53.814Z",
+  "system": {
+    "name": "playwright-suite",
+    "version": "0.1.0"
+  },
+  "run": {
+    "id": "b0-playwright-noise",
+    "tracks": [
+      "noise"
+    ],
+    "seeds": {
+      "noise": 20261106
+    },
+    "upstreams": {
+      "the-internet": {
+        "repo": "https://github.com/saucelabs/the-internet",
+        "use": "run-only",
+        "pin": {
+          "commit": "412661999056d1cc302a920f8ec1b177eaa8ae3d",
+          "ref": "main"
+        }
+      }
+    },
+    "matcher": "deterministic-1"
+  },
+  "episodes": [
+    {
+      "episode_id": "noise-001",
+      "track": "noise",
+      "app": "the-internet",
+      "split": "public",
+      "answer_key_sha256": "10f0bb77bc188bf022ec9127062b73a2bf210cad92e1e159e154f2f4aae24d01",
+      "status": "scored",
+      "wall_time_s": 21.09,
+      "cost": {
+        "compute_usd": 0,
+        "model_usd": 0,
+        "notes": "Scripted Playwright suite: no model calls; local compute only, not metered."
+      },
+      "time_to_first_detection_s": null,
+      "decisions": [
+        {
+          "finding_id": "pw-001-page-broken-image",
+          "decision": "excused",
+          "label_id": "internet.broken-images",
+          "category": "visual",
+          "reason": "known baseline issue internet.broken-images: matches internet.broken-images[0]: route, role, category and selector"
+        },
+        {
+          "finding_id": "pw-002-page-pageerror",
+          "decision": "excused",
+          "label_id": "internet.javascript-error",
+          "category": "error-handling",
+          "reason": "known baseline issue internet.javascript-error: matches internet.javascript-error[0]: route, role, category; finding has no locator"
+        }
+      ],
+      "labels": [
+        {
+          "label_id": "internet.broken-images",
+          "kind": "baseline",
+          "category": "visual",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": true,
+          "finding_ids": [
+            "pw-001-page-broken-image"
+          ]
+        },
+        {
+          "label_id": "internet.disappearing-elements",
+          "kind": "baseline",
+          "category": "functional",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.javascript-error",
+          "kind": "baseline",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": true,
+          "finding_ids": [
+            "pw-002-page-pageerror"
+          ]
+        },
+        {
+          "label_id": "internet.notification-message",
+          "kind": "baseline",
+          "category": "functional",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.placeholder-links",
+          "kind": "baseline",
+          "category": "functional",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.shifting-content",
+          "kind": "baseline",
+          "category": "visual",
+          "class": "judged",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.slow-resource",
+          "kind": "baseline",
+          "category": "perf",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.status-codes",
+          "kind": "baseline",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.third-party-requests",
+          "kind": "baseline",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.typos",
+          "kind": "baseline",
+          "category": "copy",
+          "class": "judged",
+          "severity": "minor",
+          "hit": false
+        }
+      ]
+    },
+    {
+      "episode_id": "noise-002",
+      "track": "noise",
+      "app": "the-internet",
+      "split": "public",
+      "answer_key_sha256": "b9e365768ffe760384d063bf9891e32ab0bc4986c8337cb62c1411acc1ff1714",
+      "status": "scored",
+      "wall_time_s": 20.95,
+      "cost": {
+        "compute_usd": 0,
+        "model_usd": 0,
+        "notes": "Scripted Playwright suite: no model calls; local compute only, not metered."
+      },
+      "time_to_first_detection_s": null,
+      "decisions": [
+        {
+          "finding_id": "pw-001-page-broken-image",
+          "decision": "excused",
+          "label_id": "internet.broken-images",
+          "category": "visual",
+          "reason": "known baseline issue internet.broken-images: matches internet.broken-images[0]: route, role, category and selector"
+        },
+        {
+          "finding_id": "pw-002-page-pageerror",
+          "decision": "excused",
+          "label_id": "internet.javascript-error",
+          "category": "error-handling",
+          "reason": "known baseline issue internet.javascript-error: matches internet.javascript-error[0]: route, role, category; finding has no locator"
+        }
+      ],
+      "labels": [
+        {
+          "label_id": "internet.welcome-heading",
+          "kind": "change",
+          "category": "copy",
+          "class": "judged",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.broken-images",
+          "kind": "baseline",
+          "category": "visual",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": true,
+          "finding_ids": [
+            "pw-001-page-broken-image"
+          ]
+        },
+        {
+          "label_id": "internet.disappearing-elements",
+          "kind": "baseline",
+          "category": "functional",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.javascript-error",
+          "kind": "baseline",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": true,
+          "finding_ids": [
+            "pw-002-page-pageerror"
+          ]
+        },
+        {
+          "label_id": "internet.notification-message",
+          "kind": "baseline",
+          "category": "functional",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.placeholder-links",
+          "kind": "baseline",
+          "category": "functional",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.shifting-content",
+          "kind": "baseline",
+          "category": "visual",
+          "class": "judged",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.slow-resource",
+          "kind": "baseline",
+          "category": "perf",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.status-codes",
+          "kind": "baseline",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.third-party-requests",
+          "kind": "baseline",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.typos",
+          "kind": "baseline",
+          "category": "copy",
+          "class": "judged",
+          "severity": "minor",
+          "hit": false
+        }
+      ]
+    },
+    {
+      "episode_id": "noise-003",
+      "track": "noise",
+      "app": "the-internet",
+      "split": "public",
+      "answer_key_sha256": "8c1d83396b60b42093ccc4f9992843d8036270fb5aea46a092f334f08b5ddb60",
+      "status": "scored",
+      "wall_time_s": 21.13,
+      "cost": {
+        "compute_usd": 0,
+        "model_usd": 0,
+        "notes": "Scripted Playwright suite: no model calls; local compute only, not metered."
+      },
+      "time_to_first_detection_s": null,
+      "decisions": [
+        {
+          "finding_id": "pw-001-page-broken-image",
+          "decision": "excused",
+          "label_id": "internet.broken-images",
+          "category": "visual",
+          "reason": "known baseline issue internet.broken-images: matches internet.broken-images[0]: route, role, category and selector"
+        },
+        {
+          "finding_id": "pw-002-page-pageerror",
+          "decision": "excused",
+          "label_id": "internet.javascript-error",
+          "category": "error-handling",
+          "reason": "known baseline issue internet.javascript-error: matches internet.javascript-error[0]: route, role, category; finding has no locator"
+        }
+      ],
+      "labels": [
+        {
+          "label_id": "internet.welcome-heading",
+          "kind": "change",
+          "category": "copy",
+          "class": "judged",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.broken-images",
+          "kind": "baseline",
+          "category": "visual",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": true,
+          "finding_ids": [
+            "pw-001-page-broken-image"
+          ]
+        },
+        {
+          "label_id": "internet.disappearing-elements",
+          "kind": "baseline",
+          "category": "functional",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.javascript-error",
+          "kind": "baseline",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": true,
+          "finding_ids": [
+            "pw-002-page-pageerror"
+          ]
+        },
+        {
+          "label_id": "internet.notification-message",
+          "kind": "baseline",
+          "category": "functional",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.placeholder-links",
+          "kind": "baseline",
+          "category": "functional",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.shifting-content",
+          "kind": "baseline",
+          "category": "visual",
+          "class": "judged",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.slow-resource",
+          "kind": "baseline",
+          "category": "perf",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.status-codes",
+          "kind": "baseline",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.third-party-requests",
+          "kind": "baseline",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.typos",
+          "kind": "baseline",
+          "category": "copy",
+          "class": "judged",
+          "severity": "minor",
+          "hit": false
+        }
+      ]
+    },
+    {
+      "episode_id": "noise-004",
+      "track": "noise",
+      "app": "the-internet",
+      "split": "public",
+      "answer_key_sha256": "5fa13780ced6769ec75238084500f650f0c6c1829c63738f09b6e123a053449a",
+      "status": "scored",
+      "wall_time_s": 19.3,
+      "cost": {
+        "compute_usd": 0,
+        "model_usd": 0,
+        "notes": "Scripted Playwright suite: no model calls; local compute only, not metered."
+      },
+      "time_to_first_detection_s": null,
+      "decisions": [
+        {
+          "finding_id": "pw-001-page-broken-image",
+          "decision": "excused",
+          "label_id": "internet.broken-images",
+          "category": "visual",
+          "reason": "known baseline issue internet.broken-images: matches internet.broken-images[0]: route, role, category and selector"
+        },
+        {
+          "finding_id": "pw-002-page-pageerror",
+          "decision": "excused",
+          "label_id": "internet.javascript-error",
+          "category": "error-handling",
+          "reason": "known baseline issue internet.javascript-error: matches internet.javascript-error[0]: route, role, category; finding has no locator"
+        }
+      ],
+      "labels": [
+        {
+          "label_id": "internet.broken-images",
+          "kind": "baseline",
+          "category": "visual",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": true,
+          "finding_ids": [
+            "pw-001-page-broken-image"
+          ]
+        },
+        {
+          "label_id": "internet.disappearing-elements",
+          "kind": "baseline",
+          "category": "functional",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.javascript-error",
+          "kind": "baseline",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": true,
+          "finding_ids": [
+            "pw-002-page-pageerror"
+          ]
+        },
+        {
+          "label_id": "internet.notification-message",
+          "kind": "baseline",
+          "category": "functional",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.placeholder-links",
+          "kind": "baseline",
+          "category": "functional",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.shifting-content",
+          "kind": "baseline",
+          "category": "visual",
+          "class": "judged",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.slow-resource",
+          "kind": "baseline",
+          "category": "perf",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.status-codes",
+          "kind": "baseline",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.third-party-requests",
+          "kind": "baseline",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.typos",
+          "kind": "baseline",
+          "category": "copy",
+          "class": "judged",
+          "severity": "minor",
+          "hit": false
+        }
+      ]
+    },
+    {
+      "episode_id": "noise-005",
+      "track": "noise",
+      "app": "the-internet",
+      "split": "public",
+      "answer_key_sha256": "91a4a08084e2c2877d2a84d8ed08a0fb4c9b15cd1f6c5beebee37ba282ea9475",
+      "status": "scored",
+      "wall_time_s": 19.15,
+      "cost": {
+        "compute_usd": 0,
+        "model_usd": 0,
+        "notes": "Scripted Playwright suite: no model calls; local compute only, not metered."
+      },
+      "time_to_first_detection_s": null,
+      "decisions": [
+        {
+          "finding_id": "pw-001-page-broken-image",
+          "decision": "excused",
+          "label_id": "internet.broken-images",
+          "category": "visual",
+          "reason": "known baseline issue internet.broken-images: matches internet.broken-images[0]: route, role, category and selector"
+        },
+        {
+          "finding_id": "pw-002-page-pageerror",
+          "decision": "excused",
+          "label_id": "internet.javascript-error",
+          "category": "error-handling",
+          "reason": "known baseline issue internet.javascript-error: matches internet.javascript-error[0]: route, role, category; finding has no locator"
+        }
+      ],
+      "labels": [
+        {
+          "label_id": "internet.broken-images",
+          "kind": "baseline",
+          "category": "visual",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": true,
+          "finding_ids": [
+            "pw-001-page-broken-image"
+          ]
+        },
+        {
+          "label_id": "internet.disappearing-elements",
+          "kind": "baseline",
+          "category": "functional",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.javascript-error",
+          "kind": "baseline",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": true,
+          "finding_ids": [
+            "pw-002-page-pageerror"
+          ]
+        },
+        {
+          "label_id": "internet.notification-message",
+          "kind": "baseline",
+          "category": "functional",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.placeholder-links",
+          "kind": "baseline",
+          "category": "functional",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.shifting-content",
+          "kind": "baseline",
+          "category": "visual",
+          "class": "judged",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.slow-resource",
+          "kind": "baseline",
+          "category": "perf",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.status-codes",
+          "kind": "baseline",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.third-party-requests",
+          "kind": "baseline",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.typos",
+          "kind": "baseline",
+          "category": "copy",
+          "class": "judged",
+          "severity": "minor",
+          "hit": false
+        }
+      ]
+    },
+    {
+      "episode_id": "noise-006",
+      "track": "noise",
+      "app": "the-internet",
+      "split": "public",
+      "answer_key_sha256": "73548536b6ff4952ee56d4ce54cd8a0235725a5b0913d724507c8cb4e429c28f",
+      "status": "scored",
+      "wall_time_s": 19.17,
+      "cost": {
+        "compute_usd": 0,
+        "model_usd": 0,
+        "notes": "Scripted Playwright suite: no model calls; local compute only, not metered."
+      },
+      "time_to_first_detection_s": null,
+      "decisions": [
+        {
+          "finding_id": "pw-001-page-broken-image",
+          "decision": "excused",
+          "label_id": "internet.broken-images",
+          "category": "visual",
+          "reason": "known baseline issue internet.broken-images: matches internet.broken-images[0]: route, role, category and selector"
+        },
+        {
+          "finding_id": "pw-002-page-pageerror",
+          "decision": "excused",
+          "label_id": "internet.javascript-error",
+          "category": "error-handling",
+          "reason": "known baseline issue internet.javascript-error: matches internet.javascript-error[0]: route, role, category; finding has no locator"
+        }
+      ],
+      "labels": [
+        {
+          "label_id": "internet.broken-images",
+          "kind": "baseline",
+          "category": "visual",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": true,
+          "finding_ids": [
+            "pw-001-page-broken-image"
+          ]
+        },
+        {
+          "label_id": "internet.disappearing-elements",
+          "kind": "baseline",
+          "category": "functional",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.javascript-error",
+          "kind": "baseline",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": true,
+          "finding_ids": [
+            "pw-002-page-pageerror"
+          ]
+        },
+        {
+          "label_id": "internet.notification-message",
+          "kind": "baseline",
+          "category": "functional",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.placeholder-links",
+          "kind": "baseline",
+          "category": "functional",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.shifting-content",
+          "kind": "baseline",
+          "category": "visual",
+          "class": "judged",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.slow-resource",
+          "kind": "baseline",
+          "category": "perf",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.status-codes",
+          "kind": "baseline",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.third-party-requests",
+          "kind": "baseline",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "internet.typos",
+          "kind": "baseline",
+          "category": "copy",
+          "class": "judged",
+          "severity": "minor",
+          "hit": false
+        }
+      ]
+    }
+  ],
+  "metrics": {
+    "overall": {
+      "episodes": 6,
+      "episodes_scored": 6,
+      "defects_planted": 0,
+      "defects_found": 0,
+      "recall": null,
+      "findings": 12,
+      "findings_matched": 0,
+      "findings_excused": 12,
+      "precision": null,
+      "f1": null,
+      "changes_active": 2,
+      "changes_flagged": 0,
+      "change_flag_rate": 0,
+      "false_alarms_on_changes": 0,
+      "false_alarms_per_100_episodes": 0,
+      "unmatched_findings": 0,
+      "unmatched_per_episode": 0,
+      "mean_time_to_first_detection_s": null,
+      "wall_time_s_total": 120.79,
+      "cost_usd_total": 0,
+      "human_hours_total": null,
+      "cost_per_defect_found_usd": null,
+      "repro_rate": null
+    },
+    "by_track": {
+      "noise": {
+        "episodes": 6,
+        "episodes_scored": 6,
+        "defects_planted": 0,
+        "defects_found": 0,
+        "recall": null,
+        "findings": 12,
+        "findings_matched": 0,
+        "findings_excused": 12,
+        "precision": null,
+        "f1": null,
+        "changes_active": 2,
+        "changes_flagged": 0,
+        "change_flag_rate": 0,
+        "false_alarms_on_changes": 0,
+        "false_alarms_per_100_episodes": 0,
+        "unmatched_findings": 0,
+        "unmatched_per_episode": 0,
+        "mean_time_to_first_detection_s": null,
+        "wall_time_s_total": 120.79,
+        "cost_usd_total": 0,
+        "human_hours_total": null,
+        "cost_per_defect_found_usd": null,
+        "repro_rate": null
+      }
+    },
+    "by_category": {
+      "copy": {
+        "episodes": 6,
+        "episodes_scored": 6,
+        "defects_planted": 0,
+        "defects_found": 0,
+        "recall": null,
+        "findings": 0,
+        "findings_matched": 0,
+        "findings_excused": 0,
+        "precision": null,
+        "f1": null,
+        "changes_active": 2,
+        "changes_flagged": 0,
+        "change_flag_rate": 0,
+        "false_alarms_on_changes": 0,
+        "false_alarms_per_100_episodes": 0,
+        "unmatched_findings": 0,
+        "unmatched_per_episode": 0,
+        "mean_time_to_first_detection_s": null,
+        "wall_time_s_total": null,
+        "cost_usd_total": null,
+        "human_hours_total": null,
+        "cost_per_defect_found_usd": null,
+        "repro_rate": null
+      },
+      "error-handling": {
+        "episodes": 6,
+        "episodes_scored": 6,
+        "defects_planted": 0,
+        "defects_found": 0,
+        "recall": null,
+        "findings": 6,
+        "findings_matched": 0,
+        "findings_excused": 6,
+        "precision": null,
+        "f1": null,
+        "changes_active": 0,
+        "changes_flagged": 0,
+        "change_flag_rate": null,
+        "false_alarms_on_changes": 0,
+        "false_alarms_per_100_episodes": 0,
+        "unmatched_findings": 0,
+        "unmatched_per_episode": 0,
+        "mean_time_to_first_detection_s": null,
+        "wall_time_s_total": null,
+        "cost_usd_total": null,
+        "human_hours_total": null,
+        "cost_per_defect_found_usd": null,
+        "repro_rate": null
+      },
+      "functional": {
+        "episodes": 6,
+        "episodes_scored": 6,
+        "defects_planted": 0,
+        "defects_found": 0,
+        "recall": null,
+        "findings": 0,
+        "findings_matched": 0,
+        "findings_excused": 0,
+        "precision": null,
+        "f1": null,
+        "changes_active": 0,
+        "changes_flagged": 0,
+        "change_flag_rate": null,
+        "false_alarms_on_changes": 0,
+        "false_alarms_per_100_episodes": 0,
+        "unmatched_findings": 0,
+        "unmatched_per_episode": 0,
+        "mean_time_to_first_detection_s": null,
+        "wall_time_s_total": null,
+        "cost_usd_total": null,
+        "human_hours_total": null,
+        "cost_per_defect_found_usd": null,
+        "repro_rate": null
+      },
+      "perf": {
+        "episodes": 6,
+        "episodes_scored": 6,
+        "defects_planted": 0,
+        "defects_found": 0,
+        "recall": null,
+        "findings": 0,
+        "findings_matched": 0,
+        "findings_excused": 0,
+        "precision": null,
+        "f1": null,
+        "changes_active": 0,
+        "changes_flagged": 0,
+        "change_flag_rate": null,
+        "false_alarms_on_changes": 0,
+        "false_alarms_per_100_episodes": 0,
+        "unmatched_findings": 0,
+        "unmatched_per_episode": 0,
+        "mean_time_to_first_detection_s": null,
+        "wall_time_s_total": null,
+        "cost_usd_total": null,
+        "human_hours_total": null,
+        "cost_per_defect_found_usd": null,
+        "repro_rate": null
+      },
+      "visual": {
+        "episodes": 6,
+        "episodes_scored": 6,
+        "defects_planted": 0,
+        "defects_found": 0,
+        "recall": null,
+        "findings": 6,
+        "findings_matched": 0,
+        "findings_excused": 6,
+        "precision": null,
+        "f1": null,
+        "changes_active": 0,
+        "changes_flagged": 0,
+        "change_flag_rate": null,
+        "false_alarms_on_changes": 0,
+        "false_alarms_per_100_episodes": 0,
+        "unmatched_findings": 0,
+        "unmatched_per_episode": 0,
+        "mean_time_to_first_detection_s": null,
+        "wall_time_s_total": null,
+        "cost_usd_total": null,
+        "human_hours_total": null,
+        "cost_per_defect_found_usd": null,
+        "repro_rate": null
+      }
+    },
+    "by_class": {
+      "deterministic": {
+        "episodes": 6,
+        "episodes_scored": 6,
+        "defects_planted": 0,
+        "defects_found": 0,
+        "recall": null,
+        "findings": 12,
+        "findings_matched": 0,
+        "findings_excused": 12,
+        "precision": null,
+        "f1": null,
+        "changes_active": 0,
+        "changes_flagged": 0,
+        "change_flag_rate": null,
+        "false_alarms_on_changes": 0,
+        "false_alarms_per_100_episodes": 0,
+        "unmatched_findings": 0,
+        "unmatched_per_episode": 0,
+        "mean_time_to_first_detection_s": null,
+        "wall_time_s_total": null,
+        "cost_usd_total": null,
+        "human_hours_total": null,
+        "cost_per_defect_found_usd": null,
+        "repro_rate": null
+      },
+      "judged": {
+        "episodes": 6,
+        "episodes_scored": 6,
+        "defects_planted": 0,
+        "defects_found": 0,
+        "recall": null,
+        "findings": 0,
+        "findings_matched": 0,
+        "findings_excused": 0,
+        "precision": null,
+        "f1": null,
+        "changes_active": 2,
+        "changes_flagged": 0,
+        "change_flag_rate": 0,
+        "false_alarms_on_changes": 0,
+        "false_alarms_per_100_episodes": 0,
+        "unmatched_findings": 0,
+        "unmatched_per_episode": 0,
+        "mean_time_to_first_detection_s": null,
+        "wall_time_s_total": null,
+        "cost_usd_total": null,
+        "human_hours_total": null,
+        "cost_per_defect_found_usd": null,
+        "repro_rate": null
+      }
+    },
+    "breakdown": [
+      {
+        "track": "noise",
+        "category": "copy",
+        "class": "judged",
+        "metrics": {
+          "episodes": 6,
+          "episodes_scored": 6,
+          "defects_planted": 0,
+          "defects_found": 0,
+          "recall": null,
+          "findings": 0,
+          "findings_matched": 0,
+          "findings_excused": 0,
+          "precision": null,
+          "f1": null,
+          "changes_active": 2,
+          "changes_flagged": 0,
+          "change_flag_rate": 0,
+          "false_alarms_on_changes": 0,
+          "false_alarms_per_100_episodes": 0,
+          "unmatched_findings": 0,
+          "unmatched_per_episode": 0,
+          "mean_time_to_first_detection_s": null,
+          "wall_time_s_total": null,
+          "cost_usd_total": null,
+          "human_hours_total": null,
+          "cost_per_defect_found_usd": null,
+          "repro_rate": null
+        }
+      },
+      {
+        "track": "noise",
+        "category": "error-handling",
+        "class": "deterministic",
+        "metrics": {
+          "episodes": 6,
+          "episodes_scored": 6,
+          "defects_planted": 0,
+          "defects_found": 0,
+          "recall": null,
+          "findings": 6,
+          "findings_matched": 0,
+          "findings_excused": 6,
+          "precision": null,
+          "f1": null,
+          "changes_active": 0,
+          "changes_flagged": 0,
+          "change_flag_rate": null,
+          "false_alarms_on_changes": 0,
+          "false_alarms_per_100_episodes": 0,
+          "unmatched_findings": 0,
+          "unmatched_per_episode": 0,
+          "mean_time_to_first_detection_s": null,
+          "wall_time_s_total": null,
+          "cost_usd_total": null,
+          "human_hours_total": null,
+          "cost_per_defect_found_usd": null,
+          "repro_rate": null
+        }
+      },
+      {
+        "track": "noise",
+        "category": "functional",
+        "class": "deterministic",
+        "metrics": {
+          "episodes": 6,
+          "episodes_scored": 6,
+          "defects_planted": 0,
+          "defects_found": 0,
+          "recall": null,
+          "findings": 0,
+          "findings_matched": 0,
+          "findings_excused": 0,
+          "precision": null,
+          "f1": null,
+          "changes_active": 0,
+          "changes_flagged": 0,
+          "change_flag_rate": null,
+          "false_alarms_on_changes": 0,
+          "false_alarms_per_100_episodes": 0,
+          "unmatched_findings": 0,
+          "unmatched_per_episode": 0,
+          "mean_time_to_first_detection_s": null,
+          "wall_time_s_total": null,
+          "cost_usd_total": null,
+          "human_hours_total": null,
+          "cost_per_defect_found_usd": null,
+          "repro_rate": null
+        }
+      },
+      {
+        "track": "noise",
+        "category": "perf",
+        "class": "deterministic",
+        "metrics": {
+          "episodes": 6,
+          "episodes_scored": 6,
+          "defects_planted": 0,
+          "defects_found": 0,
+          "recall": null,
+          "findings": 0,
+          "findings_matched": 0,
+          "findings_excused": 0,
+          "precision": null,
+          "f1": null,
+          "changes_active": 0,
+          "changes_flagged": 0,
+          "change_flag_rate": null,
+          "false_alarms_on_changes": 0,
+          "false_alarms_per_100_episodes": 0,
+          "unmatched_findings": 0,
+          "unmatched_per_episode": 0,
+          "mean_time_to_first_detection_s": null,
+          "wall_time_s_total": null,
+          "cost_usd_total": null,
+          "human_hours_total": null,
+          "cost_per_defect_found_usd": null,
+          "repro_rate": null
+        }
+      },
+      {
+        "track": "noise",
+        "category": "visual",
+        "class": "deterministic",
+        "metrics": {
+          "episodes": 6,
+          "episodes_scored": 6,
+          "defects_planted": 0,
+          "defects_found": 0,
+          "recall": null,
+          "findings": 6,
+          "findings_matched": 0,
+          "findings_excused": 6,
+          "precision": null,
+          "f1": null,
+          "changes_active": 0,
+          "changes_flagged": 0,
+          "change_flag_rate": null,
+          "false_alarms_on_changes": 0,
+          "false_alarms_per_100_episodes": 0,
+          "unmatched_findings": 0,
+          "unmatched_per_episode": 0,
+          "mean_time_to_first_detection_s": null,
+          "wall_time_s_total": null,
+          "cost_usd_total": null,
+          "human_hours_total": null,
+          "cost_per_defect_found_usd": null,
+          "repro_rate": null
+        }
+      },
+      {
+        "track": "noise",
+        "category": "visual",
+        "class": "judged",
+        "metrics": {
+          "episodes": 6,
+          "episodes_scored": 6,
+          "defects_planted": 0,
+          "defects_found": 0,
+          "recall": null,
+          "findings": 0,
+          "findings_matched": 0,
+          "findings_excused": 0,
+          "precision": null,
+          "f1": null,
+          "changes_active": 0,
+          "changes_flagged": 0,
+          "change_flag_rate": null,
+          "false_alarms_on_changes": 0,
+          "false_alarms_per_100_episodes": 0,
+          "unmatched_findings": 0,
+          "unmatched_per_episode": 0,
+          "mean_time_to_first_detection_s": null,
+          "wall_time_s_total": null,
+          "cost_usd_total": null,
+          "human_hours_total": null,
+          "cost_per_defect_found_usd": null,
+          "repro_rate": null
+        }
+      }
+    ]
+  }
+}

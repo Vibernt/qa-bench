@@ -1,0 +1,1033 @@
+{
+  "bench_version": "0.1.0-b0",
+  "generated_at": "2026-11-05T03:54:54.476Z",
+  "system": {
+    "name": "noop",
+    "version": "0.1.0"
+  },
+  "run": {
+    "id": "b0-noop-regression",
+    "tracks": [
+      "regression"
+    ],
+    "seeds": {
+      "regression": 20261105
+    },
+    "upstreams": {
+      "expense-app": {
+        "repo": "https://github.com/Vibernt/qa-bench",
+        "use": "adopt",
+        "pin": {
+          "path": "apps/expense-app/app"
+        }
+      },
+      "swag-labs": {
+        "repo": "https://github.com/saucelabs/sample-app-web",
+        "use": "adopt",
+        "pin": {
+          "commit": "ad62bb2d7950bc5747af46a75aa1fb1bd6b8622a",
+          "ref": "main"
+        }
+      }
+    },
+    "matcher": "deterministic-1"
+  },
+  "episodes": [
+    {
+      "episode_id": "regression-001",
+      "track": "regression",
+      "app": "expense-app",
+      "split": "public",
+      "answer_key_sha256": "7408c7a5613b0ec527eb14fea519c890175873ee4e342d6869f2ce7736bbf639",
+      "status": "scored",
+      "wall_time_s": 0.56,
+      "cost": {
+        "model_usd": 0,
+        "compute_usd": 0
+      },
+      "time_to_first_detection_s": null,
+      "decisions": [],
+      "labels": []
+    },
+    {
+      "episode_id": "regression-002",
+      "track": "regression",
+      "app": "swag-labs",
+      "split": "public",
+      "answer_key_sha256": "efee7f5be3343f7fd47042b4c59318c9a2ef179d41f5f27d79ad509845cd15a8",
+      "status": "scored",
+      "wall_time_s": 0.58,
+      "cost": {
+        "model_usd": 0,
+        "compute_usd": 0
+      },
+      "time_to_first_detection_s": null,
+      "decisions": [],
+      "labels": []
+    },
+    {
+      "episode_id": "regression-003",
+      "track": "regression",
+      "app": "expense-app",
+      "split": "public",
+      "answer_key_sha256": "df6b56b415261ceef1cadf54374b4d53d41edb1cef28459817003d0920b2a0e1",
+      "status": "scored",
+      "wall_time_s": 0.51,
+      "cost": {
+        "model_usd": 0,
+        "compute_usd": 0
+      },
+      "time_to_first_detection_s": null,
+      "decisions": [],
+      "labels": [
+        {
+          "label_id": "expense.permission-bypass",
+          "kind": "defect",
+          "category": "permission",
+          "class": "deterministic",
+          "severity": "critical",
+          "hit": false
+        }
+      ]
+    },
+    {
+      "episode_id": "regression-004",
+      "track": "regression",
+      "app": "expense-app",
+      "split": "public",
+      "answer_key_sha256": "82b7f44ac894ef4335b72ec106b8eec5d328801fa416339a57b52e1323ba0b60",
+      "status": "scored",
+      "wall_time_s": 0.57,
+      "cost": {
+        "model_usd": 0,
+        "compute_usd": 0
+      },
+      "time_to_first_detection_s": null,
+      "decisions": [],
+      "labels": [
+        {
+          "label_id": "expense.relabel",
+          "kind": "change",
+          "category": "copy",
+          "class": "judged",
+          "severity": "minor",
+          "hit": false
+        }
+      ]
+    },
+    {
+      "episode_id": "regression-005",
+      "track": "regression",
+      "app": "expense-app",
+      "split": "public",
+      "answer_key_sha256": "c890877e95b1aa05522d9600329fc6127dd8cdf0bf0a9481a36dfc7900dd6736",
+      "status": "scored",
+      "wall_time_s": 0.48,
+      "cost": {
+        "model_usd": 0,
+        "compute_usd": 0
+      },
+      "time_to_first_detection_s": null,
+      "decisions": [],
+      "labels": [
+        {
+          "label_id": "expense.ignored-filter",
+          "kind": "defect",
+          "category": "functional",
+          "class": "deterministic",
+          "severity": "major",
+          "hit": false
+        }
+      ]
+    },
+    {
+      "episode_id": "regression-006",
+      "track": "regression",
+      "app": "expense-app",
+      "split": "public",
+      "answer_key_sha256": "bcc461b14f4cf7d9f36c6da60b46b619b809431ef46d72fefcacc8a82a28badc",
+      "status": "scored",
+      "wall_time_s": 0.66,
+      "cost": {
+        "model_usd": 0,
+        "compute_usd": 0
+      },
+      "time_to_first_detection_s": null,
+      "decisions": [],
+      "labels": [
+        {
+          "label_id": "expense.wrong-total",
+          "kind": "defect",
+          "category": "consistency",
+          "class": "deterministic",
+          "severity": "major",
+          "hit": false
+        }
+      ]
+    },
+    {
+      "episode_id": "regression-007",
+      "track": "regression",
+      "app": "swag-labs",
+      "split": "public",
+      "answer_key_sha256": "f2ffee27eed4eb645d2ece9539799634e232d40ce24287cdb774a5819fbc7d76",
+      "status": "scored",
+      "wall_time_s": 0.75,
+      "cost": {
+        "model_usd": 0,
+        "compute_usd": 0
+      },
+      "time_to_first_detection_s": null,
+      "decisions": [],
+      "labels": [
+        {
+          "label_id": "swag.error-user",
+          "kind": "defect",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "critical",
+          "hit": false
+        }
+      ]
+    },
+    {
+      "episode_id": "regression-008",
+      "track": "regression",
+      "app": "expense-app",
+      "split": "public",
+      "answer_key_sha256": "41865735705ba14e0e78c194227dba9a26a80bc89e252f766864f9e0839d6bc8",
+      "status": "scored",
+      "wall_time_s": 0.63,
+      "cost": {
+        "model_usd": 0,
+        "compute_usd": 0
+      },
+      "time_to_first_detection_s": null,
+      "decisions": [],
+      "labels": [
+        {
+          "label_id": "expense.misleading-success",
+          "kind": "defect",
+          "category": "functional",
+          "class": "deterministic",
+          "severity": "major",
+          "hit": false
+        }
+      ]
+    },
+    {
+      "episode_id": "regression-009",
+      "track": "regression",
+      "app": "swag-labs",
+      "split": "public",
+      "answer_key_sha256": "217e5b76de19cc37719b676a24434028cf0452ad4b949abd8f319fefab06d725",
+      "status": "scored",
+      "wall_time_s": 0.44,
+      "cost": {
+        "model_usd": 0,
+        "compute_usd": 0
+      },
+      "time_to_first_detection_s": null,
+      "decisions": [],
+      "labels": [
+        {
+          "label_id": "swag.problem-user",
+          "kind": "defect",
+          "category": "functional",
+          "class": "deterministic",
+          "severity": "critical",
+          "hit": false
+        },
+        {
+          "label_id": "swag.relabel",
+          "kind": "change",
+          "category": "copy",
+          "class": "judged",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "swag.seasonal-banner",
+          "kind": "change",
+          "category": "visual",
+          "class": "judged",
+          "severity": "minor",
+          "hit": false
+        }
+      ]
+    },
+    {
+      "episode_id": "regression-010",
+      "track": "regression",
+      "app": "expense-app",
+      "split": "public",
+      "answer_key_sha256": "5804878bdd0c829d7e0a1e11589b614cad19b8fa97bfe8be6de19a673f3dcde7",
+      "status": "scored",
+      "wall_time_s": 0.57,
+      "cost": {
+        "model_usd": 0,
+        "compute_usd": 0
+      },
+      "time_to_first_detection_s": null,
+      "decisions": [],
+      "labels": [
+        {
+          "label_id": "expense.duplicate-write",
+          "kind": "defect",
+          "category": "functional",
+          "class": "deterministic",
+          "severity": "major",
+          "hit": false
+        },
+        {
+          "label_id": "expense.relabel",
+          "kind": "change",
+          "category": "copy",
+          "class": "judged",
+          "severity": "minor",
+          "hit": false
+        }
+      ]
+    },
+    {
+      "episode_id": "regression-011",
+      "track": "regression",
+      "app": "swag-labs",
+      "split": "public",
+      "answer_key_sha256": "bc7ce371a45c3e3bb1a987e2896592e51c3809fa1235d3a181e59e3d901f8cbd",
+      "status": "scored",
+      "wall_time_s": 0.6,
+      "cost": {
+        "model_usd": 0,
+        "compute_usd": 0
+      },
+      "time_to_first_detection_s": null,
+      "decisions": [],
+      "labels": [
+        {
+          "label_id": "swag.visual-user",
+          "kind": "defect",
+          "category": "visual",
+          "class": "judged",
+          "severity": "major",
+          "hit": false
+        },
+        {
+          "label_id": "swag.checkout-copy",
+          "kind": "change",
+          "category": "copy",
+          "class": "judged",
+          "severity": "minor",
+          "hit": false
+        }
+      ]
+    },
+    {
+      "episode_id": "regression-012",
+      "track": "regression",
+      "app": "expense-app",
+      "split": "public",
+      "answer_key_sha256": "ecd119e0ca6827fbb4f04d199f2ce601e002e00442c08354ce3c1ec3bc989e0a",
+      "status": "scored",
+      "wall_time_s": 0.53,
+      "cost": {
+        "model_usd": 0,
+        "compute_usd": 0
+      },
+      "time_to_first_detection_s": null,
+      "decisions": [],
+      "labels": [
+        {
+          "label_id": "expense.missing-persistence",
+          "kind": "defect",
+          "category": "functional",
+          "class": "deterministic",
+          "severity": "critical",
+          "hit": false
+        },
+        {
+          "label_id": "expense.relabel",
+          "kind": "change",
+          "category": "copy",
+          "class": "judged",
+          "severity": "minor",
+          "hit": false
+        }
+      ]
+    },
+    {
+      "episode_id": "regression-013",
+      "track": "regression",
+      "app": "swag-labs",
+      "split": "public",
+      "answer_key_sha256": "7c82c4f29d8426edc34ff7e4fced300d8aff6a029b4ee9f9f7344d7514017ea7",
+      "status": "scored",
+      "wall_time_s": 0.43,
+      "cost": {
+        "model_usd": 0,
+        "compute_usd": 0
+      },
+      "time_to_first_detection_s": null,
+      "decisions": [],
+      "labels": [
+        {
+          "label_id": "swag.performance-glitch-user",
+          "kind": "defect",
+          "category": "perf",
+          "class": "deterministic",
+          "severity": "major",
+          "hit": false
+        }
+      ]
+    },
+    {
+      "episode_id": "regression-014",
+      "track": "regression",
+      "app": "expense-app",
+      "split": "public",
+      "answer_key_sha256": "ee54e28af23776bf1cea18e59b9f5ef138495434b11a4c13240c9f6b88a1ca77",
+      "status": "scored",
+      "wall_time_s": 0.54,
+      "cost": {
+        "model_usd": 0,
+        "compute_usd": 0
+      },
+      "time_to_first_detection_s": null,
+      "decisions": [],
+      "labels": [
+        {
+          "label_id": "expense.stale-state",
+          "kind": "defect",
+          "category": "consistency",
+          "class": "deterministic",
+          "severity": "major",
+          "hit": false
+        },
+        {
+          "label_id": "expense.relabel",
+          "kind": "change",
+          "category": "copy",
+          "class": "judged",
+          "severity": "minor",
+          "hit": false
+        }
+      ]
+    },
+    {
+      "episode_id": "regression-015",
+      "track": "regression",
+      "app": "swag-labs",
+      "split": "public",
+      "answer_key_sha256": "f63adca9c434f90e5e95b6bd41b78613c478e8ecc89829897df459e84ba9129f",
+      "status": "scored",
+      "wall_time_s": 0.54,
+      "cost": {
+        "model_usd": 0,
+        "compute_usd": 0
+      },
+      "time_to_first_detection_s": null,
+      "decisions": [],
+      "labels": [
+        {
+          "label_id": "swag.locked-out-user",
+          "kind": "defect",
+          "category": "functional",
+          "class": "deterministic",
+          "severity": "critical",
+          "hit": false
+        },
+        {
+          "label_id": "swag.price-change",
+          "kind": "change",
+          "category": "consistency",
+          "class": "judged",
+          "severity": "minor",
+          "hit": false
+        }
+      ]
+    },
+    {
+      "episode_id": "regression-016",
+      "track": "regression",
+      "app": "swag-labs",
+      "split": "public",
+      "answer_key_sha256": "18a666c28ada7216ae3891cd3499321c0d784714d8170f94fc3286721bbd4fb4",
+      "status": "scored",
+      "wall_time_s": 0.5,
+      "cost": {
+        "model_usd": 0,
+        "compute_usd": 0
+      },
+      "time_to_first_detection_s": null,
+      "decisions": [],
+      "labels": [
+        {
+          "label_id": "swag.checkout-copy",
+          "kind": "change",
+          "category": "copy",
+          "class": "judged",
+          "severity": "minor",
+          "hit": false
+        },
+        {
+          "label_id": "swag.relabel",
+          "kind": "change",
+          "category": "copy",
+          "class": "judged",
+          "severity": "minor",
+          "hit": false
+        }
+      ]
+    },
+    {
+      "episode_id": "regression-017",
+      "track": "regression",
+      "app": "swag-labs",
+      "split": "public",
+      "answer_key_sha256": "136d796dc0bebeefb9d22e40a9221b0b16b3b9650d3cdcc8bbd777feeb2b9d63",
+      "status": "scored",
+      "wall_time_s": 0.42,
+      "cost": {
+        "model_usd": 0,
+        "compute_usd": 0
+      },
+      "time_to_first_detection_s": null,
+      "decisions": [],
+      "labels": [
+        {
+          "label_id": "swag.seasonal-banner",
+          "kind": "change",
+          "category": "visual",
+          "class": "judged",
+          "severity": "minor",
+          "hit": false
+        }
+      ]
+    }
+  ],
+  "metrics": {
+    "overall": {
+      "episodes": 17,
+      "episodes_scored": 17,
+      "defects_planted": 12,
+      "defects_found": 0,
+      "recall": 0,
+      "findings": 0,
+      "findings_matched": 0,
+      "findings_excused": 0,
+      "precision": null,
+      "f1": null,
+      "changes_active": 11,
+      "changes_flagged": 0,
+      "change_flag_rate": 0,
+      "false_alarms_on_changes": 0,
+      "false_alarms_per_100_episodes": 0,
+      "unmatched_findings": 0,
+      "unmatched_per_episode": 0,
+      "mean_time_to_first_detection_s": null,
+      "wall_time_s_total": 9.31,
+      "cost_usd_total": 0,
+      "human_hours_total": null,
+      "cost_per_defect_found_usd": null,
+      "repro_rate": null
+    },
+    "by_track": {
+      "regression": {
+        "episodes": 17,
+        "episodes_scored": 17,
+        "defects_planted": 12,
+        "defects_found": 0,
+        "recall": 0,
+        "findings": 0,
+        "findings_matched": 0,
+        "findings_excused": 0,
+        "precision": null,
+        "f1": null,
+        "changes_active": 11,
+        "changes_flagged": 0,
+        "change_flag_rate": 0,
+        "false_alarms_on_changes": 0,
+        "false_alarms_per_100_episodes": 0,
+        "unmatched_findings": 0,
+        "unmatched_per_episode": 0,
+        "mean_time_to_first_detection_s": null,
+        "wall_time_s_total": 9.31,
+        "cost_usd_total": 0,
+        "human_hours_total": null,
+        "cost_per_defect_found_usd": null,
+        "repro_rate": null
+      }
+    },
+    "by_category": {
+      "consistency": {
+        "episodes": 17,
+        "episodes_scored": 17,
+        "defects_planted": 2,
+        "defects_found": 0,
+        "recall": 0,
+        "findings": 0,
+        "findings_matched": 0,
+        "findings_excused": 0,
+        "precision": null,
+        "f1": null,
+        "changes_active": 1,
+        "changes_flagged": 0,
+        "change_flag_rate": 0,
+        "false_alarms_on_changes": 0,
+        "false_alarms_per_100_episodes": 0,
+        "unmatched_findings": 0,
+        "unmatched_per_episode": 0,
+        "mean_time_to_first_detection_s": null,
+        "wall_time_s_total": null,
+        "cost_usd_total": null,
+        "human_hours_total": null,
+        "cost_per_defect_found_usd": null,
+        "repro_rate": null
+      },
+      "copy": {
+        "episodes": 17,
+        "episodes_scored": 17,
+        "defects_planted": 0,
+        "defects_found": 0,
+        "recall": null,
+        "findings": 0,
+        "findings_matched": 0,
+        "findings_excused": 0,
+        "precision": null,
+        "f1": null,
+        "changes_active": 8,
+        "changes_flagged": 0,
+        "change_flag_rate": 0,
+        "false_alarms_on_changes": 0,
+        "false_alarms_per_100_episodes": 0,
+        "unmatched_findings": 0,
+        "unmatched_per_episode": 0,
+        "mean_time_to_first_detection_s": null,
+        "wall_time_s_total": null,
+        "cost_usd_total": null,
+        "human_hours_total": null,
+        "cost_per_defect_found_usd": null,
+        "repro_rate": null
+      },
+      "error-handling": {
+        "episodes": 17,
+        "episodes_scored": 17,
+        "defects_planted": 1,
+        "defects_found": 0,
+        "recall": 0,
+        "findings": 0,
+        "findings_matched": 0,
+        "findings_excused": 0,
+        "precision": null,
+        "f1": null,
+        "changes_active": 0,
+        "changes_flagged": 0,
+        "change_flag_rate": null,
+        "false_alarms_on_changes": 0,
+        "false_alarms_per_100_episodes": 0,
+        "unmatched_findings": 0,
+        "unmatched_per_episode": 0,
+        "mean_time_to_first_detection_s": null,
+        "wall_time_s_total": null,
+        "cost_usd_total": null,
+        "human_hours_total": null,
+        "cost_per_defect_found_usd": null,
+        "repro_rate": null
+      },
+      "functional": {
+        "episodes": 17,
+        "episodes_scored": 17,
+        "defects_planted": 6,
+        "defects_found": 0,
+        "recall": 0,
+        "findings": 0,
+        "findings_matched": 0,
+        "findings_excused": 0,
+        "precision": null,
+        "f1": null,
+        "changes_active": 0,
+        "changes_flagged": 0,
+        "change_flag_rate": null,
+        "false_alarms_on_changes": 0,
+        "false_alarms_per_100_episodes": 0,
+        "unmatched_findings": 0,
+        "unmatched_per_episode": 0,
+        "mean_time_to_first_detection_s": null,
+        "wall_time_s_total": null,
+        "cost_usd_total": null,
+        "human_hours_total": null,
+        "cost_per_defect_found_usd": null,
+        "repro_rate": null
+      },
+      "perf": {
+        "episodes": 17,
+        "episodes_scored": 17,
+        "defects_planted": 1,
+        "defects_found": 0,
+        "recall": 0,
+        "findings": 0,
+        "findings_matched": 0,
+        "findings_excused": 0,
+        "precision": null,
+        "f1": null,
+        "changes_active": 0,
+        "changes_flagged": 0,
+        "change_flag_rate": null,
+        "false_alarms_on_changes": 0,
+        "false_alarms_per_100_episodes": 0,
+        "unmatched_findings": 0,
+        "unmatched_per_episode": 0,
+        "mean_time_to_first_detection_s": null,
+        "wall_time_s_total": null,
+        "cost_usd_total": null,
+        "human_hours_total": null,
+        "cost_per_defect_found_usd": null,
+        "repro_rate": null
+      },
+      "permission": {
+        "episodes": 17,
+        "episodes_scored": 17,
+        "defects_planted": 1,
+        "defects_found": 0,
+        "recall": 0,
+        "findings": 0,
+        "findings_matched": 0,
+        "findings_excused": 0,
+        "precision": null,
+        "f1": null,
+        "changes_active": 0,
+        "changes_flagged": 0,
+        "change_flag_rate": null,
+        "false_alarms_on_changes": 0,
+        "false_alarms_per_100_episodes": 0,
+        "unmatched_findings": 0,
+        "unmatched_per_episode": 0,
+        "mean_time_to_first_detection_s": null,
+        "wall_time_s_total": null,
+        "cost_usd_total": null,
+        "human_hours_total": null,
+        "cost_per_defect_found_usd": null,
+        "repro_rate": null
+      },
+      "visual": {
+        "episodes": 17,
+        "episodes_scored": 17,
+        "defects_planted": 1,
+        "defects_found": 0,
+        "recall": 0,
+        "findings": 0,
+        "findings_matched": 0,
+        "findings_excused": 0,
+        "precision": null,
+        "f1": null,
+        "changes_active": 2,
+        "changes_flagged": 0,
+        "change_flag_rate": 0,
+        "false_alarms_on_changes": 0,
+        "false_alarms_per_100_episodes": 0,
+        "unmatched_findings": 0,
+        "unmatched_per_episode": 0,
+        "mean_time_to_first_detection_s": null,
+        "wall_time_s_total": null,
+        "cost_usd_total": null,
+        "human_hours_total": null,
+        "cost_per_defect_found_usd": null,
+        "repro_rate": null
+      }
+    },
+    "by_class": {
+      "deterministic": {
+        "episodes": 17,
+        "episodes_scored": 17,
+        "defects_planted": 11,
+        "defects_found": 0,
+        "recall": 0,
+        "findings": 0,
+        "findings_matched": 0,
+        "findings_excused": 0,
+        "precision": null,
+        "f1": null,
+        "changes_active": 0,
+        "changes_flagged": 0,
+        "change_flag_rate": null,
+        "false_alarms_on_changes": 0,
+        "false_alarms_per_100_episodes": 0,
+        "unmatched_findings": 0,
+        "unmatched_per_episode": 0,
+        "mean_time_to_first_detection_s": null,
+        "wall_time_s_total": null,
+        "cost_usd_total": null,
+        "human_hours_total": null,
+        "cost_per_defect_found_usd": null,
+        "repro_rate": null
+      },
+      "judged": {
+        "episodes": 17,
+        "episodes_scored": 17,
+        "defects_planted": 1,
+        "defects_found": 0,
+        "recall": 0,
+        "findings": 0,
+        "findings_matched": 0,
+        "findings_excused": 0,
+        "precision": null,
+        "f1": null,
+        "changes_active": 11,
+        "changes_flagged": 0,
+        "change_flag_rate": 0,
+        "false_alarms_on_changes": 0,
+        "false_alarms_per_100_episodes": 0,
+        "unmatched_findings": 0,
+        "unmatched_per_episode": 0,
+        "mean_time_to_first_detection_s": null,
+        "wall_time_s_total": null,
+        "cost_usd_total": null,
+        "human_hours_total": null,
+        "cost_per_defect_found_usd": null,
+        "repro_rate": null
+      }
+    },
+    "breakdown": [
+      {
+        "track": "regression",
+        "category": "consistency",
+        "class": "deterministic",
+        "metrics": {
+          "episodes": 17,
+          "episodes_scored": 17,
+          "defects_planted": 2,
+          "defects_found": 0,
+          "recall": 0,
+          "findings": 0,
+          "findings_matched": 0,
+          "findings_excused": 0,
+          "precision": null,
+          "f1": null,
+          "changes_active": 0,
+          "changes_flagged": 0,
+          "change_flag_rate": null,
+          "false_alarms_on_changes": 0,
+          "false_alarms_per_100_episodes": 0,
+          "unmatched_findings": 0,
+          "unmatched_per_episode": 0,
+          "mean_time_to_first_detection_s": null,
+          "wall_time_s_total": null,
+          "cost_usd_total": null,
+          "human_hours_total": null,
+          "cost_per_defect_found_usd": null,
+          "repro_rate": null
+        }
+      },
+      {
+        "track": "regression",
+        "category": "consistency",
+        "class": "judged",
+        "metrics": {
+          "episodes": 17,
+          "episodes_scored": 17,
+          "defects_planted": 0,
+          "defects_found": 0,
+          "recall": null,
+          "findings": 0,
+          "findings_matched": 0,
+          "findings_excused": 0,
+          "precision": null,
+          "f1": null,
+          "changes_active": 1,
+          "changes_flagged": 0,
+          "change_flag_rate": 0,
+          "false_alarms_on_changes": 0,
+          "false_alarms_per_100_episodes": 0,
+          "unmatched_findings": 0,
+          "unmatched_per_episode": 0,
+          "mean_time_to_first_detection_s": null,
+          "wall_time_s_total": null,
+          "cost_usd_total": null,
+          "human_hours_total": null,
+          "cost_per_defect_found_usd": null,
+          "repro_rate": null
+        }
+      },
+      {
+        "track": "regression",
+        "category": "copy",
+        "class": "judged",
+        "metrics": {
+          "episodes": 17,
+          "episodes_scored": 17,
+          "defects_planted": 0,
+          "defects_found": 0,
+          "recall": null,
+          "findings": 0,
+          "findings_matched": 0,
+          "findings_excused": 0,
+          "precision": null,
+          "f1": null,
+          "changes_active": 8,
+          "changes_flagged": 0,
+          "change_flag_rate": 0,
+          "false_alarms_on_changes": 0,
+          "false_alarms_per_100_episodes": 0,
+          "unmatched_findings": 0,
+          "unmatched_per_episode": 0,
+          "mean_time_to_first_detection_s": null,
+          "wall_time_s_total": null,
+          "cost_usd_total": null,
+          "human_hours_total": null,
+          "cost_per_defect_found_usd": null,
+          "repro_rate": null
+        }
+      },
+      {
+        "track": "regression",
+        "category": "error-handling",
+        "class": "deterministic",
+        "metrics": {
+          "episodes": 17,
+          "episodes_scored": 17,
+          "defects_planted": 1,
+          "defects_found": 0,
+          "recall": 0,
+          "findings": 0,
+          "findings_matched": 0,
+          "findings_excused": 0,
+          "precision": null,
+          "f1": null,
+          "changes_active": 0,
+          "changes_flagged": 0,
+          "change_flag_rate": null,
+          "false_alarms_on_changes": 0,
+          "false_alarms_per_100_episodes": 0,
+          "unmatched_findings": 0,
+          "unmatched_per_episode": 0,
+          "mean_time_to_first_detection_s": null,
+          "wall_time_s_total": null,
+          "cost_usd_total": null,
+          "human_hours_total": null,
+          "cost_per_defect_found_usd": null,
+          "repro_rate": null
+        }
+      },
+      {
+        "track": "regression",
+        "category": "functional",
+        "class": "deterministic",
+        "metrics": {
+          "episodes": 17,
+          "episodes_scored": 17,
+          "defects_planted": 6,
+          "defects_found": 0,
+          "recall": 0,
+          "findings": 0,
+          "findings_matched": 0,
+          "findings_excused": 0,
+          "precision": null,
+          "f1": null,
+          "changes_active": 0,
+          "changes_flagged": 0,
+          "change_flag_rate": null,
+          "false_alarms_on_changes": 0,
+          "false_alarms_per_100_episodes": 0,
+          "unmatched_findings": 0,
+          "unmatched_per_episode": 0,
+          "mean_time_to_first_detection_s": null,
+          "wall_time_s_total": null,
+          "cost_usd_total": null,
+          "human_hours_total": null,
+          "cost_per_defect_found_usd": null,
+          "repro_rate": null
+        }
+      },
+      {
+        "track": "regression",
+        "category": "perf",
+        "class": "deterministic",
+        "metrics": {
+          "episodes": 17,
+          "episodes_scored": 17,
+          "defects_planted": 1,
+          "defects_found": 0,
+          "recall": 0,
+          "findings": 0,
+          "findings_matched": 0,
+          "findings_excused": 0,
+          "precision": null,
+          "f1": null,
+          "changes_active": 0,
+          "changes_flagged": 0,
+          "change_flag_rate": null,
+          "false_alarms_on_changes": 0,
+          "false_alarms_per_100_episodes": 0,
+          "unmatched_findings": 0,
+          "unmatched_per_episode": 0,
+          "mean_time_to_first_detection_s": null,
+          "wall_time_s_total": null,
+          "cost_usd_total": null,
+          "human_hours_total": null,
+          "cost_per_defect_found_usd": null,
+          "repro_rate": null
+        }
+      },
+      {
+        "track": "regression",
+        "category": "permission",
+        "class": "deterministic",
+        "metrics": {
+          "episodes": 17,
+          "episodes_scored": 17,
+          "defects_planted": 1,
+          "defects_found": 0,
+          "recall": 0,
+          "findings": 0,
+          "findings_matched": 0,
+          "findings_excused": 0,
+          "precision": null,
+          "f1": null,
+          "changes_active": 0,
+          "changes_flagged": 0,
+          "change_flag_rate": null,
+          "false_alarms_on_changes": 0,
+          "false_alarms_per_100_episodes": 0,
+          "unmatched_findings": 0,
+          "unmatched_per_episode": 0,
+          "mean_time_to_first_detection_s": null,
+          "wall_time_s_total": null,
+          "cost_usd_total": null,
+          "human_hours_total": null,
+          "cost_per_defect_found_usd": null,
+          "repro_rate": null
+        }
+      },
+      {
+        "track": "regression",
+        "category": "visual",
+        "class": "judged",
+        "metrics": {
+          "episodes": 17,
+          "episodes_scored": 17,
+          "defects_planted": 1,
+          "defects_found": 0,
+          "recall": 0,
+          "findings": 0,
+          "findings_matched": 0,
+          "findings_excused": 0,
+          "precision": null,
+          "f1": null,
+          "changes_active": 2,
+          "changes_flagged": 0,
+          "change_flag_rate": 0,
+          "false_alarms_on_changes": 0,
+          "false_alarms_per_100_episodes": 0,
+          "unmatched_findings": 0,
+          "unmatched_per_episode": 0,
+          "mean_time_to_first_detection_s": null,
+          "wall_time_s_total": null,
+          "cost_usd_total": null,
+          "human_hours_total": null,
+          "cost_per_defect_found_usd": null,
+          "repro_rate": null
+        }
+      }
+    ]
+  }
+}
