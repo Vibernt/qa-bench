@@ -1,0 +1,6 @@
+node_modules/
+dist/
+.env*
+episodes/
+*.log
+.DS_Store

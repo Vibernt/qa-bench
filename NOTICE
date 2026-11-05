@@ -1,0 +1,14 @@
+QA Bench
+Copyright (c) 2026 Vibernt. Our own code and data are MIT-licensed (see LICENSE).
+
+Third-party material
+--------------------
+Nothing third-party is vendored yet (4 Nov 2026). When something is added, list it
+here with: source URL, pinned commit or digest, licence, the folder it lives in,
+and what we changed. Material we may not redistribute is never committed; it is
+fetched at setup time by pinned digest (see docs/APPS.md, "run only").
+
+Planned entries (see docs/REFERENCES.md and docs/APPS.md for the licence checks):
+- WebTestBench (Apache-2.0): apps and labels for the natural-defects track.
+- W3C ACT rules test cases (W3C Software and Document License): accessibility ground truth.
+- Swag Labs / sample-app-web (MIT).
