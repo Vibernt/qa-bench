@@ -13,17 +13,21 @@ switch:
   exclusive: expense-variant
 found_by:
   - kind: text
+    description_pattern: 'renam|relabel|re-?word|wording|expense title|save expense|new expense|add expense|(label|button|link|field)s? (now )?(reads?|says|is called|changed)'
     note: "Reports the renamed button or field labels as a copy fault"
   - kind: element
+    description_pattern: 'renam|relabel|re-?word|wording|expense title|save expense|new expense|add expense|(label|button|link|field)s? (now )?(reads?|says|is called|changed)'
     category: functional
     selector: "a[href=/expenses/new]"
     note: "Reports the Add expense link as missing or wrong because it now reads New expense"
   - kind: element
+    description_pattern: 'renam|relabel|re-?word|wording|expense title|save expense|new expense|add expense|(label|button|link|field)s? (now )?(reads?|says|is called|changed)'
     category: functional
     route: /expenses/new
     selector: "button[type=submit]"
     note: "Reports the Save button as missing or wrong because it now reads Save expense"
   - kind: element
+    description_pattern: 'renam|relabel|re-?word|wording|expense title|save expense|new expense|add expense|(label|button|link|field)s? (now )?(reads?|says|is called|changed)'
     category: usability
     selector: "a[href=/expenses/new]"
     note: "Reports the renamed controls as confusing or a usability regression"

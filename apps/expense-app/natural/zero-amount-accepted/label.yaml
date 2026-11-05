@@ -1,0 +1,18 @@
+id: expense.zero-amount-accepted
+app: expense-app
+title: "An expense of $0.00 is accepted"
+description: "The add and edit forms accept an amount of 0 and save a $0.00 expense, although negative amounts are refused. Found by agents in the v0.2 sample runs; not planted."
+track: regression
+kind: natural
+category: functional
+class: deterministic
+severity: minor
+where: { route: /expenses, role: editor }
+found_by:
+  - kind: behaviour
+    also_categories: [error-handling]
+    description_pattern: '^(?=[\s\S]*(\bzero\b|\$0\.00\b|amounts? (of |=|: ?)?["'']?0(\.00?)?["'']?(?![\d.])|(^|[^\d.$])0(\.00?)? (amount|value|expense)))(?=[\s\S]*(accept|allow|sav|stor|creat|permit|succe|303))'
+    note: "An amount of 0 is saved as a $0.00 expense"
+tolerance: { route: prefix, role: any }
+split: public
+upstream_ref: "apps/expense-app/app/src/server.ts (parseAmount accepts 0); checked by apps/expense-app/verify.ts"

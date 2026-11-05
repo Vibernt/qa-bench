@@ -343,6 +343,46 @@ const checks: Record<string, Check[]> = {
       return (await text(s, dt('inventory-item-name'))).includes('ITEM NOT FOUND') && (await count(s, dt('add-to-cart'))) === 1;
     },
   ],
+  'swag.reset-keeps-remove-buttons': [
+    async (s) => {
+      await login(s);
+      await s.page.click(dt('add-to-cart-sauce-labs-bike-light'));
+      await s.page.click('#react-burger-menu-btn');
+      await s.page.click(dt('reset-sidebar-link'));
+      await pause(300);
+      return (await count(s, dt('shopping-cart-badge'))) === 0 && (await count(s, dt('remove-sauce-labs-bike-light'))) === 1;
+    },
+  ],
+  'swag.empty-cart-checkout': [
+    async (s) => {
+      await login(s);
+      await open(s, '/cart.html');
+      if ((await count(s, dt('inventory-item'))) !== 0) return false;
+      await s.page.click(dt('checkout'));
+      await s.page.fill(dt('firstName'), 'Ada');
+      await s.page.fill(dt('lastName'), 'Lovelace');
+      await s.page.fill(dt('postalCode'), '10001');
+      await s.page.click(dt('continue'));
+      const total = await text(s, dt('total-label'));
+      await s.page.click(dt('finish'));
+      await s.page.locator(dt('complete-header')).waitFor();
+      return total.includes('$0.00') && s.page.url().endsWith('/checkout-complete.html');
+    },
+  ],
+  'swag.no-security-headers': [
+    async (s) => {
+      const pages = [await fetch(s.base + '/'), await fetch(s.base + '/inventory.html')];
+      return pages.every((r) => r.status === 200 && !['content-security-policy', 'x-frame-options', 'x-content-type-options'].some((h) => r.headers.has(h)));
+    },
+  ],
+  'swag.blank-not-found-page': [
+    async (s) => {
+      const res = await s.page.goto(s.base + '/nonexistent');
+      await pause(500);
+      const shown = (await s.page.locator('body').innerText()).trim();
+      return res?.status() === 404 && shown === '';
+    },
+  ],
   'swag.cart-count-grammar': [
     async (s) => {
       await login(s);

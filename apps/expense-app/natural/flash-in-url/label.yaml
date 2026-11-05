@@ -1,0 +1,18 @@
+id: expense.flash-in-url
+app: expense-app
+title: "The success message lives in the URL"
+description: "After a save the app redirects to /expenses?flash=saved, so the \"Expense saved\" message comes back on every reload or shared link, and any visit to that URL shows it without saving anything. Found by agents in the v0.2 sample runs; not planted."
+track: regression
+kind: natural
+category: usability
+class: deterministic
+severity: minor
+where: { route: /expenses, role: editor }
+found_by:
+  - kind: text
+    also_categories: [consistency, functional]
+    description_pattern: '(\?flash|flash=|flash (message|param\w*)|query[- ](string|param\w*))[\s\S]{0,160}(reload|refresh|persist|stays|remains|again|without (saving|anything|a save)|bookmark|shar|fake|spoof)|(message|expense saved|expense updated)["'']?[\s\S]{0,40}(stays|persists|remains|reappears|sticks|shown again|shows again|every reload|on reload)'
+    note: "Reloading the list after a save shows \"Expense saved\" again; /expenses?flash=saved shows it with no save"
+tolerance: { route: prefix, role: any }
+split: public
+upstream_ref: "apps/expense-app/app/src/server.ts (GET /expenses reads the flash from the query string); checked by apps/expense-app/verify.ts"

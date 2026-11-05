@@ -15,25 +15,31 @@ switch:
   env: { QA_BENCH_CHANGES: price-change }
 found_by:
   - kind: value
+    description_pattern: '24\.99|29\.99|backpack|price'
     selector: "[data-test=inventory-item-price]"
     note: "Reports the Backpack's $24.99 on the product list as a wrong price"
   - kind: value
+    description_pattern: '24\.99|29\.99|backpack|price'
     route: /inventory-item.html
     selector: "[data-test=inventory-item-price]"
     note: "Reports the detail page's $24.99 as a wrong price"
   - kind: value
+    description_pattern: '24\.99|29\.99|backpack|price'
     route: /cart.html
     selector: "[data-test=inventory-item-price]"
     note: "Reports the cart's $24.99 as a wrong price"
   - kind: value
+    description_pattern: '24\.99|29\.99|backpack|price'
     route: /checkout-step-two.html
     selector: "[data-test=subtotal-label]"
     note: "Reports the item total as wrong against the old price"
   - kind: value
+    description_pattern: '24\.99|29\.99|backpack|price'
     route: /checkout-step-two.html
     selector: "[data-test=total-label]"
     note: "Reports the total or tax as wrong against the old price"
   - kind: value
+    description_pattern: '24\.99|29\.99|backpack|price'
     category: functional
     selector: "[data-test=inventory-item-price]"
     note: "Reports the changed price as a functional fault"
