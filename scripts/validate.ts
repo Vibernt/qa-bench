@@ -23,7 +23,7 @@ function walk(dir: string, out: string[] = []): string[] {
 export function schemaFor(rel: string): SchemaName | undefined {
   if (/^apps\/[^/]+\/upstream\.json$/.test(rel)) return 'upstream';
   if (/^apps\/[^/]+\/app\.ya?ml$/.test(rel)) return 'app';
-  if (/^apps\/[^/]+\/(mutations|changes|baseline)\/[^/]+\/label\.ya?ml$/.test(rel)) return 'label';
+  if (/^apps\/[^/]+\/(mutations|changes|baseline|natural)\/[^/]+\/label\.ya?ml$/.test(rel)) return 'label';
   if (/^tracks\/[^/]+\.ya?ml$/.test(rel)) return 'track';
   if (/^episodes\/.+\/episode\.json$/.test(rel)) return 'episode';
   if (/^episodes\/.+\/answer-key\.json$/.test(rel)) return 'answer-key';
@@ -67,7 +67,7 @@ export function validateRepo(root = REPO_ROOT): { problems: string[]; checked: n
     if (schema === 'label') {
       const label = value as Label;
       const kindDir = rel.split('/')[2];
-      const expectedKind = kindDir === 'mutations' ? 'defect' : kindDir === 'changes' ? 'change' : 'baseline';
+      const expectedKind = kindDir === 'mutations' ? 'defect' : kindDir === 'changes' ? 'change' : kindDir === 'natural' ? 'natural' : 'baseline';
       if (label.app !== appDir) problems.push(`${rel}: app '${label.app}' does not match folder '${appDir}'`);
       if (label.kind !== expectedKind) problems.push(`${rel}: kind '${label.kind}' belongs in ${kindDir}/ only if it is '${expectedKind}'`);
       const prev = labels.get(label.id);

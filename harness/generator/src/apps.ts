@@ -14,6 +14,8 @@ export interface LoadedApp {
   mutations: Label[];
   changes: Label[];
   baseline: Label[];
+  /** Verified real bugs present in every build. */
+  natural: Label[];
 }
 
 export const DEFAULT_APPS_ROOT = join(REPO_ROOT, 'apps');
@@ -22,6 +24,7 @@ const KIND_DIRS = [
   ['mutations', 'defect'],
   ['changes', 'change'],
   ['baseline', 'baseline'],
+  ['natural', 'natural'],
 ] as const;
 
 function byId(a: Label, b: Label): number {
@@ -43,7 +46,7 @@ export function loadApp(dir: string, id: string): LoadedApp {
   const upFile = join(dir, 'upstream.json');
   if (existsSync(upFile)) upstream = assertValid<Upstream>('upstream', readData(upFile), upFile);
 
-  const loaded: LoadedApp = { id, dir, config, upstream, mutations: [], changes: [], baseline: [] };
+  const loaded: LoadedApp = { id, dir, config, upstream, mutations: [], changes: [], baseline: [], natural: [] };
   for (const [sub, kind] of KIND_DIRS) {
     const base = join(dir, sub);
     if (!existsSync(base)) continue;
@@ -63,7 +66,7 @@ export function loadApp(dir: string, id: string): LoadedApp {
     loaded[sub].sort(byId);
   }
   const seen = new Set<string>();
-  for (const l of [...loaded.mutations, ...loaded.changes, ...loaded.baseline]) {
+  for (const l of [...loaded.mutations, ...loaded.changes, ...loaded.baseline, ...loaded.natural]) {
     if (seen.has(l.id)) throw new Error(`${dir}: duplicate label id '${l.id}'`);
     seen.add(l.id);
   }

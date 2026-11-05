@@ -38,6 +38,7 @@ Write `{{findings}}` as JSON in exactly this shape:
       "id": "f1",
       "where": { "route": "/path/of/the/page", "role": "<role from the brief>", "selector": "[data-test=\"...\"]" },
       "category": "functional",
+      "severity": "major",
       "description": "What is wrong, in one or two sentences",
       "confidence": 0.8,
       "repro": ["step 1", "step 2"],
@@ -54,6 +55,10 @@ Write `{{findings}}` as JSON in exactly this shape:
   `data-testid` attribute.
 - **`category`:** exactly one of `functional`, `consistency`, `permission`, `error-handling`, `visual`, `copy`,
   `a11y`, `perf`, `usability`, `email`, `security-hygiene`, `l10n`.
+- **`severity`:** how much it matters to a real user. Use exactly one of:
+  - `critical`: blocks a core journey, loses or corrupts data, or leaks access or money;
+  - `major`: a wrong result or clearly broken UI on a core journey, with a workaround;
+  - `minor`: cosmetic, a typo, or an edge case off the main path.
 - **`evidence`:** optional. The paths are files you saved in `{{workdir}}/evidence/`.
 
 When you finish, reply with one line: how many findings you wrote.

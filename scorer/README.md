@@ -42,7 +42,8 @@ entry's own value, else the label's.
 
 ## Decisions
 Each finding gets exactly one decision, in order of preference:
-active `defect` label → `true_positive` (first finding to hit it) or `duplicate` (later ones); else `change` label →
+active `defect` label → `true_positive` (first finding to hit it) or `duplicate` (later ones); else a `natural` label (a
+verified real bug present in every build; same decisions, reported as natural recall); else `change` label →
 `false_alarm_change`; else `baseline` label → `excused`; else `unmatched`. Among several matching labels of the
 preferred kind the highest score wins (label order breaks ties). Findings are processed in file order. A finding that
 resembles an inactive mutation is simply unmatched. Every decision has a human-readable `reason`.
@@ -50,7 +51,8 @@ Episodes that are not `scored` (adapter_error, timeout, invalid_findings, skippe
 planted defects count as missed.
 
 ## Metrics
-- recall = defects found / planted; precision = (true positives + duplicates) / (findings − excused), null when the
+- recall = planted defects found / planted (natural defects are reported apart, as natural recall = found / present,
+  so planted recall stays comparable);  precision = (true positives + duplicates) / (findings − excused), null when the
   denominator is 0; F1 from those two (null if either is null).
 - `changes_flagged` counts each active change once per episode. `false_alarms_per_100_episodes` =
   changes flagged × 100 / episodes. `false_alarms_on_changes` counts findings decided `false_alarm_change`.

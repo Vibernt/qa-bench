@@ -18,7 +18,7 @@ import { scoreRun } from '../../../scorer/src/index.ts';
 import { DEFAULT_RUNS_ROOT, downEpisode, runEpisodes, upEpisode, type RunnerOptions } from '../../runner/src/index.ts';
 
 export const AGENTS_ROOT = join(REPO_ROOT, 'harness', 'agents');
-export const HARNESS_VERSION = '0.1.0';
+export const HARNESS_VERSION = '0.2.0'; // 0.2.0: the prompt asks for each finding's severity
 
 export interface AgentConfig {
   id: string;

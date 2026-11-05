@@ -38,9 +38,10 @@
       "enum": [
         "defect",
         "change",
-        "baseline"
+        "baseline",
+        "natural"
       ],
-      "description": "defect: planted bug (recall). change: deliberate change, reporting it is a false alarm. baseline: intended quirk of the unmutated app (e.g. a demo page that is broken on purpose); matching findings are excused"
+      "description": "defect: planted bug (recall). change: deliberate change, reporting it is a false alarm. baseline: intended quirk of the unmutated app (e.g. a demo page that is broken on purpose); matching findings are excused. natural: a real bug present in every build of the app (found by a system, verified by apps/<app>/verify.ts); finding it counts like finding a planted defect, reported separately as natural recall"
     },
     "category": {
       "$ref": "defs.schema.json#/$defs/category"

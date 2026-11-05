@@ -206,3 +206,28 @@ describe('severity weighting', () => {
     expect(m.severity_agreement).toBeNull();
   });
 });
+
+describe('natural defects', () => {
+  const ls = [
+    label('swag.planted', { where: { route: '/a.html' } }),
+    label('swag.real-bug', { kind: 'natural', category: 'error-handling', where: { route: '/b.html' } }),
+  ];
+  const score = (fs: ReturnType<typeof finding>[]) =>
+    scoreEpisode({ ...episode('regression-010', ls), findings: { episode_id: 'regression-010', system: { name: 's', version: '1' }, findings: fs as never }, status: 'scored' });
+
+  it('a finding on a verified natural bug is a true positive, counted apart from planted recall', () => {
+    const s = score([finding('f1', '/a.html'), finding('f2', '/b.html', 'error-handling'), finding('f3', '/b.html', 'functional')]);
+    expect(s.decisions.map((d) => d.decision)).toEqual(['true_positive', 'true_positive', 'duplicate']);
+    const m = aggregate([s]);
+    expect(m.defects_planted).toBe(1);
+    expect(m.recall).toBe(1);
+    expect(m.natural_present).toBe(1);
+    expect(m.natural_recall).toBe(1);
+    expect(m.precision).toBe(1);
+  });
+  it('a planted defect wins over a natural one when both match', () => {
+    const both = [label('swag.p', { where: { route: '/x.html' } }), label('swag.n', { kind: 'natural', where: { route: '/x.html' } })];
+    const s = scoreEpisode({ ...episode('e', both), findings: { episode_id: 'e', system: { name: 's', version: '1' }, findings: [finding('f', '/x.html')] as never }, status: 'scored' });
+    expect(s.decisions[0]?.label_id).toBe('swag.p');
+  });
+});

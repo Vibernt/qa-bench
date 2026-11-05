@@ -6,7 +6,7 @@ export type Category =
   | 'a11y' | 'perf' | 'usability' | 'email' | 'security-hygiene' | 'l10n';
 export type LabelClass = 'deterministic' | 'judged' | 'human';
 export type Severity = 'critical' | 'major' | 'minor';
-export type LabelKind = 'defect' | 'change' | 'baseline';
+export type LabelKind = 'defect' | 'change' | 'baseline' | 'natural';
 export type Split = 'public' | 'heldout';
 
 export interface Region { x: number; y: number; w: number; h: number; viewport?: string }
@@ -287,6 +287,9 @@ export interface Metrics {
   human_hours_total?: number | null;
   cost_per_defect_found_usd?: number | null;
   repro_rate?: number | null;
+  natural_present?: number;
+  natural_found?: number;
+  natural_recall?: number | null;
   severity_judged?: number;
   severity_agreement?: number | null;
 }

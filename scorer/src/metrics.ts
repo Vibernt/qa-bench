@@ -32,6 +32,7 @@ function sumOrNull(xs: (number | null | undefined)[]): number | null {
 }
 
 function compute(scores: EpisodeScore[], s: Slice): Metrics {
+  let natPresent = 0, natFound = 0;
   let planted = 0, found = 0, changesActive = 0, changesFlagged = 0, wPlanted = 0, wFound = 0, sevJudged = 0, sevAgree = 0;
   const counts: Record<Decision, number> = { true_positive: 0, duplicate: 0, false_alarm_change: 0, excused: 0, unmatched: 0 };
   for (const ep of scores) {
@@ -43,6 +44,7 @@ function compute(scores: EpisodeScore[], s: Slice): Metrics {
         planted++; wPlanted += w;
         if (l.hit) { found++; wFound += w; }
       }
+      if (l.kind === 'natural') { natPresent++; if (l.hit) natFound++; }
       if (l.kind === 'change') { changesActive++; if (l.hit) changesFlagged++; }
     }
     for (const d of ep.decisions) {
@@ -71,6 +73,7 @@ function compute(scores: EpisodeScore[], s: Slice): Metrics {
     unmatched_findings: counts.unmatched, unmatched_per_episode: n ? counts.unmatched / n : null,
     mean_time_to_first_detection_s: null, wall_time_s_total: null, cost_usd_total: null, human_hours_total: null,
     cost_per_defect_found_usd: null, repro_rate: null,
+    natural_present: natPresent, natural_found: natFound, natural_recall: ratio(natFound, natPresent),
     severity_judged: sevJudged, severity_agreement: ratio(sevAgree, sevJudged),
   };
   if (s.episodeLevel) {

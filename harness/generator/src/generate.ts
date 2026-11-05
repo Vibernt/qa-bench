@@ -68,6 +68,7 @@ interface Pool {
   mutations: Label[];
   changes: Label[];
   baseline: Label[];
+  natural: Label[];
   /** Every env key any pool label can switch, blanked when not active so a stray host value can't leak in. */
   switchKeys: string[];
 }
@@ -104,9 +105,10 @@ function buildPools(track: Track, apps: Map<string, LoadedApp>, split: Split, wh
     const changes = resolveList(ta.changes, app.changes, 'change', app, where).filter(inSplit);
     // Public answer keys carry public baselines only, so they never hint at held-out material.
     const baseline = app.baseline.filter((l) => split === 'heldout' || l.split === 'public');
+    const natural = app.natural.filter((l) => split === 'heldout' || l.split === 'public');
     const keys = new Set<string>();
     for (const l of [...mutations, ...changes]) for (const k of Object.keys(l.switch?.env ?? {})) keys.add(k);
-    pools.push({ app, weight: ta.weight ?? 1, mutations, changes, baseline, switchKeys: [...keys].sort() });
+    pools.push({ app, weight: ta.weight ?? 1, mutations, changes, baseline, natural, switchKeys: [...keys].sort() });
   }
   return pools;
 }
@@ -298,7 +300,7 @@ function build(
     app: pool.app.id,
     track: track.id,
     noise_only: pool.app.config.noise_only ?? false,
-    labels: [...plan.mutations, ...plan.changes, ...pool.baseline],
+    labels: [...plan.mutations, ...plan.changes, ...pool.baseline, ...pool.natural],
   };
   assertValid('answer-key', answerKey, `${id}/answer-key.json`);
   const answerKeyText = jsonText(answerKey);

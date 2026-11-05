@@ -249,7 +249,8 @@
                 "enum": [
                   "defect",
                   "change",
-                  "baseline"
+                  "baseline",
+                  "natural"
                 ]
               },
               "category": {
@@ -429,6 +430,20 @@
             "null"
           ],
           "description": "Share of judged true positives whose severity equals the label's"
+        },
+        "natural_present": {
+          "type": "integer",
+          "description": "Natural (unplanted, verified) defects present in the episodes"
+        },
+        "natural_found": {
+          "type": "integer"
+        },
+        "natural_recall": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "natural_found / natural_present; planted recall stays separate so it is comparable across bench versions"
         }
       }
     }

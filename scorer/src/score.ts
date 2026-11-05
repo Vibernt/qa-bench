@@ -27,6 +27,7 @@ export function scoreEpisode(input: {
   const defects = answerKey.labels.filter((l) => l.kind === 'defect');
   const changes = answerKey.labels.filter((l) => l.kind === 'change');
   const baselines = answerKey.labels.filter((l) => l.kind === 'baseline');
+  const naturals = answerKey.labels.filter((l) => l.kind === 'natural');
 
   const hits = new Map<string, string[]>(); // label id -> finding ids
   const addHit = (labelId: string, fid: string) => hits.set(labelId, [...(hits.get(labelId) ?? []), fid]);
@@ -37,7 +38,9 @@ export function scoreEpisode(input: {
     const mk = (decision: Decision, reason: string, label?: Label): FindingDecision => ({
       finding_id: f.id, decision, ...(label ? { label_id: label.id } : {}), category: f.category, reason,
     });
-    const d = best(f, defects);
+    // Planted defects first; a verified natural defect counts the same way when no planted one matches.
+    const planted = best(f, defects);
+    const d = planted.hit ? planted : best(f, naturals);
     if (d.hit) {
       const seen = hits.has(d.hit.label.id);
       addHit(d.hit.label.id, f.id);
@@ -63,7 +66,7 @@ export function scoreEpisode(input: {
       decisions.push(mk('excused', `known baseline issue ${b.hit.label.id}: ${b.hit.reason}`, b.hit.label));
       continue;
     }
-    const near = [d.nearMiss, c.nearMiss, b.nearMiss].filter((x): x is Candidate => !!x).sort((x, y) => y.score - x.score)[0];
+    const near = [planted.nearMiss, d.nearMiss, c.nearMiss, b.nearMiss].filter((x): x is Candidate => !!x).sort((x, y) => y.score - x.score)[0];
     const reason = near
       ? `no label matched; closest: ${near.reason}`
       : 'no active defect, change or baseline label in this episode';

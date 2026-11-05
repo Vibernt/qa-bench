@@ -56,6 +56,7 @@ export function renderMarkdown(report: Report): string {
   L.push(table(['Metric', 'Value'], [
     ['Recall', `${pct(m.recall)} (${frac(m.defects_found, m.defects_planted)} defects)`],
     ['Severity-weighted recall', `${pct(m.weighted_recall ?? null)} (${dec(m.weighted_defects_found ?? null, 0)}/${dec(m.weighted_defects_planted ?? null, 0)} weight; critical 5, major 3, minor 1)`],
+    ['Natural defects found', m.natural_present ? `${pct(m.natural_recall ?? null)} (${frac(m.natural_found ?? 0, m.natural_present)} verified real bugs nobody planted)` : '— (none labelled for these apps)'],
     ['Precision', pct(m.precision)],
     ['F1', pct(m.f1)],
     ['Severity-weighted F1', pct(m.weighted_f1 ?? null)],

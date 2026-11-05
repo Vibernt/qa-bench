@@ -165,12 +165,12 @@ describe('generateTrack', () => {
     expect(Object.keys(env)).toEqual(Object.keys(env).slice().sort());
   });
 
-  it('puts all active labels and every baseline label in the answer key', () => {
+  it('puts all active labels and every baseline and natural label in the answer key', () => {
     const r = generateTrack(MIX, { appsRoot: APPS, write: false });
     for (const g of r.episodes) {
       const ids = g.answerKey.labels.map((l) => l.id);
       expect(ids).toEqual(expect.arrayContaining([...g.episode.active.mutations, ...g.episode.active.changes]));
-      if (g.episode.app === 'alpha') expect(ids).toContain('alpha.quirk');
+      if (g.episode.app === 'alpha') expect(ids).toEqual(expect.arrayContaining(['alpha.quirk', 'alpha.real-bug']));
       expect(g.answerKey.labels.every((l) => typeof l.found_by === 'object')).toBe(true); // full objects
     }
     expect(r.episodes[0]!.episode.upstream ?? {}).toBeTypeOf('object');
