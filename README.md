@@ -53,11 +53,13 @@ tracks/*.yaml ──generate──▶ episodes/<track>/<id>/episode.json + answe
     email, security-hygiene, l10n);
   - its **class**: *deterministic*, *judged* or *human* (see [docs/BRIEF.md §4](docs/BRIEF.md));
   - the **evidence** that counts as finding it.
-- **Track** (`tracks/*.yaml`): which apps and labels make up one kind of test. There are three:
+- **Track** (`tracks/*.yaml`): which apps and labels make up one kind of test. There are four:
   - `regression` (7.1): planted bugs in known journeys, 2-3 per mixed episode with at most one blatant;
   - `exploration` (7.7): the same apps and defect mix, but the brief gives only the URL, the roles and the
     product's one-line purpose, with no journeys or checklist;
-  - `noise` (7.4): hard pages that aren't broken.
+  - `noise` (7.4): hard pages that aren't broken;
+  - `visual` (7.3): layout, visual and accessibility faults that change only the rendered page, never its text or
+    behaviour, against deliberate redesigns. The brief gives the supported devices.
 - **Episode:** one build of one app, with a set of defects and changes switched on, its own generated test accounts
   and a sealed answer key. Episodes are generated from a track with a fixed seed, so they are reproducible.
   - **Twin** episodes switch on only deliberate changes, so anything reported in them is a false alarm.
@@ -305,8 +307,8 @@ behaviour intact), only systems that look at or measure the rendered page find a
 ## Repository layout
 
 ```
-apps/<app>/            upstream.json, app.yaml, compose.yaml, labels (mutations/, changes/, baseline/), verify.ts
-tracks/                track definitions (regression, exploration, noise)
+apps/<app>/            upstream.json, app.yaml, compose.yaml, labels (mutations/, changes/, baseline/, natural/), verify.ts
+tracks/                track definitions (regression, exploration, noise, visual)
 episodes/              generated, not committed (regenerate with `generate --all`)
 harness/generator/     episode generator
 harness/runner/        brings episodes up, runs adapters sealed, tears down
