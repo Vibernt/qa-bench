@@ -1,6 +1,6 @@
 {
   "bench_version": "0.2.0-dev",
-  "generated_at": "2026-11-06T06:54:33.137Z",
+  "generated_at": "2026-11-06T07:26:11.805Z",
   "system": {
     "name": "claude-sonnet-5.5-high",
     "version": "claude-sonnet-5-5@high"
@@ -38,7 +38,7 @@
       "track": "visual",
       "app": "expense-app",
       "split": "public",
-      "answer_key_sha256": "2405e9b4f31480f6d5032f4b8fc8d61c50989832f130fd50e9cc9e4bc8d6d871",
+      "answer_key_sha256": "7f4b5e26a184ebae5eb4d28cf69d5576245b342a1e0ffcae6cd1cdb80ce1efc1",
       "status": "scored",
       "wall_time_s": 70.4,
       "cost": {
@@ -274,7 +274,7 @@
       "track": "visual",
       "app": "expense-app",
       "split": "public",
-      "answer_key_sha256": "26442f1f1c83ef24e202e07e7247f7c923a6c84ddf1068a184d4bacffb703f16",
+      "answer_key_sha256": "788f738f43cfeb34a2f3904b0977d30cc6dd620401f53e9f3656c9dbd2ed820f",
       "status": "scored",
       "wall_time_s": 115,
       "cost": {
@@ -366,16 +366,6 @@
           "label_id": "expense.flash-in-url",
           "kind": "natural",
           "category": "usability",
-          "class": "deterministic",
-          "severity": "minor",
-          "exposure": "novel",
-          "difficulty": "blatant",
-          "hit": false
-        },
-        {
-          "label_id": "expense.focus-ring-low-contrast",
-          "kind": "natural",
-          "category": "a11y",
           "class": "deterministic",
           "severity": "minor",
           "exposure": "novel",
@@ -499,7 +489,7 @@
       "track": "visual",
       "app": "expense-app",
       "split": "public",
-      "answer_key_sha256": "d7d44b47c6daaa9fe9eddb7052c35cb3a6b6bb444091d231f08130db9add94a9",
+      "answer_key_sha256": "c6998acb217fb5a374968565d5bfd3896ee3e5c4714856a91c76bcb71ffdb3b0",
       "status": "scored",
       "wall_time_s": 56.1,
       "cost": {
@@ -638,16 +628,6 @@
           "hit": false
         },
         {
-          "label_id": "expense.phone-rows-unlabelled",
-          "kind": "natural",
-          "category": "a11y",
-          "class": "deterministic",
-          "severity": "minor",
-          "exposure": "novel",
-          "difficulty": "blatant",
-          "hit": false
-        },
-        {
           "label_id": "expense.rejected-form-loses-input",
           "kind": "natural",
           "category": "error-handling",
@@ -724,7 +704,7 @@
       "track": "visual",
       "app": "swag-labs",
       "split": "public",
-      "answer_key_sha256": "498fbf8b3c66150afe75334622c3897aa19686b3c7fbb1cad14a677f8d5edf4f",
+      "answer_key_sha256": "b4700861986c8d447d800b4f3b5b21960639a131a43bf390c8e7969eee5e25c7",
       "status": "scored",
       "wall_time_s": 90.4,
       "cost": {
@@ -921,7 +901,7 @@
       "track": "visual",
       "app": "expense-app",
       "split": "public",
-      "answer_key_sha256": "4ef45e983b06ac0915b6847921438350a3f5cacbdde49c546326ca76cdb79c5c",
+      "answer_key_sha256": "8ec5349938216a3a6f0bb1d986033726d85c27b696e26abe9a9a413c1fef738f",
       "status": "scored",
       "wall_time_s": 61.9,
       "cost": {
@@ -1003,16 +983,6 @@
           "label_id": "expense.flash-in-url",
           "kind": "natural",
           "category": "usability",
-          "class": "deterministic",
-          "severity": "minor",
-          "exposure": "novel",
-          "difficulty": "blatant",
-          "hit": false
-        },
-        {
-          "label_id": "expense.focus-ring-low-contrast",
-          "kind": "natural",
-          "category": "a11y",
           "class": "deterministic",
           "severity": "minor",
           "exposure": "novel",
@@ -1136,7 +1106,7 @@
       "track": "visual",
       "app": "swag-labs",
       "split": "public",
-      "answer_key_sha256": "28e1ab1c4c1d350e2896024cae1a0f0eb145861b47c73b6db32163fd2e06ec90",
+      "answer_key_sha256": "fef9e3b62b38a87a5caef15ba7486b11f88acd0fca0a574d13593dc130b76822",
       "status": "scored",
       "wall_time_s": 79.2,
       "cost": {
@@ -1323,7 +1293,7 @@
       "track": "visual",
       "app": "expense-app",
       "split": "public",
-      "answer_key_sha256": "22b394b5b63d4277fb6cacdda39ab3766eb4a64d65e228c03762cf3ad91d2c6f",
+      "answer_key_sha256": "99454cbcbacb0210c2bb7c4b854191b628541a497621c15b3612e236f091333b",
       "status": "scored",
       "wall_time_s": 132.8,
       "cost": {
@@ -1540,7 +1510,7 @@
       "track": "visual",
       "app": "expense-app",
       "split": "public",
-      "answer_key_sha256": "5e5005c4843bd70d0c0e9201c495a4e80540ac7f6c0dec167685e17c8380ae46",
+      "answer_key_sha256": "e3dfacb500a80ac98596138c7b562c154f92c5fc0f5e50347b97f1cf9332e86c",
       "status": "scored",
       "wall_time_s": 63.2,
       "cost": {
@@ -1755,7 +1725,7 @@
       "track": "visual",
       "app": "expense-app",
       "split": "public",
-      "answer_key_sha256": "9b0d5749f1695d430adc8b617af064388be0b599829791bc7e0e76271cfe1855",
+      "answer_key_sha256": "5b697d26e4793fe158fad8c95874f78b9ba29047f2d50452c53d0327ee7fbb3f",
       "status": "scored",
       "wall_time_s": 65.3,
       "cost": {
@@ -1884,16 +1854,6 @@
           "hit": false
         },
         {
-          "label_id": "expense.phone-rows-unlabelled",
-          "kind": "natural",
-          "category": "a11y",
-          "class": "deterministic",
-          "severity": "minor",
-          "exposure": "novel",
-          "difficulty": "blatant",
-          "hit": false
-        },
-        {
           "label_id": "expense.rejected-form-loses-input",
           "kind": "natural",
           "category": "error-handling",
@@ -1970,7 +1930,7 @@
       "track": "visual",
       "app": "expense-app",
       "split": "public",
-      "answer_key_sha256": "57e155622f4994fc48aef9a5e2f7ba50e2057e2cf6df8bebb15137f1debb1e43",
+      "answer_key_sha256": "0b833d79ac9917e1423378d51c7fd4afce792318a4e95fd127eb0e669a729d29",
       "status": "scored",
       "wall_time_s": 43.1,
       "cost": {
@@ -2052,16 +2012,6 @@
           "label_id": "expense.flash-in-url",
           "kind": "natural",
           "category": "usability",
-          "class": "deterministic",
-          "severity": "minor",
-          "exposure": "novel",
-          "difficulty": "blatant",
-          "hit": false
-        },
-        {
-          "label_id": "expense.focus-ring-low-contrast",
-          "kind": "natural",
-          "category": "a11y",
           "class": "deterministic",
           "severity": "minor",
           "exposure": "novel",
@@ -2185,7 +2135,7 @@
       "track": "visual",
       "app": "swag-labs",
       "split": "public",
-      "answer_key_sha256": "7abf84af59a0c72567c1987affbcac51aed54c35923b037710b2f50b4ffecf2c",
+      "answer_key_sha256": "05ab7802a0d158d7303a84b283ffe674ca2b7d542d6419954887910f52a9a806",
       "status": "scored",
       "wall_time_s": 165.3,
       "cost": {
@@ -2357,7 +2307,7 @@
       "track": "visual",
       "app": "expense-app",
       "split": "public",
-      "answer_key_sha256": "c054101d1826ce24e234fea382b4bdd4a7b0a7ad5ff476540e23d466e57795c8",
+      "answer_key_sha256": "9371f0efdf3e4d47253e44641162bbe03c70bf5927c0b51e47aaa5fed9625472",
       "status": "scored",
       "wall_time_s": 94.7,
       "cost": {
@@ -2609,9 +2559,9 @@
       "human_hours_total": null,
       "cost_per_defect_found_usd": 0.020312764705882353,
       "repro_rate": null,
-      "natural_present": 165,
+      "natural_present": 160,
       "natural_found": 13,
-      "natural_recall": 0.07878787878787878,
+      "natural_recall": 0.08125,
       "severity_judged": 30,
       "severity_agreement": 0.6666666666666666,
       "episodes_with_activity": 12,
@@ -2648,9 +2598,9 @@
         "human_hours_total": null,
         "cost_per_defect_found_usd": 0.020312764705882353,
         "repro_rate": null,
-        "natural_present": 165,
+        "natural_present": 160,
         "natural_found": 13,
-        "natural_recall": 0.07878787878787878,
+        "natural_recall": 0.08125,
         "severity_judged": 30,
         "severity_agreement": 0.6666666666666666,
         "episodes_with_activity": 12,
@@ -2688,9 +2638,9 @@
         "human_hours_total": null,
         "cost_per_defect_found_usd": null,
         "repro_rate": null,
-        "natural_present": 57,
+        "natural_present": 52,
         "natural_found": 9,
-        "natural_recall": 0.15789473684210525,
+        "natural_recall": 0.17307692307692307,
         "severity_judged": 14,
         "severity_agreement": 0.42857142857142855
       },
@@ -2962,9 +2912,9 @@
         "human_hours_total": null,
         "cost_per_defect_found_usd": null,
         "repro_rate": null,
-        "natural_present": 165,
+        "natural_present": 160,
         "natural_found": 13,
-        "natural_recall": 0.07878787878787878,
+        "natural_recall": 0.08125,
         "severity_judged": 28,
         "severity_agreement": 0.6428571428571429
       },
@@ -3032,9 +2982,9 @@
         "human_hours_total": null,
         "cost_per_defect_found_usd": null,
         "repro_rate": null,
-        "natural_present": 165,
+        "natural_present": 160,
         "natural_found": 13,
-        "natural_recall": 0.07878787878787878,
+        "natural_recall": 0.08125,
         "severity_judged": 28,
         "severity_agreement": 0.6428571428571429
       },
@@ -3106,9 +3056,9 @@
           "human_hours_total": null,
           "cost_per_defect_found_usd": null,
           "repro_rate": null,
-          "natural_present": 57,
+          "natural_present": 52,
           "natural_found": 9,
-          "natural_recall": 0.15789473684210525,
+          "natural_recall": 0.17307692307692307,
           "severity_judged": 14,
           "severity_agreement": 0.42857142857142855
         }

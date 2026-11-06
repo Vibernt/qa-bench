@@ -1,7 +1,7 @@
 # QA Bench report: claude-haiku-5.5-low claude-haiku-5-5@low (bench 0.2.0-dev)
 
 - Run: `v3-claude-haiku-5.5-low`
-- Generated: 2026-11-06T06:54:31.318Z
+- Generated: 2026-11-06T07:26:09.607Z
 - Tracks: visual
 - Seeds: visual=20261106
 - Upstreams: expense-app, swag-labs
@@ -19,7 +19,7 @@
 | Recall (visual) | 58.3% (7/12 visual defects) |
 | Recall (accessibility) | 100.0% (5/5 accessibility defects) |
 | Severity-weighted recall | 73.2% (30/41 weight; critical 5, major 3, minor 1) |
-| Natural defects found | 7.3% (12/165 verified real bugs nobody planted) |
+| Natural defects found | 7.5% (12/160 verified real bugs nobody planted) |
 | Precision | 100.0% |
 | F1 | 82.8% |
 | Severity-weighted F1 | 84.5% |

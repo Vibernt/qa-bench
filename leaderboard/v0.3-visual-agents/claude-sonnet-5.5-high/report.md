@@ -1,7 +1,7 @@
 # QA Bench report: claude-sonnet-5.5-high claude-sonnet-5-5@high (bench 0.2.0-dev)
 
 - Run: `v3-claude-sonnet-5.5-high`
-- Generated: 2026-11-06T06:54:33.137Z
+- Generated: 2026-11-06T07:26:11.805Z
 - Tracks: visual
 - Seeds: visual=20261106
 - Upstreams: expense-app, swag-labs
@@ -19,7 +19,7 @@
 | Recall (visual) | 100.0% (12/12 visual defects) |
 | Recall (accessibility) | 100.0% (5/5 accessibility defects) |
 | Severity-weighted recall | 100.0% (41/41 weight; critical 5, major 3, minor 1) |
-| Natural defects found | 7.9% (13/165 verified real bugs nobody planted) |
+| Natural defects found | 8.1% (13/160 verified real bugs nobody planted) |
 | Precision | 97.4% |
 | F1 | 98.7% |
 | Severity-weighted F1 | 98.7% |

@@ -13,17 +13,18 @@ set [`v0.3-visual-12`](../../harness/agents/sets/v0.3-visual-12.yaml), which is 
 - **The brief** is exploratory and gives the supported devices: "current desktop browsers (1280 px and wider) and
   phones (from 360 px wide), with mouse, touch or keyboard". It never says what to look for or how to test.
 - **25 natural defects** are labelled for these two apps: 15 on the expense app and 10 on Swag Labs. Each episode
-  holds its app's natural defects, 165 occurrences in all.
+  holds its app's natural defects, except where an active planted defect masks one (`masked_by`): 160 occurrences
+  in all.
 
 Each configuration got the same prompt ([`prompt.md`](../../harness/agents/prompt.md)) and ran once per episode: 48
 agent runs. The scripted `playwright-suite` ran on the same episodes.
 
 | Configuration | Planted recall | Subtle | Visual | Accessibility | Severity-weighted recall | Natural bugs found | Precision | False alarms /100 ep | Screenshots looked at /ep | Tool calls /ep | Median time /ep | Est. cost (12 ep) |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
-| **Haiku 5.5, high effort** | **100%** (17/17) | **9/9** | **12/12** | **5/5** | **100%** | **10 of 25** (28/165) | **98.1%** | **0** | 7.2 | 31.4 | 186 s | $0.03 |
-| **Sonnet 5.5, high effort** | **100%** (17/17) | **9/9** | **12/12** | **5/5** | **100%** | 7 of 25 (13/165) | 97.4% | **0** | 7.4 | 18.1 | 75 s | $0.35 |
-| Haiku 5.5, low effort | 70.6% (12/17) | 6/9 | 7/12 | 5/5 | 73.2% | 7 of 25 (12/165) | 100% | **0** | 2.8 | 14.6 | 67 s | $0.01 |
-| Sonnet 5.5, low effort | 64.7% (11/17) | 3/9 | 8/12 | 3/5 | 65.9% | 2 of 25 (4/165) | 95.5% | **0** | 2.8 | 9.5 | 36 s | $0.18 |
+| **Haiku 5.5, high effort** | **100%** (17/17) | **9/9** | **12/12** | **5/5** | **100%** | **10 of 25** (28/160) | **98.1%** | **0** | 7.2 | 31.4 | 186 s | $0.03 |
+| **Sonnet 5.5, high effort** | **100%** (17/17) | **9/9** | **12/12** | **5/5** | **100%** | 7 of 25 (13/160) | 97.4% | **0** | 7.4 | 18.1 | 75 s | $0.35 |
+| Haiku 5.5, low effort | 70.6% (12/17) | 6/9 | 7/12 | 5/5 | 73.2% | 7 of 25 (12/160) | 100% | **0** | 2.8 | 14.6 | 67 s | $0.01 |
+| Sonnet 5.5, low effort | 64.7% (11/17) | 3/9 | 8/12 | 3/5 | 65.9% | 2 of 25 (4/160) | 95.5% | **0** | 2.8 | 9.5 | 36 s | $0.18 |
 | *`playwright-suite` (scripted)* | *11.8% (2/17)* | *0/9* | *2/12* | *0/5* | *14.6%* | *0 of 25* | *100%* | *0* | *—* | *—* | *20 s* | *$0* |
 
 "Screenshots looked at" counts the times the agent opened an image to look at it. Saving one isn't counted. The
@@ -75,6 +76,12 @@ report shows it as "Activity per episode". It is reported, never scored.
 - **Five match entries for `swag.visual-user`,** for symptoms the label already described but agents reported with
   another locator: on the cart page, without a button's selector, or as a price format fault ("$13.4"). Each has its
   own `verify.ts` check.
+- **Masked natural defects are left out.** A planted defect can remove a natural symptom: the phone-layout defect
+  replaces the rule that hides the header row, and with no focus ring there is nothing to measure. Such labels now
+  list the defect in `masked_by`, and the generator leaves them out of that episode. A matrix in each app's
+  `verify.ts` runs every natural check with every planted defect on and fails on any undeclared or wrong mask. That
+  found more masks, for example a locked-out Swag Labs user hides everything behind sign-in. This changed only the
+  natural-defect denominator here, from 165 to 160.
 - **Tighter patterns** keep three planted labels from claiming reports of a different, real problem: a ring with low
   contrast, a title with no spaces, and faint control borders.
 - **Left unmatched, on purpose:** single, subjective layout calls on Swag Labs. These are the sort control collapsing

@@ -40,6 +40,10 @@ with its answer-key hashes.
   They include a major one: Swag Labs' header cart link is unreachable by keyboard. `swag.visual-user` gains 5 match
   entries, for symptoms it already described but agents reported with another locator. Each new entry has a
   `verify.ts` check.
+- **`masked_by` on natural labels:** a natural defect whose symptom a planted defect removes is left out of that
+  episode's answer key. `verify.ts` for both apps runs a matrix of every natural check against every planted defect
+  and fails on an undeclared or wrong mask. This changes natural-defect denominators, so the earlier
+  leaderboards' natural numbers stand as recorded, with their answer-key hashes.
 - **Leaderboard:** `v0.3-visual-agents/`, with four Claude configurations and the scripted suite on track 7.3.
 - **Activity:** findings and reports carry tool calls, screenshots taken and screenshots looked at per episode. This
   is reported, never scored. The report adds visual and accessibility recall rows. `agents audit` (harness 0.4.0)

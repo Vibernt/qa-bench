@@ -33,7 +33,8 @@ entry's own value, else the label's.
 4. **Description pattern** (optional, per entry). When an entry has `description_pattern`, the finding's
    description must match that case-insensitive regex, and a match ranks two points higher. It is for labels that
    share a route and category with others, and every natural defect uses one. Natural defects are present in every
-   episode, so without it they would claim unrelated findings on the same page (`deterministic-2` let a stale-list
+   episode, except where an active planted defect removes the symptom (the label's `masked_by`, checked by each
+   app's `verify.ts`), so without it they would claim unrelated findings on the same page (`deterministic-2` let a stale-list
    finding count as the "huge amount" crash). It is still deterministic and applies the same to every system.
 5. **Locator.** Selectors are compared after removing quotes and collapsing whitespace
    (`[data-test="x"]` ≡ `[data-test=x]` ≡ `[data-test='x']`); they match when one contains the other. Regions match
@@ -48,7 +49,7 @@ entry's own value, else the label's.
 ## Decisions
 Each finding gets exactly one decision, in order of preference:
 active `defect` label → `true_positive` (first finding to hit it) or `duplicate` (later ones); else a `natural` label (a
-verified real bug present in every build; same decisions, reported as natural recall); else `change` label →
+verified real bug present in every build unless masked by an active defect; same decisions, reported as natural recall); else `change` label →
 `false_alarm_change`; else `baseline` label → `excused`; else `unmatched`. Among several matching labels of the
 preferred kind the highest score wins (label order breaks ties). Findings are processed in file order. A finding that
 resembles an inactive mutation is simply unmatched. Every decision has a human-readable `reason`.

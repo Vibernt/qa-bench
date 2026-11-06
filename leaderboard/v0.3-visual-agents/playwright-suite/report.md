@@ -1,7 +1,7 @@
 # QA Bench report: playwright-suite 0.1.0 (bench 0.2.0-dev)
 
 - Run: `v3-playwright-suite`
-- Generated: 2026-11-06T06:54:33.758Z
+- Generated: 2026-11-06T07:26:12.484Z
 - Tracks: visual
 - Seeds: visual=20261106
 - Upstreams: expense-app, swag-labs
@@ -19,7 +19,7 @@
 | Recall (visual) | 16.7% (2/12 visual defects) |
 | Recall (accessibility) | 0.0% (0/5 accessibility defects) |
 | Severity-weighted recall | 14.6% (6/41 weight; critical 5, major 3, minor 1) |
-| Natural defects found | 0.0% (0/165 verified real bugs nobody planted) |
+| Natural defects found | 0.0% (0/160 verified real bugs nobody planted) |
 | Precision | 100.0% |
 | F1 | 21.1% |
 | Severity-weighted F1 | 25.5% |
