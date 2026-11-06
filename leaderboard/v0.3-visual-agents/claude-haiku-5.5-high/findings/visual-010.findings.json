@@ -1,0 +1,104 @@
+{
+  "episode_id": "visual-010",
+  "system": {
+    "name": "claude-haiku-5.5-high",
+    "version": "claude-haiku-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "[data-testid=\"total\"]"
+      },
+      "category": "visual",
+      "description": "The Total bar is pulled up by a negative top margin (margin-top: -46px) so it sits over the last table row at every width. On desktop (601 px and up) it covers the Edit and Delete controls of the last expense (Project dinner); on phones (360-600 px) it covers that row's actions, and for viewers it hides the last row's amount. Playwright reports the Total box intercepts pointer events on the last row's Delete button, so mouse and touch users cannot reach it.",
+      "confidence": 0.85,
+      "severity": "major",
+      "repro": [
+        "Sign in as editor-eab4 at 1280x800 and scroll to the bottom of the expenses table",
+        "Observe the Total box (y 639-687) covers the Project dinner row (y 629-684) and its Edit/Delete buttons",
+        "Try to click Delete on Project dinner: the click times out because the Total paragraph intercepts the pointer",
+        "Repeat at 360x740: the Total box (y 1294-1343) covers the Project dinner Edit/Delete row (y 1288-1330)",
+        "Sign in as viewer-d51d at 360x740: the Total box covers the Project dinner amount"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "editor-bottom-1280.png"
+        },
+        {
+          "kind": "screenshot",
+          "path": "editor-360-total.png"
+        },
+        {
+          "kind": "screenshot",
+          "path": "viewer-360-total.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "form[method=\"get\"] button"
+      },
+      "category": "a11y",
+      "description": "The stylesheet sets '*:focus, *:focus-visible { outline: none; }' with no replacement focus style, so keyboard users get no visible focus indicator on the category select, the Apply button, the Edit links, the Delete buttons or the Sign out button. Focus moves as expected, but the user cannot see where it is (WCAG 2.4.7).",
+      "confidence": 0.9,
+      "severity": "major",
+      "repro": [
+        "Sign in as editor-eab4 at 1280x800",
+        "Click in the page body, then press Tab to move focus to the Category select, then to Apply",
+        "Observe no focus ring on the Apply button (the screenshot shows the button unchanged) or on the select",
+        "Press Tab to reach the first Edit link and observe no focus ring"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "focus-apply-kbd.png"
+        },
+        {
+          "kind": "screenshot",
+          "path": "focus-edit-link-kbd.png"
+        }
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "table[aria-label=\"Expenses\"] thead"
+      },
+      "category": "a11y",
+      "description": "Below 600 px the stylesheet hides the table header (thead display: none) and turns rows into blocks. The accessibility tree then has no column headers and no table cell semantics, so screen reader users hear unlabelled values such as '$42.50' or 'travel' with no 'Amount' or 'Category' context. The visible cards also show no column labels.",
+      "confidence": 0.5,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor-eab4 at 360x740 (or any width up to 600 px)",
+        "Inspect the accessibility tree: the table has no columnheader nodes and the cells are not announced as table cells",
+        "Compare with 1280 px, where the Title, Category, Amount and Actions headers are exposed"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "editor-360.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Tested viewer and editor sign-in, viewer access to /expenses/new and /expenses/1/edit (403, correct), totals for the full list and the travel filter (correct), login error message, add/delete probe expense (probe removed afterwards; total restored to 399.99), and the form pages at 360 and 1280. axe-core 4 found no WCAG violations on the list, add, edit or login pages. Not tested: touch gestures on a real device, zoom to 200 percent, and the Add/Edit form validation paths.",
+  "cost": {
+    "model_usd": 0.002141,
+    "notes": "estimate from 49222 total tokens (85% cache read / 10% input / 5% output); range $0.0005-$0.0059"
+  },
+  "wall_time_s": 205,
+  "activity": {
+    "tool_calls": 37,
+    "screenshots_taken": 10,
+    "screenshots_viewed": 12
+  }
+}

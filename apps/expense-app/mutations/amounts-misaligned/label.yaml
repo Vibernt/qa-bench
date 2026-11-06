@@ -1,0 +1,22 @@
+id: expense.amounts-misaligned
+app: expense-app
+title: "Amounts are left-aligned under a right-aligned heading"
+description: "The Amount heading is right-aligned but the amounts below it are left-aligned, so their decimal points don't line up and the column looks ragged. Cosmetic: every value is correct and readable."
+track: visual
+kind: defect
+category: visual
+class: deterministic
+severity: minor
+difficulty: blatant
+exposure: novel
+where: { route: /expenses, role: viewer }
+switch:
+  env: { DEFECT: amounts_misaligned }
+found_by:
+  - kind: visual
+    also_categories: [usability]
+    description_pattern: '^(?=[\s\S]*(amount|number|price|figure|value|decimal|column))(?=[\s\S]*(align|misalign|line up|lined up|ragged|jagged|uneven|inconsistent(ly)? (positioned|placed)|not right[- ]justified|left[- ]justified))'
+    note: "The amounts don't line up under the right-aligned Amount heading"
+tolerance: { route: prefix, role: any }
+split: public
+upstream_ref: "apps/expense-app/app/src/theme.ts (DEFECT=amounts_misaligned); checked by apps/expense-app/verify.ts"

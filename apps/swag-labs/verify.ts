@@ -321,6 +321,44 @@ const checks: Record<string, Check[]> = {
       const shown = (await s.page.locator(`${dt('inventory-list')} ${dt('inventory-item-price')}`).allInnerTexts()).map(money);
       return shown.some((p, i) => i > 0 && p < shown[i - 1]!);
     },
+    // Added after the visual-track runs: the same symptoms, reported without the button's selector, on the cart page,
+    // and as a price format fault.
+    async (s) => {
+      await login(s);
+      return s.page.locator(dt('add-to-cart-test.allthethings()-t-shirt-(red)')).evaluate((b) => {
+        const card = b.closest('.inventory_item')!.getBoundingClientRect();
+        return b.getBoundingClientRect().right > card.right + 1;
+      });
+    },
+    async (s) => {
+      await login(s);
+      const names = await s.page.locator(dt('inventory-item-name')).allInnerTexts();
+      const prices = await s.page.locator(`${dt('inventory-list')} ${dt('inventory-item-price')}`).allInnerTexts();
+      const listed = money(prices[names.indexOf('Sauce Labs Backpack')]!);
+      await s.page.click(dt('add-to-cart-sauce-labs-backpack'));
+      await open(s, '/cart.html');
+      return listed !== money(await text(s, dt('inventory-item-price')));
+    },
+    async (s) => {
+      // Random prices are rounded to cents but printed without toFixed, so some show one decimal ("$13.4").
+      await login(s);
+      for (let i = 0; i < 25; i++) {
+        const prices = await s.page.locator(`${dt('inventory-list')} ${dt('inventory-item-price')}`).allInnerTexts();
+        if (prices.some((p) => /^\$\d+\.\d$/.test(p.trim()))) return true;
+        await s.page.reload();
+        await s.page.locator(dt('inventory-list')).waitFor();
+      }
+      return false;
+    },
+    async (s) => { await login(s); return displaced(await cartLinkBox(s)); },
+    async (s) => {
+      await login(s);
+      const names = await s.page.locator(dt('inventory-item-name')).allInnerTexts();
+      const prices = await s.page.locator(`${dt('inventory-list')} ${dt('inventory-item-price')}`).allInnerTexts();
+      const listPrice = money(prices[names.indexOf('Sauce Labs Backpack')]!);
+      await open(s, '/inventory-item.html?id=4');
+      return listPrice !== money(await text(s, dt('inventory-item-price')));
+    },
   ],
   // Natural defects: real bugs present on every build (they must show on the clean build).
   'swag.unrounded-item-total': [
@@ -381,6 +419,40 @@ const checks: Record<string, Check[]> = {
       await pause(500);
       const shown = (await s.page.locator('body').innerText()).trim();
       return res?.status() === 404 && shown === '';
+    },
+  ],
+  'swag.focus-indicator-missing': [
+    async (s) => {
+      await login(s);
+      await s.page.locator(dt('add-to-cart-sauce-labs-backpack')).focus();
+      await s.page.keyboard.press('Tab');
+      return s.page.evaluate(() => {
+        const st = getComputedStyle(document.activeElement!);
+        return document.activeElement !== document.body && (st.outlineStyle === 'none' || st.outlineWidth === '0px') && st.boxShadow === 'none';
+      });
+    },
+  ],
+  'swag.cart-link-not-focusable': [
+    async (s) => {
+      await login(s);
+      const link = s.page.locator(dt('shopping-cart-link'));
+      const attrs = await link.evaluate((a) => ({ href: a.getAttribute('href') }));
+      // Tab through the page from the top: focus never lands on the cart link.
+      await s.page.locator('body').focus();
+      let reached = false;
+      for (let i = 0; i < 40 && !reached; i++) {
+        await s.page.keyboard.press('Tab');
+        reached = await s.page.evaluate(() => document.activeElement?.getAttribute('data-test') === 'shopping-cart-link');
+      }
+      return attrs.href === null && !reached; // (Chromium reports tabIndex 0 for an <a> without href, though Tab skips it)
+    },
+  ],
+  'swag.small-tap-targets': [
+    async (s) => {
+      await s.page.setViewportSize({ width: 390, height: 844 });
+      await login(s);
+      const b = await s.page.locator('#react-burger-menu-btn').boundingBox();
+      return !!b && (b.width < 24 || b.height < 24);
     },
   ],
   'swag.cart-count-grammar': [
@@ -502,13 +574,14 @@ async function fullCheckout(base: string): Promise<string[]> {
 }
 
 // ---- run ---------------------------------------------------------------------------------------------------------
-function labels(): { id: string; entries: number; env: Record<string, string>; natural?: boolean }[] {
+function labels(): { id: string; entries: number; env: Record<string, string>; natural?: boolean; maskedBy: string[]; defect: boolean }[] {
   const out = [];
   for (const kind of ['mutations', 'changes', 'natural']) {
     if (!existsSync(join(here, kind))) continue;
     for (const dir of readdirSync(join(here, kind))) {
       const l = YAML.parse(readFileSync(join(here, kind, dir, 'label.yaml'), 'utf8'));
-      out.push({ id: l.id as string, entries: (l.found_by as unknown[]).length, env: (l.switch?.env ?? {}) as Record<string, string>, natural: kind === 'natural' });
+      out.push({ id: l.id as string, entries: (l.found_by as unknown[]).length, env: (l.switch?.env ?? {}) as Record<string, string>, natural: kind === 'natural',
+        maskedBy: (l.masked_by ?? []) as string[], defect: kind === 'mutations' });
     }
   }
   return out.filter((l) => !only || l.id === only);
@@ -562,6 +635,26 @@ try {
         report(problems.length === 0, `${l.id}: behaviour unchanged (full checkout)${problems.length ? ': ' + problems.join('; ') : ''}`);
       }
     } finally { app.stop(); }
+  }
+
+  if (!only) {
+    // Masking matrix: with each faulty-user mutation on, every natural defect still shows, unless its label lists that
+    // mutation in masked_by (then it must not show; the generator leaves it out of that episode's answer key).
+    const all = labels();
+    for (const m of all.filter((l) => l.defect)) {
+      const app = start(m.env);
+      const wrong: string[] = [];
+      try {
+        await waitUp(app);
+        for (const n of all.filter((l) => l.natural)) {
+          let shown = true;
+          for (const c of checks[n.id]!) { try { shown = shown && await session(app.base, c); } catch { shown = false; } }
+          const masked = n.maskedBy.includes(m.id);
+          if (shown === masked) wrong.push(`${n.id} ${shown ? 'shows although masked_by lists it' : 'is masked but not in masked_by'}`);
+        }
+      } finally { app.stop(); }
+      report(wrong.length === 0, `naturals with ${m.id} on${wrong.length ? `: ${wrong.join('; ')}` : ''}`);
+    }
   }
 
   if (!only) {

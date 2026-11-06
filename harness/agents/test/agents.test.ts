@@ -62,7 +62,7 @@ describe('prompt', () => {
     expect(out).toContain('No checklist is given: find what is broken before release');
     expect(out).toContain('- What it is: An expense tracker for a small team.');
     expect(out).not.toContain('Journeys to cover');
-    expect(HARNESS_VERSION).toBe('0.3.0');
+    expect(HARNESS_VERSION).toBe('0.4.0');
   });
 });
 

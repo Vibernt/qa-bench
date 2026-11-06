@@ -1,0 +1,22 @@
+id: expense.login-error-invisible
+app: expense-app
+title: "A failed sign-in shows an empty red box: the error text is invisible"
+description: "After a wrong password the page shows the error box, but its text (\"Invalid credentials\") is the same colour as the box's background, so the person sees an empty box and no reason. The text is in the page; only its colour is wrong."
+track: visual
+kind: defect
+category: visual
+class: deterministic
+severity: major
+difficulty: subtle
+exposure: novel
+where: { route: /login }
+switch:
+  env: { DEFECT: alert_text_invisible }
+found_by:
+  - kind: visual
+    also_categories: [error-handling, usability, a11y]
+    description_pattern: '^(?=[\s\S]*(sign[- ]?in|log[- ]?in|login|credential|password|error|alert))(?=[\s\S]*(invisible|not visible|unreadable|can.t (be )?(see|read)|cannot (be )?(see|read)|empty (red |pink |error )?(box|banner|alert|message)|blank (red |pink |error )?(box|banner|alert|message)|same colou?r|colou?r .{0,30}(background|matches)|no (visible )?(text|message|reason)|white[- ]on|pink[- ]on|contrast))'
+    note: "The sign-in error box is empty to the eye: the text matches its background"
+tolerance: { route: prefix, role: any }
+split: public
+upstream_ref: "apps/expense-app/app/src/theme.ts (DEFECT=alert_text_invisible); checked by apps/expense-app/verify.ts"

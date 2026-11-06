@@ -1,0 +1,154 @@
+{
+  "episode_id": "visual-003",
+  "system": {
+    "name": "claude-haiku-5.5-high",
+    "version": "claude-haiku-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "[aria-label=\"Expenses\"]"
+      },
+      "category": "visual",
+      "description": "On a 360 px phone the expenses table is 760 px wide inside a main element with overflow-x: clip, and the page cannot scroll horizontally. The Amount and Actions columns are clipped off the right edge, so viewers cannot read amounts and editors cannot reach Edit or Delete.",
+      "confidence": 0.9,
+      "severity": "major",
+      "repro": [
+        "Sign in as editor-d06b (or viewer-80f9) with a 360 px wide viewport",
+        "Open /expenses",
+        "Observe the table is cut off after the Category column; the Amount and Actions columns are not visible",
+        "Try to scroll horizontally; the page does not move"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "editor-360.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses",
+        "role": "viewer",
+        "selector": "th:nth-child(3)"
+      },
+      "category": "visual",
+      "description": "The Amount column header is right-aligned, but the amount values beneath it are left-aligned, so the header and figures do not line up.",
+      "confidence": 0.7,
+      "severity": "minor",
+      "repro": [
+        "Sign in as viewer-80f9 at 1280 px",
+        "Open /expenses",
+        "Compare the Amount header (right edge of its column) with the amount values (left side of the column)"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "editor-home.png"
+        }
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/expenses/new",
+        "role": "editor",
+        "selector": "input[name=\"title\"]"
+      },
+      "category": "error-handling",
+      "description": "A title made only of spaces passes the browser's required check, and the server rejects it, but the page just re-renders an empty Add expense form with no error message. The amount and category the user typed are lost and nothing is saved.",
+      "confidence": 0.6,
+      "severity": "major",
+      "repro": [
+        "Sign in as editor-d06b and open /expenses/new",
+        "Type three spaces in Title and 10 in Amount",
+        "Click Save",
+        "Observe the URL stays /expenses, the form is blank, no alert or validation message appears, and no expense is added"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "whitespace-title-result.png"
+        }
+      ]
+    },
+    {
+      "id": "f4",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "td:nth-child(4) button"
+      },
+      "category": "a11y",
+      "description": "The focus indicator (3 px #e09400 outline) has a contrast of about 2.3:1 against the page background and 2.5:1 against the white table, below the 3:1 expected for focus indicators.",
+      "confidence": 0.4,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor-d06b at 1280 px",
+        "Press Tab until an Edit link or Delete button in the table has focus",
+        "Compare the orange focus outline with the background; it is faint against the pale teal page"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "focus-edit-tab.png"
+        }
+      ]
+    },
+    {
+      "id": "f5",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "td:nth-child(4) button"
+      },
+      "category": "a11y",
+      "description": "Every Delete button in the expenses table has the same accessible name, Delete, and every Edit link is named Edit, with nothing that says which expense they act on. Screen-reader users hearing the list of links and buttons cannot tell the rows apart.",
+      "confidence": 0.45,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor-d06b",
+        "Open /expenses with a screen reader or accessibility tree view",
+        "List the buttons and links; all Delete buttons and all Edit links have identical names"
+      ]
+    },
+    {
+      "id": "f6",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "td:nth-child(4) form[action$=\"/delete\"] button"
+      },
+      "category": "usability",
+      "description": "Clicking Delete removes the expense immediately with no confirmation and no success message. Add and Edit both show a status banner, so the delete gives no feedback at all.",
+      "confidence": 0.35,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor-d06b and open /expenses",
+        "Click Delete on any row",
+        "Observe the row disappears at once, with no confirmation prompt and no 'Expense deleted' message"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "after-delete.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Tested as viewer and editor at 1280, 768 and 360 px. Sign-in errors, role-based access (viewer gets 403 on /expenses/new, /expenses/:id/edit and direct POSTs to create, edit and delete), category filter totals, add/edit total recalculation and keyboard tab order all behaved correctly. Test writes were made as editor: added 'QA Test Item', 'Zero test' and 'Big test' expenses, edited 'Team lunch' to 'Team lunch (edited)' at $70, and deleted 'Printer paper'. Not reported: amounts above $999 have no thousands separator (e.g. $1234.50, $1000000.00); this is consistent across the app, so it may be intended. Not tested: screen reader output with a real AT, 320 px, zoom and reflow, and touch-specific behaviour.",
+  "cost": {
+    "model_usd": 0.002367,
+    "notes": "estimate from 54413 total tokens (85% cache read / 10% input / 5% output); range $0.0005-$0.0065"
+  },
+  "wall_time_s": 148,
+  "activity": {
+    "tool_calls": 24,
+    "screenshots_taken": 10,
+    "screenshots_viewed": 4
+  }
+}

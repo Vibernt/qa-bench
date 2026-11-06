@@ -1,0 +1,116 @@
+{
+  "episode_id": "visual-002",
+  "system": {
+    "name": "claude-haiku-5.5-high",
+    "version": "claude-haiku-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "[data-testid=\"total\"]"
+      },
+      "category": "visual",
+      "description": "The Total box is pulled up with margin-top: -46px, so it sits on top of the table's last row on desktop widths: the 'Project dinner' row ($93.25) is hidden, and its Edit and Delete controls are covered and cannot be clicked. On phone widths (360-390 px) the same box covers the Edit/Delete row of the last expense card. Viewers lose sight of the last expense as well.",
+      "confidence": 0.9,
+      "severity": "major",
+      "repro": [
+        "Sign in as editor-9b73 at 1280 px wide and open /expenses.",
+        "Observe that the Total: $399.99 box covers the last table row (Project dinner, $93.25); its Edit and Delete buttons are not visible.",
+        "Try to click that row's Delete button: Playwright reports the Total paragraph intercepts pointer events.",
+        "Resize to 390 px: the Total box covers the Edit/Delete buttons of the last card."
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "editor_expenses_1280.png"
+        },
+        {
+          "kind": "screenshot",
+          "path": "editor_390.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses",
+        "role": "editor"
+      },
+      "category": "a11y",
+      "description": "The theme removes every focus indicator with the rule '*:focus, *:focus-visible { outline: none; }' and no replacement focus style is applied, so keyboard users cannot see which link, button or field has focus (the computed outline and box-shadow of the focused Apply button are both none).",
+      "confidence": 0.85,
+      "severity": "major",
+      "repro": [
+        "Sign in as editor-9b73 at 1280 px and open /expenses.",
+        "Press Tab twice to move focus to the Apply button.",
+        "No focus ring is visible on Apply, and the same is true for the Edit, Delete, Sign out and form fields."
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "focus_keyboard_1280.png"
+        }
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/expenses",
+        "role": "viewer",
+        "selector": "table[aria-label=\"Expenses\"]"
+      },
+      "category": "a11y",
+      "description": "At phone widths (600 px and below) the stylesheet hides the thead and turns tr and td into blocks. The column headers (Title, Category, Amount, Actions) are gone, and the accessibility tree shows the cells with no column header association, so screen reader users hear '$42.50' or 'travel' with no label. Sighted users also see unlabeled amounts.",
+      "confidence": 0.45,
+      "severity": "minor",
+      "repro": [
+        "Sign in as viewer-fe3a at 390 px wide.",
+        "Open /expenses.",
+        "Column headers are not rendered; each row shows title, category and amount with no labels.",
+        "Inspect the accessibility tree: the cells have no columnheader relationship."
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "editor_390.png"
+        }
+      ]
+    },
+    {
+      "id": "f4",
+      "where": {
+        "route": "/expenses/new",
+        "role": "editor",
+        "selector": "input[name=\"title\"]"
+      },
+      "category": "a11y",
+      "description": "Text input and select borders use #c7dcd6 on white, a contrast ratio of about 1.4:1, below the 3:1 needed for the visible boundary of a form control (WCAG 1.4.11). Field boundaries are hard to see.",
+      "confidence": 0.3,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor-9b73 and open /expenses/new.",
+        "Inspect the Title, Category and Amount controls: their border colour is #c7dcd6 on a #ffffff background."
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "editor_new_1280.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Tested as viewer and editor at 1280, 1024, 768, 390 and 360 px in Chromium. Verified: totals match row sums and filter totals (travel 185.25, meals 177.25, office 37.49); edit forms match list values; add, edit and delete work with flash messages; server-side validation rejects negative amount, blank title and bad category; viewers get 403 on /expenses/new and /expenses/N/edit and on delete POST; anonymous access redirects to /login; wrong password shows an alert; logout works; text contrast for muted, danger, accent and status colours passes WCAG AA. Not tested: screen reader output with a real AT, zoom at 200 to 400 percent, and the Add/Edit pages at 1024 px. The test expenses I added were deleted; the seed data is back to the original 8 rows and $399.99.",
+  "cost": {
+    "model_usd": 0.002345,
+    "notes": "estimate from 53915 total tokens (85% cache read / 10% input / 5% output); range $0.0005-$0.0065"
+  },
+  "wall_time_s": 200.2,
+  "activity": {
+    "tool_calls": 31,
+    "screenshots_taken": 15,
+    "screenshots_viewed": 6
+  }
+}

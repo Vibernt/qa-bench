@@ -1,0 +1,65 @@
+{
+  "episode_id": "visual-003",
+  "system": {
+    "name": "claude-sonnet-5.5-high",
+    "version": "claude-sonnet-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "viewer",
+        "selector": "table[aria-label=\"Expenses\"]"
+      },
+      "category": "visual",
+      "description": "At phone width (360px) the table has min-width 760px but main uses overflow-x: clip, so the Amount and Actions columns are cut off and cannot be scrolled to. Viewers cannot see any amounts per expense, and editors cannot reach Edit/Delete on a phone. Keyboard focus on Delete also lands off-screen (x≈600-670 in a 360px viewport).",
+      "confidence": 0.9,
+      "severity": "major",
+      "repro": [
+        "Sign in as viewer (or editor) at 360px viewport width",
+        "Open /expenses",
+        "Only Title and Category columns are visible; Amount and Actions are clipped and there is no horizontal scroll"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "editor-360.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses",
+        "role": "viewer",
+        "selector": "table[aria-label=\"Expenses\"] th:nth-child(3)"
+      },
+      "category": "visual",
+      "description": "The Amount column header is right-aligned but the amount values are left-aligned, so the header sits far from its values and the amounts do not line up as a right-aligned currency column.",
+      "confidence": 0.7,
+      "severity": "minor",
+      "repro": [
+        "Sign in and open /expenses at 1280px width",
+        "Compare the 'Amount' header position (right edge of the column) with the $ values (left edge of the column)"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "editor-1280.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Tested viewer and editor at 1280 and 360 widths on list, add, edit, filter, 404 pages. Did not test form submission validation in depth.",
+  "cost": {
+    "model_usd": 0.020493,
+    "notes": "estimate from 23555 total tokens (85% cache read / 10% input / 5% output); range $0.0047-$0.0565"
+  },
+  "wall_time_s": 56.1,
+  "activity": {
+    "tool_calls": 11,
+    "screenshots_taken": 2,
+    "screenshots_viewed": 4
+  }
+}

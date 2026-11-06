@@ -3,6 +3,16 @@ import type { EpisodeScore, Metrics, Report, SystemId } from '../../lib/contract
 import { aggregateAll, aggregateByDifficulty, aggregateByExposure } from './metrics.ts';
 import { MATCHER_VERSION } from './matcher.ts';
 
+/** Headline recall rows for the visual and accessibility categories, shown only when the run planted any. */
+function categoryRows(episodes: Report['episodes']): string[][] {
+  const rows: string[][] = [];
+  for (const [title, cats] of [['Recall (visual)', ['visual']], ['Recall (accessibility)', ['a11y']]] as const) {
+    const ls = episodes.flatMap((e) => e.labels).filter((l) => l.kind === 'defect' && (cats as readonly string[]).includes(l.category));
+    if (ls.length) rows.push([title, `${pct(ls.filter((l) => l.hit).length / ls.length)} (${frac(ls.filter((l) => l.hit).length, ls.length)} ${title === 'Recall (visual)' ? 'visual' : 'accessibility'} defects)`]);
+  }
+  return rows;
+}
+
 export function buildReport(input: {
   scores: EpisodeScore[]; system: SystemId; runId: string;
   tracks?: string[]; seeds?: Record<string, number>; upstreams?: Record<string, unknown>; notes?: string; now?: Date;
@@ -65,6 +75,7 @@ export function renderMarkdown(report: Report): string {
     ['Recall (known, publicly documented)', sliceRecall(byExposure.known, 'known defects')],
     ['Recall (subtle)', sliceRecall(byDifficulty.subtle, 'subtle defects')],
     ['Recall (blatant)', sliceRecall(byDifficulty.blatant, 'blatant defects')],
+    ...categoryRows(report.episodes),
     ['Severity-weighted recall', `${pct(m.weighted_recall ?? null)} (${dec(m.weighted_defects_found ?? null, 0)}/${dec(m.weighted_defects_planted ?? null, 0)} weight; critical 5, major 3, minor 1)`],
     ['Natural defects found', m.natural_present ? `${pct(m.natural_recall ?? null)} (${frac(m.natural_found ?? 0, m.natural_present)} verified real bugs nobody planted)` : '— (none labelled for these apps)'],
     ['Precision', pct(m.precision)],
@@ -76,6 +87,7 @@ export function renderMarkdown(report: Report): string {
     ['Cost', `${usd(m.cost_usd_total)} (per defect found: ${usd(m.cost_per_defect_found_usd)})`],
     ['Human hours', dec(m.human_hours_total)],
     ['Wall time', secs(m.wall_time_s_total)],
+    ...(m.episodes_with_activity ? [['Activity per episode', `${dec(m.tool_calls_per_episode ?? null, 1)} tool calls, ${dec(m.screenshots_taken_per_episode ?? null, 1)} screenshots taken, ${dec(m.screenshots_viewed_per_episode ?? null, 1)} looked at (${m.episodes_with_activity} episodes reported)`]] : []),
     ['Severity agreement', m.severity_judged ? `${pct(m.severity_agreement ?? null)} of ${m.severity_judged} true positives that stated a severity` : '— (no finding stated a severity)'],
     ['Episodes scored', `${m.episodes_scored ?? 0}/${m.episodes}`],
   ]), '');

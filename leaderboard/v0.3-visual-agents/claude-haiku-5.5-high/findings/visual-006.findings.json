@@ -1,0 +1,137 @@
+{
+  "episode_id": "visual-006",
+  "system": {
+    "name": "claude-haiku-5.5-high",
+    "version": "claude-haiku-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"shopping-cart-link\"]"
+      },
+      "category": "visual",
+      "description": "The shopping cart icon is not aligned with the header bar. At 1280 px it sits at y=39-81, below the 57 px header and overlapping the header border and the Products sub-bar instead of being centred in the header.",
+      "confidence": 0.7,
+      "severity": "major",
+      "repro": [
+        "Sign in as customer",
+        "Open the products page at 1280 px width",
+        "Observe the cart icon hanging below the header bar at the top right"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "inventory_desktop.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"add-to-cart-test.allthethings()-t-shirt-(red)\"]"
+      },
+      "category": "visual",
+      "description": "The Add to cart button of the Test.allTheThings() T-Shirt (Red) card overflows its card: at 1280 px its right edge is at x=1189 while the card ends at x=1170, and at 360 px the button runs past the right edge of the viewport (right edge at 365 px), so it is clipped.",
+      "confidence": 0.75,
+      "severity": "minor",
+      "repro": [
+        "Sign in as customer",
+        "Open the products page at 1280 px width and look at the Test.allTheThings() T-Shirt (Red) card",
+        "Repeat at 360 px width and scroll to the bottom product: the button is cut off at the right edge"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "inventory_desktop.png"
+        }
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"inventory-item-name\"]"
+      },
+      "category": "visual",
+      "description": "The product names for Sauce Labs Bolt T-Shirt and Sauce Labs Fleece Jacket are right-aligned, while the other product names are left-aligned, so the cards look inconsistent.",
+      "confidence": 0.6,
+      "severity": "minor",
+      "repro": [
+        "Sign in as customer",
+        "Open the products page at 1280 px width",
+        "Compare the title of Sauce Labs Bolt T-Shirt with Sauce Labs Backpack"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "inventory_desktop.png"
+        }
+      ]
+    },
+    {
+      "id": "f4",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"inventory-item-price\"]"
+      },
+      "category": "consistency",
+      "description": "Product prices on the products list are random values that change on every page load (e.g. Backpack showed $20.93, $86.79, $50.28), and they do not match the real prices on the product detail page and in the cart (Backpack $29.99, Bike Light $9.99, Onesie $7.99). Customers see wrong prices before adding to cart.",
+      "confidence": 0.85,
+      "severity": "critical",
+      "repro": [
+        "Sign in as customer",
+        "Open the products page and note the prices",
+        "Reload the products page several times: the prices change every time",
+        "Click a product: the detail page shows e.g. Sauce Labs Onesie $7.99, and the cart shows the same value, while the list showed $82.44 or $10.43 for it"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "inventory_desktop.png"
+        }
+      ]
+    },
+    {
+      "id": "f5",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"add-to-cart-sauce-labs-backpack\"]"
+      },
+      "category": "a11y",
+      "description": "Keyboard focus is not visible on the Add to cart buttons: the focused button has outline style none, so Tab navigation shows no focus ring and keyboard users cannot tell which product is selected.",
+      "confidence": 0.6,
+      "severity": "major",
+      "repro": [
+        "Sign in as customer",
+        "Open the products page at 1280 px width",
+        "Press Tab until the Add to cart button of Sauce Labs Backpack is focused",
+        "Observe that the button looks the same as when unfocused"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "focus_add_zoom.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Tested at 1280 px and 360 px: login, listing, sort, product detail, cart, checkout (totals check out: 9.99+7.99=17.98, tax 1.44, total 19.42), mobile menu, keyboard focus and labels. Not tested: the Dynamic Catalog and About pages, full keyboard-only checkout, touch gestures, widths between 360 and 1280 px.",
+  "cost": {
+    "model_usd": 0.001534,
+    "notes": "estimate from 35261 total tokens (85% cache read / 10% input / 5% output); range $0.0004-$0.0042"
+  },
+  "wall_time_s": 112.4,
+  "activity": {
+    "tool_calls": 21,
+    "screenshots_taken": 10,
+    "screenshots_viewed": 5
+  }
+}

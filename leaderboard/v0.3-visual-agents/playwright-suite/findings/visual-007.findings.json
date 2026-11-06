@@ -1,0 +1,17 @@
+{
+  "episode_id": "visual-007",
+  "system": {
+    "name": "playwright-suite",
+    "version": "0.1.0"
+  },
+  "findings": [],
+  "cost": {
+    "compute_usd": 0,
+    "model_usd": 0,
+    "notes": "Scripted Playwright suite: no model calls; local compute only, not metered."
+  },
+  "wall_time_s": 8.3,
+  "started_at": "2026-11-06T06:49:19.527Z",
+  "finished_at": "2026-11-06T06:49:27.811Z",
+  "notes": "suite expense-app for app expense-app"
+}

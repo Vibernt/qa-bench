@@ -1,0 +1,68 @@
+{
+  "episode_id": "visual-008",
+  "system": {
+    "name": "claude-haiku-5.5-low",
+    "version": "claude-haiku-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "table[aria-label=\"Expenses\"]"
+      },
+      "category": "a11y",
+      "description": "Muted text uses #c3c8cd (rgb 195,200,205) on white and #f4f6f8 backgrounds, a contrast ratio of about 1.6:1. This affects the 'Signed in as' line, the Category column values, and the table column headers, so they are hard to read and fail WCAG AA contrast.",
+      "confidence": 0.85,
+      "severity": "major",
+      "repro": [
+        "Sign in as editor-029d at 1280px wide",
+        "Open /expenses",
+        "Observe the 'Signed in as' line, the Category column values and the TITLE/CATEGORY/AMOUNT headers rendered in very light grey",
+        "Read computed color of the td:nth-child(2) cell: rgb(195, 200, 205) on white"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "editor-desktop.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "table[aria-label=\"Expenses\"]"
+      },
+      "category": "a11y",
+      "description": "Every row's 'Edit' link and 'Delete' button has the same accessible name with no row context, so screen reader users cannot tell which expense an action applies to. The Delete button also has no confirmation step.",
+      "confidence": 0.5,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor-029d",
+        "Open /expenses",
+        "List links and buttons in the Actions column with a screen reader or accessibility tree",
+        "Observe multiple identical 'Edit' links and 'Delete' buttons"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "editor-desktop.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Checked: viewer and editor totals (including after category filter, add and edit), viewer 403 on /expenses/new and /expenses/1/edit, 360px layout (no horizontal overflow), add/edit flash messages, HTML5 validation on negative amount. Test rows were added (QA test item, $10.25) and Train to Pune was edited to $50.00 during testing. Keyboard and touch flows were not exhaustively tested.",
+  "cost": {
+    "model_usd": 0.001179,
+    "notes": "estimate from 27095 total tokens (85% cache read / 10% input / 5% output); range $0.0003-$0.0033"
+  },
+  "wall_time_s": 64.1,
+  "activity": {
+    "tool_calls": 13,
+    "screenshots_taken": 5,
+    "screenshots_viewed": 3
+  }
+}

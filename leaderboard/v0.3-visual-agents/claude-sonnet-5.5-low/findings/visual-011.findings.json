@@ -1,0 +1,41 @@
+{
+  "episode_id": "visual-011",
+  "system": {
+    "name": "claude-sonnet-5.5-low",
+    "version": "claude-sonnet-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer"
+      },
+      "category": "visual",
+      "description": "At 360px width product cards have large empty gaps between description and price/button, and the image is oversized, making the list very long.",
+      "confidence": 0.3,
+      "severity": "minor",
+      "repro": [
+        "Sign in at 360px width",
+        "View inventory"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "m-inv.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Limited time; only quick visual pass.",
+  "cost": {
+    "model_usd": 0.013175,
+    "notes": "estimate from 15144 total tokens (85% cache read / 10% input / 5% output); range $0.0030-$0.0363"
+  },
+  "wall_time_s": 27.7,
+  "activity": {
+    "tool_calls": 9,
+    "screenshots_taken": 2,
+    "screenshots_viewed": 4
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "episode_id": "visual-011",
+  "system": {
+    "name": "claude-haiku-5.5-low",
+    "version": "claude-haiku-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"add-to-cart-sauce-labs-backpack\"]"
+      },
+      "category": "a11y",
+      "description": "Keyboard focus on the product list controls (sort select, product links, Add to cart buttons) computes to outline-style none, so no visible focus indicator is drawn on Tab navigation. Confidence is moderate: the focus screenshot did not clearly show a ring on the focused element.",
+      "confidence": 0.4,
+      "severity": "minor",
+      "repro": [
+        "Open http://127.0.0.1:33037/ and sign in as customer-ad52.",
+        "On /inventory.html at 1280 px, press Tab repeatedly.",
+        "Inspect the focused element: outline-style is none, with no box-shadow."
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "focus.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Checked login, catalogue, product detail, cart, checkout overview totals (39.98 + 3.20 tax = 43.18, correct), 360 px layouts (no horizontal overflow on inventory, cart, detail, checkout step one), console errors (none), and basic DOM a11y (img alt, button names, html lang). Not tested: checkout completion, cart quantity changes, sort order, hamburger menu, screen reader behaviour, colour contrast, and tablet widths.",
+  "cost": {
+    "model_usd": 0.001121,
+    "notes": "estimate from 25762 total tokens (85% cache read / 10% input / 5% output); range $0.0003-$0.0031"
+  },
+  "wall_time_s": 48.3,
+  "activity": {
+    "tool_calls": 15,
+    "screenshots_taken": 4,
+    "screenshots_viewed": 4
+  }
+}

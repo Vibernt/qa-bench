@@ -86,6 +86,7 @@ export function scoreEpisode(input: {
     ...(input.status_reason ? { status_reason: input.status_reason } : {}),
     wall_time_s: wall,
     ...(input.findings?.cost ? { cost: input.findings.cost } : {}),
+    ...(input.findings?.activity ? { activity: input.findings.activity } : {}),
     time_to_first_detection_s: tpTimes.length ? Math.min(...tpTimes) : null,
     decisions, labels,
   };

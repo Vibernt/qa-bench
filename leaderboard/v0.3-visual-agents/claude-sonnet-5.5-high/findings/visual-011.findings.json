@@ -1,0 +1,104 @@
+{
+  "episode_id": "visual-011",
+  "system": {
+    "name": "claude-sonnet-5.5-high",
+    "version": "claude-sonnet-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer"
+      },
+      "category": "a11y",
+      "description": "No visible keyboard focus indicator anywhere: computed outline-style is none and there is no box-shadow or other change on the menu button, sort select, product links, Add to cart buttons and footer links. Keyboard users cannot see where focus is.",
+      "confidence": 0.6,
+      "severity": "major",
+      "repro": [
+        "Sign in as customer",
+        "Press Tab repeatedly on the products page",
+        "Observe that no element shows a focus ring or other highlight"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "focus-combined.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"shopping-cart-link\"]"
+      },
+      "category": "a11y",
+      "description": "The cart link is an <a role=\"button\"> with no href or tabindex, so it is not in the tab order. Keyboard-only users cannot reach the cart or checkout from the header. Tab goes from the menu button straight to the sort select.",
+      "confidence": 0.6,
+      "severity": "major",
+      "repro": [
+        "Sign in as customer",
+        "Press Tab from the page start",
+        "Focus goes menu button, sort select, product links; the cart icon is never focused"
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/checkout-step-one.html",
+        "role": "customer",
+        "selector": "[data-test=\"error\"]"
+      },
+      "category": "visual",
+      "description": "On the checkout information form, the validation error banner sits flush against and overlaps the bottom edge of the form card at 1280 px. The inputs also all show the red error style before any error occurs, and no visible labels exist (placeholder only).",
+      "confidence": 0.3,
+      "severity": "minor",
+      "repro": [
+        "Add an item, go to cart, click Checkout",
+        "Click Continue with empty fields",
+        "Look at the error banner against the card bottom edge"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "d-step1-err.png"
+        }
+      ]
+    },
+    {
+      "id": "f4",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "#react-burger-menu-btn"
+      },
+      "category": "a11y",
+      "description": "Touch targets are too small on phones: menu button and menu close button are 20x20 px, the error dismiss button is 22x17 px and the social icons are 30x30 px (below the 44 px guideline).",
+      "confidence": 0.3,
+      "severity": "minor",
+      "repro": [
+        "Open any page at 360 px width",
+        "Inspect size of the hamburger button"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "m-inv-top.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Checkout totals, sorting, cart flow looked correct. Dynamic Catalog pages only skimmed.",
+  "cost": {
+    "model_usd": 0.052357,
+    "notes": "estimate from 60180 total tokens (85% cache read / 10% input / 5% output); range $0.0120-$0.1444"
+  },
+  "wall_time_s": 165.3,
+  "activity": {
+    "tool_calls": 40,
+    "screenshots_taken": 8,
+    "screenshots_viewed": 19
+  }
+}

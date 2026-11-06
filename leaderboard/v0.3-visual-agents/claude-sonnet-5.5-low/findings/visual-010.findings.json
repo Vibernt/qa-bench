@@ -1,0 +1,46 @@
+{
+  "episode_id": "visual-010",
+  "system": {
+    "name": "claude-sonnet-5.5-low",
+    "version": "claude-sonnet-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "editor"
+      },
+      "category": "visual",
+      "description": "The Total bar overlaps and hides the last expense row (Project dinner, $93.25) at 1280px (row fully hidden) and 360px (row cut off, its actions hidden).",
+      "confidence": 0.8,
+      "severity": "major",
+      "repro": [
+        "Sign in as editor",
+        "Open /expenses",
+        "Look at the bottom of the list above the Total bar"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "editor-1280.png"
+        },
+        {
+          "kind": "screenshot",
+          "path": "editor-360.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Only a quick pass on the list page at 2 widths and 2 roles; keyboard and a11y not deeply tested.",
+  "cost": {
+    "model_usd": 0.013947,
+    "notes": "estimate from 16031 total tokens (85% cache read / 10% input / 5% output); range $0.0032-$0.0385"
+  },
+  "wall_time_s": 23,
+  "activity": {
+    "tool_calls": 7,
+    "screenshots_taken": 1,
+    "screenshots_viewed": 2
+  }
+}

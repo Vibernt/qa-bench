@@ -1,0 +1,60 @@
+{
+  "episode_id": "visual-012",
+  "system": {
+    "name": "claude-sonnet-5.5-low",
+    "version": "claude-sonnet-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "a[href$='/edit']"
+      },
+      "category": "a11y",
+      "description": "Edit links are only 29x20 px on a 360px phone layout, far below the touch target size; they sit next to the 34px Delete button, so taps can miss or hit Delete.",
+      "confidence": 0.35,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor at 360px width",
+        "Open /expenses",
+        "Measure the Edit links"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "editor.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "td form button"
+      },
+      "category": "a11y",
+      "description": "Every row has identical Edit and Delete controls with no row-specific accessible name, so screen reader users cannot tell which expense a control acts on.",
+      "confidence": 0.3,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor",
+        "Open /expenses",
+        "Tab through the Edit and Delete controls"
+      ]
+    }
+  ],
+  "notes": "Totals, filter, add and edit pages looked correct. Did not submit or delete data.",
+  "cost": {
+    "model_usd": 0.019109,
+    "notes": "estimate from 21964 total tokens (85% cache read / 10% input / 5% output); range $0.0044-$0.0527"
+  },
+  "wall_time_s": 57.3,
+  "activity": {
+    "tool_calls": 17,
+    "screenshots_taken": 4,
+    "screenshots_viewed": 5
+  }
+}

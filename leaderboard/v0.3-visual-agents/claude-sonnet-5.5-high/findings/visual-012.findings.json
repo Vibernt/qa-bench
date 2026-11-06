@@ -1,0 +1,112 @@
+{
+  "episode_id": "visual-012",
+  "system": {
+    "name": "claude-sonnet-5.5-high",
+    "version": "claude-sonnet-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "table[aria-label=\"Expenses\"]"
+      },
+      "category": "visual",
+      "description": "A long unbroken expense title makes the table wider than the page container: the table spills past the right edge of the main column and the page scrolls horizontally (scrollWidth 1351 at 1280 px, 842 at 360 px). The title is not wrapped or truncated.",
+      "confidence": 0.5,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor",
+        "Add an expense with a ~100 character title with no spaces",
+        "Open /expenses at 1280 px or 360 px and observe the table overflowing and horizontal scroll"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "f1.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "form[action=\"/expenses\"]"
+      },
+      "category": "error-handling",
+      "description": "Submitting the Add expense form with invalid data (blank title, negative amount) returns 400 and re-renders an empty form with no error message (no role=alert) and discards the user's input. The user and screen-reader users get no explanation of what failed.",
+      "confidence": 0.5,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor",
+        "Open /expenses/new, disable client validation (or POST directly) with title '   ' and amount -5",
+        "Submit; the form comes back blank with no message"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "f2.png"
+        }
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "td:nth-child(4)"
+      },
+      "category": "a11y",
+      "description": "Row actions are all named just 'Edit' and 'Delete' with no row context (no aria-label or visually hidden title), so screen-reader and keyboard users cannot tell which expense an action affects. Delete also acts immediately with no confirmation.",
+      "confidence": 0.4,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor",
+        "Tab through the expenses table and note that every action is announced as 'Edit' / 'Delete'",
+        "Click Delete: the row is removed at once without confirmation"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "f3.png"
+        }
+      ]
+    },
+    {
+      "id": "f4",
+      "where": {
+        "route": "/expenses",
+        "role": "viewer",
+        "selector": "table[aria-label=\"Expenses\"]"
+      },
+      "category": "a11y",
+      "description": "At phone widths (<=600px) the CSS hides the table header and sets table/tr/td to display:block, so the table loses its semantics and the Category and Amount values appear as unlabelled bare text (no column labels).",
+      "confidence": 0.3,
+      "severity": "minor",
+      "repro": [
+        "Sign in as viewer",
+        "Open /expenses at 360 px width",
+        "Rows show 'travel' and '$42.50' with no labels, and the header is gone"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "f3.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Checked totals, filter, add/edit/delete, viewer permissions (403s correct), focus outlines, contrast, 1280/360 layouts. No obvious wrong numbers found.",
+  "cost": {
+    "model_usd": 0.033308,
+    "notes": "estimate from 38285 total tokens (85% cache read / 10% input / 5% output); range $0.0077-$0.0919"
+  },
+  "wall_time_s": 94.7,
+  "activity": {
+    "tool_calls": 18,
+    "screenshots_taken": 8,
+    "screenshots_viewed": 5
+  }
+}

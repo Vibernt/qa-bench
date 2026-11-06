@@ -9,6 +9,7 @@ import { scoreRun } from '../scorer/src/index.ts';
 import { DEFAULT_APPS_ROOT, DEFAULT_TRACKS_ROOT, generateTrack, listTrackFiles } from '../harness/generator/src/index.ts';
 import { buildAppImage, downEpisode, runEpisodes, upEpisode } from '../harness/runner/src/index.ts';
 import { finishSession, loadConfigs, prepareSession, type UsageFile } from '../harness/agents/src/index.ts';
+import { auditTranscriptFile } from '../harness/agents/src/audit.ts';
 
 const USAGE = `usage: qa-bench <command> [options]
 
@@ -25,6 +26,7 @@ const USAGE = `usage: qa-bench <command> [options]
   agents prepare --config C --set S [--session X] [--budget S]
                                              bring a set up for agents; writes workspaces + runs/<session>/agents.json
   agents finish <session> [--usage usage.json] collect findings, record usage and audit, tear down, score
+  agents audit <transcript…>                 sealed-path hits, tool calls, screenshots taken and looked at (claude-code-subagent)
   score <runDir> [--episodes-root D]         score a run: writes score.json, report.json, report.md
   report <runDir> [--episodes-root D]        score a run and print report.md
 
@@ -184,6 +186,13 @@ async function main(argv: string[]): Promise<number> {
         for (const f of readdirSync(setsDir).filter((x) => x.endsWith('.yaml')).sort()) console.log(`set     ${f.replace(/\.yaml$/, '')}`);
         return 0;
       }
+      if (sub === 'audit') {
+        // One JSON line per transcript: sealed-path hits, tool calls, screenshots taken and looked at, models.
+        const files = positionals.slice(1);
+        if (!files.length) fail('agents audit: give one or more transcript files (claude-code-subagent JSONL)');
+        for (const f of files) console.log(JSON.stringify({ transcript: f, ...auditTranscriptFile(resolve(f)) }));
+        return 0;
+      }
       if (sub === 'prepare') {
         if (!o.config || !o.set) fail('agents prepare: give --config and --set (see `agents list`)');
         const m = await prepareSession(o.config, o.set, { episodesRoot, session: o.session, budgetS: int(o.budget, 'budget') });
@@ -199,7 +208,7 @@ async function main(argv: string[]): Promise<number> {
         console.log(`${session}: recall ${m.recall ?? '—'}, precision ${m.precision ?? '—'}, false alarms/100 ep ${m.false_alarms_per_100_episodes ?? '—'} -> ${join(REPO_ROOT, 'runs', session, 'report.md')}`);
         return 0;
       }
-      return fail('agents: list | prepare | finish');
+      return fail('agents: list | prepare | finish | audit');
     }
 
     case 'score':

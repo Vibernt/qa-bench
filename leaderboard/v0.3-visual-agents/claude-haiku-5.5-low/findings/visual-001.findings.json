@@ -1,0 +1,66 @@
+{
+  "episode_id": "visual-001",
+  "system": {
+    "name": "claude-haiku-5.5-low",
+    "version": "claude-haiku-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/login",
+        "selector": "[role=\"alert\"]"
+      },
+      "category": "a11y",
+      "description": "The error alert text is effectively invisible. The [role=\"alert\"] rule in the theme sets the text colour to --danger-bg (#fdecea), the same as the alert background, so 'Invalid credentials' renders as an empty pink box. The same rule affects every alert on the app.",
+      "confidence": 0.9,
+      "severity": "major",
+      "repro": [
+        "Open http://127.0.0.1:33027/login",
+        "Enter username viewer-e393 and password wrong",
+        "Click Sign in",
+        "Observe the red banner above the form has no readable text"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "bad-login.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses",
+        "role": "editor"
+      },
+      "category": "a11y",
+      "description": "The category column and the table headers, the 'Signed in as' line and the mobile category text use the --muted colour #c3c8cd on white (about 1.7:1 contrast), far below WCAG AA 4.5:1. Category and column labels are hard to read, especially for low-vision users.",
+      "confidence": 0.7,
+      "severity": "major",
+      "repro": [
+        "Sign in as editor-541d or viewer-e393",
+        "Open /expenses at 1280 px",
+        "Look at the Category column cells and the table headers, and the 'Signed in as' line",
+        "Compute colour contrast: rgb(195,200,205) on rgb(255,255,255)"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "editor-expenses.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Tested: viewer and editor sign-in, expense list and totals (correct for all, incl. category filter), add and edit as editor with totals updating, validation of amount step, viewer 403 on add/edit/delete/create, layout at 360 px and 1280 px (no horizontal overflow, cards on mobile). Not tested: delete flow in depth, keyboard-only navigation end to end, focus order, screen-reader labels beyond form labels, and HTTP caching or performance.",
+  "cost": {
+    "model_usd": 0.001397,
+    "notes": "estimate from 32116 total tokens (85% cache read / 10% input / 5% output); range $0.0003-$0.0039"
+  },
+  "wall_time_s": 76.5,
+  "activity": {
+    "tool_calls": 17,
+    "screenshots_taken": 7,
+    "screenshots_viewed": 4
+  }
+}

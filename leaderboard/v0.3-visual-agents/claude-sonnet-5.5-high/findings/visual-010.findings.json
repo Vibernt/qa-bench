@@ -1,0 +1,65 @@
+{
+  "episode_id": "visual-010",
+  "system": {
+    "name": "claude-sonnet-5.5-high",
+    "version": "claude-sonnet-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "viewer",
+        "selector": "[data-testid=\"total\"]"
+      },
+      "category": "visual",
+      "description": "The Total box is pulled up by a negative top margin (-46px) and overlaps/covers the last expense row (Project dinner, $93.25), so that row is hidden on desktop and cut off on phones. Happens for viewer and editor, at 1280px and 360px, and with a filter applied.",
+      "confidence": 0.9,
+      "severity": "major",
+      "repro": [
+        "Sign in as viewer-d51d",
+        "Open /expenses at 1280px or 360px width",
+        "Observe the last row (Project dinner) is covered by the Total box"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "f1.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses",
+        "role": "editor"
+      },
+      "category": "a11y",
+      "description": "Keyboard focus indicator is removed globally (outline: none on *:focus and *:focus-visible, with no replacement style), so keyboard users cannot see which link, button or field has focus.",
+      "confidence": 0.85,
+      "severity": "major",
+      "repro": [
+        "Sign in as editor",
+        "Press Tab repeatedly on /expenses",
+        "No visible focus ring on links, buttons or select"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "f2.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Total arithmetic and viewer permissions (403 on new/edit/post/delete) were correct. Did not submit add/edit/delete.",
+  "cost": {
+    "model_usd": 0.019405,
+    "notes": "estimate from 22305 total tokens (85% cache read / 10% input / 5% output); range $0.0045-$0.0535"
+  },
+  "wall_time_s": 43.1,
+  "activity": {
+    "tool_calls": 11,
+    "screenshots_taken": 3,
+    "screenshots_viewed": 3
+  }
+}

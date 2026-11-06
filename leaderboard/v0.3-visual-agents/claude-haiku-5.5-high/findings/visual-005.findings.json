@@ -1,0 +1,131 @@
+{
+  "episode_id": "visual-005",
+  "system": {
+    "name": "claude-haiku-5.5-high",
+    "version": "claude-haiku-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/login",
+        "selector": "[role=\"alert\"]"
+      },
+      "category": "a11y",
+      "description": "The sign-in error message ('Invalid credentials', role=alert) is drawn with the same colour as its background (both var(--danger-bg)), so the text is invisible and the user sees an empty red box after a failed sign-in.",
+      "confidence": 0.9,
+      "severity": "major",
+      "repro": [
+        "Open http://127.0.0.1:33055/login",
+        "Enter username viewer-d641 and a wrong password",
+        "Click Sign in",
+        "The red alert box appears with no readable text"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "f1.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "td:nth-child(4) a"
+      },
+      "category": "a11y",
+      "description": "The stylesheet sets outline: none on all focusable elements (*:focus, *:focus-visible) and provides no replacement focus style, so keyboard users cannot see which control has focus (links, buttons, the category select, inputs).",
+      "confidence": 0.85,
+      "severity": "major",
+      "repro": [
+        "Sign in as editor-ad69 and open /expenses at 1280 px",
+        "Press Tab three times",
+        "Observe the focused Edit link has no visible focus indicator",
+        "Repeat for Apply, Delete, Add expense and Sign out"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "f2.png"
+        }
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/expenses/new",
+        "role": "editor",
+        "selector": "input[name=\"title\"]"
+      },
+      "category": "error-handling",
+      "description": "Submitting the Add expense form with a whitespace-only title (browser 'required' accepts it) is rejected by the server with a 400, but the page silently re-renders as a blank Add expense form at /expenses with no error message, and the typed values are cleared. The same silent blank re-render happens when the server rejects a negative amount, which the client-side min=0 normally prevents.",
+      "confidence": 0.8,
+      "severity": "major",
+      "repro": [
+        "Sign in as editor-ad69 and open /expenses/new",
+        "Type three spaces in Title and 12.00 in Amount",
+        "Click Save",
+        "The form reloads empty at /expenses with no error text; no expense is added"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "f3.png"
+        }
+      ]
+    },
+    {
+      "id": "f4",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "[data-testid=\"total\"]"
+      },
+      "category": "copy",
+      "description": "Amounts and the total of 1,000 or more are shown without thousands separators (for example '$1234567.89' in the row and 'Total: $1234985.38'), which is hard to read and inconsistent with usual currency formatting.",
+      "confidence": 0.4,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor-ad69 and add an expense with amount 1234567.89",
+        "View /expenses",
+        "The amount cell shows $1234567.89 and the total shows without commas"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "f4.png"
+        }
+      ]
+    },
+    {
+      "id": "f5",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "td:nth-child(4) button"
+      },
+      "category": "a11y",
+      "description": "Every row's Delete button has the same accessible name 'Delete' with no reference to the expense it removes, so screen-reader users navigating by button cannot tell which expense each one deletes.",
+      "confidence": 0.4,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor-ad69 and open /expenses",
+        "Use a screen reader or the accessibility tree to list buttons",
+        "Eight or more buttons are named only 'Delete'"
+      ]
+    }
+  ],
+  "notes": "Tested at 1280 px desktop and 360 px mobile (Chromium) for viewer and editor: list, totals, category filter (total follows filtered rows), add, edit, delete, role gating (viewer gets 403 on /expenses/new and /expenses/1/edit), and mobile card layout (no horizontal overflow). Totals were correct throughout. Not tested: touch gestures beyond tap, real screen readers, other browsers, the Category filter on mobile, and pagination (none seen). Test data I created was deleted and the edited row restored afterwards.",
+  "cost": {
+    "model_usd": 0.002109,
+    "notes": "estimate from 48475 total tokens (85% cache read / 10% input / 5% output); range $0.0005-$0.0058"
+  },
+  "wall_time_s": 137.8,
+  "activity": {
+    "tool_calls": 26,
+    "screenshots_taken": 9,
+    "screenshots_viewed": 6
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "episode_id": "visual-012",
+  "system": {
+    "name": "claude-haiku-5.5-low",
+    "version": "claude-haiku-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "[data-test=\"add-expense-form\"]"
+      },
+      "category": "error-handling",
+      "description": "Submitting the Add expense form with a whitespace-only title passes the browser's required check, the server rejects it with HTTP 400, and the page re-renders as an empty Add expense form with no error message, so the user gets no explanation and the typed values are cleared.",
+      "confidence": 0.5,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor-1a1b",
+        "Open /expenses/new",
+        "Enter three spaces in Title, enter 1 in Amount, pick a category",
+        "Click Save",
+        "Observe: the response is 400, the page shows a blank Add expense form at /expenses with no error text and the inputs are empty"
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses",
+        "role": "viewer",
+        "selector": "[data-testid=\"total\"]"
+      },
+      "category": "a11y",
+      "description": "At phone widths (max-width 600px) the stylesheet hides the table header and sets table, tbody, tr and td to display:block, so the Title/Category/Amount cells have no visible or programmatic column labels; amounts and categories are unlabeled for screen-reader users.",
+      "confidence": 0.35,
+      "severity": "minor",
+      "repro": [
+        "Set viewport to 360 px wide",
+        "Sign in as viewer-3cfd and open /expenses",
+        "Observe the list rendered as stacked blocks with no column headings; inspect thead computed display (none) and table display (block)"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "viewer-360.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Tested both roles at 360 and 1280 px: login, list, category filter, totals (verified by hand: all-items $399.99, travel $185.25, meals $177.25), add and edit recalculation, delete recalculation, viewer access to /expenses/new and /expenses/1/edit (403), keyboard focus outline, contrast of the main palette. No other defects found. Not tested: full axe audit, screen reader, touch gestures, network throttling, and other categories beyond visual/a11y. Test data was modified (one expense edited to 50.00 and one added then deleted).",
+  "cost": {
+    "model_usd": 0.001415,
+    "notes": "estimate from 32530 total tokens (85% cache read / 10% input / 5% output); range $0.0003-$0.0039"
+  },
+  "wall_time_s": 157.1,
+  "activity": {
+    "tool_calls": 19,
+    "screenshots_taken": 8,
+    "screenshots_viewed": 2
+  }
+}

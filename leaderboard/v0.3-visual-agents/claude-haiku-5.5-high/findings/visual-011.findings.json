@@ -1,0 +1,87 @@
+{
+  "episode_id": "visual-011",
+  "system": {
+    "name": "claude-haiku-5.5-high",
+    "version": "claude-haiku-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"add-to-cart-sauce-labs-bike-light\"]"
+      },
+      "category": "a11y",
+      "description": "Keyboard focus is not visible on interactive controls: a focused Add to cart button (and the other links/buttons) renders with no focus ring; computed outline-style and box-shadow are none, so Tab navigation shows no visual indication of focus (WCAG 2.4.7).",
+      "confidence": 0.75,
+      "severity": "major",
+      "repro": [
+        "Sign in as customer at 1280px wide.",
+        "Click the page background, then press Tab until focus reaches the Add to cart button of Sauce Labs Bike Light.",
+        "Observe the focused button looks identical to its unfocused state; computed outline-style is none."
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "focus-btn-keyboard.png"
+        },
+        {
+          "kind": "screenshot",
+          "path": "focus-btn-unfocused.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"product-sort-container\"]"
+      },
+      "category": "visual",
+      "description": "At 360px wide the product sort select collapses to about 40px, so only the funnel icon shows; the current sort option text (e.g. Name (A to Z)) and the dropdown caret are not visible, so a phone user cannot tell which sort is applied.",
+      "confidence": 0.5,
+      "severity": "minor",
+      "repro": [
+        "Set viewport to 360x740 (mobile), sign in as customer.",
+        "Look at the right side of the products header row next to the Products label.",
+        "Observe the select is a small box with only a funnel icon; its width is about 40px versus about 225px on desktop."
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "m-inventory-360.png"
+        }
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"shopping-cart-link\"]"
+      },
+      "category": "copy",
+      "description": "The cart link's accessible name reads 'Cart, 1 items' when exactly one item is in the cart; it should be 'Cart, 1 item'.",
+      "confidence": 0.6,
+      "severity": "minor",
+      "repro": [
+        "Sign in as customer.",
+        "Add one product to the cart.",
+        "Inspect the cart link's aria-label: it reads 'Cart, 1 items'."
+      ]
+    }
+  ],
+  "notes": "Tested 1280px and 360px flows: login, sort, add/remove, cart, checkout totals (subtotal, 8% tax, total verified), finish. Not covered: 1920px, hamburger menu links, Reset App State, logout, full console audit. Checkout with an empty cart completes with an order confirmation; not filed, as it may be standard shop behaviour.",
+  "cost": {
+    "model_usd": 0.002844,
+    "notes": "estimate from 65377 total tokens (85% cache read / 10% input / 5% output); range $0.0007-$0.0078"
+  },
+  "wall_time_s": 302.4,
+  "activity": {
+    "tool_calls": 44,
+    "screenshots_taken": 13,
+    "screenshots_viewed": 10
+  }
+}

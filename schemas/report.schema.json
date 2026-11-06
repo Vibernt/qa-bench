@@ -197,6 +197,9 @@
         "cost": {
           "$ref": "defs.schema.json#/$defs/cost"
         },
+        "activity": {
+          "$ref": "defs.schema.json#/$defs/activity"
+        },
         "time_to_first_detection_s": {
           "type": [
             "number",
@@ -463,6 +466,32 @@
             "null"
           ],
           "description": "natural_found / natural_present; planted recall stays separate so it is comparable across bench versions"
+        },
+        "episodes_with_activity": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Episodes whose findings reported activity; the per-episode averages below are over these"
+        },
+        "tool_calls_per_episode": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "Mean tool calls per episode, over episodes_with_activity"
+        },
+        "screenshots_taken_per_episode": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "Mean screenshots captured per episode, over episodes_with_activity"
+        },
+        "screenshots_viewed_per_episode": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "Mean times the system looked at an image per episode, over episodes_with_activity"
         }
       }
     }

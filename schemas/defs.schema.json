@@ -142,6 +142,28 @@
     "sha256": {
       "type": "string",
       "pattern": "^[0-9a-f]{64}$"
+    },
+    "activity": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "How the system worked, where its driver can tell: counted by the orchestrator from the transcript, or reported by the adapter. Not scored; reported beside the scores (e.g. whether a system looked at the rendered page).",
+      "properties": {
+        "tool_calls": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Tool or browser actions the system took"
+        },
+        "screenshots_taken": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Tool calls that captured a screenshot"
+        },
+        "screenshots_viewed": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Times the system looked at an image (e.g. a model reading a screenshot), not just saved one"
+        }
+      }
     }
   }
 }

@@ -19,7 +19,7 @@ import { DEFAULT_RUNS_ROOT, downEpisode, runEpisodes, upEpisode, type RunnerOpti
 
 export const AGENTS_ROOT = join(REPO_ROOT, 'harness', 'agents');
 // 0.2.0: the prompt asks for each finding's severity. 0.3.0: exploratory briefs (no checklist) and the product purpose.
-export const HARNESS_VERSION = '0.3.0';
+export const HARNESS_VERSION = '0.4.0';
 
 export interface AgentConfig {
   id: string;
@@ -56,6 +56,9 @@ export interface EpisodeUsage {
   cache_read_tokens?: number;
   duration_s?: number;
   tool_uses?: number;
+  /** Tool calls that captured a screenshot, and Read calls on an image (the agent looked at it). See audit.ts. */
+  screenshots_taken?: number;
+  screenshots_viewed?: number;
   served_model?: string;
   audit?: { sealed_path_hits: number; checked: string; notes?: string };
   error?: string;
@@ -300,6 +303,8 @@ export async function finishSession(session: string, opts: FinishOptions = {}): 
     const cost = estimateCost(u, manifest.config.price);
     file.cost = { ...(cost.usd !== undefined ? { model_usd: Math.round(cost.usd * 1e6) / 1e6 } : {}), notes: cost.note };
     if (u.duration_s !== undefined) file.wall_time_s = Math.round(u.duration_s * 10) / 10;
+    const activity = { tool_calls: u.tool_uses, screenshots_taken: u.screenshots_taken, screenshots_viewed: u.screenshots_viewed };
+    if (Object.values(activity).some((v) => v !== undefined)) file.activity = Object.fromEntries(Object.entries(activity).filter(([, v]) => v !== undefined));
     const parts = [file.notes, note, dropped ? `${dropped} finding(s) dropped as unrepairable` : '', repaired ? `${repaired} route(s) repaired from full URLs` : '', u.error ? `orchestrator: ${u.error}` : ''].filter(Boolean);
     if (parts.length) file.notes = parts.join('; ').slice(0, 2000);
     const errs = check('findings', file);

@@ -1,0 +1,24 @@
+id: expense.restyle
+app: expense-app
+title: "Visual refresh (deliberate)"
+description: "VARIANT=restyle is a deliberate redesign: a teal accent and background tint instead of blue and grey, rounded pill-shaped buttons, more rounded boxes, tighter table rows and sentence-case column headings. Layout, content and behaviour are unchanged. Reporting it is a false alarm."
+track: visual
+kind: change
+category: visual
+class: judged
+severity: minor
+where: { route: /expenses }
+switch:
+  env: { VARIANT: restyle }
+  exclusive: expense-variant
+found_by:
+  - kind: visual
+    description_pattern: 'teal|green|colou?r (scheme|palette|change|changed)|palette|theme|accent|rounded|pill|round(er)? (button|corner)|compact|tighter|denser|density|spacing|padding|row height|sentence[- ]case|lower[- ]?case (heading|header)|heading (case|style)|uppercase|re-?design|re-?style|style (change|changed|differs)|looks? different|new look'
+    note: "Reports the new colours, rounded buttons or tighter rows as a visual fault"
+  - kind: visual
+    category: usability
+    description_pattern: 'teal|green|palette|theme|rounded|pill|compact|tighter|denser|density|spacing|padding|row height|sentence[- ]case|heading (case|style)|re-?design|re-?style|looks? different'
+    note: "Reports the redesign as confusing or a usability regression"
+tolerance: { route: prefix, role: any }
+split: public
+upstream_ref: "apps/expense-app/app/src/theme.ts (VARIANT=restyle); checked by apps/expense-app/verify.ts"

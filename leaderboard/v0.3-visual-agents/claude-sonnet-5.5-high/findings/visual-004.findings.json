@@ -1,0 +1,171 @@
+{
+  "episode_id": "visual-004",
+  "system": {
+    "name": "claude-sonnet-5.5-high",
+    "version": "claude-sonnet-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/cart.html",
+        "role": "customer",
+        "selector": "[data-test=\"checkout\"]"
+      },
+      "category": "visual",
+      "description": "On the cart page the Checkout button is pulled out of the layout and pinned at the very top of the page, overlapping the header (on a 360 px phone it covers the 'Swag Labs' title and the cart icon) instead of sitting below the cart items next to Continue Shopping. The button carries a class 'btn_visual_failure'.",
+      "confidence": 0.85,
+      "severity": "major",
+      "repro": [
+        "Sign in as customer",
+        "Add any product to the cart",
+        "Open the cart at 1280 px or 360 px width",
+        "Observe Checkout button at top of viewport over the header"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "d-cart.png"
+        },
+        {
+          "kind": "screenshot",
+          "path": "m-cart.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": ".inventory_item:last-child button"
+      },
+      "category": "visual",
+      "description": "The button of the last product (Test.allTheThings() T-Shirt, long two-line name) overflows its card. On desktop it sticks out past the right edge of the card; on a 360 px phone it is wider than the other buttons, extends past the card to the viewport edge and is displaced above the price, unlike the other cards.",
+      "confidence": 0.6,
+      "severity": "major",
+      "repro": [
+        "Sign in as customer",
+        "Open /inventory.html at 1280 px and at 360 px",
+        "Compare the last product's Add to cart button with the other cards"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "d-inv.png"
+        },
+        {
+          "kind": "screenshot",
+          "path": "m-inv-bottom.png"
+        }
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": ".shopping_cart_link"
+      },
+      "category": "visual",
+      "description": "The cart icon is not aligned in the header: on desktop it floats at about x=1050 (not at the right edge) overlapping the sort dropdown area, and on a 360 px phone it sits under the 'Swag Labs' title, overlapping it. Same on all pages.",
+      "confidence": 0.5,
+      "severity": "minor",
+      "repro": [
+        "Sign in",
+        "View any page at 1280 px and 360 px width"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "d-inv.png"
+        },
+        {
+          "kind": "screenshot",
+          "path": "m-co2.png"
+        }
+      ]
+    },
+    {
+      "id": "f4",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer"
+      },
+      "category": "visual",
+      "description": "On the 360 px layout the inventory list is extremely tall (about 5000 px) with large empty gaps between description and price, and the price/button order differs between cards. Also, product names on desktop are inconsistently aligned (Bolt T-Shirt and Fleece Jacket are indented/centred while others are left-aligned).",
+      "confidence": 0.35,
+      "severity": "minor",
+      "repro": [
+        "Sign in",
+        "Open /inventory.html at 360 px and 1280 px"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "m-inv.png"
+        }
+      ]
+    },
+    {
+      "id": "f5",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": ".inventory_item_price"
+      },
+      "category": "consistency",
+      "description": "Product prices change on every load of the inventory page (e.g. Backpack $25.21, $67, $85.97) and do not match the price in the product detail page and cart ($29.99). Prices also lose trailing zeros ($85.2, $44.6, $45.3).",
+      "confidence": 0.55,
+      "severity": "major",
+      "repro": [
+        "Sign in",
+        "Note prices on /inventory.html, reload and compare",
+        "Open Backpack detail and cart and compare price"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "d-inv.png"
+        },
+        {
+          "kind": "screenshot",
+          "path": "d-detail.png"
+        }
+      ]
+    },
+    {
+      "id": "f6",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer"
+      },
+      "category": "a11y",
+      "description": "Keyboard focus is not visible anywhere: focused links, buttons, and the sort select all have outline-style none and no box-shadow, so keyboard users cannot see where focus is.",
+      "confidence": 0.6,
+      "severity": "major",
+      "repro": [
+        "Sign in",
+        "Press Tab repeatedly on /inventory.html",
+        "No focus ring appears on sort select, product links or Add to cart buttons"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "d-focus.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Did not fully test sort, logout, About, Dynamic Catalog menu pages or checkout error validation messages; time-limited.",
+  "cost": {
+    "model_usd": 0.029812,
+    "notes": "estimate from 34267 total tokens (85% cache read / 10% input / 5% output); range $0.0069-$0.0822"
+  },
+  "wall_time_s": 90.4,
+  "activity": {
+    "tool_calls": 21,
+    "screenshots_taken": 4,
+    "screenshots_viewed": 12
+  }
+}

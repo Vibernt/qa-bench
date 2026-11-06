@@ -1,0 +1,62 @@
+{
+  "episode_id": "visual-009",
+  "system": {
+    "name": "claude-sonnet-5.5-low",
+    "version": "claude-sonnet-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "editor"
+      },
+      "category": "visual",
+      "description": "At 360px wide the expenses table is cut off: the Amount and Actions columns (and Edit/Delete) are off-screen with no visible indication, so amounts are not readable without hidden horizontal scroll.",
+      "confidence": 0.6,
+      "severity": "major",
+      "repro": [
+        "Sign in as editor",
+        "Set viewport to 360px",
+        "Open /expenses"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "editor-360.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses",
+        "role": "editor"
+      },
+      "category": "visual",
+      "description": "Amount column is misaligned: header is right-aligned but the values are not aligned to it or to each other's decimal points (e.g. $124.00 sticks out past $42.50).",
+      "confidence": 0.5,
+      "severity": "minor",
+      "repro": [
+        "Open /expenses at 1280px"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "editor-1280.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Only brief listing pages checked; forms and keyboard a11y not tested.",
+  "cost": {
+    "model_usd": 0.013477,
+    "notes": "estimate from 15491 total tokens (85% cache read / 10% input / 5% output); range $0.0031-$0.0372"
+  },
+  "wall_time_s": 29.9,
+  "activity": {
+    "tool_calls": 8,
+    "screenshots_taken": 2,
+    "screenshots_viewed": 2
+  }
+}

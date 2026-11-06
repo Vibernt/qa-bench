@@ -333,7 +333,9 @@ function build(
     app: pool.app.id,
     track: track.id,
     noise_only: pool.app.config.noise_only ?? false,
-    labels: [...plan.mutations, ...plan.changes, ...pool.baseline, ...pool.natural],
+    // A natural defect is left out when an active planted defect removes its symptom (label.masked_by).
+    labels: [...plan.mutations, ...plan.changes, ...pool.baseline,
+      ...pool.natural.filter((n) => !(n.masked_by ?? []).some((id) => plan.mutations.some((m) => m.id === id)))],
   };
   assertValid('answer-key', answerKey, `${id}/answer-key.json`);
   const answerKeyText = jsonText(answerKey);

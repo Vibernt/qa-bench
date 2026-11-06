@@ -1,0 +1,22 @@
+id: expense.low-contrast-text
+app: expense-app
+title: "Secondary text is too pale to read (contrast about 1.7:1)"
+description: "The muted text colour is #c3c8cd on white: the Category column, the table headings and \"Signed in as\" have a contrast ratio of about 1.7:1, far below WCAG's 4.5:1."
+track: visual
+kind: defect
+category: a11y
+class: deterministic
+severity: minor
+difficulty: blatant
+exposure: novel
+where: { route: /expenses, role: viewer }
+switch:
+  env: { DEFECT: muted_text_low_contrast }
+found_by:
+  - kind: a11y
+    also_categories: [visual, usability]
+    description_pattern: '^(?![\s\S]*(\bfocus|border))[\s\S]*(contrast|faint|too (pale|light)|pale (grey|gray|text)|light (grey|gray)|hard to read|barely (visible|readable|legible)|washed[- ]out|low visibility|illegible|#c3c8cd)'
+    note: "Category text, headings and the signed-in line fail contrast"
+tolerance: { route: prefix, role: any }
+split: public
+upstream_ref: "apps/expense-app/app/src/theme.ts (DEFECT=muted_text_low_contrast); checked by apps/expense-app/verify.ts"

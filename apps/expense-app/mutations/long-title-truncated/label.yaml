@@ -12,6 +12,7 @@ exposure: novel
 where: { route: /expenses, role: editor }
 switch:
   env: { DEFECT: long_title_truncated }
+  exclusive: expense-title   # long_title_overflows needs long titles, which this cuts to 20 characters
 found_by:
   - kind: value
     description_pattern: '^(?=[\s\S]*(title|name|description|text|label))(?=[\s\S]*(truncat|cut (off|short|down|to|at)|chopped|clipped|shortened|limited to \d+|first \d+ (char|letter)|\b\d+ (char|letter)|(max|maximum) (length|of \d+)|(lost|loses|drops?|dropped|missing) (the |its )?(end|rest|last (part|\d+|few)|tail|remainder)))'

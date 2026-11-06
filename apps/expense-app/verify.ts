@@ -3,8 +3,11 @@
 // multi-defect combinations: every member's symptom must show in one container. Native script (needs docker), not a
 // CI test:
 //   npx tsx apps/expense-app/verify.ts [--image <tag>]
-// Builds the image unless --image is given. Plain HTTP: the app is server-rendered, so no browser is needed.
+// Builds the image unless --image is given. Most probes are plain HTTP (the app is server-rendered); the visual and
+// accessibility probes use Chromium (Playwright) and measure what a person would see: element geometry, the element
+// actually painted at a point, contrast ratios and focus styles.
 import { execFileSync } from 'node:child_process';
+import { chromium, type Browser, type Page } from 'playwright';
 import { readdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -82,6 +85,49 @@ function editFormFields(html: string): Record<string, string> {
     amount: html.match(/name="amount" type="number"[^>]*value="([^"]*)"/)?.[1] ?? '',
   };
 }
+
+// ---- browser helpers (visual and accessibility probes) -------------------------------------------------------
+let browserPromise: Promise<Browser> | undefined;
+const browser = (): Promise<Browser> => (browserPromise ??= chromium.launch());
+const DESKTOP = { width: 1280, height: 800 };
+const PHONE = { width: 390, height: 844 };
+
+/** Run `fn` on a fresh page, signed in as `who` (or signed out with `who` undefined), on /expenses. */
+async function inBrowser<T>(app: App, who: { username: string; password: string } | undefined, viewport: { width: number; height: number }, fn: (page: Page) => Promise<T>): Promise<T> {
+  const context = await (await browser()).newContext({ viewport });
+  const page = await context.newPage();
+  page.setDefaultTimeout(8000);
+  try {
+    if (who) {
+      await page.goto(app.base + '/login');
+      await page.fill('[name=username]', who.username);
+      await page.fill('[name=password]', who.password);
+      await page.click('button[type=submit]');
+      await page.waitForURL('**/expenses**');
+    }
+    return await fn(page);
+  } finally { await context.close(); }
+}
+
+/** WCAG contrast ratio of an element's text colour against the first opaque background behind it. */
+// Passed as source text: the test runner's transform would otherwise wrap the helper functions in a __name() call
+// that doesn't exist in the page.
+const CONTRAST_JS = `(el) => {
+  const rgb = (c) => (c.match(/[\\d.]+/g) || []).map(Number);
+  const f = (v) => { const x = v / 255; return x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4); };
+  const lum = (c) => 0.2126 * f(c[0]) + 0.7152 * f(c[1]) + 0.0722 * f(c[2]);
+  let bg = [255, 255, 255];
+  for (let n = el; n; n = n.parentElement) {
+    const c = rgb(getComputedStyle(n).backgroundColor);
+    if (c.length >= 3 && (c[3] === undefined ? 1 : c[3]) > 0.5) { bg = c; break; }
+  }
+  const a = lum(rgb(getComputedStyle(el).color)), b = lum(bg);
+  return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+}`;
+const contrastOf = (page: Page, selector: string): Promise<number> =>
+  page.locator(selector).first().evaluate((el, src) => (0, eval)(src)(el) as number, CONTRAST_JS);
+
+const LONG_TITLE = 'Annual partner conference registration and workshop fees';
 
 // Each probe returns true when its symptom is present. Probes touch different rows, so the members of a
 // combination can run one after another in the same container.
@@ -166,6 +212,60 @@ const probes: Record<string, (app: App) => Promise<boolean>> = {
     await post(app, c, '/expenses/2', { ...fields, amount: '70.00' });
     return rows((await get(app, c, '/expenses')).html).find((r) => r.title.startsWith('Team lunch'))?.category !== 'meals';
   },
+  // ---- visual and accessibility defects (browser) ----
+  'expense.phone-layout-overflow': (app) => inBrowser(app, EDITOR, PHONE, async (page) => {
+    // On a phone the first row's Delete button must be on screen; with the defect it is clipped off to the right
+    // and the page can't be scrolled to it.
+    const box = await page.locator('tbody tr').first().locator('button').boundingBox();
+    const scrollable = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
+    return !!box && box.x >= PHONE.width && !scrollable;
+  }),
+  'expense.total-covers-last-row': (app) => inBrowser(app, VIEWER, DESKTOP, async (page) => {
+    // The element painted at the middle of the last row's title is the total box, not the row.
+    const cell = await page.locator('tbody tr').last().locator('td').first().boundingBox();
+    if (!cell) return false;
+    return page.evaluate(([x, y]) => !!document.elementFromPoint(x!, y!)?.closest('[data-testid="total"]'), [cell.x + 20, cell.y + cell.height / 2]);
+  }),
+  'expense.login-error-invisible': (app) => inBrowser(app, undefined, DESKTOP, async (page) => {
+    await page.goto(app.base + '/login');
+    await page.fill('[name=username]', VIEWER.username);
+    await page.fill('[name=password]', 'not-the-password');
+    await page.click('button[type=submit]');
+    const text = (await page.locator('[role=alert]').innerText()).trim();
+    return text === 'Invalid credentials' && (await contrastOf(page, '[role=alert]')) < 1.5;
+  }),
+  'expense.long-title-overflows': (app) => inBrowser(app, EDITOR, DESKTOP, async (page) => {
+    // A long (but stored in full) title spills over the Category column instead of wrapping.
+    await page.goto(app.base + '/expenses/new');
+    await page.fill('[name=title]', LONG_TITLE);
+    await page.fill('[name=amount]', '12.00');
+    await page.click('button[type=submit]');
+    await page.waitForURL('**/expenses**');
+    const row = page.locator('tbody tr', { hasText: LONG_TITLE.slice(0, 20) }).last();
+    const spill = await row.locator('td').first().evaluate((td) => td.scrollWidth - td.clientWidth);
+    return spill > 40;
+  }),
+  'expense.low-contrast-text': (app) => inBrowser(app, VIEWER, DESKTOP, async (page) => (await contrastOf(page, 'tbody td:nth-child(2)')) < 3),
+  'expense.focus-ring-removed': (app) => inBrowser(app, VIEWER, DESKTOP, async (page) => {
+    // Tab to the filter's Apply button: the focused control shows no outline and no replacement ring.
+    await page.locator('select[name=category]').focus();
+    await page.keyboard.press('Tab');
+    return page.evaluate(() => {
+      const el = document.activeElement as HTMLElement | null;
+      if (!el || el.tagName !== 'BUTTON') return false;
+      const s = getComputedStyle(el);
+      return (s.outlineStyle === 'none' || s.outlineWidth === '0px') && s.boxShadow === 'none';
+    });
+  }),
+  'expense.amounts-misaligned': (app) => inBrowser(app, VIEWER, DESKTOP, async (page) => {
+    // The amounts' right edges should line up (right-aligned under the heading); with the defect they are ragged.
+    const rights = await page.locator('tbody td:nth-child(3)').evaluateAll((tds) => tds.map((td) => {
+      const r = document.createRange(); r.selectNodeContents(td); return r.getBoundingClientRect().right;
+    }));
+    return Math.max(...rights) - Math.min(...rights) > 4;
+  }),
+  'expense.restyle': (app) => inBrowser(app, VIEWER, DESKTOP, async (page) =>
+    (await page.locator('form[method=get] button').evaluate((b) => getComputedStyle(b).backgroundColor)) === 'rgb(11, 110, 95)'),
   'expense.relabel': async (app) => {
     const c = await login(app, EDITOR);
     const list = (await get(app, c, '/expenses')).html;
@@ -174,12 +274,24 @@ const probes: Record<string, (app: App) => Promise<boolean>> = {
   },
 };
 
+/** Store an expense with these fields: add it, or, when the add isn't kept (missing_persistence), edit expense 1. */
+async function writeExpense(app: App, cookie: string, fields: { title: string; category: string; amount: string }): Promise<void> {
+  await post(app, cookie, '/expenses', fields);
+  const list = await get(app, cookie, '/expenses');
+  if (list.status === 200 && !list.html.includes(fields.title.slice(0, 20))) await post(app, cookie, `/expenses/${firstId(list.html)}`, fields);
+}
+/** The id of the first expense in a list page (probes that delete rows run before others in the masking matrix). */
+const firstId = (html: string): string => html.match(/\/expenses\/(\d+)\/edit/)?.[1] ?? '1';
+
 // Natural defects: real bugs present on every build, so they must show on the clean build.
 const naturalProbes: Record<string, (app: App) => Promise<boolean>> = {
   'expense.huge-amount-breaks-list': async (app) => {
     const c = await login(app, EDITOR);
     const saved = await post(app, c, '/expenses', { title: 'Huge', category: 'office', amount: '99999999999999' });
-    return saved.status === 303 && (await get(app, c, '/expenses')).status === 500;
+    const list = await get(app, c, '/expenses');
+    if (list.status === 500) return saved.status === 303;
+    await post(app, c, `/expenses/${firstId(list.html)}`, { title: 'Huge', category: 'office', amount: '99999999999999' });
+    return (await get(app, c, '/expenses')).status === 500;
   },
   'expense.rejected-form-loses-input': async (app) => {
     const c = await login(app, EDITOR);
@@ -195,7 +307,8 @@ const naturalProbes: Record<string, (app: App) => Promise<boolean>> = {
     if (!form || /confirm|onsubmit|onclick/i.test(form[0])) return false;
     const res = await post(app, c, `/expenses/${form[1]}/delete`, {});
     const after = (await get(app, c, res.location || '/expenses')).html;
-    return res.status === 303 && !/role="status"/.test(after) && !after.includes(`/expenses/${form[1]}/edit`);
+    // The delete happened (the edit page reads the database; the list may be cached by stale_state).
+    return res.status === 303 && !/role="status"/.test(after) && (await get(app, c, `/expenses/${form[1]}/edit`)).status === 404;
   },
   'expense.zero-amount-accepted': async (app) => {
     const c = await login(app, EDITOR);
@@ -218,6 +331,65 @@ const naturalProbes: Record<string, (app: App) => Promise<boolean>> = {
     const forged = (await get(app, fresh, '/expenses?flash=saved')).html;
     return saved.location.includes('flash=') && [reload1, reload2, forged].every((h) => h.includes('Expense saved'));
   },
+  // ---- found in the visual-track runs ----
+  'expense.row-actions-unnamed': async (app) => {
+    const html = (await get(app, await login(app, EDITOR), '/expenses')).html;
+    const edits = [...html.matchAll(/<a href="\/expenses\/\d+\/edit"([^>]*)>([^<]*)<\/a>/g)];
+    const deletes = [...html.matchAll(/<button type="submit"([^>]*)>Delete<\/button>/g)];
+    return edits.length > 1 && deletes.length > 1 && edits.every((m) => m[2] === 'Edit' && !/aria-label/.test(m[1]!)) && deletes.every((m) => !/aria-label/.test(m[1]!));
+  },
+  'expense.phone-rows-unlabelled': (app) => inBrowser(app, VIEWER, PHONE, async (page) => {
+    const head = await page.locator('thead').evaluate((e) => getComputedStyle(e).display);
+    const cell = await page.locator('tbody td').first().evaluate((e) => getComputedStyle(e).display);
+    return head === 'none' && cell === 'block';
+  }),
+  'expense.viewer-empty-actions-column': async (app) => {
+    const html = (await get(app, await login(app, VIEWER), '/expenses')).html;
+    const cells = [...(html.match(/<tbody>([\s\S]*?)<\/tbody>/)?.[1] ?? '').matchAll(/<tr>(?:<td>[\s\S]*?<\/td>){3}<td>([\s\S]*?)<\/td><\/tr>/g)];
+    return html.includes('<th>Actions</th>') && cells.length > 0 && cells.every((m) => m[1] === '');
+  },
+  'expense.no-thousands-separator': async (app) => {
+    const c = await login(app, EDITOR);
+    await writeExpense(app, c, { title: 'Separator check', category: 'office', amount: '1234.56' });
+    const html = (await get(app, c, '/expenses')).html;
+    return html.includes('$1234.56') && !html.includes('$1,234.56');
+  },
+  'expense.small-touch-targets': (app) => inBrowser(app, EDITOR, PHONE, async (page) => {
+    const box = await page.locator('tbody tr').first().locator('a').boundingBox();
+    return !!box && (box.height < 24 || box.width < 24);
+  }),
+  'expense.focus-ring-low-contrast': (app) => inBrowser(app, VIEWER, DESKTOP, async (page) => {
+    await page.locator('select[name=category]').focus();
+    await page.keyboard.press('Tab');
+    const [outline, bg, style] = await page.evaluate(() => [getComputedStyle(document.activeElement!).outlineColor, getComputedStyle(document.body).backgroundColor, getComputedStyle(document.activeElement!).outlineStyle]);
+    if (style === 'none') return false; // no ring at all (focus_ring_removed): nothing to measure
+    const rgb = (c: string): number[] => (c.match(/[\d.]+/g) ?? []).map(Number);
+    const lum = (c: number[]): number => c.slice(0, 3).map((v) => { const x = v / 255; return x <= 0.03928 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4; })
+      .reduce((s, v, i) => s + v * [0.2126, 0.7152, 0.0722][i]!, 0);
+    const [a, b] = [lum(rgb(outline)), lum(rgb(bg))];
+    return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05) < 3;
+  }),
+  'expense.unbroken-title-overflows': (app) => inBrowser(app, EDITOR, DESKTOP, async (page) => {
+    const cookie = (await page.context().cookies()).map((c) => `${c.name}=${c.value}`).join('; ');
+    await writeExpense(app, cookie, { title: 'REF-' + '0123456789'.repeat(12), category: 'office', amount: '5.00' });
+    await page.goto(app.base + '/expenses');
+    // The table grows past the page (auto layout) or, with a fixed layout, the title spills out of its cell.
+    return page.evaluate(() => {
+      const t = document.querySelector('table')!.getBoundingClientRect();
+      const m = document.querySelector('main')!.getBoundingClientRect();
+      const cells = [...document.querySelectorAll('tbody td:first-child')] as HTMLElement[];
+      return t.right > m.right + 4 || cells.some((c) => c.scrollWidth > c.clientWidth + 20);
+    });
+  }),
+  'expense.control-borders-low-contrast': (app) => inBrowser(app, undefined, DESKTOP, async (page) => {
+    await page.goto(app.base + '/login');
+    const [border, bg] = await page.locator('input[name=username]').evaluate((e) => [getComputedStyle(e).borderTopColor, getComputedStyle(e.closest('form')!).backgroundColor]);
+    const rgb = (c: string): number[] => (c.match(/[\d.]+/g) ?? []).map(Number);
+    const lum = (c: number[]): number => c.slice(0, 3).map((v) => { const x = v / 255; return x <= 0.03928 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4; })
+      .reduce((s, v, i) => s + v * [0.2126, 0.7152, 0.0722][i]!, 0);
+    const [a, b] = [lum(rgb(border)), lum(rgb(bg))];
+    return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05) < 3;
+  }),
   'expense.delete-missing-id': async (app) => {
     const c = await login(app, EDITOR);
     const del = await post(app, c, '/expenses/999/delete', {});
@@ -241,7 +413,19 @@ const switches: Record<string, Record<string, string>> = {
   'expense.title-not-escaped': { DEFECT: 'title_not_escaped' },
   'expense.edit-resets-category': { DEFECT: 'edit_resets_category' },
   'expense.relabel': { VARIANT: 'relabel' },
+  'expense.phone-layout-overflow': { DEFECT: 'layout_phone_overflow' },
+  'expense.total-covers-last-row': { DEFECT: 'total_covers_last_row' },
+  'expense.login-error-invisible': { DEFECT: 'alert_text_invisible' },
+  'expense.long-title-overflows': { DEFECT: 'long_title_overflows' },
+  'expense.low-contrast-text': { DEFECT: 'muted_text_low_contrast' },
+  'expense.focus-ring-removed': { DEFECT: 'focus_ring_removed' },
+  'expense.amounts-misaligned': { DEFECT: 'amounts_misaligned' },
+  'expense.restyle': { VARIANT: 'restyle' },
 };
+
+// The deliberate restyle must not look like any planted visual defect.
+const VISUAL = ['expense.phone-layout-overflow', 'expense.total-covers-last-row', 'expense.login-error-invisible', 'expense.long-title-overflows',
+  'expense.low-contrast-text', 'expense.focus-ring-removed', 'expense.amounts-misaligned'];
 
 // Multi-defect episodes: every member's symptom shows in one container, probed one after another. No two members
 // share an exclusive group (expense-create, expense-update, expense-filter).
@@ -252,6 +436,10 @@ const combinations: string[][] = [
   ['expense.stale-state', 'expense.ignored-filter', 'expense.permission-bypass'],
   ['expense.missing-persistence', 'expense.misleading-success', 'expense.wrong-total'],
   ['expense.wrong-total', 'expense.total-under-filter', 'expense.edit-resets-category'],
+  ['expense.phone-layout-overflow', 'expense.total-covers-last-row', 'expense.focus-ring-removed'],
+  ['expense.long-title-overflows', 'expense.login-error-invisible', 'expense.low-contrast-text'],
+  ['expense.amounts-misaligned', 'expense.wrong-total', 'expense.phone-layout-overflow'],
+  ['expense.total-covers-last-row', 'expense.edit-drops-cents', 'expense.login-error-invisible'],
 ];
 
 let failures = 0;
@@ -293,6 +481,26 @@ for (const members of combinations) {
   } finally { app.stop(); }
 }
 
+// Every planted defect and deliberate change has a switch and a probe, and nothing else does.
+{
+  const ids = ['mutations', 'changes'].flatMap((k) => readdirSync(join(here, k)).map((d) => (readFileSync(join(here, k, d, 'label.yaml'), 'utf8').match(/^id: (\S+)/m) ?? [])[1])).sort();
+  const same = JSON.stringify(ids) === JSON.stringify(Object.keys(switches).sort()) && JSON.stringify(ids) === JSON.stringify(Object.keys(probes).sort());
+  console.log(`${same ? 'ok  ' : 'FAIL'} every planted and change label has a switch and a probe`);
+  if (!same) failures++;
+}
+
+// With the deliberate restyle on, no visual defect shows.
+{
+  const app = start(switches['expense.restyle']!);
+  try {
+    await waitUp(app);
+    const shown: string[] = [];
+    for (const id of VISUAL) if (await probes[id]!(app)) shown.push(id);
+    console.log(`${shown.length ? 'FAIL' : 'ok  '} VARIANT=restyle shows no visual defect${shown.length ? ` (shows ${shown.join(', ')})` : ''}`);
+    if (shown.length) failures++;
+  } finally { app.stop(); }
+}
+
 // Every natural label needs a probe, and every probe a label.
 {
   const ids = readdirSync(join(here, 'natural')).map((d) => (readFileSync(join(here, 'natural', d, 'label.yaml'), 'utf8').match(/^id: (\S+)/m) ?? [])[1]).sort();
@@ -312,6 +520,42 @@ for (const [id, probe] of Object.entries(naturalProbes)) {
   } finally { app.stop(); }
 }
 
+// Masking matrix: with each planted defect on, every natural defect still shows, unless its label lists that defect
+// in masked_by (then it must not show, and the generator leaves it out of that episode's answer key). One container per
+// defect; the probes run in an order where the destructive ones (deletes, the huge amount that breaks the list) go last.
+{
+  const naturalDir = join(here, 'natural');
+  const maskedBy = new Map(readdirSync(naturalDir).map((d) => {
+    const text = readFileSync(join(naturalDir, d, 'label.yaml'), 'utf8');
+    const id = text.match(/^id: (\S+)/m)![1]!;
+    const masked = (text.match(/^masked_by: \[([^\]]*)\]/m)?.[1] ?? '').split(',').map((x) => x.trim()).filter(Boolean);
+    return [id, new Set(masked)] as const;
+  }));
+  const last = ['expense.silent-delete', 'expense.delete-missing-id', 'expense.huge-amount-breaks-list'];
+  const order = [...Object.keys(naturalProbes).filter((id) => !last.includes(id)), ...last];
+  for (const [defectId, env] of Object.entries(switches)) {
+    if (!env.DEFECT) continue;
+    const app = start(env);
+    const wrong: string[] = [];
+    try {
+      await waitUp(app);
+      for (const id of order) {
+        let shown: boolean;
+        try { shown = await naturalProbes[id]!(app); } catch { shown = false; }
+        // stale_state serves the list from a 60 s cache, so a symptom that needs a fresh write shows a minute late.
+        if (!shown && env.DEFECT === 'stale_state') {
+          await new Promise((r) => setTimeout(r, 61_000));
+          try { shown = await naturalProbes[id]!(app); } catch { shown = false; }
+        }
+        const masked = maskedBy.get(id)?.has(defectId) ?? false;
+        if (shown === masked) wrong.push(`${id} ${shown ? 'shows although masked_by lists it' : 'is masked but not in masked_by'}`);
+      }
+    } finally { app.stop(); }
+    console.log(`${wrong.length ? 'FAIL' : 'ok  '} naturals with ${defectId} on${wrong.length ? `: ${wrong.join('; ')}` : ''}`);
+    if (wrong.length) failures++;
+  }
+}
+
 // Generated accounts replace the seed logins.
 {
   const app = start({});
@@ -324,5 +568,6 @@ for (const [id, probe] of Object.entries(naturalProbes)) {
   } finally { app.stop(); }
 }
 
+if (browserPromise) await (await browserPromise).close();
 console.log(failures ? `${failures} check(s) failed` : 'all checks passed');
 process.exit(failures ? 1 : 0);

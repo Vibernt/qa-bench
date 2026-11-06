@@ -1,0 +1,42 @@
+{
+  "episode_id": "visual-005",
+  "system": {
+    "name": "claude-sonnet-5.5-low",
+    "version": "claude-sonnet-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "editor"
+      },
+      "category": "a11y",
+      "description": "Keyboard focus is not visible: focused select, Apply, Edit link and Delete buttons show no outline or other focus indicator (computed outline-style none, no box-shadow).",
+      "confidence": 0.6,
+      "severity": "major",
+      "repro": [
+        "Sign in as editor",
+        "Press Tab repeatedly on /expenses",
+        "No focus ring appears on any control"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "focus.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Totals correct (399.99); no horizontal overflow at 360 or 1280; add form not submitted.",
+  "cost": {
+    "model_usd": 0.018736,
+    "notes": "estimate from 21536 total tokens (85% cache read / 10% input / 5% output); range $0.0043-$0.0517"
+  },
+  "wall_time_s": 53,
+  "activity": {
+    "tool_calls": 15,
+    "screenshots_taken": 4,
+    "screenshots_viewed": 4
+  }
+}

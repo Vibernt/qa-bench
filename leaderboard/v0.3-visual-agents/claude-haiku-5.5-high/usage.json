@@ -1,0 +1,148 @@
+{
+  "episodes": {
+    "visual-001": {
+      "audit": {
+        "sealed_path_hits": 0,
+        "checked": "42 tool inputs in the agent transcript"
+      },
+      "served_model": "claude-haiku-5-5",
+      "total_tokens": 67834,
+      "duration_s": 265,
+      "tool_uses": 42,
+      "screenshots_taken": 13,
+      "screenshots_viewed": 10
+    },
+    "visual-002": {
+      "audit": {
+        "sealed_path_hits": 0,
+        "checked": "31 tool inputs in the agent transcript"
+      },
+      "served_model": "claude-haiku-5-5",
+      "total_tokens": 53915,
+      "duration_s": 200.2,
+      "tool_uses": 31,
+      "screenshots_taken": 15,
+      "screenshots_viewed": 6
+    },
+    "visual-003": {
+      "audit": {
+        "sealed_path_hits": 0,
+        "checked": "24 tool inputs in the agent transcript"
+      },
+      "served_model": "claude-haiku-5-5",
+      "total_tokens": 54413,
+      "duration_s": 148,
+      "tool_uses": 24,
+      "screenshots_taken": 10,
+      "screenshots_viewed": 4
+    },
+    "visual-004": {
+      "audit": {
+        "sealed_path_hits": 0,
+        "checked": "26 tool inputs in the agent transcript"
+      },
+      "served_model": "claude-haiku-5-5",
+      "total_tokens": 44097,
+      "duration_s": 125.3,
+      "tool_uses": 26,
+      "screenshots_taken": 9,
+      "screenshots_viewed": 6
+    },
+    "visual-005": {
+      "audit": {
+        "sealed_path_hits": 0,
+        "checked": "26 tool inputs in the agent transcript"
+      },
+      "served_model": "claude-haiku-5-5",
+      "total_tokens": 48475,
+      "duration_s": 137.8,
+      "tool_uses": 26,
+      "screenshots_taken": 9,
+      "screenshots_viewed": 6
+    },
+    "visual-006": {
+      "audit": {
+        "sealed_path_hits": 0,
+        "checked": "21 tool inputs in the agent transcript"
+      },
+      "served_model": "claude-haiku-5-5",
+      "total_tokens": 35261,
+      "duration_s": 112.4,
+      "tool_uses": 21,
+      "screenshots_taken": 10,
+      "screenshots_viewed": 5
+    },
+    "visual-007": {
+      "audit": {
+        "sealed_path_hits": 0,
+        "checked": "36 tool inputs in the agent transcript"
+      },
+      "served_model": "claude-haiku-5-5",
+      "total_tokens": 57138,
+      "duration_s": 212.6,
+      "tool_uses": 36,
+      "screenshots_taken": 15,
+      "screenshots_viewed": 6
+    },
+    "visual-008": {
+      "audit": {
+        "sealed_path_hits": 0,
+        "checked": "21 tool inputs in the agent transcript"
+      },
+      "served_model": "claude-haiku-5-5",
+      "total_tokens": 41141,
+      "duration_s": 103.1,
+      "tool_uses": 21,
+      "screenshots_taken": 7,
+      "screenshots_viewed": 6
+    },
+    "visual-009": {
+      "audit": {
+        "sealed_path_hits": 0,
+        "checked": "26 tool inputs in the agent transcript"
+      },
+      "served_model": "claude-haiku-5-5",
+      "total_tokens": 50475,
+      "duration_s": 170.8,
+      "tool_uses": 26,
+      "screenshots_taken": 10,
+      "screenshots_viewed": 6
+    },
+    "visual-010": {
+      "audit": {
+        "sealed_path_hits": 0,
+        "checked": "37 tool inputs in the agent transcript"
+      },
+      "served_model": "claude-haiku-5-5",
+      "total_tokens": 49222,
+      "duration_s": 205,
+      "tool_uses": 37,
+      "screenshots_taken": 10,
+      "screenshots_viewed": 12
+    },
+    "visual-011": {
+      "audit": {
+        "sealed_path_hits": 0,
+        "checked": "44 tool inputs in the agent transcript"
+      },
+      "served_model": "claude-haiku-5-5",
+      "total_tokens": 65377,
+      "duration_s": 302.4,
+      "tool_uses": 44,
+      "screenshots_taken": 13,
+      "screenshots_viewed": 10
+    },
+    "visual-012": {
+      "audit": {
+        "sealed_path_hits": 0,
+        "checked": "43 tool inputs in the agent transcript"
+      },
+      "served_model": "claude-haiku-5-5",
+      "total_tokens": 56003,
+      "duration_s": 215.8,
+      "tool_uses": 43,
+      "screenshots_taken": 13,
+      "screenshots_viewed": 9
+    }
+  }
+}

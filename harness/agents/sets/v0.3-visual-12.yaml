@@ -1,0 +1,18 @@
+# The whole visual track (7.3) of bench 0.2.0-dev, for comparing agent configurations on faults that show only on
+# the rendered page: 9 mixed episodes (7 expense-app, 2 swag-labs visual_user), 1 clean and 2 twins (the expense
+# restyle and the Swag Labs seasonal banner). Ids refer to 0.2.0-dev episodes only.
+id: v0.3-visual-12
+description: Track 7.3 in full (12 episodes; 9 mixed, 1 clean, 2 twin; 9 expense-app, 3 swag-labs)
+episodes:
+  - visual-001
+  - visual-002
+  - visual-003
+  - visual-004
+  - visual-005
+  - visual-006
+  - visual-007
+  - visual-008
+  - visual-009
+  - visual-010
+  - visual-011
+  - visual-012

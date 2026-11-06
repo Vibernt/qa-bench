@@ -1,0 +1,61 @@
+{
+  "episode_id": "visual-003",
+  "system": {
+    "name": "claude-haiku-5.5-low",
+    "version": "claude-haiku-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "[aria-label=\"Expenses\"]"
+      },
+      "category": "visual",
+      "description": "At 360 px wide the expenses table is about 760 px wide inside a container with overflow: clip, so the Amount and Actions columns (including Edit and Delete) are cut off and cannot be scrolled to. Phone users cannot see the amounts or reach the row actions.",
+      "confidence": 0.8,
+      "severity": "major",
+      "repro": [
+        "Sign in as editor-d06b at a 360 px wide viewport",
+        "Open /expenses",
+        "Observe the table is clipped after the Category column; Amount and Actions are not visible and there is no horizontal scroll"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "editor-expenses-360.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "[aria-label=\"Expenses\"] button"
+      },
+      "category": "a11y",
+      "description": "Every row has a Delete button and an Edit link with identical names and no row context, so screen reader users hearing the list cannot tell which expense each action affects.",
+      "confidence": 0.4,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor-d06b",
+        "Open /expenses",
+        "Navigate the Actions column with a screen reader or the accessibility tree",
+        "Observe all Delete buttons and Edit links have the same names"
+      ]
+    }
+  ],
+  "notes": "Tested viewer and editor at 1280 px and 360 px. Totals were correct on the full list, the travel filter and after adding an expense. Viewer is blocked from /expenses/new and /expenses/1/edit with 403. Not tested: full keyboard-only sweep and automated axe scan. Test data: added one editor expense 'QA test item' ($10.05) during testing.",
+  "cost": {
+    "model_usd": 0.001029,
+    "notes": "estimate from 23662 total tokens (85% cache read / 10% input / 5% output); range $0.0002-$0.0028"
+  },
+  "wall_time_s": 64.1,
+  "activity": {
+    "tool_calls": 12,
+    "screenshots_taken": 5,
+    "screenshots_viewed": 1
+  }
+}

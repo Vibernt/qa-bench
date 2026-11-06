@@ -15,4 +15,5 @@ found_by:
     note: "Checkout with an empty cart goes through to the order-complete page"
 tolerance: { route: any, role: any }
 split: public
+masked_by: [swag.error-user, swag.locked-out-user, swag.problem-user]
 upstream_ref: "apps/swag-labs/upstream/src/pages/Cart.jsx (the Checkout button is always enabled); checked by apps/swag-labs/verify.ts"

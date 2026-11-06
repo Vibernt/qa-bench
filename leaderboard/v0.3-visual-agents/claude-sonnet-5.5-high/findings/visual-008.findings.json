@@ -1,0 +1,70 @@
+{
+  "episode_id": "visual-008",
+  "system": {
+    "name": "claude-sonnet-5.5-high",
+    "version": "claude-sonnet-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "viewer",
+        "selector": "main > p, th, td:nth-child(2)"
+      },
+      "category": "a11y",
+      "description": "Muted text colour (#c3c8cd) on white/light grey is about 1.6:1 contrast, far below WCAG AA 4.5:1. It affects the 'Signed in as ...' line, the table column headers (Title/Category/Amount/Actions) and every category value, so key information is nearly unreadable.",
+      "confidence": 0.85,
+      "severity": "major",
+      "repro": [
+        "Sign in as viewer",
+        "Open /expenses",
+        "Look at 'Signed in as' line, table headers and the category column"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "editor-1280.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "table td:first-child"
+      },
+      "category": "visual",
+      "description": "A long expense title is not wrapped or truncated (white-space: nowrap in a fixed-layout table). On desktop it overlaps the Category and Amount cells; on a 360 px phone it overflows the card and makes the page scroll horizontally (scrollWidth 674 vs 360).",
+      "confidence": 0.8,
+      "severity": "major",
+      "repro": [
+        "Sign in as editor",
+        "Add expense with a very long title (about 85 characters) and amount 1234567.89",
+        "View /expenses at 1280 px and at 360 px"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "long1280.png"
+        },
+        {
+          "kind": "screenshot",
+          "path": "long360.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Test expense was deleted afterwards. Totals and category filter were arithmetically correct. Not exhaustively tested: edit flow validation, touch target sizes, screen reader behaviour. Minor unreported: Delete buttons all labelled just 'Delete' with no row context, no confirmation on delete.",
+  "cost": {
+    "model_usd": 0.022524,
+    "notes": "estimate from 25890 total tokens (85% cache read / 10% input / 5% output); range $0.0052-$0.0621"
+  },
+  "wall_time_s": 63.2,
+  "activity": {
+    "tool_calls": 11,
+    "screenshots_taken": 4,
+    "screenshots_viewed": 4
+  }
+}

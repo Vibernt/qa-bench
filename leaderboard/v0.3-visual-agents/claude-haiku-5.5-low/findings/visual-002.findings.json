@@ -1,0 +1,106 @@
+{
+  "episode_id": "visual-002",
+  "system": {
+    "name": "claude-haiku-5.5-low",
+    "version": "claude-haiku-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "viewer",
+        "selector": "[data-testid=\"total\"]"
+      },
+      "category": "visual",
+      "description": "At 360 px width the Total box is pulled up over the last table row (Project dinner, $93.25), hiding that row's amount. The overlap comes from the negative margin-top on the total element, which is only correct for the desktop table layout.",
+      "confidence": 0.85,
+      "severity": "major",
+      "repro": [
+        "Sign in as viewer-fe3a at a 360 px wide viewport",
+        "Open /expenses and scroll to the bottom of the list",
+        "Observe the Total box covers the Project dinner row and its $93.25 amount"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "viewer-360-full.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "[data-testid=\"total\"]"
+      },
+      "category": "visual",
+      "description": "Same overlap for editors at 360 px: the Total box covers the Project dinner row, hiding its amount and its Edit and Delete controls.",
+      "confidence": 0.8,
+      "severity": "major",
+      "repro": [
+        "Sign in as editor-9b73 at a 360 px wide viewport",
+        "Open /expenses and scroll to the bottom of the list",
+        "Observe the Total box covers the Project dinner card, including its Edit and Delete links"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "editor-360-full.png"
+        }
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "table[aria-label=\"Expenses\"]"
+      },
+      "category": "a11y",
+      "description": "The site stylesheet removes all focus outlines (*:focus { outline: none }) and adds no replacement focus style. Keyboard users cannot see which link or button has focus, for example Edit, Delete, Apply or Add expense.",
+      "confidence": 0.8,
+      "severity": "major",
+      "repro": [
+        "Sign in as editor-9b73 on a desktop viewport",
+        "Click the category select, then press Tab until an Edit link is focused",
+        "Observe no focus ring on the focused link; its computed outline is none"
+      ]
+    },
+    {
+      "id": "f4",
+      "where": {
+        "route": "/expenses",
+        "role": "viewer",
+        "selector": "table[aria-label=\"Expenses\"]"
+      },
+      "category": "a11y",
+      "description": "Below 600 px the thead is hidden and table, row and cell elements are set to display:block, so the Amount and Category values have no visible or programmatic column labels. Amounts appear as bare values such as $42.50.",
+      "confidence": 0.4,
+      "severity": "minor",
+      "repro": [
+        "Sign in as viewer-fe3a at a 360 px wide viewport",
+        "Open /expenses",
+        "Observe each card shows category and amount with no labels"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "viewer-360-full.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Tested login for both roles, the list and total at 1280 and 360 px, the category filter (travel total 185.25 is correct), the edit and new forms, and viewer access to /expenses/new and /expenses/1/edit (both Forbidden). The overall total 399.99 matches the row sum. Not tested: submitting create/edit/delete, server-side validation, and the Forbidden page's styling.",
+  "cost": {
+    "model_usd": 0.001119,
+    "notes": "estimate from 25713 total tokens (85% cache read / 10% input / 5% output); range $0.0003-$0.0031"
+  },
+  "wall_time_s": 57.1,
+  "activity": {
+    "tool_calls": 13,
+    "screenshots_taken": 5,
+    "screenshots_viewed": 4
+  }
+}

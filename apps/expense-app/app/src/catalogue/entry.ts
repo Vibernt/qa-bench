@@ -10,7 +10,7 @@ export interface CatalogueEntry {
   schema: 'qa-bench.fixture/v1'; application: 'expense-app'; version: typeof FIXTURE_VERSION;
   hooks: typeof FIXTURE_HOOKS;
   roles: readonly ('viewer' | 'editor')[];
-  variant: '' | 'relabel' | 'hostile';
+  variant: '' | 'relabel' | 'restyle' | 'hostile';
   defect: '' | 'missing_persistence' | 'duplicate_write' | 'misleading_success' | 'permission_bypass' | 'ignored_filter' | 'wrong_total' | 'stale_state';
   idempotency: boolean; delayedJobs: boolean; mailSink: boolean;
 }
@@ -52,7 +52,7 @@ export function parseCatalogueEntry(input: unknown): Readonly<CatalogueEntry> {
   if (!hooks || typeof hooks !== 'object' || Object.keys(hooks).length !== 3 ||
     Object.entries(FIXTURE_HOOKS).some(([key, ref]) => hooks[key] !== ref)) return fail();
   if (!Array.isArray(value.roles) || !value.roles.length || new Set(value.roles).size !== value.roles.length || value.roles.some(role => role !== 'viewer' && role !== 'editor')) return fail();
-  if (!['', 'relabel', 'hostile'].includes(value.variant as string) ||
+  if (!['', 'relabel', 'restyle', 'hostile'].includes(value.variant as string) ||
     !['', 'missing_persistence', 'duplicate_write', 'misleading_success', 'permission_bypass', 'ignored_filter', 'wrong_total', 'stale_state'].includes(value.defect as string)) return fail();
   if (['idempotency', 'delayedJobs', 'mailSink'].some(key => typeof value[key] !== 'boolean')) return fail();
   return Object.freeze({ ...value, hooks: FIXTURE_HOOKS, roles: Object.freeze([...value.roles]) }) as unknown as Readonly<CatalogueEntry>;

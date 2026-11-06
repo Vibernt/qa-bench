@@ -1,0 +1,66 @@
+{
+  "episode_id": "visual-007",
+  "system": {
+    "name": "claude-haiku-5.5-low",
+    "version": "claude-haiku-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "[aria-label=\"Expenses\"] a[href$=\"/edit\"]"
+      },
+      "category": "a11y",
+      "description": "Every row's Edit link and Delete button has the same generic name (\"Edit\" / \"Delete\") with no aria-label or hidden row context, so screen-reader users navigating by links or buttons cannot tell which expense each action affects.",
+      "confidence": 0.6,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor-868f at 1280 px.",
+        "Open /expenses.",
+        "List links or buttons with a screen reader or accessibility tree: eight 'Edit' links and eight 'Delete' buttons with identical names."
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "editor-1280.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "[data-testid=\"total\"]"
+      },
+      "category": "copy",
+      "description": "Amounts of $1000 or more are shown without a thousands separator (for example \"$1234.56\" in the row and \"Total: $1634.55\"), which is inconsistent with standard currency formatting.",
+      "confidence": 0.4,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor-868f at 1920 px.",
+        "Open /expenses/new, enter title 'QA probe', category office, amount 1234.56, click Save.",
+        "On the list, the row shows $1234.56 and the total shows Total: $1634.55 with no comma separators."
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "after-add-1920.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Tested at 1280, 1920 and 360 px as viewer and editor, with mouse and keyboard focus. Checked sign-in, list totals, category filter (travel total 185.25 correct), add and edit forms, save round trip, viewer 403 on /expenses/new and /expenses/1/edit, phone layout without horizontal overflow, and focus ring visibility (3px solid outline). Totals matched row sums everywhere. Side effects on the shared data: a probe expense 'QA probe' ($1234.56, office) was added, and expense 3 was re-saved with its unchanged amount. Not tested: Delete actions (destructive), touch-specific gestures, and automated contrast or axe scans.",
+  "cost": {
+    "model_usd": 0.001234,
+    "notes": "estimate from 28376 total tokens (85% cache read / 10% input / 5% output); range $0.0003-$0.0034"
+  },
+  "wall_time_s": 70.9,
+  "activity": {
+    "tool_calls": 15,
+    "screenshots_taken": 5,
+    "screenshots_viewed": 4
+  }
+}

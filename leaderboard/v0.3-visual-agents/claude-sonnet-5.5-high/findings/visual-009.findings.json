@@ -1,0 +1,71 @@
+{
+  "episode_id": "visual-009",
+  "system": {
+    "name": "claude-sonnet-5.5-high",
+    "version": "claude-sonnet-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "viewer",
+        "selector": "table[aria-label=\"Expenses\"]"
+      },
+      "category": "visual",
+      "description": "At phone widths (360 px) the table has min-width 760px but main uses overflow-x: clip, so the Amount column (and, for editors, the Actions column with Edit/Delete) is cut off and cannot be reached by scrolling. Phone users see only titles and categories, never the amounts, and editors cannot edit or delete expenses.",
+      "confidence": 0.9,
+      "severity": "major",
+      "repro": [
+        "Set viewport to 360x800",
+        "Sign in as viewer (or editor)",
+        "Open /expenses",
+        "Amount column is clipped at the right edge; no horizontal scroll is possible and Actions (editor) is unreachable"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "viewer-360-list.png"
+        },
+        {
+          "kind": "screenshot",
+          "path": "editor-360-list.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses",
+        "role": "viewer",
+        "selector": "table[aria-label=\"Expenses\"] td:nth-child(3)"
+      },
+      "category": "visual",
+      "description": "The Amount column header is right-aligned, but the amount cells are left-aligned, so the values do not sit under their header and decimals do not line up for comparison.",
+      "confidence": 0.6,
+      "severity": "minor",
+      "repro": [
+        "Sign in at 1280 px width",
+        "Open /expenses",
+        "Compare the AMOUNT header (right-aligned) with the $ values (left-aligned)"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "editor-1280-list.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Checked login, list, category filter, add/edit forms, 404/403 pages and keyboard focus at 1280 and 360 px. Focus ring is visible. No other issues found; destructive actions (delete, save) were not exercised.",
+  "cost": {
+    "model_usd": 0.023275,
+    "notes": "estimate from 26753 total tokens (85% cache read / 10% input / 5% output); range $0.0054-$0.0642"
+  },
+  "wall_time_s": 65.3,
+  "activity": {
+    "tool_calls": 17,
+    "screenshots_taken": 3,
+    "screenshots_viewed": 6
+  }
+}

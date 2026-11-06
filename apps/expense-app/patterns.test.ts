@@ -154,6 +154,37 @@ const samples: Record<string, S[]> = {
     ['/expenses', 'editor', 'functional', 'After editing only the amount of a meals expense, it is now listed as travel: the category resets to the first option.'],
     ['/expenses/5/edit', 'editor', 'functional', 'Category is lost on edit; the dropdown defaults to travel.'],
   ],
+  'expense.phone-layout-overflow': [
+    ['/expenses', 'editor', 'visual', 'On a 390 px phone the expense table is cut off on the right: only the Title column is visible and Edit/Delete cannot be reached.'],
+    ['/expenses', 'viewer', 'usability', 'Mobile layout is broken: the amount and category columns are clipped and the page does not scroll horizontally.'],
+    ['/expenses', 'editor', 'functional', 'At phone width the Delete and Edit buttons are off-screen, so an editor cannot edit expenses on mobile.'],
+  ],
+  'expense.total-covers-last-row': [
+    ['/expenses', 'viewer', 'visual', 'The Total box overlaps the last row of the table, hiding the "Project dinner" expense.'],
+    ['/expenses', 'viewer', 'visual', 'The last expense row is covered by the total panel; you can only see a sliver of it.'],
+    ['/expenses', 'editor', 'usability', 'The total is drawn over the bottom row so its Edit and Delete buttons cannot be clicked.'],
+  ],
+  'expense.login-error-invisible': [
+    ['/login', 'viewer', 'visual', 'After a wrong password an empty red box appears: the error text is invisible because it is the same colour as the background.'],
+    ['/login', 'viewer', 'error-handling', 'Failed sign-in gives no visible reason; the alert "Invalid credentials" is in the DOM but unreadable.'],
+    ['/login', 'editor', 'a11y', 'The login error message has a contrast ratio of about 1.1:1, so it cannot be read.'],
+  ],
+  'expense.long-title-overflows': [
+    ['/expenses', 'editor', 'visual', 'A long expense title overlaps the Category column instead of wrapping.'],
+    ['/expenses', 'editor', 'visual', 'Titles do not wrap: "Annual partner conference registration..." runs into the category text of the same row.'],
+  ],
+  'expense.low-contrast-text': [
+    ['/expenses', 'viewer', 'a11y', 'The category column, the table headings and the "Signed in as" line are very light grey (contrast about 1.7:1), failing WCAG AA.'],
+    ['/expenses', 'viewer', 'visual', 'Secondary text is too pale to read on the white table.'],
+  ],
+  'expense.focus-ring-removed': [
+    ['/expenses', 'viewer', 'a11y', 'There is no visible focus indicator: tabbing through the filter and buttons shows no outline.'],
+    ['/login', 'viewer', 'a11y', 'Keyboard users cannot see which field has focus; outline: none is applied everywhere.'],
+  ],
+  'expense.amounts-misaligned': [
+    ['/expenses', 'viewer', 'visual', 'The amounts are left-aligned while the Amount heading is right-aligned, so the decimals do not line up.'],
+    ['/expenses', 'viewer', 'visual', 'The Amount column looks ragged: values are not right-justified under their heading.'],
+  ],
 };
 // Natural defects (real bugs on every build): reports from the v0.2 agent runs, lightly trimmed, plus rewordings.
 const naturalSamples: Record<string, S[]> = {
@@ -178,6 +209,32 @@ const naturalSamples: Record<string, S[]> = {
   'expense.delete-missing-id': [
     ['/expenses/999/delete', 'editor', 'error-handling', 'Deleting a non-existent expense id (POST /expenses/999/delete) redirects to /expenses as if successful instead of returning 404.'],
     ['/expenses', 'editor', 'error-handling', 'Delete of an unknown id gives no error; the app redirects as if the expense was removed.'],
+  ],
+  'expense.row-actions-unnamed': [
+    ['/expenses', 'editor', 'a11y', "Every row's Edit link and Delete button has the same accessible name with no row context, so screen reader users cannot tell them apart."],
+    ['/expenses', 'editor', 'a11y', 'All Delete buttons are named just "Delete", with no expense title or aria-label.'],
+  ],
+  'expense.phone-rows-unlabelled': [
+    ['/expenses', 'viewer', 'a11y', 'Below 600 px the thead is hidden and table, tr and td are set to display:block, so the amount and category values have no column labels.'],
+    ['/expenses', 'viewer', 'a11y', 'At 360 px the table header is hidden and the table loses its semantics for assistive technology.'],
+  ],
+  'expense.viewer-empty-actions-column': [
+    ['/expenses', 'viewer', 'usability', "The table shows an 'Actions' column header for viewers, but every cell in that column is empty."],
+  ],
+  'expense.no-thousands-separator': [
+    ['/expenses', 'editor', 'copy', 'Amounts of $1000 or more are shown without a thousands separator (for example "$1234.56" and "Total: $1634.55").'],
+  ],
+  'expense.small-touch-targets': [
+    ['/expenses', 'editor', 'a11y', 'Edit links are only 29x20 px on a 360px phone layout, far below the touch target size.'],
+  ],
+  'expense.focus-ring-low-contrast': [
+    ['/expenses', 'viewer', 'a11y', 'The focus outline (#e09400) is about 2.3:1 against the page background, below the 3:1 non-text contrast minimum.'],
+  ],
+  'expense.unbroken-title-overflows': [
+    ['/expenses', 'editor', 'visual', 'A long title with no spaces overflows the table: at 1280 px the page scrolls horizontally.'],
+  ],
+  'expense.control-borders-low-contrast': [
+    ['/login', 'viewer', 'a11y', 'Input borders are about 1.4:1 contrast against white, below the 3:1 non-text contrast in WCAG 1.4.11.'],
   ],
 };
 const sampleFindings = Object.entries(samples).flatMap(([id, list]) => list.map(([route, role, category, description], i) => ({

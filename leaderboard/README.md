@@ -92,3 +92,16 @@ caveats are in [`v0.2-agents/`](v0.2-agents/README.md). Recall now separates sys
 
 The triage of these runs added 9 natural defects, gave every deliberate-change label a description pattern, and
 fixed a bench bug: Swag Labs' runtime config exposed the test account.
+
+## Visual-track agent runs (bench 0.2.0-dev, 6 Nov 2026)
+The same four configurations and the scripted suite ran once each on the whole visual track (7.3, set
+`v0.3-visual-12`): 17 planted visual and accessibility faults that change only the rendered page. Results are in
+[`v0.3-visual-agents/`](v0.3-visual-agents/README.md).
+- **High effort:** both configurations found 17 of 17, with 97–98% precision.
+- **Low effort:** the configurations found 11 and 12, missing mostly the faults that need an action or particular
+  data.
+- **The scripted suite:** found 2, only where the fault also shows in the page text.
+
+Agents looked at about 3 to 7 screenshots per episode, counted by the new activity metric. A pilot showed that
+appended CSS overrides gave the defects away, so they were rebuilt as in-place edits before the published run.
+

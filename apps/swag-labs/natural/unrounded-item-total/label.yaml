@@ -16,4 +16,5 @@ found_by:
     note: "Item total shows a long floating-point tail instead of two decimals"
 tolerance: { route: exact, role: any }
 split: public
+masked_by: [swag.error-user, swag.locked-out-user, swag.problem-user]
 upstream_ref: "apps/swag-labs/upstream/src/pages/CheckOutStepTwo.jsx (item total rendered without toFixed); checked by apps/swag-labs/verify.ts"

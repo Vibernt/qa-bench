@@ -1,0 +1,89 @@
+{
+  "episode_id": "visual-004",
+  "system": {
+    "name": "claude-haiku-5.5-low",
+    "version": "claude-haiku-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"inventory-item\"] >> nth=5"
+      },
+      "category": "visual",
+      "description": "On the last product card (Test.allTheThings() T-Shirt), the Add to cart button overflows the card's right border and sticks out past the card edge at 1280 px.",
+      "confidence": 0.6,
+      "severity": "minor",
+      "repro": [
+        "Sign in as customer-11fa",
+        "View /inventory.html at 1280 px wide",
+        "Look at the bottom-right card, Test.allTheThings() T-Shirt (Red)"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "inventory.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"shopping-cart-link\"]"
+      },
+      "category": "visual",
+      "description": "The shopping cart icon in the header sits below the header bar, overlapping the header border line, instead of being vertically centred with the menu and logo.",
+      "confidence": 0.5,
+      "severity": "minor",
+      "repro": [
+        "Sign in as customer-11fa",
+        "View /inventory.html at 1280 px wide",
+        "Observe the cart icon at the top right, below the header line"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "inventory.png"
+        }
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"inventory-item-name\"] >> nth=3"
+      },
+      "category": "visual",
+      "description": "Some product titles are indented or right-aligned compared with the others (for example Sauce Labs Bolt T-Shirt and Sauce Labs Fleece Jacket on desktop, and Fleece Jacket on phone), so the card titles do not line up left.",
+      "confidence": 0.4,
+      "severity": "minor",
+      "repro": [
+        "Sign in as customer-11fa",
+        "View /inventory.html at 1280 px wide",
+        "Compare the title left edges of the cards in the second row"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "inventory.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Tested login, inventory at 1280 and 360 px, add to cart, detail page, cart, checkout steps one and two, keyboard tab order, basic a11y (alt text, button names, input labels, html lang). Not filed: product prices change on every page load, so a cart-versus-list price mismatch was not a stable bug. Focus rings are not visible on tabbed elements (outline none), but I did not confirm a replacement focus style, so it is not filed. Not fully checked: cart badge and checkout at phone width, and a shadow-based focus style check.",
+  "cost": {
+    "model_usd": 0.001394,
+    "notes": "estimate from 32040 total tokens (85% cache read / 10% input / 5% output); range $0.0003-$0.0038"
+  },
+  "wall_time_s": 69.1,
+  "activity": {
+    "tool_calls": 17,
+    "screenshots_taken": 5,
+    "screenshots_viewed": 2
+  }
+}

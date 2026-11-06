@@ -1,0 +1,19 @@
+id: expense.phone-rows-unlabelled
+app: expense-app
+title: "On phones the stacked rows show values with no column labels"
+description: "Below 600 px the table header is hidden and the cells are stacked as blocks, so each row reads \"Notebooks / office / $12.99\" with no Category or Amount label, and the table loses its header association for assistive technology. Found by agents in the visual-track runs; not planted."
+track: visual
+kind: natural
+category: a11y
+class: deterministic
+severity: minor
+where: { route: /expenses, role: viewer }
+found_by:
+  - kind: a11y
+    also_categories: [usability]
+    description_pattern: '^(?=[\s\S]*(phone|mobile|narrow|small[- ]screen|600 ?px|\b3[2-9]\d ?px|max-width))(?=[\s\S]*(thead|header|heading|label|column name|semantic))(?=[\s\S]*(hidden|display: ?none|display: ?block|lose|lost|loses|no (column )?(label|header|heading)s?|unlabell?ed|without (column )?(label|header|heading)s?|semantics))'
+    note: "Phone layout hides the header row, so stacked values have no labels"
+tolerance: { route: prefix, role: any }
+split: public
+masked_by: [expense.phone-layout-overflow]
+upstream_ref: "apps/expense-app/app/src/theme.ts (the 600 px media query hides thead and makes cells blocks); checked by apps/expense-app/verify.ts"

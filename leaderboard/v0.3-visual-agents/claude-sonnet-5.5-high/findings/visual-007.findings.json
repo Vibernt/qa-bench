@@ -1,0 +1,116 @@
+{
+  "episode_id": "visual-007",
+  "system": {
+    "name": "claude-sonnet-5.5-high",
+    "version": "claude-sonnet-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "table[aria-label=\"Expenses\"]"
+      },
+      "category": "visual",
+      "description": "A title without spaces (long word) is not wrapped or truncated: at 1280 px the table grows past the container and the page scrolls horizontally (scrollWidth 1433 vs 1280); at 360 px the title runs out of its card and the page is 889 px wide. Hits both roles.",
+      "confidence": 0.4,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor",
+        "Add expense with a 100-character title with no spaces, amount 1234567.89",
+        "View /expenses at 1280 px and at 360 px"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "long-1280.png"
+        },
+        {
+          "kind": "screenshot",
+          "path": "long-360.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "td:nth-child(4)"
+      },
+      "category": "a11y",
+      "description": "Every row has identical 'Edit' links and 'Delete' buttons with no accessible name naming the expense, so screen reader and voice users cannot tell which row they act on. Delete also fires immediately without confirmation.",
+      "confidence": 0.35,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor",
+        "Open /expenses",
+        "List links and buttons: 8 x 'Edit' and 8 x 'Delete' with no row context"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "editor-1280.png"
+        }
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/expenses",
+        "role": "viewer",
+        "selector": "table[aria-label=\"Expenses\"]"
+      },
+      "category": "a11y",
+      "description": "At 600 px and narrower the header row is hidden with display:none and cells become blocks, so category and amount values are unlabeled bare text and table semantics are lost for assistive tech.",
+      "confidence": 0.25,
+      "severity": "minor",
+      "repro": [
+        "Sign in as viewer",
+        "Open /expenses at 360 px width",
+        "Rows show 'travel' and '$42.50' with no column labels"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "viewer-360.png"
+        }
+      ]
+    },
+    {
+      "id": "f4",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "main > form[action=\"/expenses\"]"
+      },
+      "category": "error-handling",
+      "description": "Invalid submissions (empty title, negative or empty amount, non-numeric amount) are rejected with HTTP 400 and the bare form is shown again, with no error message explaining what is wrong (no role=alert).",
+      "confidence": 0.4,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor",
+        "POST /expenses with title='x', category=travel, amount=-5 (or remove required and submit empty)",
+        "Page re-renders with no error message"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "emptysubmit-1280.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Looked at 360-1920 px, focus indicators (all visible), contrast, totals (correct, also under filter and after add/edit/delete), viewer 403 on edit/new. Add/edit pages have no back/cancel link or sign-out (not reported). Test rows I added were deleted afterwards.",
+  "cost": {
+    "model_usd": 0.036891,
+    "notes": "estimate from 42403 total tokens (85% cache read / 10% input / 5% output); range $0.0085-$0.1018"
+  },
+  "wall_time_s": 132.8,
+  "activity": {
+    "tool_calls": 22,
+    "screenshots_taken": 6,
+    "screenshots_viewed": 8
+  }
+}

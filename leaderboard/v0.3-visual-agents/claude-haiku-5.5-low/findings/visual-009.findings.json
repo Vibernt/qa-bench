@@ -1,0 +1,83 @@
+{
+  "episode_id": "visual-009",
+  "system": {
+    "name": "claude-haiku-5.5-low",
+    "version": "claude-haiku-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "viewer",
+        "selector": "table[aria-label=\"Expenses\"]"
+      },
+      "category": "visual",
+      "description": "At 360 px wide the expenses table is clipped (its wrapper uses overflow: clip, and the page does not scroll horizontally), so the Amount column is cut off and cannot be reached on a phone. The total is still shown, but the individual amounts are not visible.",
+      "confidence": 0.8,
+      "severity": "major",
+      "repro": [
+        "Sign in as viewer-b0ae at a 360 px wide viewport",
+        "Open /expenses",
+        "Observe the table: the Category column is cut off at the right edge and the Amount column is not visible; no horizontal scroll is available"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "viewerm-360.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "table[aria-label=\"Expenses\"]"
+      },
+      "category": "visual",
+      "description": "At 360 px wide the editor's table is clipped the same way: the Amount and Actions columns (Edit and Delete links/buttons) are off-screen and cannot be scrolled to, so editors on a phone cannot edit or delete expenses from the list.",
+      "confidence": 0.75,
+      "severity": "major",
+      "repro": [
+        "Sign in as editor-39c2 at a 360 px wide viewport",
+        "Open /expenses",
+        "Observe that the Amount and Actions columns are cut off; there is no way to scroll the table horizontally to reach Edit or Delete"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "editorm-360.png"
+        }
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "[data-test=\"delete\"]"
+      },
+      "category": "a11y",
+      "description": "Every row's Delete button has the same bare name 'Delete' with no expense title, and the Edit links are likewise all named 'Edit', so screen-reader users navigating by buttons or links cannot tell which expense each control affects.",
+      "confidence": 0.5,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor-39c2 at 1280 px",
+        "Open /expenses",
+        "List the buttons or links by accessible name: nine buttons are named 'Delete' and nine links are named 'Edit' with no row context"
+      ]
+    }
+  ],
+  "notes": "Tested: login for both roles, totals and category filters (correct), viewer blocked from add/edit pages (Forbidden), add and edit saves (totals updated correctly; I added a test expense 'QA test item' and changed Notebooks to $20.00 in the shared data). Delete flow not tested. Keyboard focus is visible (3px outline on Apply). Not tested: contrast measurement, full keyboard traversal, tablet widths.",
+  "cost": {
+    "model_usd": 0.001093,
+    "notes": "estimate from 25135 total tokens (85% cache read / 10% input / 5% output); range $0.0003-$0.0030"
+  },
+  "wall_time_s": 78.7,
+  "activity": {
+    "tool_calls": 15,
+    "screenshots_taken": 5,
+    "screenshots_viewed": 2
+  }
+}

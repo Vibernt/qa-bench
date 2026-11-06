@@ -1,0 +1,171 @@
+{
+  "episode_id": "visual-006",
+  "system": {
+    "name": "claude-sonnet-5.5-high",
+    "version": "claude-sonnet-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/cart.html",
+        "role": "customer",
+        "selector": "[data-test=\"checkout\"]"
+      },
+      "category": "visual",
+      "description": "On the cart page the Checkout button is positioned at the very top right of the viewport, overlapping the header (on a 360px phone it covers the 'Swag Labs' title and menu icon) instead of sitting with the Continue Shopping button at the bottom of the cart.",
+      "confidence": 0.85,
+      "severity": "major",
+      "repro": [
+        "Sign in as customer",
+        "Add an item and open the cart",
+        "Observe Checkout button at top of the page over the header, at 1280px and 360px"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "cart-d.png"
+        },
+        {
+          "kind": "screenshot",
+          "path": "cart-m.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"add-to-cart-test.allthethings()-t-shirt-red\"]"
+      },
+      "category": "visual",
+      "description": "The last product's 'Add to cart' button (class btn_inventory_misaligned) sticks out past the right edge of its card on desktop, and on a 360px phone it runs off the screen edge (clipped, 365px > viewport) and sits above the price instead of below it as in other cards.",
+      "confidence": 0.85,
+      "severity": "major",
+      "repro": [
+        "Sign in as customer",
+        "Look at the last product (Test.allTheThings() T-Shirt (Red)) on /inventory.html at 1280px and 360px"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "inv-d.png"
+        },
+        {
+          "kind": "screenshot",
+          "path": "m-bot.png"
+        }
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"shopping-cart-link\"]"
+      },
+      "category": "visual",
+      "description": "The cart icon and badge in the header are misplaced on every page: they hang below the header bar, not aligned with the header row or right edge, collide with the sort dropdown on the inventory page, and overlap the 'Swag Labs' title on a 360px phone.",
+      "confidence": 0.6,
+      "severity": "minor",
+      "repro": [
+        "Sign in as customer",
+        "Open /inventory.html at 1280px and at 360px",
+        "Observe cart icon position relative to the header"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "inv-d.png"
+        },
+        {
+          "kind": "screenshot",
+          "path": "m-top.png"
+        }
+      ]
+    },
+    {
+      "id": "f4",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer"
+      },
+      "category": "a11y",
+      "description": "Keyboard focus is not visible: tabbing through the menu button, sort select, product links and Add to cart buttons shows outline none and no box-shadow or other focus indicator.",
+      "confidence": 0.6,
+      "severity": "major",
+      "repro": [
+        "Sign in as customer",
+        "Press Tab repeatedly on /inventory.html",
+        "No focus ring appears on any control"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "focus.png"
+        }
+      ]
+    },
+    {
+      "id": "f5",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"inventory-item-price\"]"
+      },
+      "category": "consistency",
+      "description": "Prices shown in the product list change on every page load and do not match the product detail and cart prices (e.g. Backpack shows $0.93/$6.33/$8.39/$83.3 in the list but $29.99 in the detail page, cart and checkout).",
+      "confidence": 0.5,
+      "severity": "major",
+      "repro": [
+        "Sign in as customer",
+        "Reload /inventory.html several times and note the prices change",
+        "Open the Backpack detail page: $29.99; add to cart: $29.99"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "inv-d.png"
+        },
+        {
+          "kind": "screenshot",
+          "path": "item-d.png"
+        }
+      ]
+    },
+    {
+      "id": "f6",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"inventory-item-name\"]"
+      },
+      "category": "visual",
+      "description": "Product titles in some cards (Bolt T-Shirt, Fleece Jacket on desktop; Fleece Jacket on phone) are centre-aligned/indented while the others are left-aligned, so titles do not line up with their descriptions.",
+      "confidence": 0.4,
+      "severity": "minor",
+      "repro": [
+        "Sign in as customer",
+        "View /inventory.html at 1280px; compare titles of row 2 with row 1"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "inv-d.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Time-boxed; did not test sorting, menu links, login errors in depth.",
+  "cost": {
+    "model_usd": 0.031002,
+    "notes": "estimate from 35635 total tokens (85% cache read / 10% input / 5% output); range $0.0071-$0.0855"
+  },
+  "wall_time_s": 79.2,
+  "activity": {
+    "tool_calls": 20,
+    "screenshots_taken": 3,
+    "screenshots_viewed": 13
+  }
+}

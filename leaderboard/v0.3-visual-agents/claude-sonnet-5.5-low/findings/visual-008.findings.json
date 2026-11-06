@@ -1,0 +1,57 @@
+{
+  "episode_id": "visual-008",
+  "system": {
+    "name": "claude-sonnet-5.5-low",
+    "version": "claude-sonnet-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "viewer"
+      },
+      "category": "a11y",
+      "description": "Low-contrast light grey text (category column cells, table headers, 'Signed in as' line) is well below WCAG 4.5:1 on white/light background.",
+      "confidence": 0.6,
+      "severity": "minor",
+      "repro": [
+        "Sign in",
+        "Open /expenses",
+        "Inspect category cells and headers"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "editor-1280.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses",
+        "role": "editor"
+      },
+      "category": "a11y",
+      "description": "Edit/Delete controls are identical for every row with no accessible name identifying the expense, so screen reader users cannot tell them apart.",
+      "confidence": 0.35,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor",
+        "Tab through Edit/Delete links"
+      ]
+    }
+  ],
+  "notes": "Only brief pass; layout at 360 and 1280 had no overflow.",
+  "cost": {
+    "model_usd": 0.01408,
+    "notes": "estimate from 16184 total tokens (85% cache read / 10% input / 5% output); range $0.0032-$0.0388"
+  },
+  "wall_time_s": 38.5,
+  "activity": {
+    "tool_calls": 8,
+    "screenshots_taken": 2,
+    "screenshots_viewed": 2
+  }
+}

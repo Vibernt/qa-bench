@@ -26,6 +26,28 @@ with its answer-key hashes.
   `expense.total-under-filter` accept more ways of describing their symptom.
 - **Agent harness:** evidence paths in findings are made relative to the evidence folder.
 - **Leaderboard:** `v0.2-agents/`, with four Claude configurations and the scripted suite on `v0.2-sample-12`.
+- **Expense app design:** a responsive stylesheet at `/theme.css` (stacked rows below 600 px). The markup is unchanged,
+  so every earlier label and probe still holds.
+- **Track 7.3, visual (12 episodes):** 7 planted visual and accessibility defects in the expense app, which change
+  only the rendered page, never its text or behaviour. Severity follows impact: a phone layout that hides the row
+  actions is critical, a misaligned column is minor. Also Swag Labs `visual_user`, and a deliberate `restyle` change
+  (with the seasonal banner) for visual false alarms. The brief states the supported devices. `verify.ts` measures
+  these defects in Chromium.
+- **Regression and exploration tracks** list their expense defects by name, so their episodes don't change. The 4
+  episodes that plant `long-title-truncated` get a new answer-key hash, because that label joined the
+  `expense-title` exclusive group.
+- **Natural defects:** 11 more from the visual-track runs, for 25 in all (15 on the expense app, 10 on Swag Labs).
+  They include a major one: Swag Labs' header cart link is unreachable by keyboard. `swag.visual-user` gains 5 match
+  entries, for symptoms it already described but agents reported with another locator. Each new entry has a
+  `verify.ts` check.
+- **`masked_by` on natural labels:** a natural defect whose symptom a planted defect removes is left out of that
+  episode's answer key. `verify.ts` for both apps runs a matrix of every natural check against every planted defect
+  and fails on an undeclared or wrong mask. This changes natural-defect denominators, so the earlier
+  leaderboards' natural numbers stand as recorded, with their answer-key hashes.
+- **Leaderboard:** `v0.3-visual-agents/`, with four Claude configurations and the scripted suite on track 7.3.
+- **Activity:** findings and reports carry tool calls, screenshots taken and screenshots looked at per episode. This
+  is reported, never scored. The report adds visual and accessibility recall rows. `agents audit` (harness 0.4.0)
+  counts activity from transcripts, along with the sealed-path audit.
 
 ## 0.1.0-b0 (5 Nov 2026): skeleton
 **Apps**, each with a `verify.ts` that proves every label against the running app:

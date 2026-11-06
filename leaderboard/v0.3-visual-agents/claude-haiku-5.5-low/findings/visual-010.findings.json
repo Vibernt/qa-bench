@@ -1,0 +1,93 @@
+{
+  "episode_id": "visual-010",
+  "system": {
+    "name": "claude-haiku-5.5-low",
+    "version": "claude-haiku-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "[data-testid=\"total\"]"
+      },
+      "category": "visual",
+      "description": "The Total bar uses margin-top:-46px, so it sits over the last expense row (Project dinner, $93.25) on desktop and hides that row's content. On a 360px phone the same overlap cuts off the amount of the last row.",
+      "confidence": 0.85,
+      "severity": "major",
+      "repro": [
+        "Sign in as editor-eab4 at 1280px width",
+        "Open /expenses",
+        "Scroll the table to the bottom: the Total box covers the 'Project dinner' row",
+        "Repeat at 360px as viewer-d51d: the 'Project dinner' amount is hidden under the Total box"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "editor-desk.png"
+        },
+        {
+          "kind": "screenshot",
+          "path": "viewer-phone.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses",
+        "role": "viewer",
+        "selector": "button[type=\"submit\"]"
+      },
+      "category": "a11y",
+      "description": "A global rule sets outline:none on *:focus and *:focus-visible, so keyboard users get no visible focus indicator on links, buttons, selects and inputs. Tabbing to the Apply button shows no outline.",
+      "confidence": 0.9,
+      "severity": "major",
+      "repro": [
+        "Sign in as viewer-d51d at 1280px",
+        "Press Tab twice to reach the Apply button",
+        "Observe that no focus ring is drawn (computed outline-style is none)"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "viewer-desk-focus.png"
+        }
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/expenses",
+        "role": "viewer"
+      },
+      "category": "usability",
+      "description": "The table shows an 'Actions' column header for viewers, but every cell in that column is empty because viewers cannot edit or delete.",
+      "confidence": 0.5,
+      "severity": "minor",
+      "repro": [
+        "Sign in as viewer-d51d",
+        "Open /expenses",
+        "Look at the rightmost table column: header 'Actions' with empty cells"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "viewer-desk.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Tested login, the expenses list and total (sum checks out at $399.99), desktop and 360px layouts for both roles, focus styling, and the add-expense form markup. Did not test edit/delete flows, the category filter results, touch targets, or screen-reader behaviour in depth, given the time budget.",
+  "cost": {
+    "model_usd": 0.001058,
+    "notes": "estimate from 24320 total tokens (85% cache read / 10% input / 5% output); range $0.0002-$0.0029"
+  },
+  "wall_time_s": 43.2,
+  "activity": {
+    "tool_calls": 11,
+    "screenshots_taken": 4,
+    "screenshots_viewed": 3
+  }
+}

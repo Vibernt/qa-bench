@@ -1,0 +1,93 @@
+{
+  "episode_id": "visual-001",
+  "system": {
+    "name": "claude-sonnet-5.5-high",
+    "version": "claude-sonnet-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/login",
+        "selector": "[role=\"alert\"]"
+      },
+      "category": "visual",
+      "description": "The 'Invalid credentials' error message is invisible: the alert text colour (--danger-bg) is the same as its background, so a failed sign-in shows an empty pink box. Same CSS rule affects every role=alert message (also an a11y contrast failure).",
+      "confidence": 0.9,
+      "severity": "major",
+      "repro": [
+        "Open /login",
+        "Enter a wrong password and submit",
+        "Observe the pink alert box has no readable text"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "login-error.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses",
+        "role": "viewer",
+        "selector": "td:nth-child(2)"
+      },
+      "category": "a11y",
+      "description": "Muted text colour #c3c8cd on white/light grey has about 1.6:1 contrast (WCAG needs 4.5:1). It is used for the category column values, the table headers (Title/Category/Amount/Actions) and the 'Signed in as ...' line, which are barely readable.",
+      "confidence": 0.85,
+      "severity": "major",
+      "repro": [
+        "Sign in as viewer",
+        "Open /expenses",
+        "Look at the category cells, table headers and 'Signed in as' text"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "editor-1280-expenses.png"
+        }
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "td:first-child"
+      },
+      "category": "visual",
+      "description": "A long expense title (td has white-space:nowrap in a fixed-layout table) overflows its cell on desktop and overprints the Category cell (category text unreadable); on a 360 px phone it overflows the viewport, causing horizontal page scroll (scrollWidth 598 > 360) and the title is cut off at the card edge.",
+      "confidence": 0.8,
+      "severity": "major",
+      "repro": [
+        "Sign in as editor",
+        "Add expense with title 'Quarterly offsite venue deposit and catering for the whole engineering team', amount 1234567.89",
+        "View /expenses at 1280 px: title overlaps the category",
+        "View at 360 px: horizontal scroll"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "long-1280.png"
+        },
+        {
+          "kind": "screenshot",
+          "path": "long-360.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Tested only visual/a11y; the 8 seed expenses sum correctly to $399.99. Test expense I added was deleted afterwards. Not reported: server-side invalid add form (empty title, -5 amount) silently re-renders the blank form with no message (possible error-handling issue, out of scope categories).",
+  "cost": {
+    "model_usd": 0.025729,
+    "notes": "estimate from 29573 total tokens (85% cache read / 10% input / 5% output); range $0.0059-$0.0710"
+  },
+  "wall_time_s": 70.4,
+  "activity": {
+    "tool_calls": 15,
+    "screenshots_taken": 3,
+    "screenshots_viewed": 6
+  }
+}

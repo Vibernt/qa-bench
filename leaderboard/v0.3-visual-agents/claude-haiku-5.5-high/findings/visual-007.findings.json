@@ -1,0 +1,99 @@
+{
+  "episode_id": "visual-007",
+  "system": {
+    "name": "claude-haiku-5.5-high",
+    "version": "claude-haiku-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "[aria-label=\"Expenses\"]"
+      },
+      "category": "visual",
+      "description": "An expense title with no spaces (long unbroken word) makes the expenses table wider than the page: at 1280 px the document scrolls horizontally (scrollWidth 1345) and the table runs past the card/total box edge; at 360 px the page is 833 px wide, so the phone layout scrolls sideways. Titles with normal spaces wrap correctly.",
+      "confidence": 0.8,
+      "severity": "major",
+      "repro": [
+        "Sign in as editor-868f / [redacted] at 1280 px.",
+        "Open /expenses/new, enter the title 'Supercalifragilisticexpialidocious_airport_transfer_reimbursement_for_the_client_offsite_in_Bangalore_2026', category meals, amount 5, Save.",
+        "Open /expenses. The table extends past the right edge of the main column and the page gets a horizontal scrollbar (document width 1345 px at a 1280 px viewport).",
+        "Resize to 360 px. The document is 833 px wide for a 360 px viewport; the card list overflows sideways.",
+        "Delete the test expense to restore the list."
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "longtitle-1280.png"
+        },
+        {
+          "kind": "screenshot",
+          "path": "longtitle-360.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses",
+        "role": "viewer",
+        "selector": "[aria-label=\"Expenses\"] thead"
+      },
+      "category": "a11y",
+      "description": "Below 600 px the stylesheet sets thead to display:none, so the column headers (Title, Category, Amount, Actions) disappear from the accessibility tree, and the cells have no label. A screen reader user gets a list of bare values such as 'travel' and '$42.50' with no column context.",
+      "confidence": 0.5,
+      "severity": "minor",
+      "repro": [
+        "Sign in as viewer-35a5 / [redacted] at a 360 px viewport.",
+        "Open /expenses and inspect the accessibility tree (for example with an ARIA snapshot of the table).",
+        "Compare with the 1280 px view, where the columnheader roles Title, Category, Amount and Actions are present."
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "[aria-label=\"Expenses\"] td:nth-child(4) a"
+      },
+      "category": "a11y",
+      "description": "Every row has an identical 'Edit' link and an identical 'Delete' button with no row-specific name, so the link and button purposes are ambiguous out of context (for example in a screen reader's links or buttons list).",
+      "confidence": 0.45,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor-868f / [redacted] and open /expenses.",
+        "List the links and buttons in the table with a screen reader or the accessibility tree.",
+        "There are eight 'Edit' links to /expenses/1/edit ... /expenses/8/edit and eight 'Delete' buttons, each with the same accessible name and no reference to the expense title."
+      ]
+    },
+    {
+      "id": "f4",
+      "where": {
+        "route": "/login",
+        "selector": "input[name=\"username\"]"
+      },
+      "category": "a11y",
+      "description": "The input border colour (#d5dbe1 on white) has a contrast ratio of about 1.4:1, and the focus ring (#e09400 on white) about 2.5:1. Both are below the 3:1 non-text contrast that WCAG 1.4.11 asks for, so form field boundaries and focus indication are faint.",
+      "confidence": 0.3,
+      "severity": "minor",
+      "repro": [
+        "Open /login or /expenses/new at 1280 px.",
+        "Observe that the input borders are very faint against the white card.",
+        "Tab to a focusable control and observe the amber focus ring against white."
+      ]
+    }
+  ],
+  "notes": "Tested as viewer and editor at 360 and 1280 px (plus 1024, 1440, 1920 for overflow): login (including wrong password), expenses list, category filter and totals (verified against row sums), add, edit, delete, permission gates on /expenses/new and /expenses/1/edit (viewer gets 403), keyboard tab order and focus ring on the expenses page, and ARIA snapshots. Totals were correct in every state tested. Test expenses were added and then deleted, so the seed data (8 rows, total $399.99) is restored. Not tested: screen reader audio output, touch gestures, hover states, and browser zoom above 100%. Delete has no status message while add and edit do; I left this out as outside the visual and a11y scope.",
+  "cost": {
+    "model_usd": 0.002486,
+    "notes": "estimate from 57138 total tokens (85% cache read / 10% input / 5% output); range $0.0006-$0.0069"
+  },
+  "wall_time_s": 212.6,
+  "activity": {
+    "tool_calls": 36,
+    "screenshots_taken": 15,
+    "screenshots_viewed": 6
+  }
+}

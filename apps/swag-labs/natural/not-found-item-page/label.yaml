@@ -15,4 +15,5 @@ found_by:
     note: "The not-found product page has a live Add to cart button and placeholder text"
 tolerance: { route: exact, role: any }
 split: public
+masked_by: [swag.locked-out-user]
 upstream_ref: "apps/swag-labs/upstream/src/pages/InventoryItem.jsx (fallback item for unknown ids); checked by apps/swag-labs/verify.ts"

@@ -1,0 +1,43 @@
+{
+  "episode_id": "visual-007",
+  "system": {
+    "name": "claude-sonnet-5.5-low",
+    "version": "claude-sonnet-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "td a[href$='/edit']"
+      },
+      "category": "a11y",
+      "description": "Every row's Edit link and Delete button has the identical accessible name with no row context (no aria-label such as 'Edit Train to Pune'), so screen reader users cannot tell which expense an action applies to. Delete also has no confirmation.",
+      "confidence": 0.35,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor",
+        "Open /expenses",
+        "Inspect Edit/Delete controls: names are just 'Edit'/'Delete'"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "editor-360.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Layouts at 1280 and 360, totals (all and filtered), add form and focus outlines looked correct. Did not test edit/delete submissions or viewer permission on direct URLs.",
+  "cost": {
+    "model_usd": 0.017866,
+    "notes": "estimate from 20536 total tokens (85% cache read / 10% input / 5% output); range $0.0041-$0.0493"
+  },
+  "wall_time_s": 60.8,
+  "activity": {
+    "tool_calls": 14,
+    "screenshots_taken": 4,
+    "screenshots_viewed": 4
+  }
+}

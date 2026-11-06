@@ -1,0 +1,130 @@
+{
+  "episode_id": "visual-009",
+  "system": {
+    "name": "claude-haiku-5.5-high",
+    "version": "claude-haiku-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "table[aria-label=\"Expenses\"]"
+      },
+      "category": "visual",
+      "description": "On phones 360-600 px wide the expenses table is forced to min-width 760 px inside a main element with overflow-x: clip and no scroll container, so the Amount and Actions columns are cut off at the right edge. Editors cannot reach Edit or Delete and no role can see the amounts on a phone; nothing scrolls to reveal them. The same happens for the viewer role, which loses the Amount column.",
+      "confidence": 0.9,
+      "severity": "major",
+      "repro": [
+        "Set the viewport to 360 px wide (also check 390 and 480 px).",
+        "Sign in as editor-39c2 and open /expenses.",
+        "Observe the table ends after the Category column; the Amount column and the Edit/Delete buttons (measured at x about 575-682 px) are off-screen and cannot be scrolled to.",
+        "Sign in as viewer-b0ae at the same width and observe the Amount column is also missing."
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "editor-360-full.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses",
+        "role": "viewer",
+        "selector": "table[aria-label=\"Expenses\"]"
+      },
+      "category": "visual",
+      "description": "The AMOUNT column heading is right-aligned but the amount values are left-aligned, so each figure sits well to the left of its heading and the column does not read as aligned numbers.",
+      "confidence": 0.7,
+      "severity": "minor",
+      "repro": [
+        "Sign in as viewer-b0ae at 1280 px and open /expenses.",
+        "Compare the AMOUNT heading (right edge near x=836) with the values (for example $124.00 ends near x=752 and $12.99 starts near x=686)."
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "editor-1280-full.png"
+        }
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "table[aria-label=\"Expenses\"] form[action$=\"/delete\"] button"
+      },
+      "category": "usability",
+      "description": "Deleting an expense redirects to /expenses with no confirmation message, while saving and updating both show a status banner ('Expense saved', 'Expense updated'). The user gets no feedback that the delete happened.",
+      "confidence": 0.5,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor-39c2 at 1280 px and open /expenses.",
+        "Click Delete on any row.",
+        "Observe the page reloads with no status message, unlike after Add or Edit."
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "editor-1280-after-delete.png"
+        }
+      ]
+    },
+    {
+      "id": "f4",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "table[aria-label=\"Expenses\"] form[action$=\"/delete\"] button"
+      },
+      "category": "a11y",
+      "description": "Every row has a Delete button with the same bare name 'Delete' and no row context, so a screen reader user hears a list of identical buttons and cannot tell which expense each one removes. The Edit links have the same problem.",
+      "confidence": 0.45,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor-39c2 and open /expenses.",
+        "Navigate the buttons with a screen reader or inspect the accessible names.",
+        "Observe all eight Delete buttons are named 'Delete' and the eight Edit links are named 'Edit', with no expense title in either name."
+      ]
+    },
+    {
+      "id": "f5",
+      "where": {
+        "route": "/expenses",
+        "role": "viewer",
+        "selector": "[data-testid=\"total\"]"
+      },
+      "category": "visual",
+      "description": "Amounts and the total are shown without thousands separators (for example $1234.50 and Total: $1634.49), which is inconsistent with normal currency display.",
+      "confidence": 0.3,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor-39c2 and open /expenses/new.",
+        "Add an expense titled 'QA probe item', category office, amount 1234.5, and save.",
+        "Observe the row shows $1234.50 and the total shows $1634.49 with no comma.",
+        "Remove the probe expense afterwards (it was deleted in this run)."
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "editor-1280-after-add.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Tested as viewer-b0ae and editor-39c2 at 360, 390, 480, 600, 601, 667, 768, 1024, 1279, 1280 and 1440 px. Checked login (including a bad password error), totals against row sums (correct), category filter (correct totals), permissions (viewer gets 403 on /expenses/new and edit pages; editor can reach them), add/edit/delete flows, status banners, keyboard focus order and focus ring. Not tested: screen reader output (only accessible names inspected), touch on a real device, non-Chromium browsers. A test expense was added, edited and deleted during the run; the list is back to the original 8 rows and total $399.99. Not reported: the focus ring colour (#e09400 on white is about 2.5:1) because it is a theme token and borderline; Edit links are about 20 px tall, not reported as a clear fault.",
+  "cost": {
+    "model_usd": 0.002196,
+    "notes": "estimate from 50475 total tokens (85% cache read / 10% input / 5% output); range $0.0005-$0.0061"
+  },
+  "wall_time_s": 170.8,
+  "activity": {
+    "tool_calls": 26,
+    "screenshots_taken": 10,
+    "screenshots_viewed": 6
+  }
+}

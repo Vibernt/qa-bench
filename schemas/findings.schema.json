@@ -29,6 +29,9 @@
       "type": "number",
       "minimum": 0
     },
+    "activity": {
+      "$ref": "defs.schema.json#/$defs/activity"
+    },
     "started_at": {
       "type": "string",
       "format": "date-time"

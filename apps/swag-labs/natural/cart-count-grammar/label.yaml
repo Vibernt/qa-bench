@@ -16,4 +16,5 @@ found_by:
     note: "Accessible name uses the plural with a count of one"
 tolerance: { route: prefix, role: any }
 split: public
+masked_by: [swag.locked-out-user]
 upstream_ref: "apps/swag-labs/upstream/src/components/CartButton.jsx (aria-label); checked by apps/swag-labs/verify.ts"

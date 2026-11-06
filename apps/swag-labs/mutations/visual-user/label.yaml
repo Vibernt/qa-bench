@@ -54,5 +54,26 @@ found_by:
     also_categories: [consistency]
     selector: "[data-test=product-sort-container]"
     note: "Sorting by price looks broken: the displayed prices are random, so the list is not in price order after Price (low to high)"
+  # Added after the visual-track runs (verify.ts checks each): the same symptoms, described without the button's
+  # selector, on the cart page, or as a price format fault.
+  - kind: visual
+    description_pattern: '(add to cart|button)[\s\S]{0,80}(overflow|sticks? out|outside|beyond|past|misalign|clipped)[\s\S]{0,30}(card|border|edge|container)'
+    note: "Last card's Add to cart button overflows its card (reported with a card or other locator)"
+  - kind: value
+    category: consistency
+    route: /cart.html
+    description_pattern: 'price[\s\S]{0,80}(differ|mismatch|don.t match|do not match|inconsistent|disagree|change|random)|(differ|mismatch|disagree)[\s\S]{0,60}price'
+    note: "Cart prices differ from the random list prices"
+  - kind: text
+    category: copy
+    description_pattern: '\$\d+\.\d(?!\d)|one decimal|single decimal|decimal place|second (decimal|digit)|trailing zero'
+    note: "Some list prices print with one decimal, e.g. $13.4"
+  - kind: visual
+    description_pattern: 'cart (icon|link|button)[\s\S]{0,80}(not aligned|misaligned|displaced|below|lower|floats|off|overlap|out of place|wrong place|sits)'
+    note: "Cart icon displaced (reported with another locator or none)"
+  - kind: value
+    category: consistency
+    description_pattern: 'price[\s\S]{0,80}(random|change on every|change each|changes? (on|with) (each|every)|differ|mismatch|don.t match|do not match)'
+    note: "List prices random, changing on each load and differing from the detail page (reported with another locator or none)"
 split: public
 upstream_ref: "apps/swag-labs/upstream/src (isVisualUser in pages/Inventory.jsx, Cart.jsx, components/HeaderContainer.jsx, DrawerMenu.jsx; CSS .visual_failure, .btn_visual_failure, .btn_inventory_misaligned, .align_right); checked by apps/swag-labs/verify.ts"

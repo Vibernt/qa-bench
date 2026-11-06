@@ -1,0 +1,18 @@
+id: expense.small-touch-targets
+app: expense-app
+title: "On phones the Edit links are too small to tap reliably"
+description: "At 390 px each row's Edit link is about 29 x 20 px, below WCAG 2.2's 24 x 24 px minimum target size, and sits right next to the Delete button. Found by an agent in the visual-track runs; not planted."
+track: visual
+kind: natural
+category: a11y
+class: deterministic
+severity: minor
+where: { route: /expenses, role: editor }
+found_by:
+  - kind: a11y
+    also_categories: [usability]
+    description_pattern: 'touch target|tap target|target size|too small to (tap|touch|hit)|2\.5\.8|24 ?(x|×|by) ?24'
+    note: "The Edit link's tap target is under 24 x 24 px on a phone"
+tolerance: { route: prefix, role: any }
+split: public
+upstream_ref: "apps/expense-app/app/src/theme.ts (row links have no padding); checked by apps/expense-app/verify.ts"
