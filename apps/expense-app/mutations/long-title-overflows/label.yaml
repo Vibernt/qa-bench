@@ -16,7 +16,7 @@ switch:
 found_by:
   - kind: visual
     also_categories: [usability]
-    description_pattern: '^(?=[\s\S]*(title|name|text|description))(?=[\s\S]*(overlap|overflow|spill|runs? (into|over|across)|over(lay|writ|draw)|collid|on top of|bleed|into (the )?(next|categor|adjacent)|over the categor|doesn.t wrap|does not wrap|no wrap|not wrap))'
+    description_pattern: '^(?![\s\S]*(no spaces|without spaces|unbroken|single (long )?word|long word|no whitespace))(?=[\s\S]*(title|name|text|description))(?=[\s\S]*(overlap|overflow|spill|runs? (into|over|across)|over(lay|writ|draw)|collid|on top of|bleed|into (the )?(next|categor|adjacent)|over the categor|doesn.t wrap|does not wrap|no wrap|not wrap))'
     note: "A long title overlaps the Category column in the list"
 tolerance: { route: prefix, role: any }
 split: public

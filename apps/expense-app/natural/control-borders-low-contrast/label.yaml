@@ -1,0 +1,18 @@
+id: expense.control-borders-low-contrast
+app: expense-app
+title: "Form field borders are too faint (about 1.4:1)"
+description: "Inputs and selects are outlined in the light border colour, about 1.4:1 against white, under WCAG 1.4.11's 3:1 for the boundary of a control, so fields are hard to locate. Found by agents in the visual-track runs; not planted."
+track: visual
+kind: natural
+category: a11y
+class: deterministic
+severity: minor
+where: { route: "*" }
+found_by:
+  - kind: a11y
+    also_categories: [visual]
+    description_pattern: '^(?![\s\S]*\bfocus (ring|outline|indicator)s? (is|are|has|have)\b)(?=[\s\S]*(input|field|select|text ?box|control)s?[\s\S]{0,40}border)(?=[\s\S]*(contrast|\d(\.\d+)? ?: ?1|faint|1\.4\.11))'
+    note: "Input and select borders are under 3:1 against the background"
+tolerance: { route: prefix, role: any }
+split: public
+upstream_ref: "apps/expense-app/app/src/theme.ts (inputs use --border: #d5dbe1); checked by apps/expense-app/verify.ts"

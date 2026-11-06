@@ -15,7 +15,7 @@ switch:
 found_by:
   - kind: a11y
     also_categories: [visual, usability]
-    description_pattern: 'contrast|faint|too (pale|light)|pale (grey|gray|text)|light (grey|gray)|hard to read|barely (visible|readable|legible)|washed[- ]out|low visibility|illegible|#c3c8cd'
+    description_pattern: '^(?![\s\S]*(\bfocus|border))[\s\S]*(contrast|faint|too (pale|light)|pale (grey|gray|text)|light (grey|gray)|hard to read|barely (visible|readable|legible)|washed[- ]out|low visibility|illegible|#c3c8cd)'
     note: "Category text, headings and the signed-in line fail contrast"
 tolerance: { route: prefix, role: any }
 split: public

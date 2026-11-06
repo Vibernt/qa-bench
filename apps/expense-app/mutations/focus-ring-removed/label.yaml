@@ -15,7 +15,7 @@ switch:
 found_by:
   - kind: a11y
     also_categories: [usability, visual]
-    description_pattern: 'focus (ring|outline|indicator|style|state|is (not |in)visible)|focus.{0,30}(invisible|not visible|no visible|hidden|removed|missing)|(no|without|missing|removed) (visible )?(focus|outline)|outline: ?(none|0)|keyboard (user|navigation|focus|only)|tab(bing)? (through|key|order).{0,60}(can.t|cannot|no|not|invisible)'
+    description_pattern: '^(?![\s\S]*(contrast|\d(\.\d+)? ?: ?1))[\s\S]*(focus (ring|outline|indicator|style|state|is (not |in)visible)|focus.{0,30}(invisible|not visible|no visible|hidden|removed|missing)|(no|without|missing|removed) (visible )?(focus|outline)|outline: ?(none|0)|keyboard (user|navigation|focus|only)|tab(bing)? (through|key|order).{0,60}(can.t|cannot|no|not|invisible))'
     note: "Tabbing shows no focus ring on links, buttons or fields"
 tolerance: { route: prefix, role: any }
 split: public

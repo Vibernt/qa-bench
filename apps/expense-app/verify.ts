@@ -318,6 +318,64 @@ const naturalProbes: Record<string, (app: App) => Promise<boolean>> = {
     const forged = (await get(app, fresh, '/expenses?flash=saved')).html;
     return saved.location.includes('flash=') && [reload1, reload2, forged].every((h) => h.includes('Expense saved'));
   },
+  // ---- found in the visual-track runs ----
+  'expense.row-actions-unnamed': async (app) => {
+    const html = (await get(app, await login(app, EDITOR), '/expenses')).html;
+    const edits = [...html.matchAll(/<a href="\/expenses\/\d+\/edit"([^>]*)>([^<]*)<\/a>/g)];
+    const deletes = [...html.matchAll(/<button type="submit"([^>]*)>Delete<\/button>/g)];
+    return edits.length > 1 && deletes.length > 1 && edits.every((m) => m[2] === 'Edit' && !/aria-label/.test(m[1]!)) && deletes.every((m) => !/aria-label/.test(m[1]!));
+  },
+  'expense.phone-rows-unlabelled': (app) => inBrowser(app, VIEWER, PHONE, async (page) => {
+    const head = await page.locator('thead').evaluate((e) => getComputedStyle(e).display);
+    const cell = await page.locator('tbody td').first().evaluate((e) => getComputedStyle(e).display);
+    return head === 'none' && cell === 'block';
+  }),
+  'expense.viewer-empty-actions-column': async (app) => {
+    const html = (await get(app, await login(app, VIEWER), '/expenses')).html;
+    const cells = [...(html.match(/<tbody>([\s\S]*?)<\/tbody>/)?.[1] ?? '').matchAll(/<tr>(?:<td>[\s\S]*?<\/td>){3}<td>([\s\S]*?)<\/td><\/tr>/g)];
+    return html.includes('<th>Actions</th>') && cells.length > 0 && cells.every((m) => m[1] === '');
+  },
+  'expense.no-thousands-separator': async (app) => {
+    const c = await login(app, EDITOR);
+    await post(app, c, '/expenses', { title: 'Separator check', category: 'office', amount: '1234.56' });
+    const html = (await get(app, c, '/expenses')).html;
+    return html.includes('$1234.56') && !html.includes('$1,234.56');
+  },
+  'expense.small-touch-targets': (app) => inBrowser(app, EDITOR, PHONE, async (page) => {
+    const box = await page.locator('tbody tr').first().locator('a').boundingBox();
+    return !!box && (box.height < 24 || box.width < 24);
+  }),
+  'expense.focus-ring-low-contrast': (app) => inBrowser(app, VIEWER, DESKTOP, async (page) => {
+    await page.locator('select[name=category]').focus();
+    await page.keyboard.press('Tab');
+    const [outline, bg] = await page.evaluate(() => [getComputedStyle(document.activeElement!).outlineColor, getComputedStyle(document.body).backgroundColor]);
+    const rgb = (c: string): number[] => (c.match(/[\d.]+/g) ?? []).map(Number);
+    const lum = (c: number[]): number => c.slice(0, 3).map((v) => { const x = v / 255; return x <= 0.03928 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4; })
+      .reduce((s, v, i) => s + v * [0.2126, 0.7152, 0.0722][i]!, 0);
+    const [a, b] = [lum(rgb(outline)), lum(rgb(bg))];
+    return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05) < 3;
+  }),
+  'expense.unbroken-title-overflows': (app) => inBrowser(app, EDITOR, DESKTOP, async (page) => {
+    await page.goto(app.base + '/expenses/new');
+    await page.fill('[name=title]', 'REF-' + '0123456789'.repeat(12));
+    await page.fill('[name=amount]', '5.00');
+    await page.click('button[type=submit]');
+    await page.waitForURL('**/expenses**');
+    return page.evaluate(() => {
+      const t = document.querySelector('table')!.getBoundingClientRect();
+      const m = document.querySelector('main')!.getBoundingClientRect();
+      return t.right > m.right + 4;
+    });
+  }),
+  'expense.control-borders-low-contrast': (app) => inBrowser(app, undefined, DESKTOP, async (page) => {
+    await page.goto(app.base + '/login');
+    const [border, bg] = await page.locator('input[name=username]').evaluate((e) => [getComputedStyle(e).borderTopColor, getComputedStyle(e.closest('form')!).backgroundColor]);
+    const rgb = (c: string): number[] => (c.match(/[\d.]+/g) ?? []).map(Number);
+    const lum = (c: number[]): number => c.slice(0, 3).map((v) => { const x = v / 255; return x <= 0.03928 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4; })
+      .reduce((s, v, i) => s + v * [0.2126, 0.7152, 0.0722][i]!, 0);
+    const [a, b] = [lum(rgb(border)), lum(rgb(bg))];
+    return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05) < 3;
+  }),
   'expense.delete-missing-id': async (app) => {
     const c = await login(app, EDITOR);
     const del = await post(app, c, '/expenses/999/delete', {});

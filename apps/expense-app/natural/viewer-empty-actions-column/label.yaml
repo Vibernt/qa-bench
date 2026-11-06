@@ -1,0 +1,18 @@
+id: expense.viewer-empty-actions-column
+app: expense-app
+title: "Viewers see an Actions column that is always empty"
+description: "The list shows the Actions heading to viewers, who can't edit, so the last column is blank on every row. Found by agents in the agent runs; not planted."
+track: visual
+kind: natural
+category: usability
+class: deterministic
+severity: minor
+where: { route: /expenses, role: viewer }
+found_by:
+  - kind: element
+    also_categories: [visual]
+    description_pattern: 'actions?[\s\S]{0,80}(empty|blank|no (content|controls|buttons|links))|(empty|blank) (actions|column)'
+    note: "The Actions column header shows for viewers with empty cells"
+tolerance: { route: prefix, role: any }
+split: public
+upstream_ref: "apps/expense-app/app/src/server.ts (renderList renders the Actions header for every role); checked by apps/expense-app/verify.ts"

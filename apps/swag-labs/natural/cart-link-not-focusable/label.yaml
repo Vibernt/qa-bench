@@ -1,0 +1,18 @@
+id: swag.cart-link-not-focusable
+app: swag-labs
+title: "The header cart link can't be reached with the keyboard"
+description: "The cart icon is an <a role=\"button\"> with an onClick but no href and no tabindex, so Tab skips it: a keyboard-only shopper can't open the cart or reach checkout from the header. Upstream behaviour, found by an agent in the visual-track runs; not planted."
+track: visual
+kind: natural
+category: a11y
+class: deterministic
+severity: major
+where: { route: /inventory.html, role: customer }
+found_by:
+  - kind: a11y
+    also_categories: [usability, functional]
+    description_pattern: '^(?=[\s\S]*cart)(?=[\s\S]*(keyboard|tab(bing)?\b|focusable|tabindex|href))(?=[\s\S]*(skip|not (reachable|focusable|in the tab order)|unreachable|can.t (reach|focus|tab)|cannot (reach|focus|tab)|no href|without (an )?href|never (receives|gets) focus))'
+    note: "Tab never reaches the header cart link"
+tolerance: { route: prefix, role: any }
+split: public
+upstream_ref: "apps/swag-labs/upstream/src/components/CartButton.jsx (<a role=button onClick> with no href or tabindex); checked by apps/swag-labs/verify.ts"

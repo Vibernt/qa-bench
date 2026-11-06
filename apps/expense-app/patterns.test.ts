@@ -210,6 +210,32 @@ const naturalSamples: Record<string, S[]> = {
     ['/expenses/999/delete', 'editor', 'error-handling', 'Deleting a non-existent expense id (POST /expenses/999/delete) redirects to /expenses as if successful instead of returning 404.'],
     ['/expenses', 'editor', 'error-handling', 'Delete of an unknown id gives no error; the app redirects as if the expense was removed.'],
   ],
+  'expense.row-actions-unnamed': [
+    ['/expenses', 'editor', 'a11y', "Every row's Edit link and Delete button has the same accessible name with no row context, so screen reader users cannot tell them apart."],
+    ['/expenses', 'editor', 'a11y', 'All Delete buttons are named just "Delete", with no expense title or aria-label.'],
+  ],
+  'expense.phone-rows-unlabelled': [
+    ['/expenses', 'viewer', 'a11y', 'Below 600 px the thead is hidden and table, tr and td are set to display:block, so the amount and category values have no column labels.'],
+    ['/expenses', 'viewer', 'a11y', 'At 360 px the table header is hidden and the table loses its semantics for assistive technology.'],
+  ],
+  'expense.viewer-empty-actions-column': [
+    ['/expenses', 'viewer', 'usability', "The table shows an 'Actions' column header for viewers, but every cell in that column is empty."],
+  ],
+  'expense.no-thousands-separator': [
+    ['/expenses', 'editor', 'copy', 'Amounts of $1000 or more are shown without a thousands separator (for example "$1234.56" and "Total: $1634.55").'],
+  ],
+  'expense.small-touch-targets': [
+    ['/expenses', 'editor', 'a11y', 'Edit links are only 29x20 px on a 360px phone layout, far below the touch target size.'],
+  ],
+  'expense.focus-ring-low-contrast': [
+    ['/expenses', 'viewer', 'a11y', 'The focus outline (#e09400) is about 2.3:1 against the page background, below the 3:1 non-text contrast minimum.'],
+  ],
+  'expense.unbroken-title-overflows': [
+    ['/expenses', 'editor', 'visual', 'A long title with no spaces overflows the table: at 1280 px the page scrolls horizontally.'],
+  ],
+  'expense.control-borders-low-contrast': [
+    ['/login', 'viewer', 'a11y', 'Input borders are about 1.4:1 contrast against white, below the 3:1 non-text contrast in WCAG 1.4.11.'],
+  ],
 };
 const sampleFindings = Object.entries(samples).flatMap(([id, list]) => list.map(([route, role, category, description], i) => ({
   id, finding: { id: `${id}-${i}`, category, severity: 'major', description, where: { route, role } } as unknown as Finding,

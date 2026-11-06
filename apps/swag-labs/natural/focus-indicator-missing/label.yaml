@@ -1,0 +1,18 @@
+id: swag.focus-indicator-missing
+app: swag-labs
+title: "Keyboard focus is invisible: upstream removes the focus outline"
+description: "Upstream's index.css sets :focus { outline: none } and its buttons set outline: none, with nothing in its place, so a keyboard user tabbing through the product list (sort, product links, Add to cart) can't see where focus is. Upstream behaviour, found by agents in the visual-track runs; not planted."
+track: visual
+kind: natural
+category: a11y
+class: deterministic
+severity: minor
+where: { route: /inventory.html, role: customer }
+found_by:
+  - kind: a11y
+    also_categories: [usability, visual]
+    description_pattern: 'focus (ring|outline|indicator|style|state|is (not |in)visible)|focus.{0,40}(invisible|not visible|no visible|hidden|removed|missing|outline-style:? none)|(no|without|missing|removed) (visible )?(keyboard )?(focus|outline)|outline(-style)?: ?(none|0)|keyboard (user|navigation|focus)'
+    note: "Tabbing shows no focus indicator on product links and buttons"
+tolerance: { route: prefix, role: any }
+split: public
+upstream_ref: "apps/swag-labs/upstream/src/index.css (:focus { outline: none }) and components/Button.css; checked by apps/swag-labs/verify.ts"

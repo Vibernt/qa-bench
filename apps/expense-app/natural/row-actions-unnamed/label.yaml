@@ -1,0 +1,18 @@
+id: expense.row-actions-unnamed
+app: expense-app
+title: "Every row's Edit and Delete controls have the same accessible name"
+description: "Each row's controls are named just \"Edit\" and \"Delete\", with no expense title or aria-label, so a screen-reader user who lists the page's links and buttons hears eight identical \"Edit\" links and \"Delete\" buttons and can't tell which expense each acts on. Found by agents in the visual-track runs; not planted."
+track: visual
+kind: natural
+category: a11y
+class: deterministic
+severity: minor
+where: { route: /expenses, role: editor }
+found_by:
+  - kind: a11y
+    also_categories: [usability]
+    description_pattern: '^(?=[\s\S]*(edit|delete))(?=[\s\S]*(same|identical|generic|ambiguous|indistinguishable|no (row|expense|item)[- ]?(context|specific|name|title)|named (just|only)|bare name|without (any )?(row|expense|item)[- ]?(context|name)|which (row|expense|item)))(?=[\s\S]*(name|label|screen[- ]?reader|assistive|aria))'
+    note: "All Edit links and Delete buttons share one accessible name each"
+tolerance: { route: prefix, role: any }
+split: public
+upstream_ref: "apps/expense-app/app/src/server.ts (renderList: <a>Edit</a> and <button>Delete</button> with no row context); checked by apps/expense-app/verify.ts"

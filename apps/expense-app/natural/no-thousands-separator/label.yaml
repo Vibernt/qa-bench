@@ -1,0 +1,18 @@
+id: expense.no-thousands-separator
+app: expense-app
+title: "Amounts of $1,000 or more have no thousands separator"
+description: "formatMoney prints $1234.56 and Total: $1634.55 rather than $1,234.56, which is hard to read in a money column. Found by agents in the agent runs; not planted."
+track: visual
+kind: natural
+category: copy
+class: deterministic
+severity: minor
+where: { route: /expenses, role: editor }
+found_by:
+  - kind: text
+    also_categories: [l10n, visual, usability]
+    description_pattern: 'thousands?[- ]separator|digit group|grouping|without (a )?comma|no comma'
+    note: "$1234.56 is shown with no thousands separator"
+tolerance: { route: prefix, role: any }
+split: public
+upstream_ref: "apps/expense-app/app/src/server.ts (formatMoney uses toFixed(2) with no grouping); checked by apps/expense-app/verify.ts"

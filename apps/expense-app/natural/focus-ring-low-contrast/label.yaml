@@ -1,0 +1,18 @@
+id: expense.focus-ring-low-contrast
+app: expense-app
+title: "The focus ring is amber at about 2.3:1 contrast, below the 3:1 minimum"
+description: "The focus outline (#e09400) on the light grey page background has a contrast ratio of about 2.3:1, under WCAG's 3:1 for non-text indicators, so keyboard focus is hard to see. Found by an agent in the visual-track runs; not planted."
+track: visual
+kind: natural
+category: a11y
+class: deterministic
+severity: minor
+where: { route: "*" }
+found_by:
+  - kind: a11y
+    also_categories: [visual, usability]
+    description_pattern: 'focus[\s\S]{0,80}(contrast|\d(\.\d+)? ?: ?1|#e09400|amber|orange|faint|hard to see)'
+    note: "The amber focus ring is under 3:1 against the background"
+tolerance: { route: prefix, role: any }
+split: public
+upstream_ref: "apps/expense-app/app/src/theme.ts (--focus: #e09400); checked by apps/expense-app/verify.ts"

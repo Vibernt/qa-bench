@@ -1,0 +1,18 @@
+id: expense.unbroken-title-overflows
+app: expense-app
+title: "A long title with no spaces overflows the table"
+description: "Titles have no overflow-wrap, so a long unbroken word (a URL, a reference number) runs out of its cell: the desktop table grows past the page and, on a phone, the title runs out of its row. Found by agents in the visual-track runs; not planted."
+track: visual
+kind: natural
+category: visual
+class: deterministic
+severity: minor
+where: { route: /expenses, role: editor }
+found_by:
+  - kind: visual
+    also_categories: [usability]
+    description_pattern: '^(?=[\s\S]*(no spaces|without spaces|unbroken|single (long )?word|long word|no (word )?breaks?|no whitespace))(?=[\s\S]*(overflow|scroll|runs? (out|off|past)|spill|wider|beyond))'
+    note: "An unbroken long title makes the table overflow"
+tolerance: { route: prefix, role: any }
+split: public
+upstream_ref: "apps/expense-app/app/src/theme.ts (no overflow-wrap on cells); checked by apps/expense-app/verify.ts"
