@@ -15,4 +15,5 @@ found_by:
     note: "The menu button's tap target is 20 x 20 px"
 tolerance: { route: prefix, role: any }
 split: public
+masked_by: [swag.locked-out-user]
 upstream_ref: "apps/swag-labs/upstream/src (react-burger-menu button sized 20 x 20 px); checked by apps/swag-labs/verify.ts"

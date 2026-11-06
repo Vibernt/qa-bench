@@ -15,4 +15,5 @@ found_by:
     note: "The amber focus ring is under 3:1 against the background"
 tolerance: { route: prefix, role: any }
 split: public
+masked_by: [expense.focus-ring-removed]
 upstream_ref: "apps/expense-app/app/src/theme.ts (--focus: #e09400); checked by apps/expense-app/verify.ts"

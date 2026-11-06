@@ -15,4 +15,5 @@ found_by:
     note: "Tabbing shows no focus indicator on product links and buttons"
 tolerance: { route: prefix, role: any }
 split: public
+masked_by: [swag.locked-out-user]
 upstream_ref: "apps/swag-labs/upstream/src/index.css (:focus { outline: none }) and components/Button.css; checked by apps/swag-labs/verify.ts"

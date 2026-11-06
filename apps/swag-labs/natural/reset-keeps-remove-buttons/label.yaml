@@ -15,4 +15,5 @@ found_by:
     note: "After Reset App State a product tile still shows Remove although the cart is empty"
 tolerance: { route: prefix, role: any }
 split: public
+masked_by: [swag.locked-out-user]
 upstream_ref: "apps/swag-labs/upstream/src/components/DrawerMenu.jsx (resetStorage clears the cart, not the tiles' state); checked by apps/swag-labs/verify.ts"

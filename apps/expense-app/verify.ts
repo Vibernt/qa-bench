@@ -274,12 +274,24 @@ const probes: Record<string, (app: App) => Promise<boolean>> = {
   },
 };
 
+/** Store an expense with these fields: add it, or, when the add isn't kept (missing_persistence), edit expense 1. */
+async function writeExpense(app: App, cookie: string, fields: { title: string; category: string; amount: string }): Promise<void> {
+  await post(app, cookie, '/expenses', fields);
+  const list = await get(app, cookie, '/expenses');
+  if (list.status === 200 && !list.html.includes(fields.title.slice(0, 20))) await post(app, cookie, `/expenses/${firstId(list.html)}`, fields);
+}
+/** The id of the first expense in a list page (probes that delete rows run before others in the masking matrix). */
+const firstId = (html: string): string => html.match(/\/expenses\/(\d+)\/edit/)?.[1] ?? '1';
+
 // Natural defects: real bugs present on every build, so they must show on the clean build.
 const naturalProbes: Record<string, (app: App) => Promise<boolean>> = {
   'expense.huge-amount-breaks-list': async (app) => {
     const c = await login(app, EDITOR);
     const saved = await post(app, c, '/expenses', { title: 'Huge', category: 'office', amount: '99999999999999' });
-    return saved.status === 303 && (await get(app, c, '/expenses')).status === 500;
+    const list = await get(app, c, '/expenses');
+    if (list.status === 500) return saved.status === 303;
+    await post(app, c, `/expenses/${firstId(list.html)}`, { title: 'Huge', category: 'office', amount: '99999999999999' });
+    return (await get(app, c, '/expenses')).status === 500;
   },
   'expense.rejected-form-loses-input': async (app) => {
     const c = await login(app, EDITOR);
@@ -295,7 +307,8 @@ const naturalProbes: Record<string, (app: App) => Promise<boolean>> = {
     if (!form || /confirm|onsubmit|onclick/i.test(form[0])) return false;
     const res = await post(app, c, `/expenses/${form[1]}/delete`, {});
     const after = (await get(app, c, res.location || '/expenses')).html;
-    return res.status === 303 && !/role="status"/.test(after) && !after.includes(`/expenses/${form[1]}/edit`);
+    // The delete happened (the edit page reads the database; the list may be cached by stale_state).
+    return res.status === 303 && !/role="status"/.test(after) && (await get(app, c, `/expenses/${form[1]}/edit`)).status === 404;
   },
   'expense.zero-amount-accepted': async (app) => {
     const c = await login(app, EDITOR);
@@ -337,7 +350,7 @@ const naturalProbes: Record<string, (app: App) => Promise<boolean>> = {
   },
   'expense.no-thousands-separator': async (app) => {
     const c = await login(app, EDITOR);
-    await post(app, c, '/expenses', { title: 'Separator check', category: 'office', amount: '1234.56' });
+    await writeExpense(app, c, { title: 'Separator check', category: 'office', amount: '1234.56' });
     const html = (await get(app, c, '/expenses')).html;
     return html.includes('$1234.56') && !html.includes('$1,234.56');
   },
@@ -348,7 +361,8 @@ const naturalProbes: Record<string, (app: App) => Promise<boolean>> = {
   'expense.focus-ring-low-contrast': (app) => inBrowser(app, VIEWER, DESKTOP, async (page) => {
     await page.locator('select[name=category]').focus();
     await page.keyboard.press('Tab');
-    const [outline, bg] = await page.evaluate(() => [getComputedStyle(document.activeElement!).outlineColor, getComputedStyle(document.body).backgroundColor]);
+    const [outline, bg, style] = await page.evaluate(() => [getComputedStyle(document.activeElement!).outlineColor, getComputedStyle(document.body).backgroundColor, getComputedStyle(document.activeElement!).outlineStyle]);
+    if (style === 'none') return false; // no ring at all (focus_ring_removed): nothing to measure
     const rgb = (c: string): number[] => (c.match(/[\d.]+/g) ?? []).map(Number);
     const lum = (c: number[]): number => c.slice(0, 3).map((v) => { const x = v / 255; return x <= 0.03928 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4; })
       .reduce((s, v, i) => s + v * [0.2126, 0.7152, 0.0722][i]!, 0);
@@ -356,15 +370,15 @@ const naturalProbes: Record<string, (app: App) => Promise<boolean>> = {
     return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05) < 3;
   }),
   'expense.unbroken-title-overflows': (app) => inBrowser(app, EDITOR, DESKTOP, async (page) => {
-    await page.goto(app.base + '/expenses/new');
-    await page.fill('[name=title]', 'REF-' + '0123456789'.repeat(12));
-    await page.fill('[name=amount]', '5.00');
-    await page.click('button[type=submit]');
-    await page.waitForURL('**/expenses**');
+    const cookie = (await page.context().cookies()).map((c) => `${c.name}=${c.value}`).join('; ');
+    await writeExpense(app, cookie, { title: 'REF-' + '0123456789'.repeat(12), category: 'office', amount: '5.00' });
+    await page.goto(app.base + '/expenses');
+    // The table grows past the page (auto layout) or, with a fixed layout, the title spills out of its cell.
     return page.evaluate(() => {
       const t = document.querySelector('table')!.getBoundingClientRect();
       const m = document.querySelector('main')!.getBoundingClientRect();
-      return t.right > m.right + 4;
+      const cells = [...document.querySelectorAll('tbody td:first-child')] as HTMLElement[];
+      return t.right > m.right + 4 || cells.some((c) => c.scrollWidth > c.clientWidth + 20);
     });
   }),
   'expense.control-borders-low-contrast': (app) => inBrowser(app, undefined, DESKTOP, async (page) => {
@@ -504,6 +518,42 @@ for (const [id, probe] of Object.entries(naturalProbes)) {
     console.log(`${present ? 'ok  ' : 'FAIL'} natural ${id} shows on the clean build`);
     if (!present) failures++;
   } finally { app.stop(); }
+}
+
+// Masking matrix: with each planted defect on, every natural defect still shows, unless its label lists that defect
+// in masked_by (then it must not show, and the generator leaves it out of that episode's answer key). One container per
+// defect; the probes run in an order where the destructive ones (deletes, the huge amount that breaks the list) go last.
+{
+  const naturalDir = join(here, 'natural');
+  const maskedBy = new Map(readdirSync(naturalDir).map((d) => {
+    const text = readFileSync(join(naturalDir, d, 'label.yaml'), 'utf8');
+    const id = text.match(/^id: (\S+)/m)![1]!;
+    const masked = (text.match(/^masked_by: \[([^\]]*)\]/m)?.[1] ?? '').split(',').map((x) => x.trim()).filter(Boolean);
+    return [id, new Set(masked)] as const;
+  }));
+  const last = ['expense.silent-delete', 'expense.delete-missing-id', 'expense.huge-amount-breaks-list'];
+  const order = [...Object.keys(naturalProbes).filter((id) => !last.includes(id)), ...last];
+  for (const [defectId, env] of Object.entries(switches)) {
+    if (!env.DEFECT) continue;
+    const app = start(env);
+    const wrong: string[] = [];
+    try {
+      await waitUp(app);
+      for (const id of order) {
+        let shown: boolean;
+        try { shown = await naturalProbes[id]!(app); } catch { shown = false; }
+        // stale_state serves the list from a 60 s cache, so a symptom that needs a fresh write shows a minute late.
+        if (!shown && env.DEFECT === 'stale_state') {
+          await new Promise((r) => setTimeout(r, 61_000));
+          try { shown = await naturalProbes[id]!(app); } catch { shown = false; }
+        }
+        const masked = maskedBy.get(id)?.has(defectId) ?? false;
+        if (shown === masked) wrong.push(`${id} ${shown ? 'shows although masked_by lists it' : 'is masked but not in masked_by'}`);
+      }
+    } finally { app.stop(); }
+    console.log(`${wrong.length ? 'FAIL' : 'ok  '} naturals with ${defectId} on${wrong.length ? `: ${wrong.join('; ')}` : ''}`);
+    if (wrong.length) failures++;
+  }
 }
 
 // Generated accounts replace the seed logins.

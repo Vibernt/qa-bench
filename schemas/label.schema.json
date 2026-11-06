@@ -187,6 +187,14 @@
         "heldout"
       ]
     },
+    "masked_by": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true,
+      "description": "natural labels only: planted defects (label ids, same app) that remove this symptom when switched on, e.g. a layout defect that replaces the rule this bug lives in. The generator leaves the label out of an episode's answer key when any of them is active; verify.ts shows the symptom is absent with each one on."
+    },
     "operator": {
       "type": "string",
       "description": "operators/ id this was instantiated from, if any"

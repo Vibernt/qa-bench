@@ -574,13 +574,14 @@ async function fullCheckout(base: string): Promise<string[]> {
 }
 
 // ---- run ---------------------------------------------------------------------------------------------------------
-function labels(): { id: string; entries: number; env: Record<string, string>; natural?: boolean }[] {
+function labels(): { id: string; entries: number; env: Record<string, string>; natural?: boolean; maskedBy: string[]; defect: boolean }[] {
   const out = [];
   for (const kind of ['mutations', 'changes', 'natural']) {
     if (!existsSync(join(here, kind))) continue;
     for (const dir of readdirSync(join(here, kind))) {
       const l = YAML.parse(readFileSync(join(here, kind, dir, 'label.yaml'), 'utf8'));
-      out.push({ id: l.id as string, entries: (l.found_by as unknown[]).length, env: (l.switch?.env ?? {}) as Record<string, string>, natural: kind === 'natural' });
+      out.push({ id: l.id as string, entries: (l.found_by as unknown[]).length, env: (l.switch?.env ?? {}) as Record<string, string>, natural: kind === 'natural',
+        maskedBy: (l.masked_by ?? []) as string[], defect: kind === 'mutations' });
     }
   }
   return out.filter((l) => !only || l.id === only);
@@ -634,6 +635,26 @@ try {
         report(problems.length === 0, `${l.id}: behaviour unchanged (full checkout)${problems.length ? ': ' + problems.join('; ') : ''}`);
       }
     } finally { app.stop(); }
+  }
+
+  if (!only) {
+    // Masking matrix: with each faulty-user mutation on, every natural defect still shows, unless its label lists that
+    // mutation in masked_by (then it must not show; the generator leaves it out of that episode's answer key).
+    const all = labels();
+    for (const m of all.filter((l) => l.defect)) {
+      const app = start(m.env);
+      const wrong: string[] = [];
+      try {
+        await waitUp(app);
+        for (const n of all.filter((l) => l.natural)) {
+          let shown = true;
+          for (const c of checks[n.id]!) { try { shown = shown && await session(app.base, c); } catch { shown = false; } }
+          const masked = n.maskedBy.includes(m.id);
+          if (shown === masked) wrong.push(`${n.id} ${shown ? 'shows although masked_by lists it' : 'is masked but not in masked_by'}`);
+        }
+      } finally { app.stop(); }
+      report(wrong.length === 0, `naturals with ${m.id} on${wrong.length ? `: ${wrong.join('; ')}` : ''}`);
+    }
   }
 
   if (!only) {

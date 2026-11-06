@@ -15,4 +15,5 @@ found_by:
     note: "An unbroken long title makes the table overflow"
 tolerance: { route: prefix, role: any }
 split: public
+masked_by: [expense.long-title-truncated]
 upstream_ref: "apps/expense-app/app/src/theme.ts (no overflow-wrap on cells); checked by apps/expense-app/verify.ts"

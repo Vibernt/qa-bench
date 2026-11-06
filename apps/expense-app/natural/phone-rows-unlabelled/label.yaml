@@ -15,4 +15,5 @@ found_by:
     note: "Phone layout hides the header row, so stacked values have no labels"
 tolerance: { route: prefix, role: any }
 split: public
+masked_by: [expense.phone-layout-overflow]
 upstream_ref: "apps/expense-app/app/src/theme.ts (the 600 px media query hides thead and makes cells blocks); checked by apps/expense-app/verify.ts"

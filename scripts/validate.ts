@@ -99,6 +99,13 @@ export function validateRepo(root = REPO_ROOT): { problems: string[]; checked: n
       problems.push(`${rel}: id '${id}' should start with '${app.label_prefix}.'`);
     }
   }
+  for (const [, { label, rel }] of labels) {
+    for (const id of label.masked_by ?? []) {
+      const m = labels.get(id);
+      if (label.kind !== 'natural') problems.push(`${rel}: masked_by is for natural labels only`);
+      else if (!m || m.label.kind !== 'defect' || m.label.app !== label.app) problems.push(`${rel}: masked_by '${id}' is not a planted defect of ${label.app}`);
+    }
+  }
   for (const { track, rel } of tracks) {
     for (const ta of track.apps) {
       if (!apps.has(ta.app)) problems.push(`${rel}: unknown app '${ta.app}'`);

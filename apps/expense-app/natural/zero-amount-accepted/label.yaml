@@ -15,4 +15,5 @@ found_by:
     note: "An amount of 0 is saved as a $0.00 expense"
 tolerance: { route: prefix, role: any }
 split: public
+masked_by: [expense.missing-persistence]
 upstream_ref: "apps/expense-app/app/src/server.ts (parseAmount accepts 0); checked by apps/expense-app/verify.ts"

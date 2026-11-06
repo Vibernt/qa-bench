@@ -112,6 +112,8 @@ export interface Label {
   split: Split;
   operator?: string;
   upstream_ref?: string;
+  /** natural labels only: planted defects (same app) that remove this symptom when active. */
+  masked_by?: string[];
 }
 
 // ---- tracks/<track>.yaml --------------------------------------------------

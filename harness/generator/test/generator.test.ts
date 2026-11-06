@@ -353,6 +353,24 @@ describe('repo tracks', () => {
     for (const app of apps.values()) for (const l of [...app.mutations, ...app.changes]) expect(everywhere.has(l.id), l.id).toBe(true);
   });
 
+  it('leaves a natural defect out of the answer key when an active planted defect masks it (masked_by)', () => {
+    const apps = loadApps();
+    const natural = [...apps.values()].flatMap((a) => a.natural).filter((n) => n.masked_by?.length);
+    expect(natural.length).toBeGreaterThan(0);
+    let checked = 0;
+    for (const track of ['regression', 'exploration', 'visual']) {
+      for (const g of generateTrack(join(REPO_ROOT, 'tracks', `${track}.yaml`), { write: false }).episodes) {
+        const ids = new Set(g.answerKey.labels.map((l) => l.id));
+        for (const n of natural.filter((x) => x.app === g.episode.app)) {
+          const masked = n.masked_by!.some((m) => g.episode.active.mutations.includes(m));
+          expect(ids.has(n.id), `${g.episode.id} ${n.id}`).toBe(!masked);
+          if (masked) checked++;
+        }
+      }
+    }
+    expect(checked).toBeGreaterThan(0);
+  });
+
   it('generates the visual track (7.3): exploratory briefs that state the supported devices, visual defects only', () => {
     const r = generateTrack(join(REPO_ROOT, 'tracks', 'visual.yaml'), { write: false });
     expect(r.track.number).toBe('7.3');

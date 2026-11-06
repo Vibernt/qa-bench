@@ -15,4 +15,5 @@ found_by:
     note: "Tab never reaches the header cart link"
 tolerance: { route: prefix, role: any }
 split: public
+masked_by: [swag.locked-out-user]
 upstream_ref: "apps/swag-labs/upstream/src/components/CartButton.jsx (<a role=button onClick> with no href or tabindex); checked by apps/swag-labs/verify.ts"
