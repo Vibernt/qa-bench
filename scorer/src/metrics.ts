@@ -83,6 +83,17 @@ function compute(scores: EpisodeScore[], s: Slice): Metrics {
     m.cost_usd_total = sumOrNull(scores.map((e) => episodeCostUsd(e.cost)));
     m.human_hours_total = sumOrNull(scores.map((e) => e.cost?.human_hours));
     m.cost_per_defect_found_usd = m.cost_usd_total !== null && found > 0 ? m.cost_usd_total / found : null;
+    const act = scores.map((e) => e.activity).filter((a): a is NonNullable<typeof a> => !!a);
+    if (act.length) {
+      const mean = (k: 'tool_calls' | 'screenshots_taken' | 'screenshots_viewed'): number | null => {
+        const v = act.map((a) => a[k]).filter((x): x is number => typeof x === 'number');
+        return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null;
+      };
+      m.episodes_with_activity = act.length;
+      m.tool_calls_per_episode = mean('tool_calls');
+      m.screenshots_taken_per_episode = mean('screenshots_taken');
+      m.screenshots_viewed_per_episode = mean('screenshots_viewed');
+    }
   }
   return m;
 }

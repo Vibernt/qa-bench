@@ -208,12 +208,21 @@ export interface Finding {
   detected_at_s?: number;
   check?: string;
 }
+/** How a system worked (defs.schema.json#/$defs/activity). Reported beside the scores, never scored. */
+export interface Activity {
+  tool_calls?: number;
+  screenshots_taken?: number;
+  /** Times the system looked at an image, not just saved one. */
+  screenshots_viewed?: number;
+}
+
 export interface FindingsFile {
   episode_id: string;
   system: SystemId;
   findings: Finding[];
   cost?: Cost;
   wall_time_s?: number;
+  activity?: Activity;
   started_at?: string;
   finished_at?: string;
   notes?: string;
@@ -265,6 +274,7 @@ export interface EpisodeScore {
   status_reason?: string;
   wall_time_s?: number | null;
   cost?: Cost;
+  activity?: Activity;
   time_to_first_detection_s?: number | null;
   decisions: FindingDecision[];
   labels: LabelOutcome[];
@@ -302,6 +312,10 @@ export interface Metrics {
   natural_recall?: number | null;
   severity_judged?: number;
   severity_agreement?: number | null;
+  episodes_with_activity?: number;
+  tool_calls_per_episode?: number | null;
+  screenshots_taken_per_episode?: number | null;
+  screenshots_viewed_per_episode?: number | null;
 }
 export interface Report {
   bench_version: string;

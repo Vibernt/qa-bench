@@ -292,3 +292,30 @@ describe('exposure and difficulty', () => {
     expect(aggregateByExposure(old.episodes).novel!.defects_planted).toBe(3);
   });
 });
+
+describe('activity and the visual/accessibility headline rows', () => {
+  const ls = [label('v1', { category: 'visual', found_by: [{ kind: 'visual' }] }), label('a1', { category: 'a11y', found_by: [{ kind: 'a11y' }] })];
+  const files = (activity?: Record<string, number>) => ({ episode_id: 'e', system: { name: 'x', version: '1' }, findings: [finding('f1', '/inventory.html', 'visual')] as never, ...(activity ? { activity } : {}) });
+  const a = scoreEpisode({ ...episode('e1', ls), findings: files({ tool_calls: 10, screenshots_taken: 4, screenshots_viewed: 2 }), status: 'scored' });
+  const b = scoreEpisode({ ...episode('e2', ls), findings: files({ tool_calls: 20, screenshots_taken: 0, screenshots_viewed: 0 }), status: 'scored' });
+  const c = scoreEpisode({ ...episode('e3', ls), findings: files(), status: 'scored' });
+
+  it('copies activity into the episode score and averages it over the episodes that report it', () => {
+    expect(a.activity).toEqual({ tool_calls: 10, screenshots_taken: 4, screenshots_viewed: 2 });
+    expect(c.activity).toBeUndefined();
+    const m = aggregate([a, b, c]);
+    expect(m).toMatchObject({ episodes_with_activity: 2, tool_calls_per_episode: 15, screenshots_taken_per_episode: 2, screenshots_viewed_per_episode: 1 });
+    expect(aggregate([c]).episodes_with_activity).toBeUndefined();
+    assertValid('report', buildReport({ scores: [a, b, c], system: { name: 's', version: '1' }, runId: 'r' }));
+  });
+
+  it('shows visual and accessibility recall and activity only when present', () => {
+    const md = renderMarkdown(buildReport({ scores: [a, b], system: { name: 's', version: '1' }, runId: 'r' }));
+    expect(md).toContain('| Recall (visual) | 100.0% (2/2 visual defects) |');
+    expect(md).toContain('| Recall (accessibility) | 0.0% (0/2 accessibility defects) |');
+    expect(md).toContain('| Activity per episode | 15.0 tool calls, 2.0 screenshots taken, 1.0 looked at (2 episodes reported) |');
+    const plain = renderMarkdown(buildReport({ scores: [scoreEpisode({ ...episode('e4', [label('x')]), findings: files(), status: 'scored' })], system: { name: 's', version: '1' }, runId: 'r' }));
+    expect(plain).not.toContain('Recall (visual)');
+    expect(plain).not.toContain('Activity per episode');
+  });
+});
