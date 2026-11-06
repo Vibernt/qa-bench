@@ -1,0 +1,43 @@
+# Track 7.3 Visual, copy and design (BRIEF §7): planted layout, visual and accessibility faults that leave the
+# page's text and behaviour intact, so they show only to a system that looks at the rendered page (or measures it),
+# against deliberate redesigns that are not bugs. Generate with:
+#   npx tsx bin/qa-bench.ts generate visual
+# The brief is exploratory and states the supported devices, as a product brief would; it never says what to look
+# for. Expense app: 7 visual and accessibility defects (severity by impact: a phone layout that hides the row
+# actions is critical, a misaligned column is minor) and the restyle change. Swag Labs: visual_user (publicly
+# documented, exposure known) and its seasonal banner. 12 episodes cover every defect at least once.
+id: visual
+number: "7.3"
+title: Visual, copy and design
+description: >-
+  The expense app and Swag Labs with planted layout, visual and accessibility faults, against deliberate visual
+  changes. The brief gives the targets, the roles, the product's purpose and the supported devices. Twin episodes
+  switch on only deliberate changes, so anything reported there is a false alarm.
+brief:
+  mode: exploratory
+  wall_time_s: 600
+  goal: "Release check. Supported: current desktop browsers (1280 px and wider) and phones (from 360 px wide), with mouse, touch or keyboard."
+apps:
+  - app: expense-app
+    weight: 3
+    mutations:
+      - expense.amounts-misaligned
+      - expense.focus-ring-removed
+      - expense.login-error-invisible
+      - expense.long-title-overflows
+      - expense.low-contrast-text
+      - expense.phone-layout-overflow
+      - expense.total-covers-last-row
+    changes: [expense.restyle]
+  - app: swag-labs
+    weight: 1
+    mutations: [swag.visual-user]
+    changes: [swag.seasonal-banner]
+episodes:
+  count: 12
+  seed: 20261106
+  mutations_per_episode: { min: 2, max: 3 }
+  max_blatant_per_episode: 1
+  changes_per_episode: { min: 0, max: 1 }
+  clean_episodes: 1
+  twin_episodes: 2

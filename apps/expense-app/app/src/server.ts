@@ -6,6 +6,7 @@ import { fileURLToPath } from 'node:url';
 import { DatabaseSync } from 'node:sqlite';
 import { createDatabase, findExpense, findUser, verifyPassword, type Expense, type Role } from './db.js';
 import { variantLabels, type Variant } from './variant.js';
+import { themeCss } from './theme.js';
 import { FixtureError } from './catalogue/entry.js';
 import { hostileRoute } from './hostile.js';
 import type { FixtureIsolation } from './isolation.js';
@@ -25,6 +26,14 @@ export const defects = [
   'long_title_truncated',
   'title_not_escaped',
   'edit_resets_category',
+  // Visual and accessibility defects: CSS only (theme.ts), the markup is unchanged.
+  'layout_phone_overflow',
+  'total_covers_last_row',
+  'alert_text_invisible',
+  'long_title_overflows',
+  'muted_text_low_contrast',
+  'focus_ring_removed',
+  'amounts_misaligned',
 ] as const;
 
 export type Defect = (typeof defects)[number] | '';
@@ -79,7 +88,7 @@ function escapeHtml(value: string): string {
 }
 
 function page(title: string, body: string): string {
-  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>${escapeHtml(title)}</title></head><body><main><h1>${escapeHtml(title)}</h1>${body}</main></body></html>`;
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${escapeHtml(title)}</title><link rel="stylesheet" href="/theme.css"></head><body><main><h1>${escapeHtml(title)}</h1>${body}</main></body></html>`;
 }
 
 function sendHtml(response: ServerResponse, status: number, html: string): void {
@@ -151,6 +160,7 @@ export function createServer(options: ServerOptions): Server {
   const storedTitle = (title: string): string => has('long_title_truncated') ? title.slice(0, 20) : title;
   const variant = options.variant ?? '';
   const labels = variantLabels(variant);
+  const css = themeCss(active, variant);
   const idempotency = options.idempotency ?? process.env.IDEMPOTENCY === '1';
   if (idempotency) db.exec('CREATE TABLE IF NOT EXISTS idempotency_keys (token TEXT PRIMARY KEY, user_id INTEGER NOT NULL, payload TEXT NOT NULL)');
   const isolation = options.isolation ?? options.experimentalIsolation;
@@ -237,6 +247,11 @@ export function createServer(options: ServerOptions): Server {
       return session ? { id: session.userId, username: session.username, role: session.role, expiresAt: session.expiresAt } : undefined;
     })) return;
     if (variant === 'hostile' && request.method === 'GET' && hostileRoute(url, response)) return;
+    if (request.method === 'GET' && path === '/theme.css') {
+      response.writeHead(200, { 'content-type': 'text/css; charset=utf-8', 'cache-control': 'no-store' });
+      response.end(css);
+      return;
+    }
     if (request.method === 'GET' && path === '/login') {
       sendHtml(response, 200, loginPage());
       return;

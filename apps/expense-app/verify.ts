@@ -3,8 +3,11 @@
 // multi-defect combinations: every member's symptom must show in one container. Native script (needs docker), not a
 // CI test:
 //   npx tsx apps/expense-app/verify.ts [--image <tag>]
-// Builds the image unless --image is given. Plain HTTP: the app is server-rendered, so no browser is needed.
+// Builds the image unless --image is given. Most probes are plain HTTP (the app is server-rendered); the visual and
+// accessibility probes use Chromium (Playwright) and measure what a person would see: element geometry, the element
+// actually painted at a point, contrast ratios and focus styles.
 import { execFileSync } from 'node:child_process';
+import { chromium, type Browser, type Page } from 'playwright';
 import { readdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -82,6 +85,49 @@ function editFormFields(html: string): Record<string, string> {
     amount: html.match(/name="amount" type="number"[^>]*value="([^"]*)"/)?.[1] ?? '',
   };
 }
+
+// ---- browser helpers (visual and accessibility probes) -------------------------------------------------------
+let browserPromise: Promise<Browser> | undefined;
+const browser = (): Promise<Browser> => (browserPromise ??= chromium.launch());
+const DESKTOP = { width: 1280, height: 800 };
+const PHONE = { width: 390, height: 844 };
+
+/** Run `fn` on a fresh page, signed in as `who` (or signed out with `who` undefined), on /expenses. */
+async function inBrowser<T>(app: App, who: { username: string; password: string } | undefined, viewport: { width: number; height: number }, fn: (page: Page) => Promise<T>): Promise<T> {
+  const context = await (await browser()).newContext({ viewport });
+  const page = await context.newPage();
+  page.setDefaultTimeout(8000);
+  try {
+    if (who) {
+      await page.goto(app.base + '/login');
+      await page.fill('[name=username]', who.username);
+      await page.fill('[name=password]', who.password);
+      await page.click('button[type=submit]');
+      await page.waitForURL('**/expenses**');
+    }
+    return await fn(page);
+  } finally { await context.close(); }
+}
+
+/** WCAG contrast ratio of an element's text colour against the first opaque background behind it. */
+// Passed as source text: the test runner's transform would otherwise wrap the helper functions in a __name() call
+// that doesn't exist in the page.
+const CONTRAST_JS = `(el) => {
+  const rgb = (c) => (c.match(/[\\d.]+/g) || []).map(Number);
+  const f = (v) => { const x = v / 255; return x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4); };
+  const lum = (c) => 0.2126 * f(c[0]) + 0.7152 * f(c[1]) + 0.0722 * f(c[2]);
+  let bg = [255, 255, 255];
+  for (let n = el; n; n = n.parentElement) {
+    const c = rgb(getComputedStyle(n).backgroundColor);
+    if (c.length >= 3 && (c[3] === undefined ? 1 : c[3]) > 0.5) { bg = c; break; }
+  }
+  const a = lum(rgb(getComputedStyle(el).color)), b = lum(bg);
+  return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+}`;
+const contrastOf = (page: Page, selector: string): Promise<number> =>
+  page.locator(selector).first().evaluate((el, src) => (0, eval)(src)(el) as number, CONTRAST_JS);
+
+const LONG_TITLE = 'Annual partner conference registration and workshop fees';
 
 // Each probe returns true when its symptom is present. Probes touch different rows, so the members of a
 // combination can run one after another in the same container.
@@ -166,6 +212,60 @@ const probes: Record<string, (app: App) => Promise<boolean>> = {
     await post(app, c, '/expenses/2', { ...fields, amount: '70.00' });
     return rows((await get(app, c, '/expenses')).html).find((r) => r.title.startsWith('Team lunch'))?.category !== 'meals';
   },
+  // ---- visual and accessibility defects (browser) ----
+  'expense.phone-layout-overflow': (app) => inBrowser(app, EDITOR, PHONE, async (page) => {
+    // On a phone the first row's Delete button must be on screen; with the defect it is clipped off to the right
+    // and the page can't be scrolled to it.
+    const box = await page.locator('tbody tr').first().locator('button').boundingBox();
+    const scrollable = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
+    return !!box && box.x >= PHONE.width && !scrollable;
+  }),
+  'expense.total-covers-last-row': (app) => inBrowser(app, VIEWER, DESKTOP, async (page) => {
+    // The element painted at the middle of the last row's title is the total box, not the row.
+    const cell = await page.locator('tbody tr').last().locator('td').first().boundingBox();
+    if (!cell) return false;
+    return page.evaluate(([x, y]) => !!document.elementFromPoint(x!, y!)?.closest('[data-testid="total"]'), [cell.x + 20, cell.y + cell.height / 2]);
+  }),
+  'expense.login-error-invisible': (app) => inBrowser(app, undefined, DESKTOP, async (page) => {
+    await page.goto(app.base + '/login');
+    await page.fill('[name=username]', VIEWER.username);
+    await page.fill('[name=password]', 'not-the-password');
+    await page.click('button[type=submit]');
+    const text = (await page.locator('[role=alert]').innerText()).trim();
+    return text === 'Invalid credentials' && (await contrastOf(page, '[role=alert]')) < 1.5;
+  }),
+  'expense.long-title-overflows': (app) => inBrowser(app, EDITOR, DESKTOP, async (page) => {
+    // A long (but stored in full) title spills over the Category column instead of wrapping.
+    await page.goto(app.base + '/expenses/new');
+    await page.fill('[name=title]', LONG_TITLE);
+    await page.fill('[name=amount]', '12.00');
+    await page.click('button[type=submit]');
+    await page.waitForURL('**/expenses**');
+    const row = page.locator('tbody tr', { hasText: LONG_TITLE.slice(0, 20) }).last();
+    const spill = await row.locator('td').first().evaluate((td) => td.scrollWidth - td.clientWidth);
+    return spill > 40;
+  }),
+  'expense.low-contrast-text': (app) => inBrowser(app, VIEWER, DESKTOP, async (page) => (await contrastOf(page, 'tbody td:nth-child(2)')) < 3),
+  'expense.focus-ring-removed': (app) => inBrowser(app, VIEWER, DESKTOP, async (page) => {
+    // Tab to the filter's Apply button: the focused control shows no outline and no replacement ring.
+    await page.locator('select[name=category]').focus();
+    await page.keyboard.press('Tab');
+    return page.evaluate(() => {
+      const el = document.activeElement as HTMLElement | null;
+      if (!el || el.tagName !== 'BUTTON') return false;
+      const s = getComputedStyle(el);
+      return (s.outlineStyle === 'none' || s.outlineWidth === '0px') && s.boxShadow === 'none';
+    });
+  }),
+  'expense.amounts-misaligned': (app) => inBrowser(app, VIEWER, DESKTOP, async (page) => {
+    // The amounts' right edges should line up (right-aligned under the heading); with the defect they are ragged.
+    const rights = await page.locator('tbody td:nth-child(3)').evaluateAll((tds) => tds.map((td) => {
+      const r = document.createRange(); r.selectNodeContents(td); return r.getBoundingClientRect().right;
+    }));
+    return Math.max(...rights) - Math.min(...rights) > 4;
+  }),
+  'expense.restyle': (app) => inBrowser(app, VIEWER, DESKTOP, async (page) =>
+    (await page.locator('form[method=get] button').evaluate((b) => getComputedStyle(b).backgroundColor)) === 'rgb(11, 110, 95)'),
   'expense.relabel': async (app) => {
     const c = await login(app, EDITOR);
     const list = (await get(app, c, '/expenses')).html;
@@ -241,7 +341,19 @@ const switches: Record<string, Record<string, string>> = {
   'expense.title-not-escaped': { DEFECT: 'title_not_escaped' },
   'expense.edit-resets-category': { DEFECT: 'edit_resets_category' },
   'expense.relabel': { VARIANT: 'relabel' },
+  'expense.phone-layout-overflow': { DEFECT: 'layout_phone_overflow' },
+  'expense.total-covers-last-row': { DEFECT: 'total_covers_last_row' },
+  'expense.login-error-invisible': { DEFECT: 'alert_text_invisible' },
+  'expense.long-title-overflows': { DEFECT: 'long_title_overflows' },
+  'expense.low-contrast-text': { DEFECT: 'muted_text_low_contrast' },
+  'expense.focus-ring-removed': { DEFECT: 'focus_ring_removed' },
+  'expense.amounts-misaligned': { DEFECT: 'amounts_misaligned' },
+  'expense.restyle': { VARIANT: 'restyle' },
 };
+
+// The deliberate restyle must not look like any planted visual defect.
+const VISUAL = ['expense.phone-layout-overflow', 'expense.total-covers-last-row', 'expense.login-error-invisible', 'expense.long-title-overflows',
+  'expense.low-contrast-text', 'expense.focus-ring-removed', 'expense.amounts-misaligned'];
 
 // Multi-defect episodes: every member's symptom shows in one container, probed one after another. No two members
 // share an exclusive group (expense-create, expense-update, expense-filter).
@@ -252,6 +364,10 @@ const combinations: string[][] = [
   ['expense.stale-state', 'expense.ignored-filter', 'expense.permission-bypass'],
   ['expense.missing-persistence', 'expense.misleading-success', 'expense.wrong-total'],
   ['expense.wrong-total', 'expense.total-under-filter', 'expense.edit-resets-category'],
+  ['expense.phone-layout-overflow', 'expense.total-covers-last-row', 'expense.focus-ring-removed'],
+  ['expense.long-title-overflows', 'expense.login-error-invisible', 'expense.low-contrast-text'],
+  ['expense.amounts-misaligned', 'expense.wrong-total', 'expense.phone-layout-overflow'],
+  ['expense.total-covers-last-row', 'expense.edit-drops-cents', 'expense.login-error-invisible'],
 ];
 
 let failures = 0;
@@ -293,6 +409,26 @@ for (const members of combinations) {
   } finally { app.stop(); }
 }
 
+// Every planted defect and deliberate change has a switch and a probe, and nothing else does.
+{
+  const ids = ['mutations', 'changes'].flatMap((k) => readdirSync(join(here, k)).map((d) => (readFileSync(join(here, k, d, 'label.yaml'), 'utf8').match(/^id: (\S+)/m) ?? [])[1])).sort();
+  const same = JSON.stringify(ids) === JSON.stringify(Object.keys(switches).sort()) && JSON.stringify(ids) === JSON.stringify(Object.keys(probes).sort());
+  console.log(`${same ? 'ok  ' : 'FAIL'} every planted and change label has a switch and a probe`);
+  if (!same) failures++;
+}
+
+// With the deliberate restyle on, no visual defect shows.
+{
+  const app = start(switches['expense.restyle']!);
+  try {
+    await waitUp(app);
+    const shown: string[] = [];
+    for (const id of VISUAL) if (await probes[id]!(app)) shown.push(id);
+    console.log(`${shown.length ? 'FAIL' : 'ok  '} VARIANT=restyle shows no visual defect${shown.length ? ` (shows ${shown.join(', ')})` : ''}`);
+    if (shown.length) failures++;
+  } finally { app.stop(); }
+}
+
 // Every natural label needs a probe, and every probe a label.
 {
   const ids = readdirSync(join(here, 'natural')).map((d) => (readFileSync(join(here, 'natural', d, 'label.yaml'), 'utf8').match(/^id: (\S+)/m) ?? [])[1]).sort();
@@ -324,5 +460,6 @@ for (const [id, probe] of Object.entries(naturalProbes)) {
   } finally { app.stop(); }
 }
 
+if (browserPromise) await (await browserPromise).close();
 console.log(failures ? `${failures} check(s) failed` : 'all checks passed');
 process.exit(failures ? 1 : 0);

@@ -1,0 +1,23 @@
+id: expense.long-title-overflows
+app: expense-app
+title: "A long title runs over the Category column instead of wrapping"
+description: "Titles don't wrap, and the Title column has a fixed width, so a long title (about 35 characters or more) is drawn on top of the Category text in its row. Short titles, including all the seed data, look fine."
+track: visual
+kind: defect
+category: visual
+class: deterministic
+severity: major
+difficulty: subtle
+exposure: novel
+where: { route: /expenses, role: editor }
+switch:
+  env: { DEFECT: long_title_overflows }
+  exclusive: expense-title   # long_title_truncated cuts titles to 20 characters, which never overflow
+found_by:
+  - kind: visual
+    also_categories: [usability]
+    description_pattern: '^(?=[\s\S]*(title|name|text|description))(?=[\s\S]*(overlap|overflow|spill|runs? (into|over|across)|over(lay|writ|draw)|collid|on top of|bleed|into (the )?(next|categor|adjacent)|over the categor|doesn.t wrap|does not wrap|no wrap|not wrap))'
+    note: "A long title overlaps the Category column in the list"
+tolerance: { route: prefix, role: any }
+split: public
+upstream_ref: "apps/expense-app/app/src/theme.ts (DEFECT=long_title_overflows); checked by apps/expense-app/verify.ts"

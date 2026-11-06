@@ -1,0 +1,22 @@
+id: expense.phone-layout-overflow
+app: expense-app
+title: "On a phone the expense table is cut off: only the titles show, and Edit and Delete are unreachable"
+description: "Below 600 px the table keeps its desktop width (760 px) inside a container that clips it, so on a 390 px phone only the Title column is on screen. Category, Amount and the Edit and Delete controls are cut off, and the page can't be scrolled sideways to reach them. Desktop is unaffected."
+track: visual
+kind: defect
+category: visual
+class: deterministic
+severity: critical
+difficulty: subtle
+exposure: novel
+where: { route: /expenses, role: editor }
+switch:
+  env: { DEFECT: layout_phone_overflow }
+found_by:
+  - kind: visual
+    also_categories: [usability, functional]
+    description_pattern: '^(?=[\s\S]*(phone|mobile|narrow|small (screen|viewport|width)|\b3[2-9]\d ?(px|wide|x)|\b4[0-2]\d ?(px|wide|x)|viewport|responsive|handheld|smartphone))(?=[\s\S]*(cut off|clipped|hidden|off[- ]?screen|overflow|not (visible|shown|reachable|accessible)|invisible|can.t (see|reach|scroll|access|tap|use)|cannot (see|reach|scroll|access|tap|use)|unreachable|only (the )?title|missing (column|amount|categor|edit|delete|action)|no (amount|categor|edit|delete|action)|scroll (horizontally|sideways)|wider than))'
+    note: "At 390 px only the Title column shows; Category, Amount, Edit and Delete are clipped and can't be scrolled to"
+tolerance: { route: prefix, role: any }
+split: public
+upstream_ref: "apps/expense-app/app/src/theme.ts (DEFECT=layout_phone_overflow); checked by apps/expense-app/verify.ts"

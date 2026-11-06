@@ -295,6 +295,15 @@ describe('generateTrack', () => {
   });
 });
 
+/** The defect and change ids a track lists for one app ('*' means all of the app's). */
+function listed(track: { apps: { app: string; mutations?: '*' | string[]; changes?: '*' | string[] }[] }, appId: string, apps: ReturnType<typeof loadApps>): string[] {
+  const ta = track.apps.find((a) => a.app === appId);
+  const app = apps.get(appId);
+  if (!ta || !app) return [];
+  const pick = (spec: '*' | string[] | undefined, all: { id: string }[]): string[] => (spec === undefined || spec === '*' ? all.map((l) => l.id) : spec);
+  return [...pick(ta.mutations, app.mutations), ...pick(ta.changes, app.changes)];
+}
+
 describe('repo tracks', () => {
   it('generates the regression track for the expense app with every defect and the change covered', () => {
     const r = generateTrack(join(REPO_ROOT, 'tracks', 'regression.yaml'), { write: false, onlyApps: ['expense-app'] });
@@ -306,7 +315,9 @@ describe('repo tracks', () => {
     const expense = apps.get('expense-app')!;
     const byId = new Map(expense.mutations.map((l) => [l.id, l]));
     const on = new Set(eps.flatMap((e) => [...e.active.mutations, ...e.active.changes]));
-    for (const l of [...expense.mutations, ...expense.changes]) expect(on.has(l.id)).toBe(true);
+    for (const id of listed(r.track, 'expense-app', apps)) expect(on.has(id), id).toBe(true);
+    // The visual and accessibility defects and the restyle belong to track 7.3, not regression.
+    expect([...on].some((id) => /phone-layout|restyle|focus-ring/.test(id))).toBe(false);
     for (const e of eps) {
       expect(e.env.QA_BENCH_VIEWER_ACCOUNTS).toMatch(/^viewer-[0-9a-f]{4}:[A-Za-z0-9]{16}$/);
       expect(e.active.mutations.length).toBeLessThanOrEqual(3);
@@ -330,16 +341,27 @@ describe('repo tracks', () => {
     expect(eps.filter((e) => e.kind === 'twin').length).toBe(2);
   });
 
-  it('plants every repo defect and change at least once across the regression and noise tracks', () => {
+  it('each track plants every defect and change it lists, and every repo defect and change is in some track', () => {
     const apps = loadApps();
-    for (const track of ['regression', 'noise']) {
+    const everywhere = new Set<string>();
+    for (const track of ['regression', 'exploration', 'noise', 'visual']) {
       const r = generateTrack(join(REPO_ROOT, 'tracks', `${track}.yaml`), { write: false });
       const on = new Set(r.episodes.flatMap((g) => [...g.episode.active.mutations, ...g.episode.active.changes]));
-      const appIds = new Set(r.episodes.map((g) => g.episode.app));
-      for (const id of appIds) {
-        const app = apps.get(id)!;
-        for (const l of [...app.mutations, ...app.changes]) expect(on.has(l.id), `${track}: ${l.id}`).toBe(true);
-      }
+      for (const ta of r.track.apps) for (const id of listed(r.track, ta.app, apps)) expect(on.has(id), `${track}: ${id}`).toBe(true);
+      for (const id of on) everywhere.add(id);
     }
+    for (const app of apps.values()) for (const l of [...app.mutations, ...app.changes]) expect(everywhere.has(l.id), l.id).toBe(true);
+  });
+
+  it('generates the visual track (7.3): exploratory briefs that state the supported devices, visual defects only', () => {
+    const r = generateTrack(join(REPO_ROOT, 'tracks', 'visual.yaml'), { write: false });
+    expect(r.track.number).toBe('7.3');
+    expect(r.track.brief?.mode).toBe('exploratory');
+    expect(r.track.brief?.goal).toMatch(/phones/);
+    const apps = loadApps();
+    const label = new Map([...apps.values()].flatMap((a) => [...a.mutations, ...a.changes]).map((l) => [l.id, l]));
+    const eps = r.episodes.map((g) => g.episode);
+    expect(eps.length).toBe(12);
+    for (const e of eps) for (const id of e.active.mutations) expect(['visual', 'a11y']).toContain(label.get(id)!.category);
   });
 });

@@ -154,6 +154,37 @@ const samples: Record<string, S[]> = {
     ['/expenses', 'editor', 'functional', 'After editing only the amount of a meals expense, it is now listed as travel: the category resets to the first option.'],
     ['/expenses/5/edit', 'editor', 'functional', 'Category is lost on edit; the dropdown defaults to travel.'],
   ],
+  'expense.phone-layout-overflow': [
+    ['/expenses', 'editor', 'visual', 'On a 390 px phone the expense table is cut off on the right: only the Title column is visible and Edit/Delete cannot be reached.'],
+    ['/expenses', 'viewer', 'usability', 'Mobile layout is broken: the amount and category columns are clipped and the page does not scroll horizontally.'],
+    ['/expenses', 'editor', 'functional', 'At phone width the Delete and Edit buttons are off-screen, so an editor cannot edit expenses on mobile.'],
+  ],
+  'expense.total-covers-last-row': [
+    ['/expenses', 'viewer', 'visual', 'The Total box overlaps the last row of the table, hiding the "Project dinner" expense.'],
+    ['/expenses', 'viewer', 'visual', 'The last expense row is covered by the total panel; you can only see a sliver of it.'],
+    ['/expenses', 'editor', 'usability', 'The total is drawn over the bottom row so its Edit and Delete buttons cannot be clicked.'],
+  ],
+  'expense.login-error-invisible': [
+    ['/login', 'viewer', 'visual', 'After a wrong password an empty red box appears: the error text is invisible because it is the same colour as the background.'],
+    ['/login', 'viewer', 'error-handling', 'Failed sign-in gives no visible reason; the alert "Invalid credentials" is in the DOM but unreadable.'],
+    ['/login', 'editor', 'a11y', 'The login error message has a contrast ratio of about 1.1:1, so it cannot be read.'],
+  ],
+  'expense.long-title-overflows': [
+    ['/expenses', 'editor', 'visual', 'A long expense title overlaps the Category column instead of wrapping.'],
+    ['/expenses', 'editor', 'visual', 'Titles do not wrap: "Annual partner conference registration..." runs into the category text of the same row.'],
+  ],
+  'expense.low-contrast-text': [
+    ['/expenses', 'viewer', 'a11y', 'The category column, the table headings and the "Signed in as" line are very light grey (contrast about 1.7:1), failing WCAG AA.'],
+    ['/expenses', 'viewer', 'visual', 'Secondary text is too pale to read on the white table.'],
+  ],
+  'expense.focus-ring-removed': [
+    ['/expenses', 'viewer', 'a11y', 'There is no visible focus indicator: tabbing through the filter and buttons shows no outline.'],
+    ['/login', 'viewer', 'a11y', 'Keyboard users cannot see which field has focus; outline: none is applied everywhere.'],
+  ],
+  'expense.amounts-misaligned': [
+    ['/expenses', 'viewer', 'visual', 'The amounts are left-aligned while the Amount heading is right-aligned, so the decimals do not line up.'],
+    ['/expenses', 'viewer', 'visual', 'The Amount column looks ragged: values are not right-justified under their heading.'],
+  ],
 };
 // Natural defects (real bugs on every build): reports from the v0.2 agent runs, lightly trimmed, plus rewordings.
 const naturalSamples: Record<string, S[]> = {

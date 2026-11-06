@@ -1,0 +1,22 @@
+id: expense.focus-ring-removed
+app: expense-app
+title: "Keyboard focus is invisible: no focus ring on any control"
+description: "A global rule removes the focus outline from every element and nothing replaces it, so a keyboard user tabbing through the sign-in form, the filter or the row actions can't see where they are."
+track: visual
+kind: defect
+category: a11y
+class: deterministic
+severity: minor
+difficulty: subtle
+exposure: novel
+where: { route: "*" }
+switch:
+  env: { DEFECT: focus_ring_removed }
+found_by:
+  - kind: a11y
+    also_categories: [usability, visual]
+    description_pattern: 'focus (ring|outline|indicator|style|state|is (not |in)visible)|focus.{0,30}(invisible|not visible|no visible|hidden|removed|missing)|(no|without|missing|removed) (visible )?(focus|outline)|outline: ?(none|0)|keyboard (user|navigation|focus|only)|tab(bing)? (through|key|order).{0,60}(can.t|cannot|no|not|invisible)'
+    note: "Tabbing shows no focus ring on links, buttons or fields"
+tolerance: { route: prefix, role: any }
+split: public
+upstream_ref: "apps/expense-app/app/src/theme.ts (DEFECT=focus_ring_removed); checked by apps/expense-app/verify.ts"

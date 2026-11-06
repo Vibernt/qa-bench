@@ -1,0 +1,22 @@
+id: expense.total-covers-last-row
+app: expense-app
+title: "The total box is drawn over the last expense row, hiding it"
+description: "The Total box overlaps the bottom of the table, so the last expense (Project dinner on the seed data) is painted over and can't be read or clicked. The row is in the page and counted in the total; it is only hidden."
+track: visual
+kind: defect
+category: visual
+class: deterministic
+severity: major
+difficulty: blatant
+exposure: novel
+where: { route: /expenses, role: viewer }
+switch:
+  env: { DEFECT: total_covers_last_row }
+found_by:
+  - kind: visual
+    also_categories: [usability, functional]
+    description_pattern: '^(?=[\s\S]*(total|last (row|expense|entry|item|line)|bottom (row|expense)|project dinner|final (row|expense|entry)))(?=[\s\S]*(overlap|overlay|cover|obscur|on top of|over the (last|bottom|final)|drawn over|painted over|hid(es|den|ing) (the )?(last|bottom|final) (row|expense|entry)|hidden (behind|under|by) the total|behind the total|under the total|(cut|clipped) (off )?by the total|can.t (see|read) the last|not visible))'
+    note: "The Total box covers the last row of the table"
+tolerance: { route: prefix, role: any }
+split: public
+upstream_ref: "apps/expense-app/app/src/theme.ts (DEFECT=total_covers_last_row); checked by apps/expense-app/verify.ts"

@@ -14,7 +14,25 @@ brief:
   mode: exploratory
   wall_time_s: 600
 apps:
-  - { app: expense-app, weight: 1, mutations: '*', changes: '*' }
+  # The functional, consistency and permission defects (the visual and accessibility ones are track 7.3), and
+  # the relabel change only (restyle is a visual change).
+  - app: expense-app
+    weight: 1
+    mutations:
+      - expense.delete-open-to-viewer
+      - expense.duplicate-write
+      - expense.edit-drops-cents
+      - expense.edit-resets-category
+      - expense.ignored-filter
+      - expense.long-title-truncated
+      - expense.misleading-success
+      - expense.missing-persistence
+      - expense.permission-bypass
+      - expense.stale-state
+      - expense.title-not-escaped
+      - expense.total-under-filter
+      - expense.wrong-total
+    changes: [expense.relabel]
   - { app: swag-labs, weight: 1, mutations: '*', changes: '*' }
 episodes:
   count: 17
