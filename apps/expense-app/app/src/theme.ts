@@ -1,6 +1,6 @@
 // The app's stylesheet, served at /theme.css. The clean design is responsive: below 600 px the expense table turns
 // into stacked rows, so every action stays on screen on a phone. Planted visual and accessibility defects
-// (server.ts `defects`) and the restyle variant append rules to it; the markup never changes.
+// (server.ts `defects`) and the restyle variant edit its rules in place (defectEdits); the markup never changes.
 
 const base = `:root {
   --bg: #f4f6f8;
@@ -67,44 +67,61 @@ td:nth-child(4) button { background: transparent; color: var(--danger); border-c
 }
 `;
 
-/** Rules appended for each planted visual or accessibility defect, keyed by its DEFECT name. */
-export const defectCss: Record<string, string> = {
-  layout_phone_overflow: `@media (max-width: 600px) {
-  main { overflow-x: clip; }
-  table { display: table; min-width: 760px; }
-  thead { display: table-header-group; }
-  tbody { display: table-row-group; }
-  tr { display: table-row; }
-  td { display: table-cell; }
-}
+/**
+ * Each planted visual or accessibility defect (keyed by its DEFECT name) and the restyle variant edit the clean
+ * stylesheet in place: [exact text, replacement] pairs, applied in order. A regression in a real stylesheet changes
+ * a rule where it stands, so the served file reads as one consistent stylesheet, not a clean one with overrides
+ * appended. Every edit must match exactly once (themeCss throws otherwise).
+ */
+export const defectEdits: Record<string, [string, string][]> = {
+  layout_phone_overflow: [[
+    `  thead { display: none; }
+  table, tbody, tr, td { display: block; width: 100%; }
+  tr { border-bottom: 1px solid var(--border); padding: 8px 0; }
+  td { border: none; padding: 2px 12px; }
+  td:nth-child(3) { text-align: left; }
+  td:nth-child(4) { padding-top: 6px; }
 `,
-  total_covers_last_row: `[data-testid="total"] { position: relative; z-index: 1; margin-top: -46px; }
+    `  main { overflow-x: clip; }
+  table { min-width: 760px; }
 `,
-  alert_text_invisible: `[role="alert"] { color: var(--danger-bg); }
-`,
-  long_title_overflows: `table { table-layout: fixed; }
-th:first-child { width: 32%; }
-td:first-child { white-space: nowrap; }
-`,
-  muted_text_low_contrast: `:root { --muted: #c3c8cd; }
-`,
-  focus_ring_removed: `*:focus, *:focus-visible { outline: none; }
-`,
-  amounts_misaligned: `td:nth-child(3) { text-align: left; }
-`,
+  ]],
+  total_covers_last_row: [['border-radius: var(--radius); padding: 10px 12px; margin-top: 12px;', 'border-radius: var(--radius); padding: 10px 12px; margin-top: -46px; position: relative;']],
+  alert_text_invisible: [['[role="alert"] { color: var(--danger);', '[role="alert"] { color: var(--danger-bg);']],
+  long_title_overflows: [
+    ['table { width: 100%; border-collapse: collapse;', 'table { width: 100%; table-layout: fixed; border-collapse: collapse;'],
+    ['td:nth-child(2) { color: var(--muted); }', 'th:first-child { width: 32%; }\ntd:first-child { white-space: nowrap; }\ntd:nth-child(2) { color: var(--muted); }'],
+  ],
+  muted_text_low_contrast: [['  --muted: #56606b;', '  --muted: #c3c8cd;']],
+  focus_ring_removed: [[':focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }', '*:focus, *:focus-visible { outline: none; }']],
+  amounts_misaligned: [['th:nth-child(3), td:nth-child(3) { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }',
+    'th:nth-child(3) { text-align: right; }\ntd:nth-child(3) { white-space: nowrap; font-variant-numeric: tabular-nums; }']],
 };
 
 /** VARIANT=restyle: a deliberate redesign (new palette, compact rows, pill buttons). Behaviour is unchanged. */
-const restyle = `:root { --bg: #eef5f3; --accent: #0b6e5f; --border: #c7dcd6; --radius: 14px; }
-h1 { font-size: 1.4rem; letter-spacing: 0.01em; }
-button { border-radius: 999px; }
-th, td { padding: 6px 10px; }
-th { text-transform: none; letter-spacing: 0; }
-`;
+const restyleEdits: [string, string][] = [
+  ['  --bg: #f4f6f8;', '  --bg: #eef5f3;'],
+  ['  --accent: #1f5fbf;', '  --accent: #0b6e5f;'],
+  ['  --border: #d5dbe1;', '  --border: #c7dcd6;'],
+  ['  --radius: 8px;', '  --radius: 14px;'],
+  ['h1 { font-size: 1.6rem; margin: 0 0 16px; }', 'h1 { font-size: 1.4rem; letter-spacing: 0.01em; margin: 0 0 16px; }'],
+  ['  font: inherit; padding: 8px 14px; border-radius: 6px;', '  font: inherit; padding: 8px 14px; border-radius: 999px;'],
+  ['th, td { padding: 10px 12px;', 'th, td { padding: 6px 10px;'],
+  ['th { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.04em;', 'th { font-size: 0.85rem;'],
+];
+
+function apply(css: string, edits: [string, string][], what: string): string {
+  for (const [from, to] of edits) {
+    const at = css.indexOf(from);
+    if (at < 0 || css.indexOf(from, at + 1) >= 0) throw new Error(`theme: ${what} edit does not match exactly once: ${from.slice(0, 60)}`);
+    css = css.slice(0, at) + to + css.slice(at + from.length);
+  }
+  return css;
+}
 
 export function themeCss(active: ReadonlySet<string>, variant: string): string {
-  const parts = [base];
-  if (variant === 'restyle') parts.push(restyle);
-  for (const [name, css] of Object.entries(defectCss)) if (active.has(name)) parts.push(css);
-  return parts.join('');
+  let css = base;
+  if (variant === 'restyle') css = apply(css, restyleEdits, 'restyle');
+  for (const [name, edits] of Object.entries(defectEdits)) if (active.has(name)) css = apply(css, edits, name);
+  return css;
 }
