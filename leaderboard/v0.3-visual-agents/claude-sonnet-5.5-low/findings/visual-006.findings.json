@@ -1,0 +1,131 @@
+{
+  "episode_id": "visual-006",
+  "system": {
+    "name": "claude-sonnet-5.5-low",
+    "version": "claude-sonnet-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer"
+      },
+      "category": "visual",
+      "description": "The last product's (Test.allTheThings() T-Shirt Red) Add to cart button overflows the right edge of its card, at desktop and at 360px.",
+      "confidence": 0.7,
+      "severity": "major",
+      "repro": [
+        "Sign in",
+        "View inventory at 1280px or 360px"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "d-inv.png"
+        },
+        {
+          "kind": "screenshot",
+          "path": "m-inv.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer"
+      },
+      "category": "visual",
+      "description": "Cart icon is misplaced in the header: it sits below the header bar, overlapping the sort dropdown area, instead of at the top right.",
+      "confidence": 0.5,
+      "severity": "minor",
+      "repro": [
+        "Sign in",
+        "Look at header at 1280px"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "d-inv.png"
+        }
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer"
+      },
+      "category": "consistency",
+      "description": "Prices are formatted inconsistently, dropping trailing zeros ($6.2, $61.7, $27.1) instead of two decimals.",
+      "confidence": 0.6,
+      "severity": "minor",
+      "repro": [
+        "Sign in",
+        "View prices"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "d-inv.png"
+        }
+      ]
+    },
+    {
+      "id": "f4",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer"
+      },
+      "category": "consistency",
+      "description": "Product prices differ between page loads/viewports (Backpack $74.16 vs $56.83, Bike Light $65.56 vs $69.06) and the product order differs, so prices are unstable.",
+      "confidence": 0.4,
+      "severity": "major",
+      "repro": [
+        "Sign in at 1280px, note prices",
+        "Sign in at 360px, compare"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "d-inv.png"
+        },
+        {
+          "kind": "screenshot",
+          "path": "m-inv.png"
+        }
+      ]
+    },
+    {
+      "id": "f5",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer"
+      },
+      "category": "visual",
+      "description": "Some product titles (Bolt T-Shirt, Fleece Jacket) are centred/misaligned while others are left-aligned, and mobile cards have large empty gaps above the price.",
+      "confidence": 0.4,
+      "severity": "minor",
+      "repro": [
+        "View inventory"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "d-inv.png"
+        }
+      ]
+    }
+  ],
+  "cost": {
+    "model_usd": 0.01259,
+    "notes": "estimate from 14471 total tokens (85% cache read / 10% input / 5% output); range $0.0029-$0.0347"
+  },
+  "wall_time_s": 30.9,
+  "activity": {
+    "tool_calls": 6,
+    "screenshots_taken": 1,
+    "screenshots_viewed": 2
+  }
+}

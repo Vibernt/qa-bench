@@ -1,0 +1,3210 @@
+{
+  "bench_version": "0.2.0-dev",
+  "generated_at": "2026-11-06T06:54:31.936Z",
+  "system": {
+    "name": "claude-sonnet-5.5-low",
+    "version": "claude-sonnet-5-5@low"
+  },
+  "run": {
+    "id": "v3-claude-sonnet-5.5-low",
+    "tracks": [
+      "visual"
+    ],
+    "seeds": {
+      "visual": 20261106
+    },
+    "upstreams": {
+      "expense-app": {
+        "repo": "https://github.com/Vibernt/qa-bench",
+        "use": "adopt",
+        "pin": {
+          "path": "apps/expense-app/app"
+        }
+      },
+      "swag-labs": {
+        "repo": "https://github.com/saucelabs/sample-app-web",
+        "use": "adopt",
+        "pin": {
+          "commit": "ad62bb2d7950bc5747af46a75aa1fb1bd6b8622a",
+          "ref": "main"
+        }
+      }
+    },
+    "matcher": "deterministic-3"
+  },
+  "episodes": [
+    {
+      "episode_id": "visual-001",
+      "track": "visual",
+      "app": "expense-app",
+      "split": "public",
+      "answer_key_sha256": "2405e9b4f31480f6d5032f4b8fc8d61c50989832f130fd50e9cc9e4bc8d6d871",
+      "status": "scored",
+      "wall_time_s": 38.6,
+      "cost": {
+        "model_usd": 0.013765,
+        "notes": "estimate from 15822 total tokens (85% cache read / 10% input / 5% output); range $0.0032-$0.0380"
+      },
+      "activity": {
+        "tool_calls": 8,
+        "screenshots_taken": 2,
+        "screenshots_viewed": 2
+      },
+      "time_to_first_detection_s": null,
+      "decisions": [
+        {
+          "finding_id": "f1",
+          "decision": "true_positive",
+          "label_id": "expense.low-contrast-text",
+          "category": "a11y",
+          "reason": "first finding to hit defect expense.low-contrast-text: matches expense.low-contrast-text[0]: route, role, category; finding has no locator",
+          "severity_agrees": true
+        }
+      ],
+      "labels": [
+        {
+          "label_id": "expense.login-error-invisible",
+          "kind": "defect",
+          "category": "visual",
+          "class": "deterministic",
+          "severity": "major",
+          "exposure": "novel",
+          "difficulty": "subtle",
+          "hit": false
+        },
+        {
+          "label_id": "expense.long-title-overflows",
+          "kind": "defect",
+          "category": "visual",
+          "class": "deterministic",
+          "severity": "major",
+          "exposure": "novel",
+          "difficulty": "subtle",
+          "hit": false
+        },
+        {
+          "label_id": "expense.low-contrast-text",
+          "kind": "defect",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": true,
+          "finding_ids": [
+            "f1"
+          ]
+        },
+        {
+          "label_id": "expense.control-borders-low-contrast",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.delete-missing-id",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.flash-in-url",
+          "kind": "natural",
+          "category": "usability",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.focus-ring-low-contrast",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.huge-amount-breaks-list",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "critical",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.no-security-headers",
+          "kind": "natural",
+          "category": "security-hygiene",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.no-thousands-separator",
+          "kind": "natural",
+          "category": "copy",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.phone-rows-unlabelled",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.rejected-form-loses-input",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.row-actions-unnamed",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.silent-delete",
+          "kind": "natural",
+          "category": "usability",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.small-touch-targets",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.unbroken-title-overflows",
+          "kind": "natural",
+          "category": "visual",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.viewer-empty-actions-column",
+          "kind": "natural",
+          "category": "usability",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.zero-amount-accepted",
+          "kind": "natural",
+          "category": "functional",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        }
+      ]
+    },
+    {
+      "episode_id": "visual-002",
+      "track": "visual",
+      "app": "expense-app",
+      "split": "public",
+      "answer_key_sha256": "26442f1f1c83ef24e202e07e7247f7c923a6c84ddf1068a184d4bacffb703f16",
+      "status": "scored",
+      "wall_time_s": 35.4,
+      "cost": {
+        "model_usd": 0.013387,
+        "notes": "estimate from 15387 total tokens (85% cache read / 10% input / 5% output); range $0.0031-$0.0369"
+      },
+      "activity": {
+        "tool_calls": 8,
+        "screenshots_taken": 2,
+        "screenshots_viewed": 2
+      },
+      "time_to_first_detection_s": null,
+      "decisions": [
+        {
+          "finding_id": "f1",
+          "decision": "true_positive",
+          "label_id": "expense.total-covers-last-row",
+          "category": "visual",
+          "reason": "first finding to hit defect expense.total-covers-last-row: matches expense.total-covers-last-row[0]: route, role, category; finding has no locator",
+          "severity_agrees": true
+        }
+      ],
+      "labels": [
+        {
+          "label_id": "expense.focus-ring-removed",
+          "kind": "defect",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "subtle",
+          "hit": false
+        },
+        {
+          "label_id": "expense.total-covers-last-row",
+          "kind": "defect",
+          "category": "visual",
+          "class": "deterministic",
+          "severity": "major",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": true,
+          "finding_ids": [
+            "f1"
+          ]
+        },
+        {
+          "label_id": "expense.restyle",
+          "kind": "change",
+          "category": "visual",
+          "class": "judged",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.control-borders-low-contrast",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.delete-missing-id",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.flash-in-url",
+          "kind": "natural",
+          "category": "usability",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.focus-ring-low-contrast",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.huge-amount-breaks-list",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "critical",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.no-security-headers",
+          "kind": "natural",
+          "category": "security-hygiene",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.no-thousands-separator",
+          "kind": "natural",
+          "category": "copy",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.phone-rows-unlabelled",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.rejected-form-loses-input",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.row-actions-unnamed",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.silent-delete",
+          "kind": "natural",
+          "category": "usability",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.small-touch-targets",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.unbroken-title-overflows",
+          "kind": "natural",
+          "category": "visual",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.viewer-empty-actions-column",
+          "kind": "natural",
+          "category": "usability",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.zero-amount-accepted",
+          "kind": "natural",
+          "category": "functional",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        }
+      ]
+    },
+    {
+      "episode_id": "visual-003",
+      "track": "visual",
+      "app": "expense-app",
+      "split": "public",
+      "answer_key_sha256": "d7d44b47c6daaa9fe9eddb7052c35cb3a6b6bb444091d231f08130db9add94a9",
+      "status": "scored",
+      "wall_time_s": 37.4,
+      "cost": {
+        "model_usd": 0.013355,
+        "notes": "estimate from 15350 total tokens (85% cache read / 10% input / 5% output); range $0.0031-$0.0368"
+      },
+      "activity": {
+        "tool_calls": 8,
+        "screenshots_taken": 2,
+        "screenshots_viewed": 2
+      },
+      "time_to_first_detection_s": null,
+      "decisions": [
+        {
+          "finding_id": "f1",
+          "decision": "true_positive",
+          "label_id": "expense.phone-layout-overflow",
+          "category": "visual",
+          "reason": "first finding to hit defect expense.phone-layout-overflow: matches expense.phone-layout-overflow[0]: route, role, category; finding has no locator",
+          "severity_agrees": false
+        },
+        {
+          "finding_id": "f2",
+          "decision": "true_positive",
+          "label_id": "expense.amounts-misaligned",
+          "category": "visual",
+          "reason": "first finding to hit defect expense.amounts-misaligned: matches expense.amounts-misaligned[0]: route, role, category; finding has no locator",
+          "severity_agrees": true
+        }
+      ],
+      "labels": [
+        {
+          "label_id": "expense.amounts-misaligned",
+          "kind": "defect",
+          "category": "visual",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": true,
+          "finding_ids": [
+            "f2"
+          ]
+        },
+        {
+          "label_id": "expense.phone-layout-overflow",
+          "kind": "defect",
+          "category": "visual",
+          "class": "deterministic",
+          "severity": "critical",
+          "exposure": "novel",
+          "difficulty": "subtle",
+          "hit": true,
+          "finding_ids": [
+            "f1"
+          ]
+        },
+        {
+          "label_id": "expense.restyle",
+          "kind": "change",
+          "category": "visual",
+          "class": "judged",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.control-borders-low-contrast",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.delete-missing-id",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.flash-in-url",
+          "kind": "natural",
+          "category": "usability",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.focus-ring-low-contrast",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.huge-amount-breaks-list",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "critical",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.no-security-headers",
+          "kind": "natural",
+          "category": "security-hygiene",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.no-thousands-separator",
+          "kind": "natural",
+          "category": "copy",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.phone-rows-unlabelled",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.rejected-form-loses-input",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.row-actions-unnamed",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.silent-delete",
+          "kind": "natural",
+          "category": "usability",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.small-touch-targets",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.unbroken-title-overflows",
+          "kind": "natural",
+          "category": "visual",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.viewer-empty-actions-column",
+          "kind": "natural",
+          "category": "usability",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.zero-amount-accepted",
+          "kind": "natural",
+          "category": "functional",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        }
+      ]
+    },
+    {
+      "episode_id": "visual-004",
+      "track": "visual",
+      "app": "swag-labs",
+      "split": "public",
+      "answer_key_sha256": "498fbf8b3c66150afe75334622c3897aa19686b3c7fbb1cad14a677f8d5edf4f",
+      "status": "scored",
+      "wall_time_s": 28.8,
+      "cost": {
+        "model_usd": 0.012591,
+        "notes": "estimate from 14472 total tokens (85% cache read / 10% input / 5% output); range $0.0029-$0.0347"
+      },
+      "activity": {
+        "tool_calls": 6,
+        "screenshots_taken": 1,
+        "screenshots_viewed": 2
+      },
+      "time_to_first_detection_s": null,
+      "decisions": [
+        {
+          "finding_id": "f1",
+          "decision": "true_positive",
+          "label_id": "swag.visual-user",
+          "category": "visual",
+          "reason": "first finding to hit defect swag.visual-user: matches swag.visual-user[9]: route, role, category; finding has no locator",
+          "severity_agrees": false
+        },
+        {
+          "finding_id": "f2",
+          "decision": "duplicate",
+          "label_id": "swag.visual-user",
+          "category": "visual",
+          "reason": "defect swag.visual-user already found by f1: matches swag.visual-user[12]: route, role, category; finding has no locator"
+        },
+        {
+          "finding_id": "f3",
+          "decision": "duplicate",
+          "label_id": "swag.visual-user",
+          "category": "visual",
+          "reason": "defect swag.visual-user already found by f1: matches swag.visual-user[12]: route, role, category; finding has no locator"
+        }
+      ],
+      "labels": [
+        {
+          "label_id": "swag.visual-user",
+          "kind": "defect",
+          "category": "visual",
+          "class": "judged",
+          "severity": "major",
+          "exposure": "known",
+          "difficulty": "blatant",
+          "hit": true,
+          "finding_ids": [
+            "f1",
+            "f2",
+            "f3"
+          ]
+        },
+        {
+          "label_id": "swag.seasonal-banner",
+          "kind": "change",
+          "category": "visual",
+          "class": "judged",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "swag.blank-not-found-page",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "swag.cart-count-grammar",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "swag.cart-link-not-focusable",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "major",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "swag.empty-cart-checkout",
+          "kind": "natural",
+          "category": "functional",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "swag.focus-indicator-missing",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "swag.no-security-headers",
+          "kind": "natural",
+          "category": "security-hygiene",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "swag.not-found-item-page",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "swag.reset-keeps-remove-buttons",
+          "kind": "natural",
+          "category": "functional",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "swag.small-tap-targets",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "swag.unrounded-item-total",
+          "kind": "natural",
+          "category": "copy",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        }
+      ]
+    },
+    {
+      "episode_id": "visual-005",
+      "track": "visual",
+      "app": "expense-app",
+      "split": "public",
+      "answer_key_sha256": "4ef45e983b06ac0915b6847921438350a3f5cacbdde49c546326ca76cdb79c5c",
+      "status": "scored",
+      "wall_time_s": 53,
+      "cost": {
+        "model_usd": 0.018736,
+        "notes": "estimate from 21536 total tokens (85% cache read / 10% input / 5% output); range $0.0043-$0.0517"
+      },
+      "activity": {
+        "tool_calls": 15,
+        "screenshots_taken": 4,
+        "screenshots_viewed": 4
+      },
+      "time_to_first_detection_s": null,
+      "decisions": [
+        {
+          "finding_id": "f1",
+          "decision": "true_positive",
+          "label_id": "expense.focus-ring-removed",
+          "category": "a11y",
+          "reason": "first finding to hit defect expense.focus-ring-removed: matches expense.focus-ring-removed[0]: route, role, category; finding has no locator",
+          "severity_agrees": false
+        }
+      ],
+      "labels": [
+        {
+          "label_id": "expense.focus-ring-removed",
+          "kind": "defect",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "subtle",
+          "hit": true,
+          "finding_ids": [
+            "f1"
+          ]
+        },
+        {
+          "label_id": "expense.login-error-invisible",
+          "kind": "defect",
+          "category": "visual",
+          "class": "deterministic",
+          "severity": "major",
+          "exposure": "novel",
+          "difficulty": "subtle",
+          "hit": false
+        },
+        {
+          "label_id": "expense.control-borders-low-contrast",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.delete-missing-id",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.flash-in-url",
+          "kind": "natural",
+          "category": "usability",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.focus-ring-low-contrast",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.huge-amount-breaks-list",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "critical",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.no-security-headers",
+          "kind": "natural",
+          "category": "security-hygiene",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.no-thousands-separator",
+          "kind": "natural",
+          "category": "copy",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.phone-rows-unlabelled",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.rejected-form-loses-input",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.row-actions-unnamed",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.silent-delete",
+          "kind": "natural",
+          "category": "usability",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.small-touch-targets",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.unbroken-title-overflows",
+          "kind": "natural",
+          "category": "visual",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.viewer-empty-actions-column",
+          "kind": "natural",
+          "category": "usability",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.zero-amount-accepted",
+          "kind": "natural",
+          "category": "functional",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        }
+      ]
+    },
+    {
+      "episode_id": "visual-006",
+      "track": "visual",
+      "app": "swag-labs",
+      "split": "public",
+      "answer_key_sha256": "28e1ab1c4c1d350e2896024cae1a0f0eb145861b47c73b6db32163fd2e06ec90",
+      "status": "scored",
+      "wall_time_s": 30.9,
+      "cost": {
+        "model_usd": 0.01259,
+        "notes": "estimate from 14471 total tokens (85% cache read / 10% input / 5% output); range $0.0029-$0.0347"
+      },
+      "activity": {
+        "tool_calls": 6,
+        "screenshots_taken": 1,
+        "screenshots_viewed": 2
+      },
+      "time_to_first_detection_s": null,
+      "decisions": [
+        {
+          "finding_id": "f1",
+          "decision": "true_positive",
+          "label_id": "swag.visual-user",
+          "category": "visual",
+          "reason": "first finding to hit defect swag.visual-user: matches swag.visual-user[9]: route, role, category; finding has no locator",
+          "severity_agrees": true
+        },
+        {
+          "finding_id": "f2",
+          "decision": "duplicate",
+          "label_id": "swag.visual-user",
+          "category": "visual",
+          "reason": "defect swag.visual-user already found by f1: matches swag.visual-user[12]: route, role, category; finding has no locator"
+        },
+        {
+          "finding_id": "f3",
+          "decision": "duplicate",
+          "label_id": "swag.visual-user",
+          "category": "consistency",
+          "reason": "defect swag.visual-user already found by f1: matches swag.visual-user[5]: route, role, category; finding has no locator"
+        },
+        {
+          "finding_id": "f4",
+          "decision": "duplicate",
+          "label_id": "swag.visual-user",
+          "category": "consistency",
+          "reason": "defect swag.visual-user already found by f1: matches swag.visual-user[13]: route, role, category; finding has no locator"
+        },
+        {
+          "finding_id": "f5",
+          "decision": "duplicate",
+          "label_id": "swag.visual-user",
+          "category": "visual",
+          "reason": "defect swag.visual-user already found by f1: matches swag.visual-user[0]: route, role, category; finding has no locator"
+        }
+      ],
+      "labels": [
+        {
+          "label_id": "swag.visual-user",
+          "kind": "defect",
+          "category": "visual",
+          "class": "judged",
+          "severity": "major",
+          "exposure": "known",
+          "difficulty": "blatant",
+          "hit": true,
+          "finding_ids": [
+            "f1",
+            "f2",
+            "f3",
+            "f4",
+            "f5"
+          ]
+        },
+        {
+          "label_id": "swag.blank-not-found-page",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "swag.cart-count-grammar",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "swag.cart-link-not-focusable",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "major",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "swag.empty-cart-checkout",
+          "kind": "natural",
+          "category": "functional",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "swag.focus-indicator-missing",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "swag.no-security-headers",
+          "kind": "natural",
+          "category": "security-hygiene",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "swag.not-found-item-page",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "swag.reset-keeps-remove-buttons",
+          "kind": "natural",
+          "category": "functional",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "swag.small-tap-targets",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "swag.unrounded-item-total",
+          "kind": "natural",
+          "category": "copy",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        }
+      ]
+    },
+    {
+      "episode_id": "visual-007",
+      "track": "visual",
+      "app": "expense-app",
+      "split": "public",
+      "answer_key_sha256": "22b394b5b63d4277fb6cacdda39ab3766eb4a64d65e228c03762cf3ad91d2c6f",
+      "status": "scored",
+      "wall_time_s": 60.8,
+      "cost": {
+        "model_usd": 0.017866,
+        "notes": "estimate from 20536 total tokens (85% cache read / 10% input / 5% output); range $0.0041-$0.0493"
+      },
+      "activity": {
+        "tool_calls": 14,
+        "screenshots_taken": 4,
+        "screenshots_viewed": 4
+      },
+      "time_to_first_detection_s": null,
+      "decisions": [
+        {
+          "finding_id": "f1",
+          "decision": "true_positive",
+          "label_id": "expense.row-actions-unnamed",
+          "category": "a11y",
+          "reason": "first finding to hit defect expense.row-actions-unnamed: matches expense.row-actions-unnamed[0]: route, role, category; locators not comparable",
+          "severity_agrees": true
+        }
+      ],
+      "labels": [
+        {
+          "label_id": "expense.control-borders-low-contrast",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.delete-missing-id",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.flash-in-url",
+          "kind": "natural",
+          "category": "usability",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.focus-ring-low-contrast",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.huge-amount-breaks-list",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "critical",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.no-security-headers",
+          "kind": "natural",
+          "category": "security-hygiene",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.no-thousands-separator",
+          "kind": "natural",
+          "category": "copy",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.phone-rows-unlabelled",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.rejected-form-loses-input",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.row-actions-unnamed",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": true,
+          "finding_ids": [
+            "f1"
+          ]
+        },
+        {
+          "label_id": "expense.silent-delete",
+          "kind": "natural",
+          "category": "usability",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.small-touch-targets",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.unbroken-title-overflows",
+          "kind": "natural",
+          "category": "visual",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.viewer-empty-actions-column",
+          "kind": "natural",
+          "category": "usability",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.zero-amount-accepted",
+          "kind": "natural",
+          "category": "functional",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        }
+      ]
+    },
+    {
+      "episode_id": "visual-008",
+      "track": "visual",
+      "app": "expense-app",
+      "split": "public",
+      "answer_key_sha256": "5e5005c4843bd70d0c0e9201c495a4e80540ac7f6c0dec167685e17c8380ae46",
+      "status": "scored",
+      "wall_time_s": 38.5,
+      "cost": {
+        "model_usd": 0.01408,
+        "notes": "estimate from 16184 total tokens (85% cache read / 10% input / 5% output); range $0.0032-$0.0388"
+      },
+      "activity": {
+        "tool_calls": 8,
+        "screenshots_taken": 2,
+        "screenshots_viewed": 2
+      },
+      "time_to_first_detection_s": null,
+      "decisions": [
+        {
+          "finding_id": "f1",
+          "decision": "true_positive",
+          "label_id": "expense.low-contrast-text",
+          "category": "a11y",
+          "reason": "first finding to hit defect expense.low-contrast-text: matches expense.low-contrast-text[0]: route, role, category; finding has no locator",
+          "severity_agrees": true
+        },
+        {
+          "finding_id": "f2",
+          "decision": "true_positive",
+          "label_id": "expense.row-actions-unnamed",
+          "category": "a11y",
+          "reason": "first finding to hit defect expense.row-actions-unnamed: matches expense.row-actions-unnamed[0]: route, role, category; finding has no locator",
+          "severity_agrees": true
+        }
+      ],
+      "labels": [
+        {
+          "label_id": "expense.long-title-overflows",
+          "kind": "defect",
+          "category": "visual",
+          "class": "deterministic",
+          "severity": "major",
+          "exposure": "novel",
+          "difficulty": "subtle",
+          "hit": false
+        },
+        {
+          "label_id": "expense.low-contrast-text",
+          "kind": "defect",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": true,
+          "finding_ids": [
+            "f1"
+          ]
+        },
+        {
+          "label_id": "expense.control-borders-low-contrast",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.delete-missing-id",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.flash-in-url",
+          "kind": "natural",
+          "category": "usability",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.focus-ring-low-contrast",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.huge-amount-breaks-list",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "critical",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.no-security-headers",
+          "kind": "natural",
+          "category": "security-hygiene",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.no-thousands-separator",
+          "kind": "natural",
+          "category": "copy",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.phone-rows-unlabelled",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.rejected-form-loses-input",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.row-actions-unnamed",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": true,
+          "finding_ids": [
+            "f2"
+          ]
+        },
+        {
+          "label_id": "expense.silent-delete",
+          "kind": "natural",
+          "category": "usability",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.small-touch-targets",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.unbroken-title-overflows",
+          "kind": "natural",
+          "category": "visual",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.viewer-empty-actions-column",
+          "kind": "natural",
+          "category": "usability",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.zero-amount-accepted",
+          "kind": "natural",
+          "category": "functional",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        }
+      ]
+    },
+    {
+      "episode_id": "visual-009",
+      "track": "visual",
+      "app": "expense-app",
+      "split": "public",
+      "answer_key_sha256": "9b0d5749f1695d430adc8b617af064388be0b599829791bc7e0e76271cfe1855",
+      "status": "scored",
+      "wall_time_s": 29.9,
+      "cost": {
+        "model_usd": 0.013477,
+        "notes": "estimate from 15491 total tokens (85% cache read / 10% input / 5% output); range $0.0031-$0.0372"
+      },
+      "activity": {
+        "tool_calls": 8,
+        "screenshots_taken": 2,
+        "screenshots_viewed": 2
+      },
+      "time_to_first_detection_s": null,
+      "decisions": [
+        {
+          "finding_id": "f1",
+          "decision": "true_positive",
+          "label_id": "expense.phone-layout-overflow",
+          "category": "visual",
+          "reason": "first finding to hit defect expense.phone-layout-overflow: matches expense.phone-layout-overflow[0]: route, role, category; finding has no locator",
+          "severity_agrees": false
+        },
+        {
+          "finding_id": "f2",
+          "decision": "true_positive",
+          "label_id": "expense.amounts-misaligned",
+          "category": "visual",
+          "reason": "first finding to hit defect expense.amounts-misaligned: matches expense.amounts-misaligned[0]: route, role, category; finding has no locator",
+          "severity_agrees": true
+        }
+      ],
+      "labels": [
+        {
+          "label_id": "expense.amounts-misaligned",
+          "kind": "defect",
+          "category": "visual",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": true,
+          "finding_ids": [
+            "f2"
+          ]
+        },
+        {
+          "label_id": "expense.phone-layout-overflow",
+          "kind": "defect",
+          "category": "visual",
+          "class": "deterministic",
+          "severity": "critical",
+          "exposure": "novel",
+          "difficulty": "subtle",
+          "hit": true,
+          "finding_ids": [
+            "f1"
+          ]
+        },
+        {
+          "label_id": "expense.control-borders-low-contrast",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.delete-missing-id",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.flash-in-url",
+          "kind": "natural",
+          "category": "usability",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.focus-ring-low-contrast",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.huge-amount-breaks-list",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "critical",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.no-security-headers",
+          "kind": "natural",
+          "category": "security-hygiene",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.no-thousands-separator",
+          "kind": "natural",
+          "category": "copy",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.phone-rows-unlabelled",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.rejected-form-loses-input",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.row-actions-unnamed",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.silent-delete",
+          "kind": "natural",
+          "category": "usability",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.small-touch-targets",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.unbroken-title-overflows",
+          "kind": "natural",
+          "category": "visual",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.viewer-empty-actions-column",
+          "kind": "natural",
+          "category": "usability",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.zero-amount-accepted",
+          "kind": "natural",
+          "category": "functional",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        }
+      ]
+    },
+    {
+      "episode_id": "visual-010",
+      "track": "visual",
+      "app": "expense-app",
+      "split": "public",
+      "answer_key_sha256": "57e155622f4994fc48aef9a5e2f7ba50e2057e2cf6df8bebb15137f1debb1e43",
+      "status": "scored",
+      "wall_time_s": 23,
+      "cost": {
+        "model_usd": 0.013947,
+        "notes": "estimate from 16031 total tokens (85% cache read / 10% input / 5% output); range $0.0032-$0.0385"
+      },
+      "activity": {
+        "tool_calls": 7,
+        "screenshots_taken": 1,
+        "screenshots_viewed": 2
+      },
+      "time_to_first_detection_s": null,
+      "decisions": [
+        {
+          "finding_id": "f1",
+          "decision": "true_positive",
+          "label_id": "expense.total-covers-last-row",
+          "category": "visual",
+          "reason": "first finding to hit defect expense.total-covers-last-row: matches expense.total-covers-last-row[0]: route, role, category; finding has no locator",
+          "severity_agrees": true
+        }
+      ],
+      "labels": [
+        {
+          "label_id": "expense.focus-ring-removed",
+          "kind": "defect",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "subtle",
+          "hit": false
+        },
+        {
+          "label_id": "expense.total-covers-last-row",
+          "kind": "defect",
+          "category": "visual",
+          "class": "deterministic",
+          "severity": "major",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": true,
+          "finding_ids": [
+            "f1"
+          ]
+        },
+        {
+          "label_id": "expense.control-borders-low-contrast",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.delete-missing-id",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.flash-in-url",
+          "kind": "natural",
+          "category": "usability",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.focus-ring-low-contrast",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.huge-amount-breaks-list",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "critical",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.no-security-headers",
+          "kind": "natural",
+          "category": "security-hygiene",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.no-thousands-separator",
+          "kind": "natural",
+          "category": "copy",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.phone-rows-unlabelled",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.rejected-form-loses-input",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.row-actions-unnamed",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.silent-delete",
+          "kind": "natural",
+          "category": "usability",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.small-touch-targets",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.unbroken-title-overflows",
+          "kind": "natural",
+          "category": "visual",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.viewer-empty-actions-column",
+          "kind": "natural",
+          "category": "usability",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.zero-amount-accepted",
+          "kind": "natural",
+          "category": "functional",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        }
+      ]
+    },
+    {
+      "episode_id": "visual-011",
+      "track": "visual",
+      "app": "swag-labs",
+      "split": "public",
+      "answer_key_sha256": "7abf84af59a0c72567c1987affbcac51aed54c35923b037710b2f50b4ffecf2c",
+      "status": "scored",
+      "wall_time_s": 27.7,
+      "cost": {
+        "model_usd": 0.013175,
+        "notes": "estimate from 15144 total tokens (85% cache read / 10% input / 5% output); range $0.0030-$0.0363"
+      },
+      "activity": {
+        "tool_calls": 9,
+        "screenshots_taken": 2,
+        "screenshots_viewed": 4
+      },
+      "time_to_first_detection_s": null,
+      "decisions": [
+        {
+          "finding_id": "f1",
+          "decision": "unmatched",
+          "category": "visual",
+          "reason": "no label matched; closest: description does not mention the symptom (/^(?![\\s\\S]*(inventory-item|item page|product page|id=\\d|unknown (product|item)))(?=[\\s\\S]*((unknown|non-?existent|invalid|bad|missing|wrong|random|mistyped|undefined) (url|path|route|page|address)s?|/nonexistent|/no-such|\\b404\\b))(?=[\\s\\S]*(blank|empty|white|nothing|no (404|error|message|content|navigation)))/i) for swag.blank-not-found-page"
+        }
+      ],
+      "labels": [
+        {
+          "label_id": "swag.seasonal-banner",
+          "kind": "change",
+          "category": "visual",
+          "class": "judged",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "swag.blank-not-found-page",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "swag.cart-count-grammar",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "swag.cart-link-not-focusable",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "major",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "swag.empty-cart-checkout",
+          "kind": "natural",
+          "category": "functional",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "swag.focus-indicator-missing",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "swag.no-security-headers",
+          "kind": "natural",
+          "category": "security-hygiene",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "swag.not-found-item-page",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "swag.reset-keeps-remove-buttons",
+          "kind": "natural",
+          "category": "functional",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "swag.small-tap-targets",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "swag.unrounded-item-total",
+          "kind": "natural",
+          "category": "copy",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        }
+      ]
+    },
+    {
+      "episode_id": "visual-012",
+      "track": "visual",
+      "app": "expense-app",
+      "split": "public",
+      "answer_key_sha256": "c054101d1826ce24e234fea382b4bdd4a7b0a7ad5ff476540e23d466e57795c8",
+      "status": "scored",
+      "wall_time_s": 57.3,
+      "cost": {
+        "model_usd": 0.019109,
+        "notes": "estimate from 21964 total tokens (85% cache read / 10% input / 5% output); range $0.0044-$0.0527"
+      },
+      "activity": {
+        "tool_calls": 17,
+        "screenshots_taken": 4,
+        "screenshots_viewed": 5
+      },
+      "time_to_first_detection_s": null,
+      "decisions": [
+        {
+          "finding_id": "f1",
+          "decision": "true_positive",
+          "label_id": "expense.small-touch-targets",
+          "category": "a11y",
+          "reason": "first finding to hit defect expense.small-touch-targets: matches expense.small-touch-targets[0]: route, role, category; locators not comparable",
+          "severity_agrees": true
+        },
+        {
+          "finding_id": "f2",
+          "decision": "true_positive",
+          "label_id": "expense.row-actions-unnamed",
+          "category": "a11y",
+          "reason": "first finding to hit defect expense.row-actions-unnamed: matches expense.row-actions-unnamed[0]: route, role, category; locators not comparable",
+          "severity_agrees": true
+        }
+      ],
+      "labels": [
+        {
+          "label_id": "expense.restyle",
+          "kind": "change",
+          "category": "visual",
+          "class": "judged",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.control-borders-low-contrast",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.delete-missing-id",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.flash-in-url",
+          "kind": "natural",
+          "category": "usability",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.focus-ring-low-contrast",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.huge-amount-breaks-list",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "critical",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.no-security-headers",
+          "kind": "natural",
+          "category": "security-hygiene",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.no-thousands-separator",
+          "kind": "natural",
+          "category": "copy",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.phone-rows-unlabelled",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.rejected-form-loses-input",
+          "kind": "natural",
+          "category": "error-handling",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.row-actions-unnamed",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": true,
+          "finding_ids": [
+            "f2"
+          ]
+        },
+        {
+          "label_id": "expense.silent-delete",
+          "kind": "natural",
+          "category": "usability",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.small-touch-targets",
+          "kind": "natural",
+          "category": "a11y",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": true,
+          "finding_ids": [
+            "f1"
+          ]
+        },
+        {
+          "label_id": "expense.unbroken-title-overflows",
+          "kind": "natural",
+          "category": "visual",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.viewer-empty-actions-column",
+          "kind": "natural",
+          "category": "usability",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        },
+        {
+          "label_id": "expense.zero-amount-accepted",
+          "kind": "natural",
+          "category": "functional",
+          "class": "deterministic",
+          "severity": "minor",
+          "exposure": "novel",
+          "difficulty": "blatant",
+          "hit": false
+        }
+      ]
+    }
+  ],
+  "metrics": {
+    "overall": {
+      "episodes": 12,
+      "episodes_scored": 12,
+      "defects_planted": 17,
+      "defects_found": 11,
+      "recall": 0.6470588235294118,
+      "weighted_defects_planted": 41,
+      "weighted_defects_found": 27,
+      "weighted_recall": 0.6585365853658537,
+      "findings": 22,
+      "findings_matched": 21,
+      "findings_excused": 0,
+      "precision": 0.9545454545454546,
+      "f1": 0.7712854757929883,
+      "weighted_f1": 0.7793814432989691,
+      "changes_active": 5,
+      "changes_flagged": 0,
+      "change_flag_rate": 0,
+      "false_alarms_on_changes": 0,
+      "false_alarms_per_100_episodes": 0,
+      "unmatched_findings": 1,
+      "unmatched_per_episode": 0.08333333333333333,
+      "mean_time_to_first_detection_s": null,
+      "wall_time_s_total": 461.3,
+      "cost_usd_total": 0.17607799999999996,
+      "human_hours_total": null,
+      "cost_per_defect_found_usd": 0.016007090909090905,
+      "repro_rate": null,
+      "natural_present": 165,
+      "natural_found": 4,
+      "natural_recall": 0.024242424242424242,
+      "severity_judged": 15,
+      "severity_agreement": 0.7333333333333333,
+      "episodes_with_activity": 12,
+      "tool_calls_per_episode": 9.5,
+      "screenshots_taken_per_episode": 2.25,
+      "screenshots_viewed_per_episode": 2.75
+    },
+    "by_track": {
+      "visual": {
+        "episodes": 12,
+        "episodes_scored": 12,
+        "defects_planted": 17,
+        "defects_found": 11,
+        "recall": 0.6470588235294118,
+        "weighted_defects_planted": 41,
+        "weighted_defects_found": 27,
+        "weighted_recall": 0.6585365853658537,
+        "findings": 22,
+        "findings_matched": 21,
+        "findings_excused": 0,
+        "precision": 0.9545454545454546,
+        "f1": 0.7712854757929883,
+        "weighted_f1": 0.7793814432989691,
+        "changes_active": 5,
+        "changes_flagged": 0,
+        "change_flag_rate": 0,
+        "false_alarms_on_changes": 0,
+        "false_alarms_per_100_episodes": 0,
+        "unmatched_findings": 1,
+        "unmatched_per_episode": 0.08333333333333333,
+        "mean_time_to_first_detection_s": null,
+        "wall_time_s_total": 461.3,
+        "cost_usd_total": 0.17607799999999996,
+        "human_hours_total": null,
+        "cost_per_defect_found_usd": 0.016007090909090905,
+        "repro_rate": null,
+        "natural_present": 165,
+        "natural_found": 4,
+        "natural_recall": 0.024242424242424242,
+        "severity_judged": 15,
+        "severity_agreement": 0.7333333333333333,
+        "episodes_with_activity": 12,
+        "tool_calls_per_episode": 9.5,
+        "screenshots_taken_per_episode": 2.25,
+        "screenshots_viewed_per_episode": 2.75
+      }
+    },
+    "by_category": {
+      "a11y": {
+        "episodes": 12,
+        "episodes_scored": 12,
+        "defects_planted": 5,
+        "defects_found": 3,
+        "recall": 0.6,
+        "weighted_defects_planted": 5,
+        "weighted_defects_found": 3,
+        "weighted_recall": 0.6,
+        "findings": 7,
+        "findings_matched": 7,
+        "findings_excused": 0,
+        "precision": 1,
+        "f1": 0.7499999999999999,
+        "weighted_f1": 0.7499999999999999,
+        "changes_active": 0,
+        "changes_flagged": 0,
+        "change_flag_rate": null,
+        "false_alarms_on_changes": 0,
+        "false_alarms_per_100_episodes": 0,
+        "unmatched_findings": 0,
+        "unmatched_per_episode": 0,
+        "mean_time_to_first_detection_s": null,
+        "wall_time_s_total": null,
+        "cost_usd_total": null,
+        "human_hours_total": null,
+        "cost_per_defect_found_usd": null,
+        "repro_rate": null,
+        "natural_present": 57,
+        "natural_found": 4,
+        "natural_recall": 0.07017543859649122,
+        "severity_judged": 7,
+        "severity_agreement": 0.8571428571428571
+      },
+      "consistency": {
+        "episodes": 12,
+        "episodes_scored": 12,
+        "defects_planted": 0,
+        "defects_found": 0,
+        "recall": null,
+        "weighted_defects_planted": 0,
+        "weighted_defects_found": 0,
+        "weighted_recall": null,
+        "findings": 2,
+        "findings_matched": 2,
+        "findings_excused": 0,
+        "precision": 1,
+        "f1": null,
+        "weighted_f1": null,
+        "changes_active": 0,
+        "changes_flagged": 0,
+        "change_flag_rate": null,
+        "false_alarms_on_changes": 0,
+        "false_alarms_per_100_episodes": 0,
+        "unmatched_findings": 0,
+        "unmatched_per_episode": 0,
+        "mean_time_to_first_detection_s": null,
+        "wall_time_s_total": null,
+        "cost_usd_total": null,
+        "human_hours_total": null,
+        "cost_per_defect_found_usd": null,
+        "repro_rate": null,
+        "natural_present": 0,
+        "natural_found": 0,
+        "natural_recall": null,
+        "severity_judged": 0,
+        "severity_agreement": null
+      },
+      "copy": {
+        "episodes": 12,
+        "episodes_scored": 12,
+        "defects_planted": 0,
+        "defects_found": 0,
+        "recall": null,
+        "weighted_defects_planted": 0,
+        "weighted_defects_found": 0,
+        "weighted_recall": null,
+        "findings": 0,
+        "findings_matched": 0,
+        "findings_excused": 0,
+        "precision": null,
+        "f1": null,
+        "weighted_f1": null,
+        "changes_active": 0,
+        "changes_flagged": 0,
+        "change_flag_rate": null,
+        "false_alarms_on_changes": 0,
+        "false_alarms_per_100_episodes": 0,
+        "unmatched_findings": 0,
+        "unmatched_per_episode": 0,
+        "mean_time_to_first_detection_s": null,
+        "wall_time_s_total": null,
+        "cost_usd_total": null,
+        "human_hours_total": null,
+        "cost_per_defect_found_usd": null,
+        "repro_rate": null,
+        "natural_present": 12,
+        "natural_found": 0,
+        "natural_recall": 0,
+        "severity_judged": 0,
+        "severity_agreement": null
+      },
+      "error-handling": {
+        "episodes": 12,
+        "episodes_scored": 12,
+        "defects_planted": 0,
+        "defects_found": 0,
+        "recall": null,
+        "weighted_defects_planted": 0,
+        "weighted_defects_found": 0,
+        "weighted_recall": null,
+        "findings": 0,
+        "findings_matched": 0,
+        "findings_excused": 0,
+        "precision": null,
+        "f1": null,
+        "weighted_f1": null,
+        "changes_active": 0,
+        "changes_flagged": 0,
+        "change_flag_rate": null,
+        "false_alarms_on_changes": 0,
+        "false_alarms_per_100_episodes": 0,
+        "unmatched_findings": 0,
+        "unmatched_per_episode": 0,
+        "mean_time_to_first_detection_s": null,
+        "wall_time_s_total": null,
+        "cost_usd_total": null,
+        "human_hours_total": null,
+        "cost_per_defect_found_usd": null,
+        "repro_rate": null,
+        "natural_present": 33,
+        "natural_found": 0,
+        "natural_recall": 0,
+        "severity_judged": 0,
+        "severity_agreement": null
+      },
+      "functional": {
+        "episodes": 12,
+        "episodes_scored": 12,
+        "defects_planted": 0,
+        "defects_found": 0,
+        "recall": null,
+        "weighted_defects_planted": 0,
+        "weighted_defects_found": 0,
+        "weighted_recall": null,
+        "findings": 0,
+        "findings_matched": 0,
+        "findings_excused": 0,
+        "precision": null,
+        "f1": null,
+        "weighted_f1": null,
+        "changes_active": 0,
+        "changes_flagged": 0,
+        "change_flag_rate": null,
+        "false_alarms_on_changes": 0,
+        "false_alarms_per_100_episodes": 0,
+        "unmatched_findings": 0,
+        "unmatched_per_episode": 0,
+        "mean_time_to_first_detection_s": null,
+        "wall_time_s_total": null,
+        "cost_usd_total": null,
+        "human_hours_total": null,
+        "cost_per_defect_found_usd": null,
+        "repro_rate": null,
+        "natural_present": 15,
+        "natural_found": 0,
+        "natural_recall": 0,
+        "severity_judged": 0,
+        "severity_agreement": null
+      },
+      "security-hygiene": {
+        "episodes": 12,
+        "episodes_scored": 12,
+        "defects_planted": 0,
+        "defects_found": 0,
+        "recall": null,
+        "weighted_defects_planted": 0,
+        "weighted_defects_found": 0,
+        "weighted_recall": null,
+        "findings": 0,
+        "findings_matched": 0,
+        "findings_excused": 0,
+        "precision": null,
+        "f1": null,
+        "weighted_f1": null,
+        "changes_active": 0,
+        "changes_flagged": 0,
+        "change_flag_rate": null,
+        "false_alarms_on_changes": 0,
+        "false_alarms_per_100_episodes": 0,
+        "unmatched_findings": 0,
+        "unmatched_per_episode": 0,
+        "mean_time_to_first_detection_s": null,
+        "wall_time_s_total": null,
+        "cost_usd_total": null,
+        "human_hours_total": null,
+        "cost_per_defect_found_usd": null,
+        "repro_rate": null,
+        "natural_present": 12,
+        "natural_found": 0,
+        "natural_recall": 0,
+        "severity_judged": 0,
+        "severity_agreement": null
+      },
+      "usability": {
+        "episodes": 12,
+        "episodes_scored": 12,
+        "defects_planted": 0,
+        "defects_found": 0,
+        "recall": null,
+        "weighted_defects_planted": 0,
+        "weighted_defects_found": 0,
+        "weighted_recall": null,
+        "findings": 0,
+        "findings_matched": 0,
+        "findings_excused": 0,
+        "precision": null,
+        "f1": null,
+        "weighted_f1": null,
+        "changes_active": 0,
+        "changes_flagged": 0,
+        "change_flag_rate": null,
+        "false_alarms_on_changes": 0,
+        "false_alarms_per_100_episodes": 0,
+        "unmatched_findings": 0,
+        "unmatched_per_episode": 0,
+        "mean_time_to_first_detection_s": null,
+        "wall_time_s_total": null,
+        "cost_usd_total": null,
+        "human_hours_total": null,
+        "cost_per_defect_found_usd": null,
+        "repro_rate": null,
+        "natural_present": 27,
+        "natural_found": 0,
+        "natural_recall": 0,
+        "severity_judged": 0,
+        "severity_agreement": null
+      },
+      "visual": {
+        "episodes": 12,
+        "episodes_scored": 12,
+        "defects_planted": 12,
+        "defects_found": 8,
+        "recall": 0.6666666666666666,
+        "weighted_defects_planted": 36,
+        "weighted_defects_found": 24,
+        "weighted_recall": 0.6666666666666666,
+        "findings": 13,
+        "findings_matched": 12,
+        "findings_excused": 0,
+        "precision": 0.9230769230769231,
+        "f1": 0.7741935483870968,
+        "weighted_f1": 0.7741935483870968,
+        "changes_active": 5,
+        "changes_flagged": 0,
+        "change_flag_rate": 0,
+        "false_alarms_on_changes": 0,
+        "false_alarms_per_100_episodes": 0,
+        "unmatched_findings": 1,
+        "unmatched_per_episode": 0.08333333333333333,
+        "mean_time_to_first_detection_s": null,
+        "wall_time_s_total": null,
+        "cost_usd_total": null,
+        "human_hours_total": null,
+        "cost_per_defect_found_usd": null,
+        "repro_rate": null,
+        "natural_present": 9,
+        "natural_found": 0,
+        "natural_recall": 0,
+        "severity_judged": 8,
+        "severity_agreement": 0.625
+      }
+    },
+    "by_class": {
+      "deterministic": {
+        "episodes": 12,
+        "episodes_scored": 12,
+        "defects_planted": 15,
+        "defects_found": 9,
+        "recall": 0.6,
+        "weighted_defects_planted": 35,
+        "weighted_defects_found": 21,
+        "weighted_recall": 0.6,
+        "findings": 14,
+        "findings_matched": 13,
+        "findings_excused": 0,
+        "precision": 0.9285714285714286,
+        "f1": 0.7289719626168225,
+        "weighted_f1": 0.7289719626168225,
+        "changes_active": 0,
+        "changes_flagged": 0,
+        "change_flag_rate": null,
+        "false_alarms_on_changes": 0,
+        "false_alarms_per_100_episodes": 0,
+        "unmatched_findings": 1,
+        "unmatched_per_episode": 0.08333333333333333,
+        "mean_time_to_first_detection_s": null,
+        "wall_time_s_total": null,
+        "cost_usd_total": null,
+        "human_hours_total": null,
+        "cost_per_defect_found_usd": null,
+        "repro_rate": null,
+        "natural_present": 165,
+        "natural_found": 4,
+        "natural_recall": 0.024242424242424242,
+        "severity_judged": 13,
+        "severity_agreement": 0.7692307692307693
+      },
+      "judged": {
+        "episodes": 12,
+        "episodes_scored": 12,
+        "defects_planted": 2,
+        "defects_found": 2,
+        "recall": 1,
+        "weighted_defects_planted": 6,
+        "weighted_defects_found": 6,
+        "weighted_recall": 1,
+        "findings": 9,
+        "findings_matched": 8,
+        "findings_excused": 0,
+        "precision": 0.8888888888888888,
+        "f1": 0.9411764705882353,
+        "weighted_f1": 0.9411764705882353,
+        "changes_active": 5,
+        "changes_flagged": 0,
+        "change_flag_rate": 0,
+        "false_alarms_on_changes": 0,
+        "false_alarms_per_100_episodes": 0,
+        "unmatched_findings": 1,
+        "unmatched_per_episode": 0.08333333333333333,
+        "mean_time_to_first_detection_s": null,
+        "wall_time_s_total": null,
+        "cost_usd_total": null,
+        "human_hours_total": null,
+        "cost_per_defect_found_usd": null,
+        "repro_rate": null,
+        "natural_present": 0,
+        "natural_found": 0,
+        "natural_recall": null,
+        "severity_judged": 2,
+        "severity_agreement": 0.5
+      }
+    },
+    "by_exposure": {
+      "novel": {
+        "episodes": 12,
+        "episodes_scored": 12,
+        "defects_planted": 15,
+        "defects_found": 9,
+        "recall": 0.6,
+        "weighted_defects_planted": 35,
+        "weighted_defects_found": 21,
+        "weighted_recall": 0.6,
+        "findings": 14,
+        "findings_matched": 13,
+        "findings_excused": 0,
+        "precision": 0.9285714285714286,
+        "f1": 0.7289719626168225,
+        "weighted_f1": 0.7289719626168225,
+        "changes_active": 5,
+        "changes_flagged": 0,
+        "change_flag_rate": 0,
+        "false_alarms_on_changes": 0,
+        "false_alarms_per_100_episodes": 0,
+        "unmatched_findings": 1,
+        "unmatched_per_episode": 0.08333333333333333,
+        "mean_time_to_first_detection_s": null,
+        "wall_time_s_total": null,
+        "cost_usd_total": null,
+        "human_hours_total": null,
+        "cost_per_defect_found_usd": null,
+        "repro_rate": null,
+        "natural_present": 165,
+        "natural_found": 4,
+        "natural_recall": 0.024242424242424242,
+        "severity_judged": 13,
+        "severity_agreement": 0.7692307692307693
+      },
+      "known": {
+        "episodes": 12,
+        "episodes_scored": 12,
+        "defects_planted": 2,
+        "defects_found": 2,
+        "recall": 1,
+        "weighted_defects_planted": 6,
+        "weighted_defects_found": 6,
+        "weighted_recall": 1,
+        "findings": 9,
+        "findings_matched": 8,
+        "findings_excused": 0,
+        "precision": 0.8888888888888888,
+        "f1": 0.9411764705882353,
+        "weighted_f1": 0.9411764705882353,
+        "changes_active": 0,
+        "changes_flagged": 0,
+        "change_flag_rate": null,
+        "false_alarms_on_changes": 0,
+        "false_alarms_per_100_episodes": 0,
+        "unmatched_findings": 1,
+        "unmatched_per_episode": 0.08333333333333333,
+        "mean_time_to_first_detection_s": null,
+        "wall_time_s_total": null,
+        "cost_usd_total": null,
+        "human_hours_total": null,
+        "cost_per_defect_found_usd": null,
+        "repro_rate": null,
+        "natural_present": 0,
+        "natural_found": 0,
+        "natural_recall": null,
+        "severity_judged": 2,
+        "severity_agreement": 0.5
+      }
+    },
+    "breakdown": [
+      {
+        "track": "visual",
+        "category": "a11y",
+        "class": "deterministic",
+        "metrics": {
+          "episodes": 12,
+          "episodes_scored": 12,
+          "defects_planted": 5,
+          "defects_found": 3,
+          "recall": 0.6,
+          "weighted_defects_planted": 5,
+          "weighted_defects_found": 3,
+          "weighted_recall": 0.6,
+          "findings": 7,
+          "findings_matched": 7,
+          "findings_excused": 0,
+          "precision": 1,
+          "f1": 0.7499999999999999,
+          "weighted_f1": 0.7499999999999999,
+          "changes_active": 0,
+          "changes_flagged": 0,
+          "change_flag_rate": null,
+          "false_alarms_on_changes": 0,
+          "false_alarms_per_100_episodes": 0,
+          "unmatched_findings": 0,
+          "unmatched_per_episode": 0,
+          "mean_time_to_first_detection_s": null,
+          "wall_time_s_total": null,
+          "cost_usd_total": null,
+          "human_hours_total": null,
+          "cost_per_defect_found_usd": null,
+          "repro_rate": null,
+          "natural_present": 57,
+          "natural_found": 4,
+          "natural_recall": 0.07017543859649122,
+          "severity_judged": 7,
+          "severity_agreement": 0.8571428571428571
+        }
+      },
+      {
+        "track": "visual",
+        "category": "copy",
+        "class": "deterministic",
+        "metrics": {
+          "episodes": 12,
+          "episodes_scored": 12,
+          "defects_planted": 0,
+          "defects_found": 0,
+          "recall": null,
+          "weighted_defects_planted": 0,
+          "weighted_defects_found": 0,
+          "weighted_recall": null,
+          "findings": 0,
+          "findings_matched": 0,
+          "findings_excused": 0,
+          "precision": null,
+          "f1": null,
+          "weighted_f1": null,
+          "changes_active": 0,
+          "changes_flagged": 0,
+          "change_flag_rate": null,
+          "false_alarms_on_changes": 0,
+          "false_alarms_per_100_episodes": 0,
+          "unmatched_findings": 0,
+          "unmatched_per_episode": 0,
+          "mean_time_to_first_detection_s": null,
+          "wall_time_s_total": null,
+          "cost_usd_total": null,
+          "human_hours_total": null,
+          "cost_per_defect_found_usd": null,
+          "repro_rate": null,
+          "natural_present": 12,
+          "natural_found": 0,
+          "natural_recall": 0,
+          "severity_judged": 0,
+          "severity_agreement": null
+        }
+      },
+      {
+        "track": "visual",
+        "category": "error-handling",
+        "class": "deterministic",
+        "metrics": {
+          "episodes": 12,
+          "episodes_scored": 12,
+          "defects_planted": 0,
+          "defects_found": 0,
+          "recall": null,
+          "weighted_defects_planted": 0,
+          "weighted_defects_found": 0,
+          "weighted_recall": null,
+          "findings": 0,
+          "findings_matched": 0,
+          "findings_excused": 0,
+          "precision": null,
+          "f1": null,
+          "weighted_f1": null,
+          "changes_active": 0,
+          "changes_flagged": 0,
+          "change_flag_rate": null,
+          "false_alarms_on_changes": 0,
+          "false_alarms_per_100_episodes": 0,
+          "unmatched_findings": 0,
+          "unmatched_per_episode": 0,
+          "mean_time_to_first_detection_s": null,
+          "wall_time_s_total": null,
+          "cost_usd_total": null,
+          "human_hours_total": null,
+          "cost_per_defect_found_usd": null,
+          "repro_rate": null,
+          "natural_present": 33,
+          "natural_found": 0,
+          "natural_recall": 0,
+          "severity_judged": 0,
+          "severity_agreement": null
+        }
+      },
+      {
+        "track": "visual",
+        "category": "functional",
+        "class": "deterministic",
+        "metrics": {
+          "episodes": 12,
+          "episodes_scored": 12,
+          "defects_planted": 0,
+          "defects_found": 0,
+          "recall": null,
+          "weighted_defects_planted": 0,
+          "weighted_defects_found": 0,
+          "weighted_recall": null,
+          "findings": 0,
+          "findings_matched": 0,
+          "findings_excused": 0,
+          "precision": null,
+          "f1": null,
+          "weighted_f1": null,
+          "changes_active": 0,
+          "changes_flagged": 0,
+          "change_flag_rate": null,
+          "false_alarms_on_changes": 0,
+          "false_alarms_per_100_episodes": 0,
+          "unmatched_findings": 0,
+          "unmatched_per_episode": 0,
+          "mean_time_to_first_detection_s": null,
+          "wall_time_s_total": null,
+          "cost_usd_total": null,
+          "human_hours_total": null,
+          "cost_per_defect_found_usd": null,
+          "repro_rate": null,
+          "natural_present": 15,
+          "natural_found": 0,
+          "natural_recall": 0,
+          "severity_judged": 0,
+          "severity_agreement": null
+        }
+      },
+      {
+        "track": "visual",
+        "category": "security-hygiene",
+        "class": "deterministic",
+        "metrics": {
+          "episodes": 12,
+          "episodes_scored": 12,
+          "defects_planted": 0,
+          "defects_found": 0,
+          "recall": null,
+          "weighted_defects_planted": 0,
+          "weighted_defects_found": 0,
+          "weighted_recall": null,
+          "findings": 0,
+          "findings_matched": 0,
+          "findings_excused": 0,
+          "precision": null,
+          "f1": null,
+          "weighted_f1": null,
+          "changes_active": 0,
+          "changes_flagged": 0,
+          "change_flag_rate": null,
+          "false_alarms_on_changes": 0,
+          "false_alarms_per_100_episodes": 0,
+          "unmatched_findings": 0,
+          "unmatched_per_episode": 0,
+          "mean_time_to_first_detection_s": null,
+          "wall_time_s_total": null,
+          "cost_usd_total": null,
+          "human_hours_total": null,
+          "cost_per_defect_found_usd": null,
+          "repro_rate": null,
+          "natural_present": 12,
+          "natural_found": 0,
+          "natural_recall": 0,
+          "severity_judged": 0,
+          "severity_agreement": null
+        }
+      },
+      {
+        "track": "visual",
+        "category": "usability",
+        "class": "deterministic",
+        "metrics": {
+          "episodes": 12,
+          "episodes_scored": 12,
+          "defects_planted": 0,
+          "defects_found": 0,
+          "recall": null,
+          "weighted_defects_planted": 0,
+          "weighted_defects_found": 0,
+          "weighted_recall": null,
+          "findings": 0,
+          "findings_matched": 0,
+          "findings_excused": 0,
+          "precision": null,
+          "f1": null,
+          "weighted_f1": null,
+          "changes_active": 0,
+          "changes_flagged": 0,
+          "change_flag_rate": null,
+          "false_alarms_on_changes": 0,
+          "false_alarms_per_100_episodes": 0,
+          "unmatched_findings": 0,
+          "unmatched_per_episode": 0,
+          "mean_time_to_first_detection_s": null,
+          "wall_time_s_total": null,
+          "cost_usd_total": null,
+          "human_hours_total": null,
+          "cost_per_defect_found_usd": null,
+          "repro_rate": null,
+          "natural_present": 27,
+          "natural_found": 0,
+          "natural_recall": 0,
+          "severity_judged": 0,
+          "severity_agreement": null
+        }
+      },
+      {
+        "track": "visual",
+        "category": "visual",
+        "class": "deterministic",
+        "metrics": {
+          "episodes": 12,
+          "episodes_scored": 12,
+          "defects_planted": 10,
+          "defects_found": 6,
+          "recall": 0.6,
+          "weighted_defects_planted": 30,
+          "weighted_defects_found": 18,
+          "weighted_recall": 0.6,
+          "findings": 7,
+          "findings_matched": 6,
+          "findings_excused": 0,
+          "precision": 0.8571428571428571,
+          "f1": 0.7058823529411764,
+          "weighted_f1": 0.7058823529411764,
+          "changes_active": 0,
+          "changes_flagged": 0,
+          "change_flag_rate": null,
+          "false_alarms_on_changes": 0,
+          "false_alarms_per_100_episodes": 0,
+          "unmatched_findings": 1,
+          "unmatched_per_episode": 0.08333333333333333,
+          "mean_time_to_first_detection_s": null,
+          "wall_time_s_total": null,
+          "cost_usd_total": null,
+          "human_hours_total": null,
+          "cost_per_defect_found_usd": null,
+          "repro_rate": null,
+          "natural_present": 9,
+          "natural_found": 0,
+          "natural_recall": 0,
+          "severity_judged": 6,
+          "severity_agreement": 0.6666666666666666
+        }
+      },
+      {
+        "track": "visual",
+        "category": "visual",
+        "class": "judged",
+        "metrics": {
+          "episodes": 12,
+          "episodes_scored": 12,
+          "defects_planted": 2,
+          "defects_found": 2,
+          "recall": 1,
+          "weighted_defects_planted": 6,
+          "weighted_defects_found": 6,
+          "weighted_recall": 1,
+          "findings": 7,
+          "findings_matched": 6,
+          "findings_excused": 0,
+          "precision": 0.8571428571428571,
+          "f1": 0.923076923076923,
+          "weighted_f1": 0.923076923076923,
+          "changes_active": 5,
+          "changes_flagged": 0,
+          "change_flag_rate": 0,
+          "false_alarms_on_changes": 0,
+          "false_alarms_per_100_episodes": 0,
+          "unmatched_findings": 1,
+          "unmatched_per_episode": 0.08333333333333333,
+          "mean_time_to_first_detection_s": null,
+          "wall_time_s_total": null,
+          "cost_usd_total": null,
+          "human_hours_total": null,
+          "cost_per_defect_found_usd": null,
+          "repro_rate": null,
+          "natural_present": 0,
+          "natural_found": 0,
+          "natural_recall": null,
+          "severity_judged": 2,
+          "severity_agreement": 0.5
+        }
+      }
+    ]
+  }
+}

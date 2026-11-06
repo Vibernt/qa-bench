@@ -1,0 +1,42 @@
+{
+  "episode_id": "visual-002",
+  "system": {
+    "name": "claude-sonnet-5.5-low",
+    "version": "claude-sonnet-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "editor"
+      },
+      "category": "visual",
+      "description": "The Total box overlaps and covers the last table row: at 1280px the 'Project dinner' row is hidden behind the total, and at 360px it is partly clipped. The list sits in a fixed-height container and the total overlaps it.",
+      "confidence": 0.8,
+      "severity": "major",
+      "repro": [
+        "Sign in as editor",
+        "Open /expenses at 1280px width",
+        "Observe the Total box covering the last row"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "editor-1280.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Limited time; only list page checked.",
+  "cost": {
+    "model_usd": 0.013387,
+    "notes": "estimate from 15387 total tokens (85% cache read / 10% input / 5% output); range $0.0031-$0.0369"
+  },
+  "wall_time_s": 35.4,
+  "activity": {
+    "tool_calls": 8,
+    "screenshots_taken": 2,
+    "screenshots_viewed": 2
+  }
+}

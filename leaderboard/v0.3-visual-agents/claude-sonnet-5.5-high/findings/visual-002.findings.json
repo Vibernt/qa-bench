@@ -1,0 +1,69 @@
+{
+  "episode_id": "visual-002",
+  "system": {
+    "name": "claude-sonnet-5.5-high",
+    "version": "claude-sonnet-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "[data-testid=\"total\"]"
+      },
+      "category": "visual",
+      "description": "The Total box has a -46px top margin and position:relative, so it overlaps and hides the last table row. At 1280px the 'Project dinner $93.25' row (and its Edit/Delete) is covered; at 360px the last card's Edit/Delete actions are covered. The last expense cannot be seen or clicked (Playwright confirms the Total intercepts pointer events on the last Delete button) (same overlap for viewer).",
+      "confidence": 0.9,
+      "severity": "major",
+      "repro": [
+        "Sign in as editor-9b73",
+        "Open /expenses at 1280px or 360px width",
+        "Look at the bottom of the table: the Total box covers the last row (Project dinner)"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "f1.png"
+        },
+        {
+          "kind": "screenshot",
+          "path": "f1-mobile.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses",
+        "role": "editor"
+      },
+      "category": "a11y",
+      "description": "Global CSS removes the focus indicator (':focus, :focus-visible { outline: none }') with no replacement, so keyboard users cannot see which link, button or input is focused on any page (expenses, login, add/edit forms).",
+      "confidence": 0.85,
+      "severity": "major",
+      "repro": [
+        "Sign in as editor-9b73",
+        "Press Tab repeatedly on /expenses",
+        "Observe no visible focus ring on Apply, Edit, Delete, Add expense, Sign out"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "f2.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Checked totals (all and filtered correct), viewer permissions (403 on new/edit/delete), login errors, 404s, add/delete flow. Very long unbroken titles overflow horizontally at 360px (not reported, edge case).",
+  "cost": {
+    "model_usd": 0.028278,
+    "notes": "estimate from 32504 total tokens (85% cache read / 10% input / 5% output); range $0.0065-$0.0780"
+  },
+  "wall_time_s": 115,
+  "activity": {
+    "tool_calls": 17,
+    "screenshots_taken": 5,
+    "screenshots_viewed": 5
+  }
+}

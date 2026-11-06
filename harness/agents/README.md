@@ -40,10 +40,24 @@ npx tsx bin/qa-bench.ts agents finish <session> --usage usage.json
 
 The prompt, brief, raw findings and usage of each agent are kept under `runs/<session>/<episode>/agent/`.
 
+### Audit a transcript
+```bash
+npx tsx bin/qa-bench.ts agents audit <transcript.jsonl>…
+```
+This prints one JSON line per transcript (`claude-code-subagent` driver), counted from the agent's own tool calls:
+- sealed-path hits, with samples;
+- tool calls;
+- screenshots taken, and screenshots looked at (a Read of an image);
+- the models that served it.
+
+Copy those numbers into `usage.json`. `finish` writes them into each findings file as `activity`, and the report
+averages them per episode. Activity is reported, never scored.
+
 ### `usage.json` (written by the orchestrator)
 ```json
 { "episodes": { "regression-003": {
-  "total_tokens": 182340, "duration_s": 312.5, "tool_uses": 41, "served_model": "claude-sonnet-5-5",
+  "total_tokens": 182340, "duration_s": 312.5, "tool_uses": 41, "screenshots_taken": 6, "screenshots_viewed": 4,
+  "served_model": "claude-sonnet-5-5",
   "audit": { "sealed_path_hits": 0, "checked": "tool inputs in the agent transcript" } } } }
 ```
 - **Cost:** give `input_tokens`, `output_tokens` and `cache_read_tokens` when you have them, and the cost is

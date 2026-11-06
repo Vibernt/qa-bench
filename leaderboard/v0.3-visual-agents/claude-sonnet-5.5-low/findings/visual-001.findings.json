@@ -1,0 +1,42 @@
+{
+  "episode_id": "visual-001",
+  "system": {
+    "name": "claude-sonnet-5.5-low",
+    "version": "claude-sonnet-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "editor"
+      },
+      "category": "a11y",
+      "description": "Very light grey text (category column, table headers, 'Signed in as' line) on near-white background has insufficient contrast (well below 4.5:1), hard to read.",
+      "confidence": 0.6,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor",
+        "Open /expenses",
+        "Look at category cells, header row and Signed in as text"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "editor1280.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Only /expenses viewed at 1280 and 360 for both roles; add/edit forms not tested.",
+  "cost": {
+    "model_usd": 0.013765,
+    "notes": "estimate from 15822 total tokens (85% cache read / 10% input / 5% output); range $0.0032-$0.0380"
+  },
+  "wall_time_s": 38.6,
+  "activity": {
+    "tool_calls": 8,
+    "screenshots_taken": 2,
+    "screenshots_viewed": 2
+  }
+}

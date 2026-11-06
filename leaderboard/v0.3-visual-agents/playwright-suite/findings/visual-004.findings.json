@@ -1,0 +1,239 @@
+{
+  "episode_id": "visual-004",
+  "system": {
+    "name": "playwright-suite",
+    "version": "0.1.0"
+  },
+  "findings": [
+    {
+      "id": "pw-001-swag-layout-grid",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "step": "inventory",
+        "selector": "[data-test=\"inventory-item-sauce-labs-backpack-img\"]",
+        "region": {
+          "x": 111,
+          "y": 211,
+          "w": 262,
+          "h": 238,
+          "viewport": "1280x720"
+        }
+      },
+      "category": "visual",
+      "description": "Layout: image in card 1 width 262px vs 159px in the other cards. \"Sauce Labs Backpack\" shows a different picture in the catalogue than on its product page",
+      "confidence": 0.7,
+      "detected_at_s": 22,
+      "check": "swag.layout-grid",
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "pw-001-swag-layout-grid.png"
+        },
+        {
+          "kind": "dom",
+          "excerpt": "catalogue: http://app/assets/sl-404-Cq1a9k9X.jpg\nproduct page: http://app/assets/sauce-backpack-1200x1500-CjRW-Djj.jpg"
+        }
+      ]
+    },
+    {
+      "id": "pw-002-swag-layout-grid",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "step": "inventory",
+        "selector": "[data-test=\"inventory-item-name\"]",
+        "region": {
+          "x": 304,
+          "y": 480,
+          "w": 276,
+          "h": 26,
+          "viewport": "1280x720"
+        }
+      },
+      "category": "visual",
+      "description": "Layout: nameText in card 3 starts at x 194px vs 171px in the other cards (2 cards differ)",
+      "confidence": 0.7,
+      "detected_at_s": 22.2,
+      "check": "swag.layout-grid",
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "pw-002-swag-layout-grid.png"
+        }
+      ]
+    },
+    {
+      "id": "pw-003-swag-layout-grid",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "step": "inventory",
+        "selector": "[data-test=\"add-to-cart-test.allthethings()-t-shirt-(red)\"]",
+        "region": {
+          "x": 1029,
+          "y": 899,
+          "w": 160,
+          "h": 34,
+          "viewport": "1280x720"
+        }
+      },
+      "category": "visual",
+      "description": "Layout: button in card 6 x 364px vs 310px in the other cards",
+      "confidence": 0.7,
+      "detected_at_s": 22.3,
+      "check": "swag.layout-grid",
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "pw-003-swag-layout-grid.png"
+        }
+      ]
+    },
+    {
+      "id": "pw-004-swag-layout-container",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "step": "inventory",
+        "selector": "[data-test=\"shopping-cart-link\"]",
+        "region": {
+          "x": 1034,
+          "y": 39,
+          "w": 42,
+          "h": 42,
+          "viewport": "1280x720"
+        }
+      },
+      "category": "visual",
+      "description": "Layout: [data-test=\"shopping-cart-link\"] is outside [data-test=\"primary-header\"] (at 1034,39 42x42; container 0,0 1280x57); [data-test=\"shopping-cart-link\"] overlaps [data-test=\"product-sort-container\"] by 40x11px; #shopping_cart_container is rotated by 3 degrees",
+      "confidence": 0.7,
+      "detected_at_s": 22.5,
+      "check": "swag.layout-container",
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "pw-004-swag-layout-container.png"
+        }
+      ]
+    },
+    {
+      "id": "pw-005-swag-layout-rotated",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "step": "inventory",
+        "selector": "[data-test=\"open-menu\"]",
+        "region": {
+          "x": 19,
+          "y": 19,
+          "w": 21,
+          "h": 21,
+          "viewport": "1280x720"
+        }
+      },
+      "category": "visual",
+      "description": "Layout: [data-test=\"open-menu\"] is rotated by 3 degrees",
+      "confidence": 0.6,
+      "detected_at_s": 22.6,
+      "check": "swag.layout-rotated",
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "pw-005-swag-layout-rotated.png"
+        }
+      ]
+    },
+    {
+      "id": "pw-006-swag-sort",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "step": "sort",
+        "selector": "[data-test=\"product-sort-container\"]"
+      },
+      "category": "functional",
+      "description": "Sorting does not sort for 2 of 4 options: Price (low to high), Price (high to low)",
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "pw-006-swag-sort.png"
+        },
+        {
+          "kind": "dom",
+          "excerpt": "Price (low to high): Sauce Labs Onesie $94.76, Sauce Labs Bike Light $90.93, Sauce Labs Bolt T-Shirt $89.51, Test.allTheThings() T-Shirt (Red) $72.98, Sauce Labs Backpack $93.69, Sauce Labs Fleece Jacket $2.33\nPrice (high to low): Sauce Labs Fleece Jacket $98.12, Sauce Labs Backpack $65.99, Sauce Labs Bolt T-Shirt $54.97, Test.allTheThings() T-Shirt (Red) $46.98, Sauce Labs Bike Light $64, Sauce Labs Onesie $92"
+        }
+      ],
+      "confidence": 0.85,
+      "repro": [
+        "Sign in",
+        "Open the sort menu",
+        "Choose each option in turn and read the order of the products"
+      ],
+      "detected_at_s": 24.1,
+      "check": "swag.sort"
+    },
+    {
+      "id": "pw-007-swag-detail-price",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "step": "detail",
+        "selector": "[data-test=\"inventory-item-price\"]"
+      },
+      "category": "consistency",
+      "description": "\"Sauce Labs Backpack\" costs $18.74 in the catalogue but $29.99 on its product page",
+      "confidence": 0.85,
+      "repro": [
+        "Sign in",
+        "Note the price of \"Sauce Labs Backpack\"",
+        "Open the product",
+        "Compare the prices"
+      ],
+      "detected_at_s": 24.6,
+      "check": "swag.detail-price",
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "pw-007-swag-detail-price.png"
+        }
+      ]
+    },
+    {
+      "id": "pw-008-swag-layout-container",
+      "where": {
+        "route": "/cart.html",
+        "role": "customer",
+        "step": "cart",
+        "selector": "[data-test=\"checkout\"]",
+        "region": {
+          "x": 1060,
+          "y": 0,
+          "w": 220,
+          "h": 32,
+          "viewport": "1280x720"
+        }
+      },
+      "category": "visual",
+      "description": "Layout: [data-test=\"checkout\"] is not in the cart footer (at 1060,0; Continue Shopping at 15,1382)",
+      "confidence": 0.7,
+      "detected_at_s": 38.6,
+      "check": "swag.layout-container",
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "pw-008-swag-layout-container.png"
+        }
+      ]
+    }
+  ],
+  "cost": {
+    "compute_usd": 0,
+    "model_usd": 0,
+    "notes": "Scripted Playwright suite: no model calls; local compute only, not metered."
+  },
+  "wall_time_s": 43.5,
+  "started_at": "2026-11-06T06:48:44.899Z",
+  "finished_at": "2026-11-06T06:49:28.412Z",
+  "notes": "suite swag-labs for app swag-labs"
+}

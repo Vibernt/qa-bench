@@ -1,0 +1,72 @@
+{
+  "episode_id": "visual-008",
+  "system": {
+    "name": "claude-haiku-5.5-high",
+    "version": "claude-haiku-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "viewer",
+        "selector": "table[aria-label=\"Expenses\"]"
+      },
+      "category": "a11y",
+      "description": "Muted text colour (--muted #c3c8cd) on white gives about 1.7:1 contrast, far below WCAG AA 4.5:1. It is used for the table headers (Title, Category, Amount, Actions), the Category column values and the 'Signed in as' line, so these are hard or impossible to read, especially for low-vision users and in bright light.",
+      "confidence": 0.8,
+      "severity": "major",
+      "repro": [
+        "Sign in as viewer-2512 at /login.",
+        "Open /expenses at 1280 px.",
+        "Observe the table header labels, the category column values and the 'Signed in as' line in light grey.",
+        "Compute contrast of #c3c8cd on #ffffff (about 1.68:1)."
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "viewer-expenses-1280.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "table[aria-label=\"Expenses\"] td:first-child"
+      },
+      "category": "visual",
+      "description": "Long expense titles are not wrapped (td:first-child is white-space: nowrap). On desktop the title runs over the Category, Amount and Actions cells, overlapping the amount and the Edit/Delete buttons. On a 360 px phone the title pushes the page to about 1078 px wide, so the whole page scrolls horizontally.",
+      "confidence": 0.8,
+      "severity": "major",
+      "repro": [
+        "Sign in as editor-029d and open /expenses/new.",
+        "Add an expense with a title of about 120 characters (for example 'Conference travel reimbursement for the regional partner summit including taxis and parking' followed by many x characters), category travel, amount 98765.43.",
+        "At 1280 px, view /expenses: the title overlaps the category, amount and Edit/Delete controls.",
+        "At 360 px, sign in as viewer-2512 and view /expenses: document scroll width is about 1078 px, so the page scrolls sideways."
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "long-title-1280.png"
+        },
+        {
+          "kind": "screenshot",
+          "path": "viewer-mobile-360.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Tested at 1280 px (editor and viewer) and 360/414 px phone emulation with touch. Checked: totals against row sums (correct for full list and for category filters travel, meals and office), viewer access to /expenses/new, /expenses/1/edit and POST delete (all 403), server-side validation on POST /expenses (400 for blank title, bad category, negative, non-numeric, 3-decimal and whitespace title), the failed-login message and the add/edit flash messages. No other defects found. Not tested: full keyboard-only tab sequence and focus-ring contrast (the amber focus outline is about 2.5:1 on white, judged a design choice and not reported). Data note: during testing I added the expenses 'QA Probe Edited' (edited to 10.00), 'X' (0.00) and the long-title expense to the shared dataset. The amount with no thousands separator ($1234.50) was seen but not reported as it looks like a style choice.",
+  "cost": {
+    "model_usd": 0.00179,
+    "notes": "estimate from 41141 total tokens (85% cache read / 10% input / 5% output); range $0.0004-$0.0049"
+  },
+  "wall_time_s": 103.1,
+  "activity": {
+    "tool_calls": 21,
+    "screenshots_taken": 7,
+    "screenshots_viewed": 6
+  }
+}

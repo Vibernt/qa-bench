@@ -1,0 +1,83 @@
+{
+  "episode_id": "visual-004",
+  "system": {
+    "name": "claude-sonnet-5.5-low",
+    "version": "claude-sonnet-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer"
+      },
+      "category": "visual",
+      "description": "The Add to cart button of the last product (Test.allTheThings() T-Shirt) sticks out past the right edge of its card, because the long wrapped title pushes the layout.",
+      "confidence": 0.6,
+      "severity": "minor",
+      "repro": [
+        "Sign in",
+        "Open inventory at 1280px",
+        "Look at the last product card"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "d-inv.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer"
+      },
+      "category": "visual",
+      "description": "The cart icon is misplaced: it floats above and apart from the sort dropdown row instead of sitting in the header. On mobile it sits under the menu icon.",
+      "confidence": 0.5,
+      "severity": "minor",
+      "repro": [
+        "Sign in",
+        "Look at the header at 1280px and 360px"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "d-inv.png"
+        }
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer"
+      },
+      "category": "visual",
+      "description": "On a 360px phone, the last product's Add to cart button runs off the right edge of the card and the price is shown below the button, unlike the other cards.",
+      "confidence": 0.5,
+      "severity": "major",
+      "repro": [
+        "Sign in at 360px width",
+        "Scroll to the last product"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "m-inv.png"
+        }
+      ]
+    }
+  ],
+  "cost": {
+    "model_usd": 0.012591,
+    "notes": "estimate from 14472 total tokens (85% cache read / 10% input / 5% output); range $0.0029-$0.0347"
+  },
+  "wall_time_s": 28.8,
+  "activity": {
+    "tool_calls": 6,
+    "screenshots_taken": 1,
+    "screenshots_viewed": 2
+  }
+}

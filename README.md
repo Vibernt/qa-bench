@@ -290,6 +290,18 @@ and 14 verified natural bugs), the same configurations separate clearly. Details
 One run per configuration on 12 episodes, so the intervals are wide: the two high-effort configurations can't be
 told apart yet.
 
+On the visual track (7.3: 12 episodes, 17 planted visual and accessibility faults that leave the page's text and
+behaviour intact), only systems that look at or measure the rendered page find anything. Details are in
+[leaderboard/v0.3-visual-agents/README.md](leaderboard/v0.3-visual-agents/README.md).
+
+| System | Planted recall | Subtle | Precision | Screenshots looked at /ep | Est. model cost (12 ep) |
+|---|---|---|---|---|---|
+| Claude Haiku 5.5, high effort | 100% (17/17) | 9/9 | 98.1% | 7.2 | $0.03 |
+| Claude Sonnet 5.5, high effort | 100% (17/17) | 9/9 | 97.4% | 7.4 | $0.35 |
+| Claude Haiku 5.5, low effort | 70.6% (12/17) | 6/9 | 100% | 2.8 | $0.01 |
+| Claude Sonnet 5.5, low effort | 64.7% (11/17) | 3/9 | 95.5% | 2.8 | $0.18 |
+| `playwright-suite`, same 12 episodes | 11.8% (2/17) | 0/9 | 100% | — | $0 |
+
 ## Repository layout
 
 ```

@@ -1,0 +1,163 @@
+{
+  "episode_id": "visual-006",
+  "system": {
+    "name": "claude-haiku-5.5-low",
+    "version": "claude-haiku-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"inventory-item-price\"]"
+      },
+      "category": "consistency",
+      "description": "Product list prices change on every page load (e.g. Backpack showed $94.88, then $60.01, $40.73, $88.65 across reloads), so the displayed price is not stable and does not match the price used later.",
+      "confidence": 0.85,
+      "severity": "critical",
+      "repro": [
+        "Sign in as customer-8004",
+        "Note the prices on /inventory.html",
+        "Reload the page several times",
+        "Observe every product price changes on each load"
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/cart.html",
+        "role": "customer",
+        "selector": "[data-test=\"inventory-item-price\"]"
+      },
+      "category": "consistency",
+      "description": "Cart and checkout prices differ from the product list prices (Backpack listed at $94.88 or similar, but cart shows $29.99; Bike Light cart $9.99 vs list $53.73), so the order total shown at checkout does not match what the customer saw when adding items.",
+      "confidence": 0.8,
+      "severity": "critical",
+      "repro": [
+        "Sign in as customer-8004",
+        "Note a product price on /inventory.html",
+        "Add the product to the cart and open the cart",
+        "Compare the cart price with the list price"
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"inventory-item-price\"]"
+      },
+      "category": "copy",
+      "description": "The Bolt T-Shirt price is shown as \"$13.4\" with one decimal place, while other prices show two decimals (e.g. $6.78); it should read $13.40 (also $64.9 on mobile).",
+      "confidence": 0.6,
+      "severity": "minor",
+      "repro": [
+        "Sign in as customer-8004",
+        "Open /inventory.html",
+        "Read the Sauce Labs Bolt T-Shirt price"
+      ]
+    },
+    {
+      "id": "f4",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"inventory-item-name\"]"
+      },
+      "category": "visual",
+      "description": "Product card titles are misaligned: Sauce Labs Bolt T-Shirt and Sauce Labs Fleece Jacket are indented or shifted relative to the other card titles at 1280 px, and at 360 px the Fleece Jacket title is right-aligned and wraps unlike the others.",
+      "confidence": 0.6,
+      "severity": "minor",
+      "repro": [
+        "Sign in as customer-8004",
+        "Open /inventory.html at 1280 px and at 360 px",
+        "Compare title alignment across cards"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "inventory.png"
+        },
+        {
+          "kind": "screenshot",
+          "path": "mobile-inventory.png"
+        }
+      ]
+    },
+    {
+      "id": "f5",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"add-to-cart-test.allthethings()-t-shirt-(red)\"]"
+      },
+      "category": "visual",
+      "description": "On desktop the Add to cart button of the Test.allTheThings() T-Shirt (Red) card overflows the card's right border, unlike the other cards.",
+      "confidence": 0.6,
+      "severity": "minor",
+      "repro": [
+        "Sign in as customer-8004",
+        "Open /inventory.html at 1280 px",
+        "Look at the Test.allTheThings() T-Shirt (Red) card's Add to cart button"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "inventory.png"
+        }
+      ]
+    },
+    {
+      "id": "f6",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"shopping-cart-link\"]"
+      },
+      "category": "visual",
+      "description": "The cart icon in the header sits below the header bar line and is not vertically aligned with the menu icon and title, on desktop and mobile.",
+      "confidence": 0.5,
+      "severity": "minor",
+      "repro": [
+        "Sign in as customer-8004",
+        "Open /inventory.html",
+        "Compare the cart icon position with the hamburger menu and the Swag Labs title"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "inventory.png"
+        }
+      ]
+    },
+    {
+      "id": "f7",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"shopping-cart-link\"]"
+      },
+      "category": "a11y",
+      "description": "The cart link's accessible name reads \"Cart, 1 items\" with incorrect plural grammar and does not match the singular count.",
+      "confidence": 0.5,
+      "severity": "minor",
+      "repro": [
+        "Sign in as customer-8004",
+        "Add one item to the cart",
+        "Inspect the cart link accessible name"
+      ]
+    }
+  ],
+  "notes": "Tested login, inventory, sort, cart, checkout overview and completion, product detail, and a 360 px mobile inventory view. Not fully tested: keyboard focus styling, the burger menu on mobile, and the product detail page layout.",
+  "cost": {
+    "model_usd": 0.00123,
+    "notes": "estimate from 28278 total tokens (85% cache read / 10% input / 5% output); range $0.0003-$0.0034"
+  },
+  "wall_time_s": 48.1,
+  "activity": {
+    "tool_calls": 10,
+    "screenshots_taken": 4,
+    "screenshots_viewed": 2
+  }
+}

@@ -1,0 +1,113 @@
+{
+  "episode_id": "visual-012",
+  "system": {
+    "name": "claude-haiku-5.5-high",
+    "version": "claude-haiku-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "viewer",
+        "selector": "table[aria-label=\"Expenses\"] thead"
+      },
+      "category": "a11y",
+      "description": "At phone widths (600 px and below) the stylesheet hides the table header row (thead display:none) and turns rows and cells into blocks. The accessibility tree then exposes no columnheaders and no table structure, so screen-reader users hear amounts and categories with no Title/Category/Amount labels. The same applies to the editor view.",
+      "confidence": 0.55,
+      "severity": "major",
+      "repro": [
+        "Sign in as viewer-3cfd at a 360 px wide viewport.",
+        "Open /expenses.",
+        "Inspect the accessibility tree (for example with page.locator('main').ariaSnapshot()): the table has no columnheader nodes and each row is a bare cell list such as 'Train to Pune travel $42.50'.",
+        "Compare with a 1280 px viewport, where the four columnheaders are exposed."
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "viewer-360.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "td:nth-child(4) button"
+      },
+      "category": "a11y",
+      "description": "Every row has an Edit link and a Delete button with the same accessible name, so the list of actions gives no way to tell which expense each control acts on. Screen-reader users hearing 'Delete, Delete, Delete...' cannot choose the right row.",
+      "confidence": 0.45,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor-1a1b at 1280 px.",
+        "Open /expenses.",
+        "Read the accessibility tree of the table: every Delete button is named 'Delete' and every link 'Edit', with no expense title in the name."
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "editor-expenses-1280.png"
+        }
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "table[aria-label=\"Expenses\"]"
+      },
+      "category": "visual",
+      "description": "A title with no spaces that is wider than the table column (for example a 130-character title) is not wrapped, so the table grows past the 960 px card and the whole page scrolls horizontally at 1280 px (document scrollWidth 1626 px against a 1280 px viewport). Long titles with spaces wrap correctly.",
+      "confidence": 0.4,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor-1a1b at 1280 px.",
+        "Open /expenses/new and enter the title 'Supercalifragilisticexpialidocious_Conference_Travel_Reimbursement_For_Q3_Offsite_Workshop_Berlin_2026_Extra_Long_Title_Without_Spaces', category travel, amount 98765432.1, then Save.",
+        "The new row pushes the Actions column out of the card and the page gets a horizontal scrollbar."
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "editor-longtext-1280.png"
+        }
+      ]
+    },
+    {
+      "id": "f4",
+      "where": {
+        "route": "/expenses",
+        "role": "viewer",
+        "selector": "[data-testid=\"total\"]"
+      },
+      "category": "visual",
+      "description": "Amounts of $1,000 and above are shown without a thousands separator (for example '$1234.50' in the row and 'Total: $1634.49' in the total), while the rest of the money formatting is standard currency style. This reads as inconsistent number formatting in an expense report.",
+      "confidence": 0.35,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor-1a1b and add an expense with amount 1234.5 (any category), then Save.",
+        "Look at the Amount cell: it shows '$1234.50' rather than '$1,234.50'.",
+        "Look at the total line: 'Total: $1634.49' with no separator."
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "editor-after-add-1280.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Tested at 1280, 360, 320-1920 widths for overflow, both roles, sign-in and wrong-password error, sign-out, category filter (totals checked against row sums for all three categories for both roles), add/edit/delete as editor (totals reconciled, test rows removed afterward), viewer access to /expenses/new and /expenses/:id/edit (403, correct), keyboard tab order and focus outlines, theme colour contrast (text, muted, danger, accent pairs all at or above 4.5:1; focus ring about 2.5:1 and input borders about 1.4:1 were not reported as they are design choices). Not tested: touch gestures beyond tap, screen reader audio output, the 768 px layout in depth, browser zoom at 200 percent beyond the overflow check, and non-Chromium browsers.",
+  "cost": {
+    "model_usd": 0.002436,
+    "notes": "estimate from 56003 total tokens (85% cache read / 10% input / 5% output); range $0.0006-$0.0067"
+  },
+  "wall_time_s": 215.8,
+  "activity": {
+    "tool_calls": 43,
+    "screenshots_taken": 13,
+    "screenshots_viewed": 9
+  }
+}

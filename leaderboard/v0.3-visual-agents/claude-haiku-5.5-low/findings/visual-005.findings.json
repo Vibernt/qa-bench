@@ -1,0 +1,65 @@
+{
+  "episode_id": "visual-005",
+  "system": {
+    "name": "claude-haiku-5.5-low",
+    "version": "claude-haiku-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "editor"
+      },
+      "category": "a11y",
+      "description": "The global stylesheet sets `*:focus, *:focus-visible { outline: none; }` and no replacement focus style exists, so keyboard users cannot see which link, button or field has focus (WCAG 2.4.7). The focused Apply button computes outline-style none.",
+      "confidence": 0.85,
+      "severity": "major",
+      "repro": [
+        "Sign in as editor-ad69 at 1280 px",
+        "Open /expenses and press Tab twice",
+        "Observe that the focused Apply button has no visible focus ring; computed outline-style is none"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "focus.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses/new",
+        "role": "editor"
+      },
+      "category": "error-handling",
+      "description": "When the server rejects an invalid amount (negative or non-numeric, submitted past the browser's min/type checks), the add form is shown again with no error message and the title and amount the user typed are cleared. The same silent rejection happens on the edit form (/expenses/1/edit with -5 redirects to /expenses/1 with no message and no change saved).",
+      "confidence": 0.6,
+      "severity": "major",
+      "repro": [
+        "Sign in as editor-ad69",
+        "Open /expenses/new, enter a title, and set the amount to -5 (remove the browser's min check or submit with JS)",
+        "Click Save",
+        "Observe the form returns with no error text and empty fields"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "neg.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Tested viewer and editor at 1280 px and 360 px. Totals were correct, including category-filtered totals (travel 185.25, meals 177.25). Viewer access to /expenses/new and /expenses/1/edit is Forbidden as expected. The 360 px card layout does not overflow. The CSS defines a [role=alert] style where text colour equals background colour (#fdecea on #fdecea), but no page I reached rendered an alert, so I did not report it. Not tested: keyboard-only full journeys, screen reader output, and the delete flow.",
+  "cost": {
+    "model_usd": 0.001318,
+    "notes": "estimate from 30310 total tokens (85% cache read / 10% input / 5% output); range $0.0003-$0.0036"
+  },
+  "wall_time_s": 117.8,
+  "activity": {
+    "tool_calls": 18,
+    "screenshots_taken": 9,
+    "screenshots_viewed": 2
+  }
+}

@@ -18,11 +18,21 @@ subtle and known/novel defects, and 14 natural defects. The four configurations 
 `v0.2-sample-12` ([leaderboard/v0.2-agents/](../leaderboard/v0.2-agents/README.md)). Planted recall now ranges from
 35% to 100%, and subtle defects separate the systems.
 
+**Track 7.3 (visual) is built.** The expense app has a responsive design and 7 visual and accessibility defects that
+change only the stylesheet, plus a deliberate restyle. Swag Labs `visual_user` is included too. The four
+configurations and the scripted suite were run on the whole track
+([leaderboard/v0.3-visual-agents/](../leaderboard/v0.3-visual-agents/README.md)):
+- **High effort:** both configurations found 17 of 17.
+- **Low effort:** 11 and 12.
+- **The scripted suite:** 2.
+
+Reports now carry activity: tool calls, screenshots taken, and screenshots looked at.
+
 | Piece | Where | Proof |
 |---|---|---|
 | Contracts | `schemas/` (10 JSON Schemas), `lib/contracts.ts` | `npm run validate`: every YAML and JSON file in the repo, plus cross-file checks |
-| Expense app (ours) | `apps/expense-app` (code in `app/`, bench wrapper `bench-entry.mjs`) | 13 defects (7 blatant, 6 subtle; any compatible subset at once), 1 change, 7 natural. `verify.ts` 43/43 incl. six 3-defect combinations; the app's own 42 tests pass on Node 26 |
-| Swag Labs (vendored, MIT) | `apps/swag-labs` (`upstream/` at `ad62bb2`) | 5 faulty-user defects (`known`), 4 changes, 7 natural. `verify.ts` passes |
+| Expense app (ours) | `apps/expense-app` (code in `app/`, bench wrapper `bench-entry.mjs`) | 20 defects (13 functional, 7 visual and a11y; any compatible subset at once), 2 changes, 15 natural. `verify.ts` passes, including ten 3-defect combinations and browser probes for the visual defects; the app's own 42 tests pass on Node 26 |
+| Swag Labs (vendored, MIT) | `apps/swag-labs` (`upstream/` at `ad62bb2`) | 5 faulty-user defects (`known`), 4 changes, 10 natural. `verify.ts` passes |
 | the-internet (run-only, Apache-2.0) | `apps/the-internet` (fetched at build time at `4126619`) | 10 baseline labels, 1 change. `verify.ts` passes |
 | Survey site (ours) | `apps/survey-site` | Not wired into a track yet (B1) |
 | Generator | `harness/generator` | Seeded and byte-reproducible; clean and twin episodes; exclusive groups; held-out labels kept out of public episodes |
@@ -30,8 +40,8 @@ subtle and known/novel defects, and 14 natural defects. The four configurations 
 | Scorer | `scorer/` | Deterministic matcher `deterministic-3` (category families, description patterns), every BRIEF §9 metric except repro quality, plus severity-weighted recall and F1, severity agreement and natural recall; JSON and Markdown |
 | Adapters | `harness/adapters/{playwright-suite,http-api,human,noop}` | See each README |
 | Agent runs | `harness/agents` (configs, episode sets, one prompt, `agents prepare/finish`) | Haiku 5.5 and Sonnet 5.5 at low and high effort on `b0-sample-10` (`leaderboard/b0-agents/`) and `v0.2-sample-12` (`leaderboard/v0.2-agents/`) |
-| Natural defects | `apps/*/natural/` | 14 verified real bugs found by the agent runs, each with a `verify.ts` check |
-| Tracks | `tracks/regression.yaml` (24 episodes, 2-3 bugs per mixed episode), `tracks/noise.yaml` (6 + 2 live sites, generated only with `--live`), `tracks/exploration.yaml` (17, exploratory briefs) | Every defect and change is planted at least once (unit test) |
+| Natural defects | `apps/*/natural/` | 25 verified real bugs found by the agent runs, each with a `verify.ts` check |
+| Tracks | `tracks/regression.yaml` (24 episodes, 2-3 bugs per mixed episode), `tracks/noise.yaml` (6 + 2 live sites, generated only with `--live`), `tracks/exploration.yaml` (17, exploratory briefs), `tracks/visual.yaml` (7.3: 12, exploratory, supported devices stated) | Each track plants every defect and change it lists, and every repo defect and change is in some track (unit test) |
 | CLI | `bin/qa-bench.ts` | `validate`, `generate`, `build-apps`, `run`, `up`, `down`, `score`, `report` |
 | CI | `.github/workflows/ci.yml` | Lint and typecheck, validate, unit tests (142). No Docker or browsers in CI |
 
@@ -75,7 +85,7 @@ The `noop` run is a smoke test that takes seconds. Behind a TLS-intercepting pro
   - Description patterns are a deterministic stand-in, used only where labels collide.
   - An LLM matcher with a fixed prompt, logged decisions and maintainer spot-checks is the planned upgrade.
 - **Agent runs** use Claude Code subagents. Sealing is by instruction, plus an audit of every tool input (0 hits in
-  88 runs), but the subagents could see the repository's instructions file. See `harness/agents/README.md`.
+  136 published runs and a 24-run pilot), but the subagents could see the repository's instructions file. See `harness/agents/README.md`.
 - **Docker network pools.** Docker's default address pools allow about 30 episode networks at once, so finish
   sessions as they complete, or widen `default-address-pools` in the daemon config.
 
@@ -117,7 +127,7 @@ v0.2 runs separate systems. The steps, in order:
    - then a container driver with a model API key, so agents never see the repository.
 8. **Then B1 breadth** (BRIEF §12):
    - the survey site in the noise track;
-   - expense-app visual, a11y and usability mutations;
+   - expense-app visual and a11y mutations (done: track 7.3); usability mutations and track 7.5 accessibility next;
    - Mailpit and Keycloak, then Ghost (track 7.6);
    - the WebTestBench import (7.2);
    - the held-out split (BD3).

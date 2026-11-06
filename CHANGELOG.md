@@ -36,6 +36,11 @@ with its answer-key hashes.
 - **Regression and exploration tracks** list their expense defects by name, so their episodes don't change. The 4
   episodes that plant `long-title-truncated` get a new answer-key hash, because that label joined the
   `expense-title` exclusive group.
+- **Natural defects:** 11 more from the visual-track runs, for 25 in all (15 on the expense app, 10 on Swag Labs).
+  They include a major one: Swag Labs' header cart link is unreachable by keyboard. `swag.visual-user` gains 5 match
+  entries, for symptoms it already described but agents reported with another locator. Each new entry has a
+  `verify.ts` check.
+- **Leaderboard:** `v0.3-visual-agents/`, with four Claude configurations and the scripted suite on track 7.3.
 - **Activity:** findings and reports carry tool calls, screenshots taken and screenshots looked at per episode. This
   is reported, never scored. The report adds visual and accessibility recall rows. `agents audit` (harness 0.4.0)
   counts activity from transcripts, along with the sealed-path audit.

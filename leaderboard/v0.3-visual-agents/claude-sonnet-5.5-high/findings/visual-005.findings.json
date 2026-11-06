@@ -1,0 +1,65 @@
+{
+  "episode_id": "visual-005",
+  "system": {
+    "name": "claude-sonnet-5.5-high",
+    "version": "claude-sonnet-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/login",
+        "selector": "[role=\"alert\"]"
+      },
+      "category": "visual",
+      "description": "The error message text (\"Invalid credentials\") is invisible: the alert's text colour is the same as its pale red background (--danger-bg on --danger-bg), so a failed sign-in shows an empty pink box. Sighted users get no readable feedback (also fails contrast).",
+      "confidence": 0.9,
+      "severity": "major",
+      "repro": [
+        "Open /login",
+        "Enter a wrong username and password and submit",
+        "Observe the red-bordered alert box is empty-looking; selecting it reveals the text is there"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "login-error.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "a, button, select, input"
+      },
+      "category": "a11y",
+      "description": "Keyboard focus indicator is removed globally (`*:focus, *:focus-visible { outline: none }`) with no replacement style. Tabbing through links, buttons (Edit, Delete, Apply, Sign out) and form fields shows no visible focus, so keyboard users cannot tell where they are.",
+      "confidence": 0.9,
+      "severity": "major",
+      "repro": [
+        "Sign in as editor",
+        "On /expenses press Tab repeatedly",
+        "Observe no visible focus ring or other indicator on the focused element (computed outline-style none, box-shadow none)"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "focus.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Checked 1280 and 360 widths for viewer and editor: no horizontal overflow, totals correct (399.99, filter 185.25), viewer gets 403 on edit/new/delete. Not tested: touch-specific behaviour, screen reader output.",
+  "cost": {
+    "model_usd": 0.022243,
+    "notes": "estimate from 25567 total tokens (85% cache read / 10% input / 5% output); range $0.0051-$0.0614"
+  },
+  "wall_time_s": 61.9,
+  "activity": {
+    "tool_calls": 14,
+    "screenshots_taken": 2,
+    "screenshots_viewed": 4
+  }
+}

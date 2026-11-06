@@ -1,0 +1,164 @@
+{
+  "episode_id": "visual-004",
+  "system": {
+    "name": "claude-haiku-5.5-high",
+    "version": "claude-haiku-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"inventory-item-price\"]"
+      },
+      "category": "consistency",
+      "description": "Product list prices change on every page load (for example Sauce Labs Backpack shows $17.62, $96.69, $87.25 and $24.63 on successive loads) and never match the real price, which is $29.99 on the product detail page and in the cart.",
+      "confidence": 0.9,
+      "severity": "major",
+      "repro": [
+        "Sign in as customer-11fa",
+        "Note the Sauce Labs Backpack price on /inventory.html",
+        "Reload the page several times: the price changes on each load",
+        "Open the Backpack detail page: it shows $29.99",
+        "Add the Backpack to the cart and open the cart: it shows $29.99"
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"inventory-item-price\"]"
+      },
+      "category": "copy",
+      "description": "Prices with one decimal digit are shown without the second digit, e.g. \"$5.7\", \"$74.3\" and \"$58.2\" instead of \"$5.70\", \"$74.30\" and \"$58.20\". Cart, detail and checkout pages always show two decimals.",
+      "confidence": 0.6,
+      "severity": "minor",
+      "repro": [
+        "Sign in as customer-11fa",
+        "Reload /inventory.html until a price with a single decimal digit appears, such as $74.3",
+        "Compare with the cart or the checkout overview, which show two decimals"
+      ],
+      "evidence": [
+        {
+          "kind": "other"
+        },
+        {
+          "kind": "other"
+        }
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"inventory-item-name\"]"
+      },
+      "category": "visual",
+      "description": "Product names in the grid are aligned inconsistently: Sauce Labs Bolt T-Shirt and Sauce Labs Fleece Jacket are right-aligned (computed text-align: right) while the other product names are left-aligned, so their titles sit indented in their cards at 1280 px and at 360 px.",
+      "confidence": 0.75,
+      "severity": "minor",
+      "repro": [
+        "Sign in as customer-11fa",
+        "Open /inventory.html at 1280 px",
+        "Compare Sauce Labs Bolt T-Shirt (indented to the right) with Sauce Labs Backpack (flush left)"
+      ],
+      "evidence": [
+        {
+          "kind": "other"
+        },
+        {
+          "kind": "other"
+        }
+      ]
+    },
+    {
+      "id": "f4",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"add-to-cart-test.allthethings()-t-shirt-(red)\"]"
+      },
+      "category": "visual",
+      "description": "The Add to cart button of the Test.allTheThings() T-Shirt (Red) card overflows the card's right border at 1280 px and at 360 px, so it sticks out past the card edge.",
+      "confidence": 0.7,
+      "severity": "minor",
+      "repro": [
+        "Sign in as customer-11fa",
+        "Open /inventory.html at 1280 px wide",
+        "Look at the Test.allTheThings() T-Shirt (Red) card: its Add to cart button extends past the card border",
+        "Repeat at 360 px wide: the same button runs past the card edge"
+      ],
+      "evidence": [
+        {
+          "kind": "other"
+        },
+        {
+          "kind": "other"
+        }
+      ]
+    },
+    {
+      "id": "f5",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"add-to-cart-sauce-labs-bike-light\"]"
+      },
+      "category": "a11y",
+      "description": "Keyboard focus is not visible: when Tab moves focus to the Add to cart buttons, product links and the sort dropdown, no focus ring or other visible change appears (computed outline-style is none and box-shadow is none), so keyboard users cannot see where they are.",
+      "confidence": 0.7,
+      "severity": "major",
+      "repro": [
+        "Sign in as customer-11fa on /inventory.html at 1280 px",
+        "Press Tab until focus reaches the Add to cart button of Sauce Labs Bike Light",
+        "Observe that the button looks the same as when unfocused and no focus indicator is drawn",
+        "Repeat for the sort dropdown and the product title links"
+      ],
+      "evidence": [
+        {
+          "kind": "other"
+        }
+      ]
+    },
+    {
+      "id": "f6",
+      "where": {
+        "route": "/inventory.html",
+        "role": "customer",
+        "selector": "[data-test=\"shopping-cart-link\"]"
+      },
+      "category": "visual",
+      "description": "The shopping cart icon in the header sits below the header bar, on the border between the header and the Products sub-bar, instead of being vertically centred in the header. The same misplacement appears on the checkout pages.",
+      "confidence": 0.6,
+      "severity": "minor",
+      "repro": [
+        "Sign in as customer-11fa",
+        "Open /inventory.html at 1280 px",
+        "The cart icon sits about 25 px lower than the Swag Labs title and overlaps the header border",
+        "Open checkout: the same icon position is shown"
+      ],
+      "evidence": [
+        {
+          "kind": "other"
+        },
+        {
+          "kind": "other"
+        }
+      ]
+    }
+  ],
+  "notes": "Tested at 1280 px and 360 px with Chromium, mouse and keyboard. Checked: login, inventory, sort menu, burger menu at both widths, detail page, cart, checkout step one and overview (totals add up: 29.99 + tax 2.40 = 32.39). Not tested: full checkout completion, the login page as a11y deeper audit (no axe-core available), colour contrast measurements, screen reader behaviour, and phone touch targets in detail.",
+  "cost": {
+    "model_usd": 0.001918,
+    "notes": "estimate from 44097 total tokens (85% cache read / 10% input / 5% output); range $0.0004-$0.0053"
+  },
+  "wall_time_s": 125.3,
+  "activity": {
+    "tool_calls": 26,
+    "screenshots_taken": 9,
+    "screenshots_viewed": 6
+  }
+}

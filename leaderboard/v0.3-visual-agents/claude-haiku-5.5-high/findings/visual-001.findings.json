@@ -1,0 +1,165 @@
+{
+  "episode_id": "visual-001",
+  "system": {
+    "name": "claude-haiku-5.5-high",
+    "version": "claude-haiku-5-5@high"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/login",
+        "role": "viewer",
+        "selector": "[role=\"alert\"]"
+      },
+      "category": "a11y",
+      "description": "The 'Invalid credentials' error on a failed sign-in is drawn in the same colour as its background (the theme rule sets colour and background both to --danger-bg), so the message text is invisible and the user sees only an empty red bar.",
+      "confidence": 0.9,
+      "severity": "major",
+      "repro": [
+        "Open http://127.0.0.1:33051/expenses (it redirects to /login)",
+        "Enter username viewer-e393 and password wrongpass",
+        "Click Sign in",
+        "The page shows an empty red alert bar above the form; the text 'Invalid credentials' is in the DOM but not visible"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "bad-login-1280.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "table[aria-label=\"Expenses\"] td:first-child"
+      },
+      "category": "visual",
+      "description": "Long expense titles do not wrap: the Title cells are white-space:nowrap, so on desktop the title runs over the Category, Amount and Edit/Delete cells of its row, and on a 360 px phone the title overflows the card and the whole page scrolls sideways (document width about 875 px on a 360 px viewport).",
+      "confidence": 0.9,
+      "severity": "major",
+      "repro": [
+        "Sign in as editor-541d",
+        "Open Add expense, enter the title 'A very long expense title that just keeps going and going to test wrapping behaviour in the table cell for overflow', category travel, amount 0.1, Save",
+        "At 1280 px the new row's title runs across the category, amount and Edit/Delete controls",
+        "At 360 px wide (or with the viewer account) the page becomes horizontally scrollable"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "long-title-1280.png"
+        },
+        {
+          "kind": "screenshot",
+          "path": "mobile-list-viewer-360-longtitle.png"
+        }
+      ]
+    },
+    {
+      "id": "f3",
+      "where": {
+        "route": "/expenses/new",
+        "role": "editor",
+        "selector": "input[name=\"title\"]"
+      },
+      "category": "error-handling",
+      "description": "When the server rejects an expense (HTTP 400, for example a whitespace-only title, a negative or non-numeric amount, or an unknown category), the page shows no error message and the Add expense form comes back blank, so everything the user typed is lost. On the edit form the rejected values are silently replaced by the stored values.",
+      "confidence": 0.75,
+      "severity": "major",
+      "repro": [
+        "Sign in as editor-541d and open Add expense",
+        "Enter '   ' (three spaces) as the title, choose category meals, enter amount 12.00",
+        "Click Save",
+        "The URL becomes /expenses with HTTP 400, the page shows the Add expense form with empty title and amount, and no message explains the rejection"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "whitespace-title-400-1280.png"
+        }
+      ]
+    },
+    {
+      "id": "f4",
+      "where": {
+        "route": "/expenses",
+        "role": "viewer",
+        "selector": "td:nth-child(2)"
+      },
+      "category": "a11y",
+      "description": "Text in the Category column, the table column headers and the 'Signed in as' line uses --muted (#c3c8cd) on white, a contrast ratio of about 1.7:1, far below the 4.5:1 WCAG AA minimum for body text, so these labels are very hard to read.",
+      "confidence": 0.8,
+      "severity": "major",
+      "repro": [
+        "Sign in as viewer-e393 at 1280 px",
+        "Look at the travel/meals/office cells, the TITLE/CATEGORY/AMOUNT headers and the 'Signed in as' line",
+        "They are pale grey on white (about 1.7:1 contrast)"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "viewer-expenses-1280.png"
+        }
+      ]
+    },
+    {
+      "id": "f5",
+      "where": {
+        "route": "/expenses",
+        "role": "viewer",
+        "selector": "table[aria-label=\"Expenses\"] thead"
+      },
+      "category": "a11y",
+      "description": "Below 600 px the stylesheet hides the table header and turns each row into blocks with no per-cell labels, so the Category and Amount cells have no column name; the accessibility tree exposes them as plain 'cell' with no header association.",
+      "confidence": 0.4,
+      "severity": "minor",
+      "repro": [
+        "Sign in at a 360 px wide viewport",
+        "Inspect the accessibility tree of the expenses table: the header row is hidden and the cells are exposed as generic cells with no columnheader",
+        "A screen reader user hears '$42.50' with no 'Amount' label"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "mobile-viewer-e393-360.png"
+        }
+      ]
+    },
+    {
+      "id": "f6",
+      "where": {
+        "route": "/expenses",
+        "role": "editor",
+        "selector": "[data-testid=\"total\"]"
+      },
+      "category": "copy",
+      "description": "Amounts of $1,000 and over are shown without a thousands separator ('$1234.50' in the row and 'Total: $1654.49' in the total), which is inconsistent with normal currency formatting.",
+      "confidence": 0.3,
+      "severity": "minor",
+      "repro": [
+        "Sign in as editor-541d",
+        "Add an expense with amount 1234.5 and Save",
+        "The row shows $1234.50 and the total shows a value such as Total: $1654.49, both without a thousands separator"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "after-edit-1280.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Tested at 1280 px desktop and 360 px phone width for both roles: sign-in, expenses list, category filter (totals for travel, meals, office and all were arithmetically correct), add and edit expense, delete, keyboard tab order and focus, and viewer access control on write routes (all returned 403). Not tested: other browsers, tablets, zoom at 200 percent or 400 percent, screen reader output on real assistive technology, and the 600-900 px range. Test data created during the run (QA probe rows and a long-title row) was deleted or left in place as noted; the 'QA probe edited' and long-title rows remain in the expense list.",
+  "cost": {
+    "model_usd": 0.002951,
+    "notes": "estimate from 67834 total tokens (85% cache read / 10% input / 5% output); range $0.0007-$0.0081"
+  },
+  "wall_time_s": 265,
+  "activity": {
+    "tool_calls": 42,
+    "screenshots_taken": 13,
+    "screenshots_viewed": 10
+  }
+}

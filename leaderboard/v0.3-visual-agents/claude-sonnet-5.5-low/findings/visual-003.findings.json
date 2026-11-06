@@ -1,0 +1,63 @@
+{
+  "episode_id": "visual-003",
+  "system": {
+    "name": "claude-sonnet-5.5-low",
+    "version": "claude-sonnet-5-5@low"
+  },
+  "findings": [
+    {
+      "id": "f1",
+      "where": {
+        "route": "/expenses",
+        "role": "editor"
+      },
+      "category": "visual",
+      "description": "At 360px wide the table's Amount and Actions columns are cut off and not reachable (no wrap or visible scroll); editors cannot see amounts or reach Edit/Delete on phones.",
+      "confidence": 0.8,
+      "severity": "major",
+      "repro": [
+        "Sign in as editor",
+        "Open /expenses at 360px width",
+        "Amount and Actions columns are clipped"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "editor-360.png"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "where": {
+        "route": "/expenses",
+        "role": "editor"
+      },
+      "category": "visual",
+      "description": "Amount column header is right-aligned but the amount values are left-aligned, so they do not line up under the header.",
+      "confidence": 0.6,
+      "severity": "minor",
+      "repro": [
+        "Open /expenses at 1280px",
+        "Compare Amount header with values"
+      ],
+      "evidence": [
+        {
+          "kind": "screenshot",
+          "path": "editor-1280.png"
+        }
+      ]
+    }
+  ],
+  "notes": "Only the list page was checked, with no forms or keyboard testing.",
+  "cost": {
+    "model_usd": 0.013355,
+    "notes": "estimate from 15350 total tokens (85% cache read / 10% input / 5% output); range $0.0031-$0.0368"
+  },
+  "wall_time_s": 37.4,
+  "activity": {
+    "tool_calls": 8,
+    "screenshots_taken": 2,
+    "screenshots_viewed": 2
+  }
+}
