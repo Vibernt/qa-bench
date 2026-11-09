@@ -257,6 +257,11 @@ Every report records:
 
 ## Results
 
+Track **7.9 judge calibration** has a [60-case hashed recipe manifest and capped model harness](judge-sets/README.md).
+The [judge leaderboard](leaderboard/judges/README.md) is pending native rendering and model runs. A
+[native deterministic-check adapter](harness/adapters/touchstone/README.md) maps installed checks into the ordinary
+findings/scoring path. Native browser verification was blocked by the execution sandbox; no model quality is claimed.
+
 These are the B0 exit-check results, on 17 regression and 6 noise episodes. Details are in
 [leaderboard/README.md](leaderboard/README.md).
 

@@ -1,0 +1,10 @@
+{
+  "package": "@anthropic-ai/sdk",
+  "version": "1.6.0",
+  "source": "https://github.com/anthropics/anthropic-sdk-typescript",
+  "licence": "Apache-2.0",
+  "licence_checked": "2026-11-09",
+  "licence_file": "node_modules/@anthropic-ai/sdk/LICENSE",
+  "licence_note": "LICENSE-MIT retains MIT terms for versions and contributions predating the 1.0.0 Apache-2.0 change; both files checked",
+  "use": "dependency; no vendored code"
+}

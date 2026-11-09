@@ -1,0 +1,1768 @@
+{
+  "schema": "qa-bench.judge-plan/v1",
+  "track": "7.9",
+  "generator": "bench-render/v1",
+  "status": "requires-native-render",
+  "seed": "judge-fixture/v1",
+  "source_sha256": "c188c99996679e505150d1600b0889c1cef79a777343907a97c1274cf2bcb9cc",
+  "sources": [
+    {
+      "path": "apps/expense-app/app/fixture-credentials.json",
+      "sha256": "a7b25037292691f45c2aaf7cba096c9b7205feb1e5b288b2467251e4373728ac"
+    },
+    {
+      "path": "apps/expense-app/app/package-lock.json",
+      "sha256": "4d854fd3cfe062adab965ec8c5d00a8ac01839dc431fe040c6a8a0432f494670"
+    },
+    {
+      "path": "apps/expense-app/app/package.json",
+      "sha256": "0348ce0660763cd00b00b3332f17560426e3d7fed8e9a9c5e88bd6615bae00bc"
+    },
+    {
+      "path": "apps/expense-app/app/seed.sql",
+      "sha256": "d05b2f19cc084a9bb4a6b39cd04003ac8144c60ff04690513475ad89e01cb542"
+    },
+    {
+      "path": "apps/expense-app/app/src/auth-lifecycle/routes.ts",
+      "sha256": "735a44d5e32be172e8f31fba536a55c4254365dbe8858030a0f3d9872f3a0756"
+    },
+    {
+      "path": "apps/expense-app/app/src/auth-lifecycle/totp.ts",
+      "sha256": "a4ee6ea56109ced3bf58103675ff406358b41abdb0d20a7ca55788e013df2ab2"
+    },
+    {
+      "path": "apps/expense-app/app/src/auth-lifecycle/types.ts",
+      "sha256": "3ebb32d707334d0dccc3600cf24ad9edba24665285d462cd2344f9172977de99"
+    },
+    {
+      "path": "apps/expense-app/app/src/catalogue/entry.ts",
+      "sha256": "66b446f9e546fb0508d981f8a381ef511c49e2a90087959060246eb1da7f128c"
+    },
+    {
+      "path": "apps/expense-app/app/src/catalogue/evidence.ts",
+      "sha256": "7d9e3209943545a814e7338cfd00679a7c08eb1f6c7e8a4722a24915c677e5e6"
+    },
+    {
+      "path": "apps/expense-app/app/src/catalogue/identity.ts",
+      "sha256": "f4faa0d259bc0e10806555b009e245b57cde9d2ea6c18fcb67c417617eca065b"
+    },
+    {
+      "path": "apps/expense-app/app/src/catalogue/index.ts",
+      "sha256": "ed85b74e95012606793d5c49f966ab3a374f2e19b9ba003d54b878f54b15e0ed"
+    },
+    {
+      "path": "apps/expense-app/app/src/catalogue/lifecycle.ts",
+      "sha256": "290c8793e4177b858ea67ca6daabb9e22904596dcecb2c8302d79d819f60cc28"
+    },
+    {
+      "path": "apps/expense-app/app/src/catalogue/sign-in.ts",
+      "sha256": "69923055e0c799e1805d3e97c4c39a198de683e5c872eb00d3a6b5ed4b1c0ff4"
+    },
+    {
+      "path": "apps/expense-app/app/src/catalogue/verification.ts",
+      "sha256": "e5d74a5ca7082285c91a67360b33e67a89050992f5b60fb88e5559e2287dc142"
+    },
+    {
+      "path": "apps/expense-app/app/src/db.ts",
+      "sha256": "011b1af18feea9a910ca969a1379407ffb648967cc3c8005ce6c3a2a606bc782"
+    },
+    {
+      "path": "apps/expense-app/app/src/hostile.ts",
+      "sha256": "64b534e54c6c9499697968f890ae76725e72a4cc62cae1c0c29d235efdd069e7"
+    },
+    {
+      "path": "apps/expense-app/app/src/isolation.ts",
+      "sha256": "012d2c4dabc99308ce16747634679d4686e7cf4c14dc308e5238e48bfc46dbfe"
+    },
+    {
+      "path": "apps/expense-app/app/src/server.ts",
+      "sha256": "87af123f20ab03d2e125b40aaa701cd1a1bc2bd657fe05f0c9952007e4c4705b"
+    },
+    {
+      "path": "apps/expense-app/app/src/theme.ts",
+      "sha256": "3186d6cf4bb83d763b8050cd0b766d463af0243e03ca53db2dd806eceaf7ae9a"
+    },
+    {
+      "path": "apps/expense-app/app/src/variant.ts",
+      "sha256": "7ba4e69ab8e40cb588bf82ab6042dd12e029147b65799cd6bfe92fb193ff22d5"
+    },
+    {
+      "path": "apps/expense-app/app/test/auth-lifecycle.test.ts",
+      "sha256": "6b88fe7e0362ec57e3415afacb440bce916ff0a6e4c40c2e2852416cd050a741"
+    },
+    {
+      "path": "apps/expense-app/app/test/catalogue.test.ts",
+      "sha256": "9e569a02850166a2b748f6cfd256e3516014920e59bf568eb21a55a3cfaf2147"
+    },
+    {
+      "path": "apps/expense-app/app/test/db.test.ts",
+      "sha256": "e54bf91c287003e4ccbf7c6c363c5ecd1a045e0362cfb1e6de95a328cd59af74"
+    },
+    {
+      "path": "apps/expense-app/app/test/defects.test.ts",
+      "sha256": "3308ec916b99f56f8b5503ece5b57d80360a64255fd342f9c9d0e86c222070a2"
+    },
+    {
+      "path": "apps/expense-app/app/test/entrypoint.test.ts",
+      "sha256": "bb6a2ea69fa1183c6dd5b4b27d4c972cdaa2cd3f983ae5110e7093e926ae6193"
+    },
+    {
+      "path": "apps/expense-app/app/test/helpers.ts",
+      "sha256": "ab23513ce26172a92e89f4e14ce1bb846f535e559a588e733de2de3e2f0150e8"
+    },
+    {
+      "path": "apps/expense-app/app/test/hostile.test.ts",
+      "sha256": "f87e8e91652efd959d878298c332170c5ab1c6a6351b999e6219a30e851815e4"
+    },
+    {
+      "path": "apps/expense-app/app/test/server.test.ts",
+      "sha256": "703a9d1e52c00af37de421a57be155c3b31af3b756b1373fa29698c8352333f6"
+    },
+    {
+      "path": "apps/expense-app/app/tsconfig.json",
+      "sha256": "6f23266028c4beb33169b1daa63069d3d97574e62adb9565ccc55f1481cd532e"
+    },
+    {
+      "path": "apps/survey-site/app/package.json",
+      "sha256": "0de5a09d4f27db33ba39aae79b9d58d5b2d85440d13ac6011f68ce9c49c62a7d"
+    },
+    {
+      "path": "apps/survey-site/app/pages.mjs",
+      "sha256": "d244629c4be324f952d361d81c13860994e11009fd708f73b7971bbb5e4e2406"
+    },
+    {
+      "path": "apps/survey-site/app/server.mjs",
+      "sha256": "e49fdb70beca6b07268d3bb98a3e4c33674cc62c240e0e957c011b4237f7108d"
+    },
+    {
+      "path": "apps/survey-site/app/truth.json",
+      "sha256": "6ef5c7c7ba27875edb245fc9aa0376decc27a8868578daee21f682735e6c5616"
+    },
+    {
+      "path": "apps/swag-labs/upstream/index.html",
+      "sha256": "4bcd511770ca508cb472443dc05a7c6c70b5a7133cdadd56eb49eb3c2556be1d"
+    },
+    {
+      "path": "apps/swag-labs/upstream/package-lock.json",
+      "sha256": "312d36fc678f6d7e2b6ee167f2c5d23c2ba9e5987ac1370483ff5681d2a1acc0"
+    },
+    {
+      "path": "apps/swag-labs/upstream/package.json",
+      "sha256": "46b83118c28ac4ef90092e0f62b5adedc71309901afb8537e0a202c26baac9ea"
+    },
+    {
+      "path": "apps/swag-labs/upstream/public/frames/frame-content.html",
+      "sha256": "359ecdb6fceb3a8c952ce2ff031983e5e507e778cf2c42d631c7820c8be30b23"
+    },
+    {
+      "path": "apps/swag-labs/upstream/public/frames/frame.html",
+      "sha256": "0337820d1930999c7ff110176e1aac80f4282c02633c287f78bda95befaeb9ff"
+    },
+    {
+      "path": "apps/swag-labs/upstream/public/frames/global.css",
+      "sha256": "eb0cedd32f1197f19fe099d50bf88b237c47d71c3c65ac49d9dffd35a491eb46"
+    },
+    {
+      "path": "apps/swag-labs/upstream/public/frames/header.html",
+      "sha256": "b33019b6a2cd05f61a213544b5079e94b3c9ecf5244080c600b67baa6faf5c67"
+    },
+    {
+      "path": "apps/swag-labs/upstream/public/frames/iframe-content.html",
+      "sha256": "79d2dd71ccf8b91a27c4194a7773dd39b0a5a2b0e37b82271752edd90202090b"
+    },
+    {
+      "path": "apps/swag-labs/upstream/public/frames/iframe.html",
+      "sha256": "d3c9e8902f60398b10bc78519bf6b0deea48dfd31787ff096aaf75aca23e6e16"
+    },
+    {
+      "path": "apps/swag-labs/upstream/public/frames/index.html",
+      "sha256": "862a34f7e7a7d181c1d9e84de44e9fb76c463e752f221e70ce4cbac48eb87ff0"
+    },
+    {
+      "path": "apps/swag-labs/upstream/public/frames/main.html",
+      "sha256": "d6c55c564ba5f457e37ed7a8d3d601eac8d3efae7f1eaa38b3d257a1fc25a28b"
+    },
+    {
+      "path": "apps/swag-labs/upstream/public/frames/sidebar.html",
+      "sha256": "c69b94a0207db074f2bd2e4ada824e8332f99bf45eaaf8384e0aa395ac5e6296"
+    },
+    {
+      "path": "apps/swag-labs/upstream/public/manifest.json",
+      "sha256": "c82f0157a92a7be005ff12e90d5d3aa81e9af4f4ff528fae3029413c09bd5680"
+    },
+    {
+      "path": "apps/swag-labs/upstream/public/mixed-nesting/deep-level-2.html",
+      "sha256": "82583d948debb38775ab17972b961a612239bb35715e38e2b62dea36fe964283"
+    },
+    {
+      "path": "apps/swag-labs/upstream/public/mixed-nesting/deep-level-4.html",
+      "sha256": "a78f5f2fd9240538dc6f4793d10031282ba3f839d2ee93c165706f7ca45d0bd8"
+    },
+    {
+      "path": "apps/swag-labs/upstream/public/mixed-nesting/deep-level-6.html",
+      "sha256": "1bfd3d7b3bec5d4b6160d49fe99cef5fb8d4e8c0e9aa7e4d436dd7089973e195"
+    },
+    {
+      "path": "apps/swag-labs/upstream/public/mixed-nesting/deep-nested.html",
+      "sha256": "d0789e2334151212544cae801fe24fab8a897b18f9604463fce6d642680535c7"
+    },
+    {
+      "path": "apps/swag-labs/upstream/public/mixed-nesting/iframe-in-shadow.html",
+      "sha256": "e07d55e545e04975ed858131f3e09ca56353d89f5a925fc6bf7d4eac94c0f8fe"
+    },
+    {
+      "path": "apps/swag-labs/upstream/public/mixed-nesting/index.html",
+      "sha256": "a08cf778bdeb6bddc31de1cfe435c68d148086274350b510d5624d5e9030e3ca"
+    },
+    {
+      "path": "apps/swag-labs/upstream/public/mixed-nesting/shadow-iframe-content.html",
+      "sha256": "e692ba0d6101d9a939de6ffdeba1860aecaf32a7d36d8e92236528173fe6c8f6"
+    },
+    {
+      "path": "apps/swag-labs/upstream/public/mixed-nesting/shadow-in-iframe-content.html",
+      "sha256": "cd0545dfc8cf1197bf1946ef9d525d2b26955ec11a1f3c6a8d00916d3fd5db0a"
+    },
+    {
+      "path": "apps/swag-labs/upstream/public/mixed-nesting/shadow-in-iframe.html",
+      "sha256": "3d90fcfdc6a84b3e8be32ffdd461bf22626bc0a2241b95eba6e7fb2c23564bb0"
+    },
+    {
+      "path": "apps/swag-labs/upstream/public/runtime-config.js",
+      "sha256": "0463888e191ede7401be52b45f492a1dfe1175ff3a80bf58a1acae5fd5bbb3d5"
+    },
+    {
+      "path": "apps/swag-labs/upstream/public/shadow-dom/_mode.js",
+      "sha256": "2e32c8a86c88b030a571f157fe628c5f961196adf171f184f61e9ce765dcb2b1"
+    },
+    {
+      "path": "apps/swag-labs/upstream/public/shadow-dom/_style.css",
+      "sha256": "e775a2e8f27fe9655e9f0cc436f08bc29ae6305149fe000cbe981557e31d7571"
+    },
+    {
+      "path": "apps/swag-labs/upstream/public/shadow-dom/index.html",
+      "sha256": "4f34063dee66f9606d184ed1c7d5205b58febf69f67dc535c58cca3eb870c3b5"
+    },
+    {
+      "path": "apps/swag-labs/upstream/public/shadow-dom/nested-shadow-root.html",
+      "sha256": "d6f5680e308947f930587a3f26db7570d33748a788d0e91f7005616e0a79c35c"
+    },
+    {
+      "path": "apps/swag-labs/upstream/public/shadow-dom/shadow-root.html",
+      "sha256": "2c5adefe2595ebce6081bbe6a2b0cef1fa1cdcd5ade7ad9b7f38b51b98d79c52"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/components/BrokenComponent.jsx",
+      "sha256": "b1f0fd6416dd42feb68c506268acd01a39099aa35fd2dcd46a601cae4534bdb0"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/components/Button.css",
+      "sha256": "ffa4ed2968089e4f5f5fd9452291e3904a84b7453948acc422493d5b5fff9b7a"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/components/Button.jsx",
+      "sha256": "2080b0e4bba78355099270f125ffb193b1ee54a8ea2dcc7572837faa6c28486d"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/components/CartButton.css",
+      "sha256": "1bd39f62661f43fa8a3ba601e4ccb92bc349af231cdb32a4950be32cd155a592"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/components/CartButton.jsx",
+      "sha256": "dab6c10158ad966b0171fd47d4656372a4804d6a776410556ae8f337c6284632"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/components/CartItem.css",
+      "sha256": "c354c4d9de72679c0006f17223e991a3d55b14e4daccb8a65682f3227054f541"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/components/CartItem.jsx",
+      "sha256": "8f72a463c6b325ab99c80931995a2fdda018fde528e2bd6aec0749f4f2dd4654"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/components/DrawerMenu.css",
+      "sha256": "5bd4d8638bc56078d69818a92c854253452ea1bc88ae865c0f40d15bef82b700"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/components/DrawerMenu.jsx",
+      "sha256": "6699896911151085bd7f6b121afc0afc5bf3bb2f8896cd2bf3a4cff5652fadb0"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/components/DynamicCatalogItemCard.css",
+      "sha256": "eaaff9f47ee6327447c48a39eada356a9fa1322570ad1da0c58ac30a6f2b4a96"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/components/DynamicCatalogItemCard.jsx",
+      "sha256": "74c025b9596910ee9ca310a7c39ca7074313620b7bee2e320bc9227402db00fb"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/components/ErrorMessage.css",
+      "sha256": "16b4536bb770b95600a8528be01b28d282556b59b73569db91f67ac749f6aee6"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/components/ErrorMessage.jsx",
+      "sha256": "39a4c9217eb31a9fbce9259ffa4c40edb7b796e93cbe49e1c63c9a1fc71206f4"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/components/Footer.css",
+      "sha256": "86835a7ba0387ddafe8a3f28e15d5386200a27b128e5a532f9925b77e824af80"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/components/Footer.jsx",
+      "sha256": "642e9c9c142176762b0217609c927a631a4b5abc1eb48f0e393c0f4d35d96a05"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/components/HeaderContainer.css",
+      "sha256": "704f19a5c647570cd4fa8ebeb601aa726adcf7fa0bbb96ef81c1b488c6089f42"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/components/HeaderContainer.jsx",
+      "sha256": "a6d7b39f422a7ebcc3620ea0210d5bf40e5b15b30ca110556a9d618b0461d3d1"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/components/InputError.css",
+      "sha256": "2b9a81c14b168aa1691728fe645e069c834ccc659d2a82db7a02b0caeb0dec37"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/components/InputError.jsx",
+      "sha256": "20a83748673e3e0293a66073a607c1c2c91c5ea801938d42874dc69fa3b2a3e0"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/components/InventoryListItem.css",
+      "sha256": "023b6e58b1946d776c3582fb006beccea11f488705c22478ef109726ead90ee7"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/components/InventoryListItem.jsx",
+      "sha256": "7e130be289916b4d70f25f15b486cbb17db520490581687f92035d7cd97f2158"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/components/LazyCatalogCard.jsx",
+      "sha256": "b974ca98c162172eff6177d37730ada0297dd8c17dcccf50115b68bf5a339a6e"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/components/PrivateRoute.jsx",
+      "sha256": "e8007401f274abac838e83cf1bb240f305599dca26b2bd9b7b5e433649d443c8"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/components/Select.css",
+      "sha256": "9879f218577a89ca4c4701d3d8545a7595cf91c30469ee28c37d9e5a27e64eac"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/components/Select.jsx",
+      "sha256": "b5dbd75b7181e48b6f4b85eaeb49a8d59b8e8da01f96ada6d74d942ada2f230e"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/components/SubmitButton.css",
+      "sha256": "3621e0db75efcf9dfb1ed81c8aa56ab8cfefec34c617d486c1e78170ee971b97"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/components/SubmitButton.jsx",
+      "sha256": "d5f7b84185da8ee3a0ba3a384fa2c74b0f883444b906cf8d31c5b5c00e49ff47"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/index.css",
+      "sha256": "a38bb415f9a433416d5448f3218b1e45b6089d5ea1085f5c450ef8268e639590"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/index.jsx",
+      "sha256": "07ab7e762e8b46b2b55c257f9004e0438434e357f317f33a42492e5fe3d8955c"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/pages/Cart.css",
+      "sha256": "5037ff2b3aea214e113a4221edc257278b80c1ec22ad7206316e1a336614d6eb"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/pages/Cart.jsx",
+      "sha256": "cb3306587c9bcebadb8cb0d64e6c3229664a81da7dc38c684182f39467859bb0"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/pages/CheckOutStepOne.css",
+      "sha256": "286373b7167d53b6eb7f3a6c0094fce927603a9d0bae79bcf3b31bdea2ba6c0c"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/pages/CheckOutStepOne.jsx",
+      "sha256": "3d1e517ef159bdab7e251e4f9b587efd10a4e580d1c547d19204bada60ee46f7"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/pages/CheckOutStepTwo.css",
+      "sha256": "4c9891d481e0b86fafbc7e874ebcfb56d0d998b403bef85c776d0cf43176adb0"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/pages/CheckOutStepTwo.jsx",
+      "sha256": "bd9f547895c7fb19789be34431b61bfd1a401ebc0ca216cf348f27f7607c1c83"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/pages/DynamicCatalogLazyLoad.css",
+      "sha256": "ea05408f35b68df879047c9973b39afaf63b3f2e8d014e824075827cfb704ad9"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/pages/DynamicCatalogLazyLoad.jsx",
+      "sha256": "df41f74a067e6d9e9dbdc1df142ceda44a40e068b62b36450e88b0eb641cb9ab"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/pages/DynamicCatalogSlider.css",
+      "sha256": "3f4b25df0039aa2a996495bba4a0e70dc598b670fe06db71dec1c4244e14727a"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/pages/DynamicCatalogSlider.jsx",
+      "sha256": "83566af977574001dfb310824df5266c0e2b4e06f068d57449d57dd3c5a0792d"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/pages/DynamicCatalogSpinner.css",
+      "sha256": "aba75d82d107ed8529f67f73a9b91cfe250ac8c8e1d0de379db30c989982ce3a"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/pages/DynamicCatalogSpinner.jsx",
+      "sha256": "bce3d9f7d8753bcdddd21467778a64ab5a60d2a8d5e30c615d46ecf48f879123"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/pages/Finish.css",
+      "sha256": "cd1f34fcf7a893518ee808212f2721276dcec0f229f442a7b886888d1ebd785e"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/pages/Finish.jsx",
+      "sha256": "d7fd087eb3c42b458247acd76e08d8e6d4fa364dc9eb547ac8362b4993c98ed2"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/pages/Inventory.css",
+      "sha256": "4e4cb266e621085047244f070707169d8a439c5325e08070cf81a821abadabe2"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/pages/Inventory.jsx",
+      "sha256": "b2de74bd6a3b3beb45bd257e01c1246cf7abb47661573c5e6f91c71ff16ca9d0"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/pages/InventoryItem.css",
+      "sha256": "9d4e34e56cfd1ab1a02d469bc6999848b62f736ecb8666e3d8a1607d1276e7cd"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/pages/InventoryItem.jsx",
+      "sha256": "b342a504f4e61bfcbd6f1a396f1aff2a1670a1136494e284577a5541d1a8d06b"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/pages/Login.css",
+      "sha256": "a1e707c836915905ed0dd53ad01745e706abef7f7184b3c36552712cd524f490"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/pages/Login.jsx",
+      "sha256": "7394cfb97fd1bd10397845d8cc4e370426bc228823242946bc53effab0b6605f"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/pdf/OrderReceipt.jsx",
+      "sha256": "5d2de0b6631505d01f1174e4005fc9913bfebe9ec073578497433a45328309a7"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/utils/Constants.js",
+      "sha256": "d70326f892717234761a7a3c42f130060a57f6ef46d782a4d69c8be2016420ec"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/utils/Credentials.js",
+      "sha256": "116f38e0afe0da292d7aafa961d30f955b363ddc3e7fa431c2b0b2811cb7f254"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/utils/InventoryData.js",
+      "sha256": "aeed8e4372a5928d32f3abfd14ae730ea2a1202cf4ccafd493b33f51f3ba902d"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/utils/InventoryDataLong.js",
+      "sha256": "6905e7088106907b31c8a1f1d8cd9400b5898ef35897817d6f32517b3a923710"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/utils/QaBench.js",
+      "sha256": "35972f315cc0f37e139500adcf6f16739b5fce6c1ad90ea6985a98fb9038d6ae"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/utils/Sorting.js",
+      "sha256": "207ce0f0944a94264160718e4885aab1f10b72c6942b0cff313abf1465caabcd"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/utils/imageLoader.js",
+      "sha256": "a20c76edfc37327c56a52d80216f24bef7ae2830ae5a64211a54a5aff0bb8ab1"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/utils/orderCalculations.js",
+      "sha256": "867bc06e8524dba6cbb69da9fcc145bb2f465c5778d4ec882b43ec1775203c27"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/utils/shopping-cart.js",
+      "sha256": "c56d393b6854fa57d13d058badb6a585ee69cfdf0b8d36ea9257aa085432eed4"
+    },
+    {
+      "path": "apps/swag-labs/upstream/src/utils/withRouter.jsx",
+      "sha256": "474f6aa839db56a9702f047445f43727554b00cb6974d33e03f6301c78bc741d"
+    },
+    {
+      "path": "apps/swag-labs/upstream/vite.config.js",
+      "sha256": "6a37eeaab6d0e84d831ea3cf4f30f91f560b64bc2b47810b624dc5f39e83ff69"
+    },
+    {
+      "path": "harness/judges/generator/capture.mjs",
+      "sha256": "15510be824a8292b7c2826b5f86db10e40a69e3f6b7c9d13cc19278a51996720"
+    },
+    {
+      "path": "harness/judges/generator/expense.mjs",
+      "sha256": "85488a3b0229a6a819426602cc9d1f19cf7a1cac73503506003ae486f6a4aaf0"
+    },
+    {
+      "path": "harness/judges/generator/probes.mjs",
+      "sha256": "b36cb7bee8c860c1d4c2550ae3ec5c2edae154a1cf37484170dd46337adca2da"
+    },
+    {
+      "path": "harness/judges/generator/targets.mjs",
+      "sha256": "e7c07343f73b60e3cced22bb5d9a0b5d8515002acc0c4fd4e168a56561f0251c"
+    },
+    {
+      "path": "harness/judges/src/catalogue.ts",
+      "sha256": "b8ff4d47f8e4454c44c4dcab1f98f45a8305cce3954e69a296bf3d00b49b245a"
+    },
+    {
+      "path": "harness/judges/src/cli.ts",
+      "sha256": "f78658a04fadd06cb657bf6eb2853d25780f42831602d018d1748facb171af31"
+    },
+    {
+      "path": "harness/judges/src/fixtures.ts",
+      "sha256": "4060ade177c0aabedef1268d437f5589ccab5824f17e8f2cb53cc69535cdb9f0"
+    },
+    {
+      "path": "harness/judges/src/plan.ts",
+      "sha256": "d79bf7ecfb3cfc0fcd4e182e173137d1efae132e19c6a45e8b4d535a3714dc05"
+    },
+    {
+      "path": "harness/judges/src/pricing.ts",
+      "sha256": "59a205eb37539b2987f555a86124b3a6d0ea4d3aaeb5a79e0076f14a8a4785ad"
+    },
+    {
+      "path": "harness/judges/src/request.ts",
+      "sha256": "30079c74efa19cc897ee0396d333c08fa1c113a753f7fec270ccb7af9af5c5ab"
+    },
+    {
+      "path": "harness/judges/src/run.ts",
+      "sha256": "d2967c94667caa3b40d5763b94fb3735f3f25341df5b08e683d403f8ed4ddd85"
+    },
+    {
+      "path": "harness/judges/src/types.ts",
+      "sha256": "268112d72c2ff4fbf01880b2630e4aaddb35a1683220d507028832b29159e8bb"
+    },
+    {
+      "path": "harness/judges/test/generator.test.ts",
+      "sha256": "41920706644b331f6926bf9a638f8f93febe4a32d9339e93165ab2be6ecde7b1"
+    },
+    {
+      "path": "harness/judges/test/helpers.ts",
+      "sha256": "a24d5148592e585f2a1b583f170505921fa1232c0b585db0a422b1c78a1048b0"
+    },
+    {
+      "path": "harness/judges/test/run.test.ts",
+      "sha256": "f2876353f167852f39eafa31a4340868ab560bb67d1cc88e8c79be30b9d52cd4"
+    },
+    {
+      "path": "harness/judges/upstream.json",
+      "sha256": "d5e4aa4013832ae2cc386a9bdcebe53eb2b25bc4c306825fb34b05648a772c45"
+    },
+    {
+      "path": "harness/judges/verify.ts",
+      "sha256": "8d7b2a093b83909520426604e165a7d0f0e0e0b753286b4b9ec2f0c7201fb042"
+    }
+  ],
+  "cases": [
+    {
+      "app": "expense-app",
+      "group": "expense.total-covers-last-row",
+      "kind": "visual-defect",
+      "defect_id": null,
+      "change_id": null,
+      "fault": "",
+      "variant": "",
+      "width": 430,
+      "route": "/expenses",
+      "label": "ok",
+      "id": "case-001",
+      "twin_of": null,
+      "recipe_sha256": "cdbf9510b4007ed9c4769e69e80c93e4ff26bec87ae81c12213cce8d16ed2e29",
+      "outputs": [
+        "case-001-before.png",
+        "case-001-after.png",
+        "case-001.json"
+      ]
+    },
+    {
+      "app": "swag-labs",
+      "group": "swag.visual-user",
+      "kind": "visual-defect",
+      "change_id": null,
+      "variant": "",
+      "width": 1280,
+      "route": "/inventory.html",
+      "label": "ok",
+      "fault": "",
+      "defect_id": null,
+      "id": "case-002",
+      "twin_of": null,
+      "recipe_sha256": "89b8264dc5098a813da28321240dd880a03fb3a92d86d99651492e65af226f6f",
+      "outputs": [
+        "case-002-before.png",
+        "case-002-after.png",
+        "case-002.json"
+      ]
+    },
+    {
+      "app": "expense-app",
+      "group": "expense.login-error-invisible",
+      "kind": "intended-change",
+      "defect_id": "expense.login-error-invisible",
+      "change_id": "expense.restyle",
+      "fault": "alert_text_invisible",
+      "variant": "restyle",
+      "width": 540,
+      "route": "/login",
+      "label": "problem",
+      "id": "case-003",
+      "twin_of": null,
+      "recipe_sha256": "0920926fa10c6aa7dd5e10c4452746c1a243ea8c06adf27aefdf5c4fa3202ba1",
+      "outputs": [
+        "case-003-before.png",
+        "case-003-after.png",
+        "case-003.json"
+      ]
+    },
+    {
+      "app": "survey-site",
+      "group": "survey.structural",
+      "kind": "intended-change",
+      "label": "ok",
+      "fault": "",
+      "variant": "structural",
+      "defect_id": null,
+      "change_id": "survey.structural",
+      "width": 1280,
+      "route": "/contact",
+      "id": "case-004",
+      "twin_of": null,
+      "recipe_sha256": "35f1b8d5125daeb05e326d8b05196a8757bbaf27de2aae059dd9e9b46cbf2c75",
+      "outputs": [
+        "case-004-before.png",
+        "case-004-after.png",
+        "case-004.json"
+      ]
+    },
+    {
+      "app": "expense-app",
+      "group": "expense.long-title-overflows",
+      "kind": "intended-change",
+      "defect_id": "expense.long-title-overflows",
+      "change_id": "expense.restyle",
+      "fault": "long_title_overflows",
+      "variant": "restyle",
+      "width": 1024,
+      "route": "/expenses",
+      "label": "problem",
+      "id": "case-005",
+      "twin_of": null,
+      "recipe_sha256": "2640f2022092ab0ecad0693c16ae655a4ecfb304fe495a5c25397b9bb25c5322",
+      "outputs": [
+        "case-005-before.png",
+        "case-005-after.png",
+        "case-005.json"
+      ]
+    },
+    {
+      "app": "expense-app",
+      "group": "expense.total-covers-last-row",
+      "kind": "visual-defect",
+      "defect_id": "expense.total-covers-last-row",
+      "change_id": null,
+      "fault": "total_covers_last_row",
+      "variant": "",
+      "width": 430,
+      "route": "/expenses",
+      "label": "problem",
+      "id": "case-006",
+      "twin_of": null,
+      "recipe_sha256": "f532037dc99d2621c7cb4d978d47771c16f786c50c98f801f966392cce113d45",
+      "outputs": [
+        "case-006-before.png",
+        "case-006-after.png",
+        "case-006.json"
+      ]
+    },
+    {
+      "app": "expense-app",
+      "group": "expense.login-error-invisible",
+      "kind": "intended-change",
+      "defect_id": null,
+      "change_id": "expense.restyle",
+      "fault": "",
+      "variant": "restyle",
+      "width": 390,
+      "route": "/login",
+      "label": "ok",
+      "id": "case-007",
+      "twin_of": "case-053",
+      "recipe_sha256": "da16db41af4c805fe2fd75ceb99dec6bb4b0e593406c4f68f1ce35d8c659de16",
+      "outputs": [
+        "case-007-before.png",
+        "case-007-after.png",
+        "case-007.json"
+      ]
+    },
+    {
+      "app": "expense-app",
+      "group": "expense.long-title-overflows",
+      "kind": "intended-change",
+      "defect_id": null,
+      "change_id": "expense.restyle",
+      "fault": "",
+      "variant": "restyle",
+      "width": 1280,
+      "route": "/expenses",
+      "label": "ok",
+      "id": "case-008",
+      "twin_of": "case-009",
+      "recipe_sha256": "383f47d9b0af58886e7e75b4771e095b5e3dbf5edea7799548cba1ea2dff5e4d",
+      "outputs": [
+        "case-008-before.png",
+        "case-008-after.png",
+        "case-008.json"
+      ]
+    },
+    {
+      "app": "expense-app",
+      "group": "expense.long-title-overflows",
+      "kind": "intended-change",
+      "defect_id": "expense.long-title-overflows",
+      "change_id": "expense.restyle",
+      "fault": "long_title_overflows",
+      "variant": "restyle",
+      "width": 1280,
+      "route": "/expenses",
+      "label": "problem",
+      "id": "case-009",
+      "twin_of": null,
+      "recipe_sha256": "ea24c7fb2709356a6cc00fe450bd6eea1651c40d96a9b9b819bf22b1537f350b",
+      "outputs": [
+        "case-009-before.png",
+        "case-009-after.png",
+        "case-009.json"
+      ]
+    },
+    {
+      "app": "expense-app",
+      "group": "expense.total-covers-last-row",
+      "kind": "intended-change",
+      "defect_id": "expense.total-covers-last-row",
+      "change_id": "expense.restyle",
+      "fault": "total_covers_last_row",
+      "variant": "restyle",
+      "width": 390,
+      "route": "/expenses",
+      "label": "problem",
+      "id": "case-010",
+      "twin_of": null,
+      "recipe_sha256": "4b83ccb32e8d4124f6f40908a86a0f090070abeae0daf580759b4d087f3651a9",
+      "outputs": [
+        "case-010-before.png",
+        "case-010-after.png",
+        "case-010.json"
+      ]
+    },
+    {
+      "app": "expense-app",
+      "group": "expense.amounts-misaligned",
+      "kind": "intended-change",
+      "defect_id": "expense.amounts-misaligned",
+      "change_id": "expense.restyle",
+      "fault": "amounts_misaligned",
+      "variant": "restyle",
+      "width": 1280,
+      "route": "/expenses",
+      "label": "problem",
+      "id": "case-011",
+      "twin_of": null,
+      "recipe_sha256": "68817ad60a25081e8baade6bef8deda44888575aacf7c94cebb31f52601b3401",
+      "outputs": [
+        "case-011-before.png",
+        "case-011-after.png",
+        "case-011.json"
+      ]
+    },
+    {
+      "app": "expense-app",
+      "group": "expense.low-contrast-text",
+      "kind": "a11y",
+      "defect_id": "expense.low-contrast-text",
+      "change_id": "expense.restyle",
+      "fault": "muted_text_low_contrast",
+      "variant": "restyle",
+      "width": 540,
+      "route": "/expenses",
+      "label": "problem",
+      "id": "case-012",
+      "twin_of": null,
+      "recipe_sha256": "1d4c65d0ea790dd75d320fc8ae6479de37ce8c63a9680594fcb4626a69fd3ba8",
+      "outputs": [
+        "case-012-before.png",
+        "case-012-after.png",
+        "case-012.json"
+      ]
+    },
+    {
+      "app": "expense-app",
+      "group": "expense.focus-ring-removed",
+      "kind": "a11y",
+      "defect_id": null,
+      "change_id": null,
+      "fault": "",
+      "variant": "",
+      "width": 360,
+      "route": "/login",
+      "label": "ok",
+      "id": "case-013",
+      "twin_of": null,
+      "recipe_sha256": "4cd05856d1fe6793d71592a755d57788114bc0a803b8cb1e44ae0f33d1b45873",
+      "outputs": [
+        "case-013-before.png",
+        "case-013-after.png",
+        "case-013.json"
+      ]
+    },
+    {
+      "app": "expense-app",
+      "group": "expense.low-contrast-text",
+      "kind": "a11y",
+      "defect_id": null,
+      "change_id": "expense.restyle",
+      "fault": "",
+      "variant": "restyle",
+      "width": 390,
+      "route": "/expenses",
+      "label": "ok",
+      "id": "case-014",
+      "twin_of": "case-016",
+      "recipe_sha256": "5fa2ba3b941ee1d8798ce23dd94f3a7b74ab01391795ae3d434d36ef380af3f6",
+      "outputs": [
+        "case-014-before.png",
+        "case-014-after.png",
+        "case-014.json"
+      ]
+    },
+    {
+      "app": "expense-app",
+      "group": "expense.long-title-overflows",
+      "kind": "visual-defect",
+      "defect_id": "expense.long-title-overflows",
+      "change_id": null,
+      "fault": "long_title_overflows",
+      "variant": "",
+      "width": 1180,
+      "route": "/expenses",
+      "label": "problem",
+      "id": "case-015",
+      "twin_of": null,
+      "recipe_sha256": "72432858f95fe77f77de6a673394fd87828d5be485f4d5bd4a1b6c2e344440c0",
+      "outputs": [
+        "case-015-before.png",
+        "case-015-after.png",
+        "case-015.json"
+      ]
+    },
+    {
+      "app": "expense-app",
+      "group": "expense.low-contrast-text",
+      "kind": "a11y",
+      "defect_id": "expense.low-contrast-text",
+      "change_id": "expense.restyle",
+      "fault": "muted_text_low_contrast",
+      "variant": "restyle",
+      "width": 390,
+      "route": "/expenses",
+      "label": "problem",
+      "id": "case-016",
+      "twin_of": null,
+      "recipe_sha256": "074669f46515c3fe366810b951ba921303f892495e4a5173bafd1e4967faf6e8",
+      "outputs": [
+        "case-016-before.png",
+        "case-016-after.png",
+        "case-016.json"
+      ]
+    },
+    {
+      "app": "expense-app",
+      "group": "expense.total-covers-last-row",
+      "kind": "visual-defect",
+      "defect_id": null,
+      "change_id": null,
+      "fault": "",
+      "variant": "",
+      "width": 360,
+      "route": "/expenses",
+      "label": "ok",
+      "id": "case-017",
+      "twin_of": null,
+      "recipe_sha256": "2f5b3150f1ccd73d574776ca601cff197e3df24caafb697726d166661caa3da4",
+      "outputs": [
+        "case-017-before.png",
+        "case-017-after.png",
+        "case-017.json"
+      ]
+    },
+    {
+      "app": "expense-app",
+      "group": "expense.low-contrast-text",
+      "kind": "a11y",
+      "defect_id": null,
+      "change_id": null,
+      "fault": "",
+      "variant": "",
+      "width": 430,
+      "route": "/expenses",
+      "label": "ok",
+      "id": "case-018",
+      "twin_of": null,
+      "recipe_sha256": "ad34ad9b019564133c7ae167add92c4a799db777f710a59548e5e23fe92894f2",
+      "outputs": [
+        "case-018-before.png",
+        "case-018-after.png",
+        "case-018.json"
+      ]
+    },
+    {
+      "app": "expense-app",
+      "group": "expense.low-contrast-text",
+      "kind": "a11y",
+      "defect_id": null,
+      "change_id": null,
+      "fault": "",
+      "variant": "",
+      "width": 360,
+      "route": "/expenses",
+      "label": "ok",
+      "id": "case-019",
+      "twin_of": null,
+      "recipe_sha256": "6424a1e97352328c83a0cefda7cea2cace9b11400a0807a708461a75975bc7eb",
+      "outputs": [
+        "case-019-before.png",
+        "case-019-after.png",
+        "case-019.json"
+      ]
+    },
+    {
+      "app": "expense-app",
+      "group": "expense.phone-layout-overflow",
+      "kind": "visual-defect",
+      "defect_id": "expense.phone-layout-overflow",
+      "change_id": null,
+      "fault": "layout_phone_overflow",
+      "variant": "",
+      "width": 360,
+      "route": "/expenses",
+      "label": "problem",
+      "id": "case-020",
+      "twin_of": null,
+      "recipe_sha256": "fc4eac80bc9a1cdd75fcd78e6dd9365cb00b49e84a9675f1bd2eb1cfed7ecd0b",
+      "outputs": [
+        "case-020-before.png",
+        "case-020-after.png",
+        "case-020.json"
+      ]
+    },
+    {
+      "app": "expense-app",
+      "group": "expense.focus-ring-removed",
+      "kind": "a11y",
+      "defect_id": "expense.focus-ring-removed",
+      "change_id": null,
+      "fault": "focus_ring_removed",
+      "variant": "",
+      "width": 430,
+      "route": "/login",
+      "label": "problem",
+      "id": "case-021",
+      "twin_of": null,
+      "recipe_sha256": "da0d6301ab41a38a365ed96f42689de801fa956a6be2dd615812420ffdd22090",
+      "outputs": [
+        "case-021-before.png",
+        "case-021-after.png",
+        "case-021.json"
+      ]
+    },
+    {
+      "app": "expense-app",
+      "group": "expense.login-error-invisible",
+      "kind": "visual-defect",
+      "defect_id": null,
+      "change_id": null,
+      "fault": "",
+      "variant": "",
+      "width": 360,
+      "route": "/login",
+      "label": "ok",
+      "id": "case-022",
+      "twin_of": null,
+      "recipe_sha256": "fd9a1302ef91f37d3d957d2dd762c5ee47baa856a04880f86541dc4a1ec80195",
+      "outputs": [
+        "case-022-before.png",
+        "case-022-after.png",
+        "case-022.json"
+      ]
+    },
+    {
+      "app": "expense-app",
+      "group": "expense.login-error-invisible",
+      "kind": "visual-defect",
+      "defect_id": null,
+      "change_id": null,
+      "fault": "",
+      "variant": "",
+      "width": 430,
+      "route": "/login",
+      "label": "ok",
+      "id": "case-023",
+      "twin_of": null,
+      "recipe_sha256": "0d1a277d7fa1c525a8c042e487297870eb99480d285008098fbaa116f2fb53d5",
+      "outputs": [
+        "case-023-before.png",
+        "case-023-after.png",
+        "case-023.json"
+      ]
+    },
+    {
+      "app": "expense-app",
+      "group": "expense.phone-layout-overflow",
+      "kind": "intended-change",
+      "defect_id": null,
+      "change_id": "expense.restyle",
+      "fault": "",
+      "variant": "restyle",
+      "width": 540,
+      "route": "/expenses",
+      "label": "ok",
+      "id": "case-024",
+      "twin_of": "case-054",
+      "recipe_sha256": "e4a077ddfa97a456ee7c9beec987734f3b7c9f756570d930ba022540925d3267",
+      "outputs": [
+        "case-024-before.png",
+        "case-024-after.png",
+        "case-024.json"
+      ]
+    },
+    {
+      "app": "expense-app",
+      "group": "expense.long-title-overflows",
+      "kind": "intended-change",
+      "defect_id": null,
+      "change_id": "expense.restyle",
+      "fault": "",
+      "variant": "restyle",
+      "width": 1024,
+      "route": "/expenses",
+      "label": "ok",
+      "id": "case-025",
+      "twin_of": "case-005",
+      "recipe_sha256": "ebee4524b41903b848557e7888460b5c3e89eb5ad0357c171e304f747d19aa7a",
+      "outputs": [
+        "case-025-before.png",
+        "case-025-after.png",
+        "case-025.json"
+      ]
+    },
+    {
+      "app": "survey-site",
+      "group": "survey.cosmetic",
+      "kind": "intended-change",
+      "label": "ok",
+      "fault": "",
+      "variant": "cosmetic",
+      "defect_id": null,
+      "change_id": "survey.cosmetic",
+      "width": 1280,
+      "route": "/contact",
+      "id": "case-026",
+      "twin_of": null,
+      "recipe_sha256": "a882d8ea66dfef4eefa70f36cc88126909d528e1e8f5c2bfebcc0e620a9e8b7a",
+      "outputs": [
+        "case-026-before.png",
+        "case-026-after.png",
+        "case-026.json"
+      ]
+    },
+    {
+      "app": "expense-app",
+      "group": "expense.low-contrast-text",
+      "kind": "a11y",
+      "defect_id": "expense.low-contrast-text",
+      "change_id": null,
+      "fault": "muted_text_low_contrast",
+      "variant": "",
+      "width": 430,
+      "route": "/expenses",
+      "label": "problem",
+      "id": "case-027",
+      "twin_of": null,
+      "recipe_sha256": "e1b45e86f47cf6a08a2bfe2dbddbcc0bc2c1e3db2957b55819d9bc289d0959f5",
+      "outputs": [
+        "case-027-before.png",
+        "case-027-after.png",
+        "case-027.json"
+      ]
+    },
+    {
+      "app": "expense-app",
+      "group": "expense.focus-ring-removed",
+      "kind": "a11y",
+      "defect_id": "expense.focus-ring-removed",
+      "change_id": "expense.restyle",
+      "fault": "focus_ring_removed",
+      "variant": "restyle",
+      "width": 390,
+      "route": "/login",
+      "label": "problem",
+      "id": "case-028",
+      "twin_of": null,
+      "recipe_sha256": "cdbfecade5cd0758a713cc56c1073949f12a1b4e44aa9f65d7b475f852dce587",
+      "outputs": [
+        "case-028-before.png",
+        "case-028-after.png",
+        "case-028.json"
+      ]
+    },
+    {
+      "app": "expense-app",
+      "group": "expense.phone-layout-overflow",
+      "kind": "visual-defect",
+      "defect_id": "expense.phone-layout-overflow",
+      "change_id": null,
+      "fault": "layout_phone_overflow",
+      "variant": "",
+      "width": 430,
+      "route": "/expenses",
+      "label": "problem",
+      "id": "case-029",
+      "twin_of": null,
+      "recipe_sha256": "01ecb3d49a38dcdb566770a95f27728a59a120c335763548bd6bdef06c3c25e5",
+      "outputs": [
+        "case-029-before.png",
+        "case-029-after.png",
+        "case-029.json"
+      ]
+    },
+    {
+      "app": "expense-app",
+      "group": "expense.total-covers-last-row",
+      "kind": "intended-change",
+      "defect_id": "expense.total-covers-last-row",
+      "change_id": "expense.restyle",
+      "fault": "total_covers_last_row",
+      "variant": "restyle",
+      "width": 540,
+      "route": "/expenses",
+      "label": "problem",
+      "id": "case-030",
+      "twin_of": null,
+      "recipe_sha256": "174fae2156b88f103062fc4f9c7d0a3e916f5525e29bd71de7724ba5cab6d2d2",
+      "outputs": [
+        "case-030-before.png",
+        "case-030-after.png",
+        "case-030.json"
+      ]
+    },
+    {
+      "app": "expense-app",
+      "group": "expense.login-error-invisible",
+      "kind": "intended-change",
+      "defect_id": null,
+      "change_id": "expense.restyle",
+      "fault": "",
+      "variant": "restyle",
+      "width": 540,
+      "route": "/login",
+      "label": "ok",
+      "id": "case-031",
+      "twin_of": "case-003",
+      "recipe_sha256": "390352027b89d9cde7afd2ca2b31bbfd836d60f5cfab0744dbddc61d02f7863e",
+      "outputs": [
+        "case-031-before.png",
+        "case-031-after.png",
+        "case-031.json"
+      ]
+    },
+    {
+      "app": "expense-app",
+      "group": "expense.focus-ring-removed",
+      "kind": "a11y",
+      "defect_id": "expense.focus-ring-removed",
+      "change_id": null,
+      "fault": "focus_ring_removed",
+      "variant": "",
+      "width": 360,
+      "route": "/login",
+      "label": "problem",
+      "id": "case-032",
+      "twin_of": null,
+      "recipe_sha256": "6bf03a974b97bdff24356781a4f691c3d2ba9aac10d507d0e715e7a07185327e",
+      "outputs": [
+        "case-032-before.png",
+        "case-032-after.png",
+        "case-032.json"
+      ]
+    },
+    {
+      "app": "expense-app",
+      "group": "expense.focus-ring-removed",
+      "kind": "a11y",
+      "defect_id": null,
+      "change_id": "expense.restyle",
+      "fault": "",
+      "variant": "restyle",
+      "width": 390,
+      "route": "/login",
+      "label": "ok",
+      "id": "case-033",
+      "twin_of": "case-028",
+      "recipe_sha256": "97c7ef2907a54a4285074c48c71b07bb6494b17c752a87210ddb0134f847648c",
+      "outputs": [
+        "case-033-before.png",
+        "case-033-after.png",
+        "case-033.json"
+      ]
+    },
+    {
+      "app": "expense-app",
+      "group": "expense.total-covers-last-row",
+      "kind": "intended-change",
+      "defect_id": null,
+      "change_id": "expense.restyle",
+      "fault": "",
+      "variant": "restyle",
+      "width": 390,
+      "route": "/expenses",
+      "label": "ok",
+      "id": "case-034",
+      "twin_of": "case-010",
+      "recipe_sha256": "be6cfc056baae639b4e431a0b18539d78603cb3532110cbb0ed705afddb7b261",
+      "outputs": [
+        "case-034-before.png",
+        "case-034-after.png",
+        "case-034.json"
+      ]
+    },
+    {
+      "app": "expense-app",
+      "group": "expense.total-covers-last-row",
+      "kind": "visual-defect",
+      "defect_id": "expense.total-covers-last-row",
+      "change_id": null,
+      "fault": "total_covers_last_row",
+      "variant": "",
+      "width": 360,
+      "route": "/expenses",
+      "label": "problem",
+      "id": "case-035",
+      "twin_of": null,
+      "recipe_sha256": "269cdb83ced1b4a87b6a70a44ef9d4782b94e8320faa30a6a5305be3069d3034",
+      "outputs": [
+        "case-035-before.png",
+        "case-035-after.png",
+        "case-035.json"
+      ]
+    },
+    {
+      "app": "expense-app",
+      "group": "expense.long-title-overflows",
+      "kind": "visual-defect",
+      "defect_id": null,
+      "change_id": null,
+      "fault": "",
+      "variant": "",
+      "width": 1180,
+      "route": "/expenses",
+      "label": "ok",
+      "id": "case-036",
+      "twin_of": null,
+      "recipe_sha256": "902d40733f48a6b7d77f9aa4f982afe76d49d3b644ef84a5652e0628af22d304",
+      "outputs": [
+        "case-036-before.png",
+        "case-036-after.png",
+        "case-036.json"
+      ]
+    },
+    {
+      "app": "expense-app",
+      "group": "expense.amounts-misaligned",
+      "kind": "visual-defect",
+      "defect_id": "expense.amounts-misaligned",
+      "change_id": null,
+      "fault": "amounts_misaligned",
+      "variant": "",
+      "width": 1180,
+      "route": "/expenses",
+      "label": "problem",
+      "id": "case-037",
+      "twin_of": null,
+      "recipe_sha256": "fe8d470376309c05fd6026c2ced5a45fde78c08fd331094833d52190da9359db",
+      "outputs": [
+        "case-037-before.png",
+        "case-037-after.png",
+        "case-037.json"
+      ]
+    },
+    {
+      "app": "expense-app",
+      "group": "expense.long-title-overflows",
+      "kind": "visual-defect",
+      "defect_id": null,
+      "change_id": null,
+      "fault": "",
+      "variant": "",
+      "width": 900,
+      "route": "/expenses",
+      "label": "ok",
+      "id": "case-038",
+      "twin_of": null,
+      "recipe_sha256": "112e58d01ac5c557167eebb59af1cd4674b2af00d063ec7697ada00eefbaa7e1",
+      "outputs": [
+        "case-038-before.png",
+        "case-038-after.png",
+        "case-038.json"
+      ]
+    },
+    {
+      "app": "expense-app",
+      "group": "expense.login-error-invisible",
+      "kind": "visual-defect",
+      "defect_id": "expense.login-error-invisible",
+      "change_id": null,
+      "fault": "alert_text_invisible",
+      "variant": "",
+      "width": 360,
+      "route": "/login",
+      "label": "problem",
+      "id": "case-039",
+      "twin_of": null,
+      "recipe_sha256": "82616f7e4b98e5ade006d7131e38d2e9e29e533d2f2d8229bc72d443490ee09d",
+      "outputs": [
+        "case-039-before.png",
+        "case-039-after.png",
+        "case-039.json"
+      ]
+    },
+    {
+      "app": "expense-app",
+      "group": "expense.phone-layout-overflow",
+      "kind": "intended-change",
+      "defect_id": "expense.phone-layout-overflow",
+      "change_id": "expense.restyle",
+      "fault": "layout_phone_overflow",
+      "variant": "restyle",
+      "width": 390,
+      "route": "/expenses",
+      "label": "problem",
+      "id": "case-040",
+      "twin_of": null,
+      "recipe_sha256": "64a655bae4523ffd473c1270ebdabc744c1f53873f95c72f29a5d781f7534c5b",
+      "outputs": [
+        "case-040-before.png",
+        "case-040-after.png",
+        "case-040.json"
+      ]
+    },
+    {
+      "app": "expense-app",
+      "group": "expense.login-error-invisible",
+      "kind": "visual-defect",
+      "defect_id": "expense.login-error-invisible",
+      "change_id": null,
+      "fault": "alert_text_invisible",
+      "variant": "",
+      "width": 430,
+      "route": "/login",
+      "label": "problem",
+      "id": "case-041",
+      "twin_of": null,
+      "recipe_sha256": "f6168bdcee043438163edfd8125f95794ef5f098ae44af18fa39db83950d9dbf",
+      "outputs": [
+        "case-041-before.png",
+        "case-041-after.png",
+        "case-041.json"
+      ]
+    },
+    {
+      "app": "expense-app",
+      "group": "expense.long-title-overflows",
+      "kind": "visual-defect",
+      "defect_id": "expense.long-title-overflows",
+      "change_id": null,
+      "fault": "long_title_overflows",
+      "variant": "",
+      "width": 900,
+      "route": "/expenses",
+      "label": "problem",
+      "id": "case-042",
+      "twin_of": null,
+      "recipe_sha256": "459209beeea9a095bf6092744edd469422bb38d2ebba523655e4617b237bf2a1",
+      "outputs": [
+        "case-042-before.png",
+        "case-042-after.png",
+        "case-042.json"
+      ]
+    },
+    {
+      "app": "expense-app",
+      "group": "expense.total-covers-last-row",
+      "kind": "intended-change",
+      "defect_id": null,
+      "change_id": "expense.restyle",
+      "fault": "",
+      "variant": "restyle",
+      "width": 540,
+      "route": "/expenses",
+      "label": "ok",
+      "id": "case-043",
+      "twin_of": "case-030",
+      "recipe_sha256": "d946b5c6c7ef8b14ef86928180fc47b13bddb3a929a63010bcb512e4c6462760",
+      "outputs": [
+        "case-043-before.png",
+        "case-043-after.png",
+        "case-043.json"
+      ]
+    },
+    {
+      "app": "expense-app",
+      "group": "expense.amounts-misaligned",
+      "kind": "visual-defect",
+      "defect_id": "expense.amounts-misaligned",
+      "change_id": null,
+      "fault": "amounts_misaligned",
+      "variant": "",
+      "width": 900,
+      "route": "/expenses",
+      "label": "problem",
+      "id": "case-044",
+      "twin_of": null,
+      "recipe_sha256": "c9b74653704e5e8333f6da17d136ae79cd4f4cf0ce33a9c90d24b657accc5cc4",
+      "outputs": [
+        "case-044-before.png",
+        "case-044-after.png",
+        "case-044.json"
+      ]
+    },
+    {
+      "app": "expense-app",
+      "group": "expense.amounts-misaligned",
+      "kind": "intended-change",
+      "defect_id": "expense.amounts-misaligned",
+      "change_id": "expense.restyle",
+      "fault": "amounts_misaligned",
+      "variant": "restyle",
+      "width": 1024,
+      "route": "/expenses",
+      "label": "problem",
+      "id": "case-045",
+      "twin_of": null,
+      "recipe_sha256": "aefa28912f94faf703eb030ed0e8f89afb48b7472a33863c1c8cc111575809cb",
+      "outputs": [
+        "case-045-before.png",
+        "case-045-after.png",
+        "case-045.json"
+      ]
+    },
+    {
+      "app": "swag-labs",
+      "group": "swag.visual-user",
+      "kind": "visual-defect",
+      "change_id": null,
+      "variant": "",
+      "width": 1280,
+      "route": "/inventory.html",
+      "label": "problem",
+      "fault": "visual_user",
+      "defect_id": "swag.visual-user",
+      "id": "case-046",
+      "twin_of": null,
+      "recipe_sha256": "51ef1d203abd743488cc9d439d70969cac973d3a05df545e12c684af946762cc",
+      "outputs": [
+        "case-046-before.png",
+        "case-046-after.png",
+        "case-046.json"
+      ]
+    },
+    {
+      "app": "swag-labs",
+      "group": "swag.visual-user",
+      "kind": "visual-defect",
+      "change_id": null,
+      "variant": "",
+      "width": 1024,
+      "route": "/inventory.html",
+      "label": "problem",
+      "fault": "visual_user",
+      "defect_id": "swag.visual-user",
+      "id": "case-047",
+      "twin_of": null,
+      "recipe_sha256": "65a944431b076a757efe70d565b2b125cdafc0ee2da41e132c706e64e1115e7f",
+      "outputs": [
+        "case-047-before.png",
+        "case-047-after.png",
+        "case-047.json"
+      ]
+    },
+    {
+      "app": "expense-app",
+      "group": "expense.phone-layout-overflow",
+      "kind": "visual-defect",
+      "defect_id": null,
+      "change_id": null,
+      "fault": "",
+      "variant": "",
+      "width": 360,
+      "route": "/expenses",
+      "label": "ok",
+      "id": "case-048",
+      "twin_of": null,
+      "recipe_sha256": "69af9813434e6a55ab6040c6eeac33322db89430b9af64a0926fb926700a9b0a",
+      "outputs": [
+        "case-048-before.png",
+        "case-048-after.png",
+        "case-048.json"
+      ]
+    },
+    {
+      "app": "expense-app",
+      "group": "expense.focus-ring-removed",
+      "kind": "a11y",
+      "defect_id": null,
+      "change_id": "expense.restyle",
+      "fault": "",
+      "variant": "restyle",
+      "width": 540,
+      "route": "/login",
+      "label": "ok",
+      "id": "case-049",
+      "twin_of": "case-051",
+      "recipe_sha256": "6eeed37b412ac6761c0782adc894674abacfacef2af5b99a66e85efe0cadfd08",
+      "outputs": [
+        "case-049-before.png",
+        "case-049-after.png",
+        "case-049.json"
+      ]
+    },
+    {
+      "app": "expense-app",
+      "group": "expense.phone-layout-overflow",
+      "kind": "visual-defect",
+      "defect_id": null,
+      "change_id": null,
+      "fault": "",
+      "variant": "",
+      "width": 430,
+      "route": "/expenses",
+      "label": "ok",
+      "id": "case-050",
+      "twin_of": null,
+      "recipe_sha256": "60424edb6e38dce776a95397b18ea46356d9d7e1f6321070e141c3ef7618b2e1",
+      "outputs": [
+        "case-050-before.png",
+        "case-050-after.png",
+        "case-050.json"
+      ]
+    },
+    {
+      "app": "expense-app",
+      "group": "expense.focus-ring-removed",
+      "kind": "a11y",
+      "defect_id": "expense.focus-ring-removed",
+      "change_id": "expense.restyle",
+      "fault": "focus_ring_removed",
+      "variant": "restyle",
+      "width": 540,
+      "route": "/login",
+      "label": "problem",
+      "id": "case-051",
+      "twin_of": null,
+      "recipe_sha256": "7778c638bd6f851ec12c458818c25b39a5e72daf584d1c257d97723875f27565",
+      "outputs": [
+        "case-051-before.png",
+        "case-051-after.png",
+        "case-051.json"
+      ]
+    },
+    {
+      "app": "swag-labs",
+      "group": "swag.visual-user",
+      "kind": "visual-defect",
+      "change_id": null,
+      "variant": "",
+      "width": 1024,
+      "route": "/inventory.html",
+      "label": "ok",
+      "fault": "",
+      "defect_id": null,
+      "id": "case-052",
+      "twin_of": null,
+      "recipe_sha256": "793880aa2b3ceaeb8fc4339296a7bd7aa58c300a5f089995f1c27b0ef16c687c",
+      "outputs": [
+        "case-052-before.png",
+        "case-052-after.png",
+        "case-052.json"
+      ]
+    },
+    {
+      "app": "expense-app",
+      "group": "expense.login-error-invisible",
+      "kind": "intended-change",
+      "defect_id": "expense.login-error-invisible",
+      "change_id": "expense.restyle",
+      "fault": "alert_text_invisible",
+      "variant": "restyle",
+      "width": 390,
+      "route": "/login",
+      "label": "problem",
+      "id": "case-053",
+      "twin_of": null,
+      "recipe_sha256": "5b08df9eb4f0b6f90bc1217fac130c6a439cee6855fadbae6ef5cd0ff610de5b",
+      "outputs": [
+        "case-053-before.png",
+        "case-053-after.png",
+        "case-053.json"
+      ]
+    },
+    {
+      "app": "expense-app",
+      "group": "expense.phone-layout-overflow",
+      "kind": "intended-change",
+      "defect_id": "expense.phone-layout-overflow",
+      "change_id": "expense.restyle",
+      "fault": "layout_phone_overflow",
+      "variant": "restyle",
+      "width": 540,
+      "route": "/expenses",
+      "label": "problem",
+      "id": "case-054",
+      "twin_of": null,
+      "recipe_sha256": "34443acc9059b656fa43dd4c81bea40978ebaa05029e860df6d5b97b6c0423ad",
+      "outputs": [
+        "case-054-before.png",
+        "case-054-after.png",
+        "case-054.json"
+      ]
+    },
+    {
+      "app": "expense-app",
+      "group": "expense.phone-layout-overflow",
+      "kind": "intended-change",
+      "defect_id": null,
+      "change_id": "expense.restyle",
+      "fault": "",
+      "variant": "restyle",
+      "width": 390,
+      "route": "/expenses",
+      "label": "ok",
+      "id": "case-055",
+      "twin_of": "case-040",
+      "recipe_sha256": "6d268cb59a09b8af95a4d197e1a491744764c5b4b404895abf52111c45a7038f",
+      "outputs": [
+        "case-055-before.png",
+        "case-055-after.png",
+        "case-055.json"
+      ]
+    },
+    {
+      "app": "expense-app",
+      "group": "expense.low-contrast-text",
+      "kind": "a11y",
+      "defect_id": null,
+      "change_id": "expense.restyle",
+      "fault": "",
+      "variant": "restyle",
+      "width": 540,
+      "route": "/expenses",
+      "label": "ok",
+      "id": "case-056",
+      "twin_of": "case-012",
+      "recipe_sha256": "475d669f15357955d61859a7b7641e3ecd7b8190b8714efc659b6ff668ef7bf0",
+      "outputs": [
+        "case-056-before.png",
+        "case-056-after.png",
+        "case-056.json"
+      ]
+    },
+    {
+      "app": "expense-app",
+      "group": "expense.low-contrast-text",
+      "kind": "a11y",
+      "defect_id": "expense.low-contrast-text",
+      "change_id": null,
+      "fault": "muted_text_low_contrast",
+      "variant": "",
+      "width": 360,
+      "route": "/expenses",
+      "label": "problem",
+      "id": "case-057",
+      "twin_of": null,
+      "recipe_sha256": "48330897408fd0547c0d191340ca243a976ede0473ca0fee5bb1a03261bf1e6f",
+      "outputs": [
+        "case-057-before.png",
+        "case-057-after.png",
+        "case-057.json"
+      ]
+    },
+    {
+      "app": "expense-app",
+      "group": "expense.focus-ring-removed",
+      "kind": "a11y",
+      "defect_id": null,
+      "change_id": null,
+      "fault": "",
+      "variant": "",
+      "width": 430,
+      "route": "/login",
+      "label": "ok",
+      "id": "case-058",
+      "twin_of": null,
+      "recipe_sha256": "4033937c0f20add3a0febf26c38dab93ad43ce218476d72b3684d144138a0f5a",
+      "outputs": [
+        "case-058-before.png",
+        "case-058-after.png",
+        "case-058.json"
+      ]
+    },
+    {
+      "app": "survey-site",
+      "group": "survey.structural",
+      "kind": "intended-change",
+      "label": "ok",
+      "fault": "",
+      "variant": "structural",
+      "defect_id": null,
+      "change_id": "survey.structural",
+      "width": 390,
+      "route": "/contact",
+      "id": "case-059",
+      "twin_of": null,
+      "recipe_sha256": "5321b4b4f1ddcd3b98a53ccbe7f69be3b6e56174549dd7c933ae384a8be324f2",
+      "outputs": [
+        "case-059-before.png",
+        "case-059-after.png",
+        "case-059.json"
+      ]
+    },
+    {
+      "app": "survey-site",
+      "group": "survey.cosmetic",
+      "kind": "intended-change",
+      "label": "ok",
+      "fault": "",
+      "variant": "cosmetic",
+      "defect_id": null,
+      "change_id": "survey.cosmetic",
+      "width": 390,
+      "route": "/contact",
+      "id": "case-060",
+      "twin_of": null,
+      "recipe_sha256": "eb9f557a03891dd401ca5c83461280ddc57d819c6f0f1a0cdae9cdb5b02bcbe6",
+      "outputs": [
+        "case-060-before.png",
+        "case-060-after.png",
+        "case-060.json"
+      ]
+    }
+  ]
+}

@@ -1,5 +1,21 @@
 # Handoff: 5 Nov 2026
 
+## Addendum: 9 Nov 2026, judge calibration and local check adapter
+
+Track 7.9 now has a [60-case hashed recipe manifest, native generator, capped Anthropic SDK harness and scorer](../judge-sets/README.md),
+with a [pending leaderboard section](../leaderboard/judges/README.md). The set is balanced 30/30 and includes
+deliberate-change twins. Rendered artifacts receive per-file SHA-256s at native build time. All three requested
+model configurations have dated prices, pre-call ceiling reservations, usage accounting and offline dry-run.
+
+The [local deterministic-check adapter](../harness/adapters/touchstone/README.md) loads operator-owned check code
+read-only and maps findings into the bench format. Its real module loaded successfully. Full reference-host
+journey replay needs an external-target Host in the SUT; it cannot substitute its fixture for bench episodes.
+
+Offline tests pass. Chromium's native launch was blocked by the execution sandbox (`Permission denied (1100)`
+at Mach-port bootstrap), so screenshots, generator reproducibility, native adapter scores and model precision
+remain unverified. No live model calls or pushes. Next: native `harness/judges/verify.ts`, native
+`harness/integrations/touchstone.ts`, then orchestrator-run capped calibrations; exact commands are in those READMEs.
+
 You can resume from this file with no earlier conversation. Read it, then the [README](../README.md) (how to use the
 bench), [BRIEF.md](BRIEF.md) (the design), [APPS.md](APPS.md), [DECISIONS.md](DECISIONS.md) and
 [../AGENTS.md](../AGENTS.md) (standing rules).

@@ -1,5 +1,9 @@
 # Leaderboard
 
+Track **7.9 judge calibration** has a [dedicated section](judges/README.md), with model scores pending native
+rendering and orchestrator-run calibration. The [local check adapter](../harness/adapters/touchstone/README.md)
+can generate an ordinary visual-track entry; its native browser smoke is pending.
+
 Each folder is `<bench version>/<system>/<track>/`, or `<version>-agents/<configuration>/` for the agent sample runs, and holds the scorer's `report.json` (schema
 [`report.schema.json`](../schemas/report.schema.json)) and `report.md`. Every report records:
 - the upstream pin of each app;
