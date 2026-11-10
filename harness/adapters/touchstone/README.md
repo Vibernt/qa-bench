@@ -25,17 +25,20 @@ TOUCHSTONE_ROOT="$TOUCHSTONE_ROOT" npx tsx harness/integrations/touchstone.ts
 ```
 
 It writes `runs/touchstone-checks-<timestamp>/report.json` and `report.md`, and tears down every successfully
-started episode. Only bench orchestration/scoring reads ground truth. The adapter receives a brief, output path
+started episode. Each failed episode retains a redacted `adapter_error` reason in `runner.json`; the loop
+continues and scores completed episodes. The command exits non-zero when every episode fails. Only bench orchestration/scoring reads ground truth. The adapter receives a brief, output path
 and installed check module; it never reads labels, switches, answer keys, baseline labels, verify scripts or
 episodes. This native manual adapter is instruction-sealed, not a container isolation proof.
 
 For each role it visits public brief pages at desktop (1280x720) and mobile (390x844), signs in through observed
 username/password controls and runs actual console, network, axe and layout checks. Unsupported sign-in forms
-fail explicitly and require a reviewed integration. External requests are blocked. It does not explore writes,
+fail explicitly and require a reviewed integration. A supported credential submission that leaves the sign-in
+form present emits a role-specific functional/critical finding for the blocked core flow, with redacted visible
+error text when present. That role/viewport skips authenticated-page checks; other roles/viewports continue. External requests are blocked. It does not explore writes,
 create long-title data, exercise every journey, inject faults, run visual baselines, measure performance or judge
 screenshots. Its leaderboard identity is **touchstone-checks**, a deterministic page-check entry, not a whole-product score.
 
-Mapping: layout -> visual; a11y -> a11y; console/network -> error-handling; perf -> perf. Serious -> major;
+Mapping: blocked sign-in -> functional/critical; layout -> visual; a11y -> a11y; console/network -> error-handling; perf -> perf. Serious -> major;
 critical/minor preserve severity. Informational readings are not bug findings. Role, route, selector, rule and
 viewport remain evidence; descriptions are never rewritten to fit labels. Account strings are redacted. Model
 cost is zero, while compute billing remains explicitly unmeasured.

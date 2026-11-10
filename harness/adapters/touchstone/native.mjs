@@ -8,6 +8,8 @@ import { chromium } from 'playwright';
 import { assertValid } from '../../../lib/schemas.ts';
 import { sha256 } from '../../../lib/io.ts';
 import { convertChecks } from './src/map.ts';
+import { signIn } from './src/sign-in.ts';
+import { redact } from './src/redact.ts';
 
 export async function nativeChecks({ briefPath, root, out }) {
   if (existsSync(out)) throw new Error('Output already exists; choose a fresh filename');
@@ -45,15 +47,11 @@ export async function nativeChecks({ briefPath, root, out }) {
         page.on('requestfailed', request => collector.record({ kind: 'network', rule: 'failed-request', severity: 'serious', message: request.failure()?.errorText ?? 'Browser request failed without an error description', target: request.url() }));
         page.on('response', response => { if (response.status() >= 400 && origins.has(new URL(response.url()).origin)) collector.record({ kind: 'network', rule: 'http-error', severity: 'serious', message: `HTTP ${response.status()}`, target: response.url() }); });
         await page.goto(t.url);
-        // Generic credential form, discovered from rendered controls. No labels or app switches.
-        if (await page.locator('input[type=password]').count()) {
-          if (!account) throw new Error('Credential form observed without a brief account');
-          const user = page.locator('input[name=username],input[data-test=username]');
-          if (await user.count() !== 1) throw new Error('Credential form requires an explicit sign-in integration');
-          await user.fill(account.username); await page.locator('input[type=password]').fill(account.password);
-          await page.locator('button[type=submit],input[type=submit]').click();
-          await page.waitForLoadState('load');
-          if (await page.locator('input[type=password]').count()) throw new Error('Sign-in did not reach an authenticated page');
+        const blocked = await signIn(page, account, brief, { width: dimensions.width, height: dimensions.height, mobile: viewport === 'mobile' });
+        if (blocked) {
+          const checked = await collector.checkpoint(0);
+          data.observations.push({ page: page.url(), role: role.role, findings: [...checked.findings, blocked] });
+          continue;
         }
         const pages = brief.pages?.length ? brief.pages : [new URL(page.url()).pathname];
         for (const [step, path] of pages.entries()) {
@@ -82,7 +80,7 @@ if (process.argv[1] && pathToFileURL(resolve(process.argv[1])).href === import.m
     let message = error.message;
     if (values.brief) {
       const brief = JSON.parse(readFileSync(values.brief, 'utf8'));
-      for (const role of brief.roles ?? []) for (const account of role.accounts) for (const value of [account.username, account.password]) if (value) message = message.replaceAll(value, '[masked]');
+      message = redact(message, brief);
     }
     console.error(`Native checks failed: ${message}`); process.exitCode = 1;
   }

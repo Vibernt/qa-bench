@@ -1,9 +1,10 @@
 import type { Brief, Category, FindingsFile, Severity } from '../../../../lib/contracts.ts';
 import { assertValid } from '../../../../lib/schemas.ts';
+import { redact } from './redact.ts';
 import { sha256 } from '../../../../lib/io.ts';
 
 export interface StepFinding {
-  step: number; kind: 'console' | 'network' | 'a11y' | 'layout' | 'perf'; rule: string;
+  step: number; kind: 'console' | 'network' | 'a11y' | 'layout' | 'perf' | 'functional'; rule: string;
   severity: 'info' | 'minor' | 'serious' | 'critical'; message: string; target?: string;
   evidenceRefs: string[]; viewport: { width: number; height: number; mobile: boolean };
 }
@@ -15,7 +16,7 @@ export interface CheckExport {
   observations: { page: string; role: string; findings: StepFinding[] }[];
 }
 const categories: Record<StepFinding['kind'], Category> = {
-  console: 'error-handling', network: 'error-handling', a11y: 'a11y', layout: 'visual', perf: 'perf',
+  functional: 'functional', console: 'error-handling', network: 'error-handling', a11y: 'a11y', layout: 'visual', perf: 'perf',
 };
 const severities: Record<Exclude<StepFinding['severity'], 'info'>, Severity> = {
   minor: 'minor', serious: 'major', critical: 'critical',
@@ -26,8 +27,7 @@ export function convertChecks(briefBytes: Buffer, data: CheckExport): FindingsFi
     data.brief_sha256 !== sha256(briefBytes) || data.status !== 'complete') throw new Error('Check export does not bind this completed bench invocation');
   if (!data.system?.name || !data.system.version || !Array.isArray(data.observations)) throw new Error('Invalid check export');
   const allowed = new Set(brief.targets.map(t => new URL(t.url).origin));
-  const secrets = brief.roles.flatMap(r => r.accounts.flatMap(a => [a.username, a.password]));
-  const clean = (s: string) => secrets.reduce((text, value) => value ? text.replaceAll(value, '[masked]') : text, s);
+  const clean = (s: string) => redact(s, brief);
   const findings: FindingsFile['findings'] = [];
   for (const observation of data.observations) {
     const url = new URL(observation.page);
