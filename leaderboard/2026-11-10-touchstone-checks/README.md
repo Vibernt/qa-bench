@@ -16,6 +16,6 @@ This is a page-check entry, not a whole-product score: no visual baselines, no A
 | Natural defects found | 0/160 |
 | Episodes scored | 11/12 |
 
-Not scored: 
+Not scored: visual-001 (adapter_error: app image unavailable: docker build qa-bench-app-expense-app:local failed (exit 1): …er/dockerfile:1: ------ Dockerfile:)
 
 For comparison on the same track (`leaderboard/*-agents`): scripted Playwright suite 2/17; Claude agents at high effort 17/17.
