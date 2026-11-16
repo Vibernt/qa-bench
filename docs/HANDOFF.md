@@ -1,5 +1,21 @@
 # Handoff: 5 Nov 2026
 
+## Addendum: 16 Nov 2026, HU-2b model-led hunt adapter
+
+The new [touchstone-hunt adapter](../harness/adapters/touchstone-hunt/README.md) calls an operator-owned CLI
+read-only, planning then submitting its digest for capped live execution. Its set runner defaults to
+`v0.4-kinds-12`, continues episode failures, retains unknown costs conservatively against the total cap and
+writes reports plus per-episode/total cost. Warnings and claims without capture remain scored allegations;
+unknown routes are explicit, confidence is uncalibrated and mapping choices are documented. The existing checks
+adapter, scorer, schemas, apps and tracks are unchanged. No Touchstone source is copied or modified.
+
+65 new focused offline tests pass. The full suite passes 431 tests. `npm run check` passes lint but its
+standalone validation command is blocked by tsx IPC `listen EPERM` in this sandbox; no alternative launcher was
+used. Real Node entry loading/missing-argument refusal was checked. No Docker/browser/model/Keychain calls were
+made. Native lifecycle/report integration, provider billing and hunt effectiveness remain unverified; the new
+[leaderboard stub](../leaderboard/touchstone-hunt/README.md) has no scores yet. Next: native `npm run check`,
+Touchstone native browser qualification, then the documented one-episode plan/capped live run before a set.
+
 ## Addendum: 16 Nov 2026, HU-G3 shared masking
 
 `masks` on an active defect or trap is the inverse of `masked_by` on a natural label. Both declarations resolve

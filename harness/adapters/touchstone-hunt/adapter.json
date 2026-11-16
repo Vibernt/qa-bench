@@ -1,0 +1,7 @@
+{
+  "name": "touchstone-hunt",
+  "version": "0.1.0",
+  "description": "Native model-led local hunt using an operator-owned read-only CLI checkout; instruction-sealed, no source vendoring.",
+  "mode": "manual",
+  "network": "host"
+}
