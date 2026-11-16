@@ -17,9 +17,12 @@ export function convertHunt(brief: Brief, result: HuntResult, usage: Usage, wall
   const findings: Finding[] = [];
   function add(id: string, title: string, role: string, path: string | null, details: Details, refs: string[], status: string, reason: string) {
     const mappedRole = roles[role] ?? role;
-    if (!brief.roles.some(r => r.role === mappedRole)) throw new Error('Claim role outside brief');
+    // 'signed-out' is the hunt tool's reserved role for its pass over the sign-in page; a brief never names it, so
+    // such a finding carries no role. Any other role the brief does not name is still refused.
+    const signedOut = mappedRole === 'signed-out' && !brief.roles.some(r => r.role === mappedRole);
+    if (!signedOut && !brief.roles.some(r => r.role === mappedRole)) throw new Error('Claim role outside brief');
     if (!details || !severities[details.severity] || !['issue', 'warning'].includes(details.class) || !details.expected || !details.actual || !details.reproduction?.length) throw new Error('Invalid claim details');
-    findings.push({ id: `hunt-${findings.length + 1}:${id}`, where: { route: routePath(path, brief), role: mappedRole }, category: details.category,
+    findings.push({ id: `hunt-${findings.length + 1}:${id}`, where: { route: routePath(path, brief), ...(signedOut ? {} : { role: mappedRole }) }, category: details.category,
       severity: severities[details.severity], confidence: 0.5,
       description: `${title}\nExpected: ${details.expected}\nActual: ${details.actual}`,
       repro: details.reproduction, check: `${result.policy}:${details.class}`,

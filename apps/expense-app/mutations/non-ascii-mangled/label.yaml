@@ -16,6 +16,7 @@ switch:
     DEFECT: non_ascii_mangled
 found_by:
   - kind: behaviour
+    also_categories: [l10n]
     description_pattern: ^(?=[\s\S]*(title|name))(?=[\s\S]*(accent|emoji|non.ascii|unicode))(?=[\s\S]*(question marks?|\?|mangl|replac))
     note: Saving replaces accented letters and emoji with question marks
 tolerance:

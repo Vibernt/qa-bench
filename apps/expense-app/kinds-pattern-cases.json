@@ -39,7 +39,10 @@
     "positive": [
       "The second row Edit opens the first expense.",
       "Every later Edit link targets row one.",
-      "Saving via the third row Edit changes the first row."
+      "Saving via the third row Edit changes the first row.",
+      "Every row's Edit link points to /expenses/1/edit",
+      "Edit links on rows after the first all point to /expenses/1/edit",
+      "Every row's Edit link opens /expenses/1/edit instead of its own record"
     ],
     "negative": [
       "The edit form resets the category.",

@@ -16,7 +16,7 @@ switch:
     DEFECT: wrong_row_action
 found_by:
   - kind: behaviour
-    description_pattern: ^(?=[\s\S]*(edit|saving))(?=[\s\S]*(first (row|expense)|row (one|1)))
+    description_pattern: ^(?=[\s\S]*(edit|saving))(?=[\s\S]*(first (row|expense|record)|row (one|1)|\b(all|every|each)\b[^\n]{0,80}/expenses/\d+/edit|instead of its own (record|expense|row)))
     note: Later row Edit links target the first expense
 tolerance:
   route: prefix

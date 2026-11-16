@@ -61,3 +61,11 @@ it('gives claims unique bench IDs even when upstream model IDs repeat across rol
 it('refuses malformed missing/empty routes; only an explicit null means unknown', () => {
   for (const path of ['', undefined]) expect(() => routePath(path as string, brief())).toThrow('Invalid observed route');
 });
+
+it("keeps a finding from the hunt's signed-out pass without a role, and still refuses any other unknown role", () => {
+  const d = result(); d.observations![0]!.role = 'signed-out';
+  const where = convertHunt(brief(), d, usage(), 1, 'v').findings[0]!.where;
+  expect(where).not.toHaveProperty('role'); expect(where.route).toBeTruthy();
+  d.observations![0]!.role = 'admin';
+  expect(() => convertHunt(brief(), d, usage(), 1, 'v')).toThrow('Claim role outside brief');
+});
