@@ -134,6 +134,7 @@ const samples: Record<string, S[]> = {
     ['/expenses/2/edit', 'editor', 'functional', 'Editing an expense to 12.50 saves it as 12.00; the cents are dropped. Adding a new expense with 12.50 keeps it.'],
     ['/expenses', 'editor', 'functional', 'After an edit the amount is rounded down to a whole number.'],
     ['/expenses/5/edit', 'editor', 'consistency', 'Updating the amount loses the decimal part: 15.75 becomes 15.00 in the list and the total.'],
+    ['/expenses', 'editor', 'functional', 'Edited amount 12.35 is saved and shown as $12.00\nExpected: The row shows the amount 12.35 that was typed and saved.\nActual: After save, the Expenses table row shows "$12.00".'],
   ],
   'expense.long-title-truncated': [
     ['/expenses/new', 'editor', 'functional', 'Expense titles are limited to 20 characters on save; the rest is silently dropped.'],

@@ -11,7 +11,7 @@ import { redact } from '../adapters/touchstone-hunt/src/privacy.ts';
 import { runHuntSet } from './touchstone-hunt/loop.ts';
 export async function main(args: string[]) {
   const opts = parseOptions(args, true);
-  if (!/^[a-zA-Z0-9-]+$/.test(opts.set)) throw new Error('Invalid set name');
+  if (!/^[a-zA-Z0-9][a-zA-Z0-9.-]*$/.test(opts.set) || opts.set.includes('..')) throw new Error('Invalid set name');
   const set = readData<{ episodes: string[] }>(join(REPO_ROOT, 'harness/agents/sets', opts.set + '.yaml'));
   if (!set.episodes.length || new Set(set.episodes).size !== set.episodes.length || set.episodes.some(id => !/^[a-z0-9-]+-\d+$/.test(id))) throw new Error('Invalid episode set');
   const tracks = [...new Set(set.episodes.map(id => id.replace(/-\d+$/, '')))];
