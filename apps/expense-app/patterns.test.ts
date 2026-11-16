@@ -152,6 +152,7 @@ const samples: Record<string, S[]> = {
     ['/expenses', 'editor', 'functional', 'The list interprets the title as HTML; the edit form shows it escaped.'],
   ],
   'expense.edit-resets-category': [
+    ['/expenses', 'editor', 'functional', 'Title-only edit changes the record category from meals to travel\nExpected: After a title-only edit the record stays in category meals with amount $12.34'],
     ["/expenses/6/edit", "editor", "consistency", "Edit form shows Printer paper as travel while the expense list shows office\nExpected: The Category field on the edit page for Printer paper shows office, the same category the expenses list shows for that row.\nActual: The Category field on /expenses/6/edit shows travel for Printer paper."],
     ['/expenses/3/edit', 'editor', 'functional', 'When editing an office expense the Category dropdown shows travel, so saving changes its category.'],
     ['/expenses/2/edit', 'editor', 'functional', 'The edit form does not preselect the current category; saving an edit of "Team lunch" without touching the select changes its category from meals to travel.'],
