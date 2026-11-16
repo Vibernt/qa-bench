@@ -10,7 +10,7 @@ export interface Candidate {
   replays: { context?: { finalUrl: string }; evidenceRefs: string[] }[];
 }
 export interface HuntResult {
-  schema: string; missionDigest: string; status: string; cleanup: string; policy: string;
+  schema: string; missionDigest: string; status: string; stopReason?: string; cleanup: string; policy: string;
   observations?: Observation[]; candidates: Candidate[];
 }
 export interface Usage { totals: { calls: number; inputTokens: number | null; outputTokens: number | null; costUSD: number | null } }

@@ -119,8 +119,21 @@ it('keeps zero model cost for failed plans and records known usage on nonzero li
   const f = fixture(); f.opts.live = true; f.execute.mockResolvedValue({ code: 2, stdout: '', stderr: 'HUNT_SIGN_IN_REJECTED' });
   await expect(nativeHunt(f.opts, { execute: f.execute })).rejects.toMatchObject({ cost: { model_usd: 0, calls: 0 } });
   const g = fixture(); g.opts.live = true; const real = g.execute.getMockImplementation()!;
-  g.execute.mockImplementation(async (...args) => { const response = await real(...args); return args[0].includes('--live') ? { ...response, code: 3, stderr: 'HUNT_FAILED' } : response; });
+  g.execute.mockImplementation(async (...args) => { const response = await real(...args); return args[0].includes('--live') ? { ...response, code: 2, stderr: 'HUNT_FAILED' } : response; });
   await expect(nativeHunt(g.opts, { execute: g.execute })).rejects.toMatchObject({ cost: { model_usd: 0.01, calls: 2, tokens: 40 } });
+});
+it('keeps what a hunt recorded before it stopped early (exit 3 with a result and clean teardown)', async () => {
+  const g = fixture(); g.opts.live = true; const real = g.execute.getMockImplementation()!;
+  g.execute.mockImplementation(async (...args) => {
+    const response = await real(...args);
+    if (!args[0].includes('--live')) return response;
+    const path = join(args[0][args[0].indexOf('--out') + 1]!, 'result.json');
+    writeFileSync(path, JSON.stringify({ ...JSON.parse(readFileSync(path, 'utf8')), status: 'incomplete', stopReason: 'MODEL_CONFIGURATION' }));
+    return { ...response, code: 3, stderr: '' };
+  });
+  const output = await nativeHunt(g.opts, { execute: g.execute });
+  expect(output.findings!.findings.length).toBeGreaterThan(0);
+  expect(output.findings!.notes).toContain('Hunt stopped early (MODEL_CONFIGURATION)');
 });
 it('refuses writes into the read-only operator checkout', async () => {
   const f = fixture(); f.opts.out = join(f.opts.root, 'results/findings.json');

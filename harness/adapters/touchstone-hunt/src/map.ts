@@ -13,7 +13,7 @@ export function routePath(path: string | null, brief: Brief): string {
 }
 export function convertHunt(brief: Brief, result: HuntResult, usage: Usage, wall: number, version: string,
   roles: Record<string, string> = {}): FindingsFile {
-  if (result.schema !== 'cri.bughunt-result/v1' || !['completed', 'budget_exhausted'].includes(result.status) || result.cleanup !== 'complete') throw new Error('Hunt did not complete with confirmed cleanup');
+  if (result.schema !== 'cri.bughunt-result/v1' || !['completed', 'budget_exhausted', 'incomplete'].includes(result.status) || result.cleanup !== 'complete') throw new Error('Hunt did not complete with confirmed cleanup');
   const findings: Finding[] = [];
   function add(id: string, title: string, role: string, path: string | null, details: Details, refs: string[], status: string, reason: string) {
     const mappedRole = roles[role] ?? role;
@@ -35,5 +35,5 @@ export function convertHunt(brief: Brief, result: HuntResult, usage: Usage, wall
   return assertValid<FindingsFile>('findings', cleanJson({ episode_id: brief.episode_id,
     system: { name: `touchstone-hunt-${result.policy}`, version }, findings, wall_time_s: wall,
     cost: { ...(cost === null ? {} : { model_usd: cost }), notes: `${cost === null ? 'Model cost unknown. ' : ''}Compute cost unmeasured; overhead retained separately.` },
-    notes: 'Includes every observation, including warnings and missing captures, plus confirmed candidates. Unconfirmed replay candidates are excluded. Claims are not deterministic confirmations.' }, brief));
+    notes: (result.status === 'incomplete' ? `Hunt stopped early (${String(result.stopReason).replace(/[^A-Z0-9_]/g, '').slice(0, 60)}); findings recorded before the stop are included. ` : '') + 'Includes every observation, including warnings and missing captures, plus confirmed candidates. Unconfirmed replay candidates are excluded. Claims are not deterministic confirmations.' }, brief));
 }

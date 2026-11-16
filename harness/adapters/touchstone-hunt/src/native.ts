@@ -71,7 +71,9 @@ export async function nativeHunt(opts: HuntOptions, ports: { execute?: Execute; 
     const live = await run([...args, '--approve-digest', plan.digest, '--live'], dir, timeout);
     const artifacts = join(dir, 'artifacts');
     if (existsSync(join(artifacts, 'usage.json'))) Object.assign(cost, meter(JSON.parse(readFileSync(join(artifacts, 'usage.json'), 'utf8')) as Usage, (now() - start) / 1000));
-    if (live.code !== 0) throw new Error(`Live hunt exited ${live.code}: ${live.stderr}`);
+    // A hunt that stopped early (exit 3) still wrote its result: what it recorded before the stop counts, as it
+    // would for a tester who ran out of time. Anything else non-zero, or no result file, is a failure.
+    if (live.code !== 0 && !(live.code === 3 && existsSync(join(artifacts, 'result.json')))) throw new Error(`Live hunt exited ${live.code}: ${live.stderr}`);
     const read = (name: string) => JSON.parse(readFileSync(join(artifacts, name), 'utf8'));
     const result = read('result.json') as HuntResult;
     if (result.policy !== opts.policy) throw new Error('Result policy differs from invocation');
