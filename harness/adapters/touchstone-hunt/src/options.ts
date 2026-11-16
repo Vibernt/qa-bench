@@ -4,14 +4,20 @@ export interface HuntOptions {
   persona: 'default' | 'skeptic' | 'fuzzer'; model: string; maxUsd: number; maxCalls: number; operator: string; live: boolean;
   /** Overrides the brief's wall time for the hunt (a slower model needs longer); the brief is not changed. */
   wallS?: number;
+  /** Model effort for exploration calls (Anthropic models). Default: the hunt tool's own default. */
+  effort?: 'low' | 'medium' | 'high';
 }
 export function positive(value: unknown, name: string, integer = false): number {
   const n = Number(value);
   if (!Number.isFinite(n) || n <= 0 || (integer && !Number.isSafeInteger(n))) throw new Error(`Invalid ${name}`);
   return n;
 }
+function effort(value: unknown): 'low' | 'medium' | 'high' {
+  if (value !== 'low' && value !== 'medium' && value !== 'high') throw new Error('Unsupported effort');
+  return value;
+}
 export function parseOptions(args: string[], set = false): HuntOptions & { set: string; totalUsd: number } {
-  const options = Object.fromEntries(['brief', 'root', 'out', 'policy', 'persona', 'model', 'max-usd', 'max-calls', 'operator', 'wall-s',
+  const options = Object.fromEntries(['brief', 'root', 'out', 'policy', 'persona', 'model', 'max-usd', 'max-calls', 'operator', 'wall-s', 'effort',
     ...(set ? ['set', 'total-usd'] : [])].map(k => [k, { type: 'string' as const }]));
   const parsed = parseArgs({ args, options: { ...options, live: { type: 'boolean' } }, strict: true, allowPositionals: false });
   const values = parsed.values as Record<string, string | boolean | undefined>;
@@ -29,6 +35,7 @@ export function parseOptions(args: string[], set = false): HuntOptions & { set: 
   return { briefPath: String(values.brief ?? ''), root: String(values.root), out: String(values.out ?? ''), policy,
     persona: persona as HuntOptions['persona'], model: String(values.model), maxUsd, maxCalls: positive(values['max-calls'], '--max-calls', true),
     operator: String(values.operator), live: values.live === true,
-    ...(values['wall-s'] === undefined ? {} : { wallS: positive(values['wall-s'], '--wall-s', true) }), set: String(values.set ?? 'v0.4-kinds-12'),
+    ...(values['wall-s'] === undefined ? {} : { wallS: positive(values['wall-s'], '--wall-s', true) }),
+    ...(values.effort === undefined ? {} : { effort: effort(values.effort) }), set: String(values.set ?? 'v0.4-kinds-12'),
     totalUsd: values['total-usd'] === undefined ? maxUsd : positive(values['total-usd'], '--total-usd') };
 }

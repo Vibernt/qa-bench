@@ -56,7 +56,7 @@ export async function nativeHunt(opts: HuntOptions, ports: { execute?: Execute; 
     const args = [entry, '--origin', origin, '--allow-loopback', '--brief', inputPath,
       ...Object.keys(roles).flatMap(r => ['--role', `${r}=@brief`]), '--policy', opts.policy, '--persona', opts.persona,
       '--approve-writes', '--model', opts.model, '--max-usd', String(maxUsd), '--max-calls', String(opts.maxCalls),
-      '--include-sign-in', '--json',
+      '--include-sign-in', '--json', ...(opts.effort ? ['--effort', opts.effort] : []),
       '--wall-s', String(opts.wallS ?? brief.budget.wall_time_s), '--operator', opts.operator, '--out', join(dir, 'artifacts')];
     const run = ports.execute ?? execute;
     const timeout = (opts.wallS ?? brief.budget.wall_time_s) * 1000 + 30000;
