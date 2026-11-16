@@ -32,6 +32,8 @@ function sumOrNull(xs: (number | null | undefined)[]): number | null {
 }
 
 function compute(scores: EpisodeScore[], s: Slice): Metrics {
+  let trapFalseAlarms = 0;
+  const trapsByLabel: Record<string, number> = {};
   let natPresent = 0, natFound = 0;
   let planted = 0, found = 0, changesActive = 0, changesFlagged = 0, wPlanted = 0, wFound = 0, sevJudged = 0, sevAgree = 0;
   const counts: Record<Decision, number> = { true_positive: 0, duplicate: 0, false_alarm_change: 0, excused: 0, unmatched: 0 };
@@ -44,12 +46,16 @@ function compute(scores: EpisodeScore[], s: Slice): Metrics {
         planted++; wPlanted += w;
         if (l.hit) { found++; wFound += w; }
       }
+      if (l.kind === 'trap') trapsByLabel[l.label_id] ??= 0;
       if (l.kind === 'natural') { natPresent++; if (l.hit) natFound++; }
-      if (l.kind === 'change') { changesActive++; if (l.hit) changesFlagged++; }
+      if (l.kind === 'change' || l.kind === 'trap') { changesActive++; if (l.hit) changesFlagged++; }
     }
     for (const d of ep.decisions) {
       if (!s.decision(d, byLabel)) continue;
       counts[d.decision]++;
+      if (d.decision === 'false_alarm_change' && d.label_id && byLabel.get(d.label_id)?.kind === 'trap') {
+        trapFalseAlarms++; trapsByLabel[d.label_id] = (trapsByLabel[d.label_id] ?? 0) + 1;
+      }
       if (d.decision === 'true_positive' && d.severity_agrees !== undefined) { sevJudged++; if (d.severity_agrees) sevAgree++; }
     }
   }
@@ -68,6 +74,7 @@ function compute(scores: EpisodeScore[], s: Slice): Metrics {
     weighted_defects_planted: wPlanted, weighted_defects_found: wFound, weighted_recall: weightedRecall,
     findings, findings_matched: matched, findings_excused: counts.excused, precision, f1, weighted_f1: f1Of(weightedRecall, precision),
     changes_active: changesActive, changes_flagged: changesFlagged, change_flag_rate: ratio(changesFlagged, changesActive),
+    trap_false_alarms: trapFalseAlarms, trap_false_alarms_by_label: trapsByLabel,
     false_alarms_on_changes: counts.false_alarm_change,
     false_alarms_per_100_episodes: n ? (changesFlagged * 100) / n : null,
     unmatched_findings: counts.unmatched, unmatched_per_episode: n ? counts.unmatched / n : null,

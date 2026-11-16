@@ -10,9 +10,12 @@ import { themeCss } from './theme.js';
 import { FixtureError } from './catalogue/entry.js';
 import { hostileRoute } from './hostile.js';
 import type { FixtureIsolation } from './isolation.js';
+import { parseTraps, seedTraps, type Trap } from './switches/traps.js';
+import { newDefects, saveInput, type NewDefect } from './switches/defects.js';
 import { AuthLifecycle, type AuthLifecycleOptions } from './auth-lifecycle/routes.js';
 
 export const defects = [
+  ...newDefects,
   'missing_persistence',
   'duplicate_write',
   'misleading_success',
@@ -58,6 +61,7 @@ export interface ServerOptions {
   /** One defect, a comma-separated list of them, or an array; absent or empty is the clean build. */
   defect?: Defect | string | readonly Defect[];
   variant?: Variant;
+  trap?: string | readonly Trap[];
   /** Reviewed idempotency and commit barrier opt-ins; disabled by default. */
   idempotency?: boolean;
   afterCreateCommit?: () => Promise<void>;
@@ -121,23 +125,23 @@ function forbidden(response: ServerResponse): void {
   sendHtml(response, 403, page('Forbidden', '<p>Forbidden</p>'));
 }
 
-function loginPage(error = false): string {
+function loginPage(error = false, visiblePassword = false): string {
   const alert = error ? '<p role="alert">Invalid credentials</p>' : '';
   return page('Sign in', `${alert}<form method="post" action="/login">
     <label>Username <input name="username" autocomplete="username" required></label>
-    <label>Password <input name="password" type="password" autocomplete="current-password" required></label>
+    <label>Password <input name="password" type="${visiblePassword ? 'text' : 'password'}" autocomplete="current-password" required></label>
     <button type="submit">Sign in</button>
   </form>`);
 }
 
-function expenseForm(expense?: Expense, variant: Variant = '', token = '', preselectCategory = true): string {
+function expenseForm(expense?: Expense, variant: Variant = '', token = '', preselectCategory = true, misspelled = false, negative = false): string {
   const labels = variantLabels(variant);
   const editing = expense !== undefined;
   const action = editing ? `/expenses/${expense.id}` : '/expenses';
   const fields = `<label>${labels.title} <input name="title" value="${escapeHtml(expense?.title ?? '')}" required></label>
-    <label>Category <select name="category" aria-label="Category">${categories.map((category) =>
+    <label>${misspelled ? 'Catagory' : 'Category'} <select name="category" aria-label="${misspelled ? 'Catagory' : 'Category'}">${categories.map((category) =>
       `<option value="${category}"${preselectCategory && expense?.category === category ? ' selected' : ''}>${category}</option>`).join('')}</select></label>
-    <label>Amount <input name="amount" type="number" min="0" step="0.01" value="${expense ? (expense.amount_cents / 100).toFixed(2) : ''}" required></label>`;
+    <label>Amount <input name="amount" type="number"${negative ? '' : ' min="0"'} step="0.01" value="${expense ? (expense.amount_cents / 100).toFixed(2) : ''}" required></label>`;
   return page(editing ? 'Edit expense' : labels.add, `<form method="post" action="${action}">${fields}${token ? `<input type="hidden" name="idempotency_token" value="${escapeHtml(token)}">` : ''}<button type="submit">${labels.save}</button></form>`);
 }
 
@@ -156,8 +160,14 @@ export function createServer(options: ServerOptions): Server {
   const authLifecycle = options.authLifecycle ? new AuthLifecycle(options.authLifecycle) : undefined;
   const db: DatabaseSync = createDatabase(options.dbPath);
   const active = parseDefects(options.defect);
+  const traps = parseTraps(options.trap);
+  seedTraps(db, traps);
   const has = (name: Exclude<Defect, ''>): boolean => active.has(name);
   const storedTitle = (title: string): string => has('long_title_truncated') ? title.slice(0, 20) : title;
+  const formPage = (expense?: Expense, variant: Variant = '', token = '', preselect = true): string =>
+    expenseForm(expense, variant, token, preselect, has('misspelled_label'), has('negative_amount_accepted'));
+  const categoryLabel = has('misspelled_label') ? 'Catagory' : 'Category';
+  const filterCategories = traps.has('empty_category') ? [...categories, 'training'] : categories;
   const variant = options.variant ?? '';
   const labels = variantLabels(variant);
   const css = themeCss(active, variant);
@@ -216,13 +226,13 @@ export function createServer(options: ServerOptions): Server {
     const summed = has('total_under_filter') && category ? loadExpenses('') : rows;
     const totalRows = has('wrong_total') ? summed.slice(0, -1) : summed;
     const total = totalRows.reduce((sum, row) => sum + row.amount_cents, 0);
-    const tableRows = rows.map((row) => `<tr><td>${has('title_not_escaped') ? row.title : escapeHtml(row.title)}</td><td>${escapeHtml(row.category)}</td><td>${formatMoney(row.amount_cents)}</td><td>${session.role === 'editor' ? `<a href="/expenses/${row.id}/edit">Edit</a><form method="post" action="/expenses/${row.id}/delete"><button type="submit">Delete</button></form>` : ''}</td></tr>`).join('');
-    const editorLinks = session.role === 'editor' ? `<p><a href="/expenses/new">${labels.add}</a></p>` : '';
+    const tableRows = rows.map((row) => `<tr><td>${has('title_not_escaped') ? row.title : escapeHtml(row.title)}</td><td>${escapeHtml(row.category)}</td><td>${formatMoney(row.amount_cents)}</td><td>${session.role === 'editor' ? `<a href="/expenses/${has('wrong_row_action') ? rows[0]!.id : row.id}/edit">Edit</a><form method="post" action="/expenses/${row.id}/delete"><button type="submit">Delete</button></form>` : ''}</td></tr>`).join('');
+    const editorLinks = session.role === 'editor' ? `<p><a href="${has('add_link_404') ? '/expneses/new' : '/expenses/new'}">${labels.add}</a></p>` : '';
     const status = flash ? `<p role="status">${escapeHtml(flash)}</p>` : '';
-    const html = page('Expenses', `${status}${options.authenticate || authLifecycle ? `<span data-testid="session-account">${escapeHtml(session.username)}</span><span data-testid="session-role">${session.role}</span>` : ''}<p>Signed in as ${escapeHtml(session.displayName ?? session.username)}</p>
+    const html = page('Expenses', `${status}${options.authenticate || authLifecycle ? `<span data-testid="session-account">${escapeHtml(session.username)}</span><span data-testid="session-role">${session.role}</span>` : ''}<p>Signed in as ${has('template_token') ? '{{username}}' : escapeHtml(session.displayName ?? session.username)}</p>
       ${authLifecycle ? `<p data-testid="session-identity" data-account="${escapeHtml(session.username)}" data-role="${session.role}" data-tenant="${escapeHtml(authLifecycle.options.tenant)}">Account: ${escapeHtml(session.username)}; Role: ${session.role}</p>` : ''}
-      <form method="get" action="/expenses"><label>Category <select aria-label="Category" name="category"><option value="">All categories</option>${categories.map((value) => `<option value="${value}"${category === value ? ' selected' : ''}>${value}</option>`).join('')}</select></label><button type="submit">Apply</button></form>
-      <table aria-label="Expenses"><thead><tr><th>Title</th><th>Category</th><th>Amount</th><th>Actions</th></tr></thead><tbody>${tableRows}</tbody></table>
+      <form method="get" action="/expenses"><label>${categoryLabel} <select aria-label="${categoryLabel}" name="category"><option value="">All categories</option>${filterCategories.map((value) => `<option value="${value}"${category === value ? ' selected' : ''}>${value}</option>`).join('')}</select></label><button type="submit">Apply</button></form>
+      <table aria-label="Expenses"><thead><tr><th>Title</th><th>${categoryLabel}</th><th>Amount</th><th>Actions</th></tr></thead><tbody>${tableRows}</tbody></table>
       <p data-testid="total">Total: ${formatMoney(total)}</p>${editorLinks}<form method="post" action="/logout"><button type="submit">Sign out</button></form>`);
     sendHtml(response, 200, html);
   }
@@ -253,7 +263,7 @@ export function createServer(options: ServerOptions): Server {
       return;
     }
     if (request.method === 'GET' && path === '/login') {
-      sendHtml(response, 200, loginPage());
+      sendHtml(response, 200, loginPage(false, has('password_visible')));
       return;
     }
     if (request.method === 'POST' && path === '/login') {
@@ -263,7 +273,7 @@ export function createServer(options: ServerOptions): Server {
       const user = options.authenticate ? options.authenticate(username, password)
         : stored && verifyPassword(password, stored.password_hash) ? stored : undefined;
       if (!user) {
-        sendHtml(response, 401, loginPage(true));
+        sendHtml(response, 401, loginPage(true, has('password_visible')));
         return;
       }
       const token = randomBytes(32).toString('hex');
@@ -273,6 +283,7 @@ export function createServer(options: ServerOptions): Server {
       return;
     }
     if (request.method === 'POST' && path === '/logout') {
+      if (has('sign_out_dead')) { renderList(request, response, new URL('/expenses', url)); return; }
       const token = cookieValue(request);
       if (token) sessions.delete(token);
       response.setHeader('set-cookie', `${cookieName}=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0`);
@@ -288,18 +299,20 @@ export function createServer(options: ServerOptions): Server {
     }
     if (request.method === 'GET' && path === '/expenses/new') {
       if (!requireEditor(request, response)) return;
-      sendHtml(response, 200, expenseForm(undefined, variant, idempotency ? (url.searchParams.get('idempotency') ?? randomBytes(24).toString('hex')) : ''));
+      sendHtml(response, 200, formPage(undefined, variant, idempotency ? (url.searchParams.get('idempotency') ?? randomBytes(24).toString('hex')) : ''));
       return;
     }
     if (request.method === 'POST' && path === '/expenses') {
       const session = requireEditor(request, response);
       if (!session) return;
       const form = await readForm(request);
-      const title = storedTitle((form.get('title') ?? '').trim());
+      const input = saveInput(form, (name: NewDefect) => active.has(name), parseAmount);
+      if (input.rawError) { sendHtml(response, 500, page('Save failed', '<pre>TypeError: invalid amount\n    at saveAmount (expense-store.js:42:7)\n    at submitExpense (expense-routes.js:18:3)</pre>')); return; }
+      const title = storedTitle(input.title);
       const category = form.get('category') ?? '';
-      const amount = parseAmount(form.get('amount') ?? '');
-      if (!title || !categories.includes(category) || amount === undefined) {
-        sendHtml(response, 400, expenseForm(undefined, variant));
+      const amount = input.amount;
+      if ((!title && !input.blankAccepted) || !categories.includes(category) || amount === undefined) {
+        sendHtml(response, 400, formPage(undefined, variant));
         return;
       }
       const token = form.get('idempotency_token') ?? '';
@@ -338,7 +351,7 @@ export function createServer(options: ServerOptions): Server {
         sendHtml(response, 404, page('Not found', '<p>Expense not found</p>'));
         return;
       }
-      sendHtml(response, 200, expenseForm(expense, variant, '', !has('edit_resets_category')));
+      sendHtml(response, 200, formPage(expense, variant, '', !has('edit_resets_category')));
       return;
     }
     const updateMatch = path.match(/^\/expenses\/(\d+)$/);
@@ -352,11 +365,13 @@ export function createServer(options: ServerOptions): Server {
         return;
       }
       const form = await readForm(request);
-      const title = storedTitle((form.get('title') ?? '').trim());
+      const input = saveInput(form, (name: NewDefect) => active.has(name), parseAmount);
+      if (input.rawError) { sendHtml(response, 500, page('Save failed', '<pre>TypeError: invalid amount\n    at saveAmount (expense-store.js:42:7)\n    at submitExpense (expense-routes.js:18:3)</pre>')); return; }
+      const title = storedTitle(input.title);
       const category = form.get('category') ?? '';
-      const amount = parseAmount(form.get('amount') ?? '');
-      if (!title || !categories.includes(category) || amount === undefined) {
-        sendHtml(response, 400, expenseForm(existing, variant, '', !has('edit_resets_category')));
+      const amount = input.amount;
+      if ((!title && !input.blankAccepted) || !categories.includes(category) || amount === undefined) {
+        sendHtml(response, 400, formPage(existing, variant, '', !has('edit_resets_category')));
         return;
       }
       if (!has('misleading_success')) {
@@ -405,7 +420,7 @@ if (isEntryPoint()) {
   const port = Number(process.env.PORT ?? 3000);
   const dbPath = process.env.DB_PATH;
   if (!dbPath) throw new Error('DB_PATH is required');
-  const server = createServer({ dbPath, defect: process.env.DEFECT ?? '', variant: (process.env.VARIANT ?? '') as Variant });
+  const server = createServer({ dbPath, defect: process.env.DEFECT ?? '', variant: (process.env.VARIANT ?? '') as Variant, trap: process.env.TRAP ?? '' });
   server.listen(port, () => {
     const address = server.address();
     if (address && typeof address !== 'string') process.stdout.write(`LISTENING ${address.port}\n`);

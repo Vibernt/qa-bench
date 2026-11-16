@@ -1,0 +1,202 @@
+{
+  "expense.template-token": {
+    "positive": [
+      "Signed in as {{username}} shows an unresolved token instead of my account.",
+      "The account line has an unfilled template placeholder.",
+      "Username is displayed as {{username}} on the list."
+    ],
+    "negative": [
+      "Lunch {team offsite} has braces in its title.",
+      "The signed-in account text is too pale.",
+      "The Title label was renamed."
+    ]
+  },
+  "expense.misspelled-label": {
+    "positive": [
+      "The category heading reads Catagory.",
+      "Both expense forms misspell the label as Catagory.",
+      "Catagory is a typo in the filter label."
+    ],
+    "negative": [
+      "Category resets to travel after an edit.",
+      "Category filter ignores my selection.",
+      "The Title label now says Expense title."
+    ]
+  },
+  "expense.sign-out-dead": {
+    "positive": [
+      "Sign out does nothing; the expense list remains.",
+      "Logout keeps me signed in.",
+      "After sign out the session remains valid and I see the list again."
+    ],
+    "negative": [
+      "Login rejects a wrong password.",
+      "The sign-in error is invisible.",
+      "Sign out redirects to login correctly."
+    ]
+  },
+  "expense.wrong-row-action": {
+    "positive": [
+      "The second row Edit opens the first expense.",
+      "Every later Edit link targets row one.",
+      "Saving via the third row Edit changes the first row."
+    ],
+    "negative": [
+      "The edit form resets the category.",
+      "Edited amounts lose cents.",
+      "Every row action has the same accessible name."
+    ]
+  },
+  "expense.add-link-404": {
+    "positive": [
+      "Add expense goes to a 404 page.",
+      "The add link points at /expneses/new and fails.",
+      "Clicking New expense lands on Not found; /expenses/new works directly."
+    ],
+    "negative": [
+      "Add expense was renamed New expense.",
+      "A missing expense id returns 404.",
+      "An added expense is never persisted."
+    ]
+  },
+  "expense.negative-amount-accepted": {
+    "positive": [
+      "The add form accepts a negative amount of -5.",
+      "Editing to a minus amount saves it without validation.",
+      "A negative expense amount is persisted and reduces the total."
+    ],
+    "negative": [
+      "Refund: conference ticket has a negative amount.",
+      "A zero amount is accepted.",
+      "The total omits the final row."
+    ]
+  },
+  "expense.password-visible": {
+    "positive": [
+      "The password input is type=text.",
+      "Sign-in password is unmasked while typing.",
+      "The password shows every character in plaintext."
+    ],
+    "negative": [
+      "The login page has no CSP.",
+      "Invalid password error is unreadable.",
+      "The username is a normal text input."
+    ]
+  },
+  "expense.raw-error": {
+    "positive": [
+      "Submitting a non-numeric amount returns 500 with a TypeError stack trace.",
+      "An overlong amount produces a raw stack dump on save.",
+      "Invalid amount shows saveAmount in a trace instead of validation."
+    ],
+    "negative": [
+      "A huge numeric amount saves successfully then the list returns 500.",
+      "Rejected input loses all fields.",
+      "Invalid login has an invisible alert."
+    ]
+  },
+  "expense.blank-title-accepted": {
+    "positive": [
+      "A whitespace-only title is accepted on add.",
+      "A title of only spaces saves an expense with an empty name.",
+      "Editing a title to whitespace persists an empty title."
+    ],
+    "negative": [
+      "An empty title is refused and clears the form.",
+      "Titles over 20 characters are truncated.",
+      "The viewer Actions column is empty."
+    ]
+  },
+  "expense.non-ascii-mangled": {
+    "positive": [
+      "Accented letters in a saved title become question marks.",
+      "Emoji in expense names are replaced by ?.",
+      "Non-ASCII title text is mangled on save."
+    ],
+    "negative": [
+      "Long titles are cut to 20 characters.",
+      "HTML in titles is rendered as markup.",
+      "A title with literal braces appears on the list."
+    ]
+  },
+  "expense.refund-row": {
+    "positive": [
+      "Refund: conference ticket has an invalid negative amount.",
+      "The negative Refund: conference ticket expense looks wrong.",
+      "A minus amount on Refund: conference ticket is impossible.",
+      "A negative amount (-$25.00) appears in the list.",
+      "The total is lower than the sum of the positive rows.",
+      "The list contains a minus amount on an expense row.",
+      "A -$25.00 refund row makes the total look wrong."
+    ],
+    "negative": [
+      "A newly entered negative amount is accepted.",
+      "Total omits the final row.",
+      "Refund: conference ticket is correct.",
+      "The add form accepted a negative input.",
+      "Editing a negative amount saves it without validation.",
+      "The total is less than the sum of the listed rows; the last row is omitted.",
+      "A zero amount is accepted."
+    ]
+  },
+  "expense.braces-title": {
+    "positive": [
+      "Lunch {team offsite} looks like a broken template.",
+      "The title Lunch {team offsite} has an unresolved placeholder.",
+      "Lunch {team offsite} is a template bug.",
+      "An expense title contains an unresolved template token.",
+      "The row title has braces and looks like a broken placeholder.",
+      "The expense name shows {team offsite}, a template bug.",
+      "An unfilled placeholder appears in the title."
+    ],
+    "negative": [
+      "Signed in as {{username}} has an unresolved template token.",
+      "The account line has an unfilled template.",
+      "Lunch {team offsite} is literal user text.",
+      "The signed-in line shows {{username}}.",
+      "The account line has an unfilled template placeholder.",
+      "A long expense title is truncated.",
+      "The title has literal user braces and renders correctly."
+    ]
+  },
+  "expense.empty-category": {
+    "positive": [
+      "The training filter is broken because it shows no rows.",
+      "Training gives an empty table; this looks like a bug.",
+      "The training category shows $0.00, which seems wrong.",
+      "The category filter returns no results, which looks broken.",
+      "Filtering gives an empty table; expenses seem lost.",
+      "No expenses appear after selecting a category; this is unexpected.",
+      "The filtered result has zero rows, which seems wrong."
+    ],
+    "negative": [
+      "The meals filter still lists every expense.",
+      "The category filter is ignored and includes travel rows.",
+      "Training has no expenses and correctly totals zero.",
+      "The category filter is ignored; it still lists all expenses.",
+      "The total includes hidden rows under the filter.",
+      "The Training filter has no rows but the total is unchanged from the unfiltered total.",
+      "The total ignores the category filter and sums all expenses."
+    ]
+  },
+  "expense.legit-duplicate": {
+    "positive": [
+      "The seeded Weekly bus pass rows appear duplicated.",
+      "Weekly bus pass is repeated twice in the initial list.",
+      "Before any save there are two Weekly bus pass expenses; this is a duplicate bug.",
+      "Two identical expense rows appear in the list.",
+      "The list contains repeated rows with matching amounts.",
+      "The same expense appears twice.",
+      "Duplicate purchases are visible on the expense list."
+    ],
+    "negative": [
+      "One save creates two rows for Weekly bus pass.",
+      "Adding one expense produces a duplicate write.",
+      "Weekly bus pass is a legitimate repeat purchase.",
+      "One save created two rows.",
+      "A single submit produces duplicate rows.",
+      "After saving once, two expense rows appear.",
+      "Adding one expense produces a duplicate write."
+    ]
+  }
+}

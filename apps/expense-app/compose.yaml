@@ -6,6 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
+      TRAP: ${TRAP:-}
       DEFECT: ${DEFECT:-}
       VARIANT: ${VARIANT:-}
       QA_BENCH_VIEWER_ACCOUNTS: ${QA_BENCH_VIEWER_ACCOUNTS:-}

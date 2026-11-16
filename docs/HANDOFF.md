@@ -1,5 +1,48 @@
 # Handoff: 5 Nov 2026
 
+## Addendum: 16 Nov 2026, HU-G3 shared masking
+
+`masks` on an active defect or trap is the inverse of `masked_by` on a natural label. Both declarations resolve
+through `lib/masking.ts` in the generator, scorer, both app verifiers and cross-file validation. Hidden symptoms
+are omitted from answer keys and scoring outcomes; the existing natural-label metadata stays unchanged. The
+new defects declare their masks without touching the 82 pinned original episode files. Offline tests cover
+relation equivalence, schema/cross-file rejection, natural recall and both tracks' new episode answer keys.
+Offline verification: `npm test` passes all 366 tests, including the 82-file digest test and repository validation.
+`npm run check` passes lint but its standalone validation command is blocked by tsx IPC `listen EPERM` in this
+sandbox; rerun the exact command natively. No alternate launcher was used. Native Docker/browser verification
+remains outside HU-G3's scope.
+
+## Addendum: 16 Nov 2026, HU-G2 episode compatibility
+
+Original exploration 001–017 and regression 001–024 now match all 82 parent SHA-256 fixtures. Track app
+`recipes_only` pools reserve the ten new defects and four traps for the appended recipes. Ordinary recipe
+references no longer remove older defects from random selection. Original episodes carry no trap switches or
+trap fields. The two new natural-mask relationships moved onto the new defects as `masks`, keeping
+old natural labels byte-identical. The twelve-episode kinds set retains all ten defects, at least two uses of
+each trap, and two clean-with-traps controls.
+
+Trap patterns now accept symptom descriptions without seeded titles, with four additional positives and four
+additional near-misses per trap (32 new cases), including paired real defects as negatives. Their categories
+match the imitated defect families. Offline generator, matcher, scoring and schema tests cover the changes.
+Native requalification is still required: this sandbox blocks tsx IPC in `npm run check` after lint passes,
+and localhost binding in app tests (17 passed, 55 failed/blocked). No transport or launcher substitution,
+Docker, browsers, live calls or git commands were used. Next: run `npm run check` and the app's `npm test`
+natively; browser/Docker verification is outside HU-G2's requested scope.
+
+## Addendum: 16 Nov 2026, HU-G kinds and traps
+
+Added ten opt-in expense defects, four `TRAP` switches, `kind: trap` contracts, false-alarm/per-trap reporting and
+matcher boundary tests. Exploration is now 29 episodes and regression 36; seeds and id derivation stay unchanged,
+composition changes. The twelve appended exploration recipes form `v0.4-kinds-12` (two clean-with-traps controls).
+Checked-in generated artifacts, adapters, judges and leaderboards were not changed.
+
+Offline root tests pass (321; 228 existing plus 93 new), including repository validation through its unit test. App build passes. The prescribed
+`npm run check` reaches validation but the sandbox blocks tsx's IPC listener (`EPERM`). Native app route tests
+likewise cannot bind localhost (17 passed, 55 blocked of 72; originally 7 passed, 35 blocked of 42); this also blocks the frozen-original clean-byte comparison. Docker/Chromium
+verification was intentionally not run. No in-process transport fallback was used. Run the exact native commands
+in [expense-app README](../apps/expense-app/README.md#hu-g-defect-kinds-and-traps-16-nov-2026) next; do not claim
+qualified ground truth until they pass. All new routes/traps have tests written, with native execution pending.
+
 ## Addendum: 9 Nov 2026, judge calibration and local check adapter
 
 Track 7.9 now has a [60-case hashed recipe manifest, native generator, capped Anthropic SDK harness and scorer](../judge-sets/README.md),

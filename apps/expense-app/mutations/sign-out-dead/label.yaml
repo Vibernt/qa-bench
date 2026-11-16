@@ -1,0 +1,25 @@
+id: expense.sign-out-dead
+app: expense-app
+title: Sign out accepts the request but keeps the session and shows the list
+description: Sign out accepts the request but keeps the session and shows the list.
+track: exploration
+kind: defect
+category: functional
+class: deterministic
+severity: major
+difficulty: blatant
+exposure: novel
+where:
+  route: /expenses
+switch:
+  env:
+    DEFECT: sign_out_dead
+found_by:
+  - kind: behaviour
+    description_pattern: ^(?=[\s\S]*(sign.?out|log.?out))(?=[\s\S]*(does nothing|still signed.in|session (stays|remains)|list (again|instead)|keeps (me|the session)))
+    note: Sign out accepts the request but keeps the session and shows the list
+tolerance:
+  route: prefix
+  role: any
+split: public
+upstream_ref: apps/expense-app/app/src/server.ts; checked by apps/expense-app/verify.ts

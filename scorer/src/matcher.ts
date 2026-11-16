@@ -1,7 +1,7 @@
 import type { Finding, FoundBy, Label, Region } from '../../lib/contracts.ts';
 
 /** Bump when matching rules change; it is recorded in every report. */
-export const MATCHER_VERSION = 'deterministic-3';
+export const MATCHER_VERSION = 'deterministic-4';
 
 /**
  * Category families. Testers disagree on the exact category of one symptom (a wrong total is "consistency" to one and

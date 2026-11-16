@@ -2,7 +2,7 @@
 # roles and a one-line product purpose (brief.mode exploratory: no journeys, no pages, no checklist). Regression
 # measures following a plan; this measures finding problems (docs/DECISIONS.md, 5 Nov). Generate with:
 #   npx tsx bin/qa-bench.ts generate exploration
-# 17 episodes (13 mixed) is the smallest count that switches on every defect of both apps at least once.
+# HU-G: 29 episodes: 17 random-plan slots plus 12 appended recipes (10 mixed, 2 clean-with-traps).
 id: exploration
 number: "7.7"
 title: Exploration
@@ -32,13 +32,29 @@ apps:
       - expense.title-not-escaped
       - expense.total-under-filter
       - expense.wrong-total
+    recipes_only:
+      mutations: [expense.template-token, expense.misspelled-label, expense.sign-out-dead, expense.wrong-row-action, expense.add-link-404, expense.negative-amount-accepted, expense.password-visible, expense.raw-error, expense.blank-title-accepted, expense.non-ascii-mangled]
+      traps: [expense.refund-row, expense.braces-title, expense.empty-category, expense.legit-duplicate]
     changes: [expense.relabel]
   - { app: swag-labs, weight: 1, mutations: '*', changes: '*' }
 episodes:
-  count: 17
+  count: 29
   seed: 20261107
   mutations_per_episode: { min: 2, max: 3 }
   max_blatant_per_episode: 1
   changes_per_episode: { min: 0, max: 2 }
   clean_episodes: 2
   twin_episodes: 2
+  recipes:
+    - { app: expense-app, mutations: [expense.template-token, expense.edit-drops-cents], traps: [expense.braces-title] }
+    - { app: expense-app, mutations: [expense.misspelled-label, expense.long-title-truncated], traps: [expense.braces-title] }
+    - { app: expense-app, mutations: [expense.sign-out-dead, expense.edit-resets-category], traps: [expense.empty-category] }
+    - { app: expense-app, mutations: [expense.wrong-row-action, expense.total-under-filter], traps: [expense.legit-duplicate] }
+    - { app: expense-app, mutations: [expense.add-link-404, expense.edit-drops-cents], traps: [expense.refund-row] }
+    - { app: expense-app, mutations: [expense.negative-amount-accepted, expense.long-title-truncated], traps: [expense.refund-row] }
+    - { app: expense-app, mutations: [expense.password-visible, expense.edit-resets-category], traps: [expense.empty-category] }
+    - { app: expense-app, mutations: [expense.raw-error, expense.total-under-filter], traps: [expense.legit-duplicate] }
+    - { app: expense-app, mutations: [expense.blank-title-accepted, expense.edit-drops-cents], traps: [expense.refund-row] }
+    - { app: expense-app, mutations: [expense.non-ascii-mangled, expense.long-title-truncated], traps: [expense.braces-title] }
+    - { app: expense-app, mutations: [], traps: [expense.refund-row, expense.braces-title, expense.empty-category, expense.legit-duplicate] }
+    - { app: expense-app, mutations: [], traps: [expense.refund-row, expense.braces-title, expense.empty-category, expense.legit-duplicate] }

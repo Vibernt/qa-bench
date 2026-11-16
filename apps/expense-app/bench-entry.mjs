@@ -4,7 +4,7 @@
 //    (QA_BENCH_VIEWER_ACCOUNTS / QA_BENCH_EDITOR_ACCOUNTS, "user:pass", first account per role);
 // 3. start the app with DEFECT (one planted defect or a comma-separated list, e.g. "wrong_total,edit_drops_cents")
 //    and VARIANT from the environment.
-// The app itself (app/) is unchanged.
+// TRAP opts into seeded correct content that resembles defects; absent preserves the original seed.
 import { randomBytes, scryptSync } from 'node:crypto';
 import { rmSync } from 'node:fs';
 import { DatabaseSync } from 'node:sqlite';
@@ -38,6 +38,6 @@ for (const [id, envName] of [[1, 'QA_BENCH_VIEWER_ACCOUNTS'], [2, 'QA_BENCH_EDIT
 }
 db.close();
 
-const server = createServer({ dbPath, defect, variant });
+const server = createServer({ dbPath, defect, variant, trap: process.env.TRAP ?? '' });
 server.listen(port, '0.0.0.0', () => console.log(`expense-app listening on ${port} (defect=${defect || 'none'}, variant=${variant || 'none'})`));
 for (const signal of ['SIGINT', 'SIGTERM']) process.once(signal, () => server.close(() => process.exit(0)));

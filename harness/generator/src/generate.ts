@@ -15,8 +15,10 @@ import {
   type TrackApp,
 } from '../../../lib/contracts.ts';
 import { REPO_ROOT, jsonText, readData, sha256, writeJson } from '../../../lib/io.ts';
+import { maskedLabelIds } from '../../../lib/masking.ts';
 import { assertValid } from '../../../lib/schemas.ts';
 import { DEFAULT_APPS_ROOT, loadApp, type LoadedApp } from './apps.ts';
+import { selectTraps, recipeCount } from './traps.ts';
 import { Rng, deriveSeed } from './prng.ts';
 
 export const DEFAULT_EPISODES_ROOT = join(REPO_ROOT, 'episodes');
@@ -67,6 +69,7 @@ interface Pool {
   weight: number;
   mutations: Label[];
   changes: Label[];
+  traps: Label[];
   baseline: Label[];
   natural: Label[];
   /** Every env key any pool label can switch, blanked when not active so a stray host value can't leak in. */
@@ -80,11 +83,12 @@ interface Planned {
   pool: Pool;
   mutations: Label[];
   changes: Label[];
+  traps?: Label[];
 }
 
 const byId = (a: Label, b: Label): number => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
 
-function resolveList(spec: TrackApp['mutations'], all: Label[], kind: 'defect' | 'change', app: LoadedApp, where: string): Label[] {
+function resolveList(spec: TrackApp['mutations'], all: Label[], kind: 'defect' | 'change' | 'trap', app: LoadedApp, where: string): Label[] {
   if (spec === undefined || spec === '*') return all;
   const out: Label[] = [];
   for (const id of spec) {
@@ -95,20 +99,24 @@ function resolveList(spec: TrackApp['mutations'], all: Label[], kind: 'defect' |
   return out.sort(byId);
 }
 
-function buildPools(track: Track, apps: Map<string, LoadedApp>, split: Split, where: string): Pool[] {
+function buildPools(track: Track, apps: Map<string, LoadedApp>, split: Split, where: string, includeRecipes = false): Pool[] {
   const pools: Pool[] = [];
   for (const ta of track.apps) {
     const app = apps.get(ta.app);
     if (!app) throw new Error(`${where}: unknown app '${ta.app}'`);
     const inSplit = (l: Label): boolean => (split === 'public' ? l.split === 'public' : l.split === 'heldout');
+    const extra = includeRecipes ? ta.recipes_only : undefined;
     const mutations = resolveList(ta.mutations, app.mutations, 'defect', app, where).filter(inSplit);
+    if (extra?.mutations) mutations.push(...resolveList(extra.mutations, app.mutations, 'defect', app, where).filter(inSplit));
     const changes = resolveList(ta.changes, app.changes, 'change', app, where).filter(inSplit);
+    const traps = resolveList(ta.traps ?? [], app.traps, 'trap', app, where).filter(inSplit);
+    if (extra?.traps) traps.push(...resolveList(extra.traps, app.traps, 'trap', app, where).filter(inSplit));
     // Public answer keys carry public baselines only, so they never hint at held-out material.
     const baseline = app.baseline.filter((l) => split === 'heldout' || l.split === 'public');
     const natural = app.natural.filter((l) => split === 'heldout' || l.split === 'public');
     const keys = new Set<string>();
-    for (const l of [...mutations, ...changes]) for (const k of Object.keys(l.switch?.env ?? {})) keys.add(k);
-    pools.push({ app, weight: ta.weight ?? 1, mutations, changes, baseline, natural, switchKeys: [...keys].sort() });
+    for (const l of [...mutations, ...changes, ...traps]) for (const k of Object.keys(l.switch?.env ?? {})) keys.add(k);
+    pools.push({ app, weight: ta.weight ?? 1, mutations, changes, traps, baseline, natural, switchKeys: [...keys].sort() });
   }
   return pools;
 }
@@ -327,15 +335,16 @@ function build(
   const { pool } = plan;
   const rng = new Rng(seed);
   const accounts = generateAccounts(pool.app, rng);
-  const active = [...plan.mutations, ...plan.changes];
+  const traps = plan.traps ?? [];
+  const active = [...plan.mutations, ...plan.changes, ...traps];
+  const masked = maskedLabelIds([...active, ...pool.baseline, ...pool.natural], active.map(l => l.id));
   const answerKey: AnswerKey = {
     episode_id: id,
     app: pool.app.id,
     track: track.id,
     noise_only: pool.app.config.noise_only ?? false,
-    // A natural defect is left out when an active planted defect removes its symptom (label.masked_by).
-    labels: [...plan.mutations, ...plan.changes, ...pool.baseline,
-      ...pool.natural.filter((n) => !(n.masked_by ?? []).some((id) => plan.mutations.some((m) => m.id === id)))],
+    // Masking is recorded by omitting the hidden symptom, without changing label metadata.
+    labels: [...active, ...pool.baseline, ...pool.natural].filter(l => !masked.has(l.id)),
   };
   assertValid('answer-key', answerKey, `${id}/answer-key.json`);
   const answerKeyText = jsonText(answerKey);
@@ -348,7 +357,7 @@ function build(
     split,
     seed,
     kind,
-    active: { mutations: plan.mutations.map((l) => l.id), changes: plan.changes.map((l) => l.id) },
+    active: { mutations: plan.mutations.map((l) => l.id), changes: plan.changes.map((l) => l.id), ...(traps.length ? { traps: traps.map(l => l.id) } : {}) },
     env: mergeEnv(pool, active, accounts),
     accounts,
     ...(upstreamPin(pool.app) ? { upstream: upstreamPin(pool.app) } : {}),
@@ -434,9 +443,26 @@ export function generateTrack(trackFile: string, opts: GenerateOptions = {}): Ge
   // Public split.
   const pools = buildPools(track, apps, 'public', trackFile);
   const planRng = new Rng(deriveSeed(track.episodes.seed, 'plan'));
-  const kinds = kindsFor(track, track.episodes.count, pools, planRng, warnings, trackFile);
+  const recipePools = buildPools(track, apps, 'public', trackFile, true);
+  const kinds = kindsFor(track, track.episodes.count - recipeCount(track), pools, planRng, warnings, trackFile);
   const planner = new Planner(planRng, pools, track);
   const plans = planner.plan(kinds);
+  plans.forEach((plan, i) => { plan.traps = selectTraps(plan.pool.traps, i, plan.kind); });
+  for (const recipe of track.episodes.recipes ?? []) {
+    const pool = recipePools.find(p => p.app.id === recipe.app);
+    if (!pool) throw new Error(`Recipe app ${recipe.app} is not in this track`);
+    const resolve = (ids: string[], labels: Label[]): Label[] => ids.map(id => {
+      const label = labels.find(l => l.id === id);
+      if (!label) throw new Error(`Recipe label ${id} is not allowed in this track`);
+      return label;
+    });
+    const mutations = resolve(recipe.mutations, pool.mutations);
+    const traps = resolve(recipe.traps, pool.traps);
+    const groups = mutations.map(l => l.switch?.exclusive).filter(Boolean);
+    if (new Set(groups).size !== groups.length) throw new Error('Recipe has exclusive mutations');
+    if (mutations.filter(isBlatant).length > (track.episodes.max_blatant_per_episode ?? Infinity)) throw new Error('Recipe exceeds blatant cap');
+    plans.push({ kind: mutations.length ? 'mixed' : 'clean', pool, mutations, changes: [], traps });
+  }
   const short = new Set(planner.short);
   const pubDir = join(episodesRoot, track.id);
   const episodes = plans.map((p, i) =>
@@ -445,9 +471,9 @@ export function generateTrack(trackFile: string, opts: GenerateOptions = {}): Ge
   if (opts.live) track.live?.forEach((_, i) => episodes.push(buildLive(track, i, benchVersion, pubDir)));
 
   // Coverage report.
-  const on = new Set(plans.flatMap((x) => [...x.mutations, ...x.changes]).map((l) => l.id));
-  for (const p of pools) {
-    const missed = [...p.mutations, ...p.changes].filter((l) => !on.has(l.id)).map((l) => l.id);
+  const on = new Set(plans.flatMap((x) => [...x.mutations, ...x.changes, ...(x.traps ?? [])]).map((l) => l.id));
+  for (const p of recipePools) {
+    const missed = [...p.mutations, ...p.changes, ...p.traps].filter((l) => !on.has(l.id)).map((l) => l.id);
     if (missed.length) warnings.push(`${track.id}: not covered with count ${track.episodes.count}: ${missed.join(', ')}`);
   }
 

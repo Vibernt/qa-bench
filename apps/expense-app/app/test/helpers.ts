@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import type { Server } from 'node:http';
 import { DatabaseSync } from 'node:sqlite';
-import { createServer, seed, type Defect } from '../src/server.js';
+import { createServer, seed, type Defect, type ServerOptions } from '../src/server.js';
 
 export interface RunningApp {
   baseUrl: string;
@@ -15,11 +15,11 @@ export interface RunningApp {
   expenseAmount(id: number): number | undefined;
 }
 
-export async function startApp(defect: Defect | string | readonly Defect[] = ''): Promise<RunningApp> {
+export async function startApp(defect: Defect | string | readonly Defect[] = '', trap = '', factory: (options: ServerOptions) => Server = createServer): Promise<RunningApp> {
   const directory = await mkdtemp(join(tmpdir(), 'qab-expense-app-'));
   const dbPath = join(directory, 'fixture.sqlite');
   seed(dbPath);
-  const server = createServer({ dbPath, defect });
+  const server = factory({ dbPath, defect, trap });
   await new Promise<void>((resolve, reject) => {
     server.once('error', reject);
     server.listen(0, '127.0.0.1', resolve);

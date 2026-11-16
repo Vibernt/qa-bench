@@ -1,0 +1,25 @@
+id: expense.template-token
+app: expense-app
+title: Signed-in account line exposes an unfilled template token
+description: Signed-in account line exposes an unfilled template token.
+track: exploration
+kind: defect
+category: copy
+class: deterministic
+severity: minor
+difficulty: blatant
+exposure: novel
+where:
+  route: /expenses
+switch:
+  env:
+    DEFECT: template_token
+found_by:
+  - kind: behaviour
+    description_pattern: ^(?=[\s\S]*(signed.in|account|username))(?=[\s\S]*(\{\{username\}\}|unfilled template|unresolved (token|placeholder)))
+    note: Signed-in account line exposes an unfilled template token
+tolerance:
+  route: prefix
+  role: any
+split: public
+upstream_ref: apps/expense-app/app/src/server.ts; checked by apps/expense-app/verify.ts

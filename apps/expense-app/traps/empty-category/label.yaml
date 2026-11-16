@@ -1,0 +1,25 @@
+id: expense.empty-category
+app: expense-app
+title: Training filter correctly has no expenses
+description: Training filter correctly has no expenses. Reporting this seeded content as a problem is a false alarm.
+track: exploration
+kind: trap
+category: functional
+class: deterministic
+severity: minor
+difficulty: subtle
+exposure: novel
+where:
+  route: /expenses
+switch:
+  env:
+    TRAP: empty_category
+found_by:
+  - kind: behaviour
+    description_pattern: ^(?![\s\S]*(correct|still lists|all expenses|all rows|travel rows|hidden|unlisted|unfiltered|unchanged|same total|ignores?|ignored|does not change|doesn.t change))(?=[\s\S]*(filter|categor|training))(?=[\s\S]*(empty|no rows|no expenses|no results|zero|\$0\.00))(?=[\s\S]*(broken|bug|wrong|fails?|missing|lost|unexpected))
+    note: Training filter correctly has no expenses
+tolerance:
+  route: prefix
+  role: any
+split: public
+upstream_ref: apps/expense-app/app/src/switches/traps.ts; checked by apps/expense-app/verify.ts

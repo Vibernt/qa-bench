@@ -1,0 +1,26 @@
+id: expense.raw-error
+app: expense-app
+title: Invalid amount submission returns 500 and internal stack-like text
+description: Invalid amount submission returns 500 and internal stack-like text.
+track: exploration
+kind: defect
+category: error-handling
+class: deterministic
+severity: major
+difficulty: subtle
+exposure: novel
+where:
+  route: /expenses
+switch:
+  env:
+    DEFECT: raw_error
+found_by:
+  - kind: behaviour
+    description_pattern: ^(?=[\s\S]*amount)(?=[\s\S]*(stack|TypeError|saveAmount))(?=[\s\S]*(500|dump|trace))
+    note: Invalid amount submission returns 500 and internal stack-like text
+tolerance:
+  route: prefix
+  role: any
+split: public
+upstream_ref: apps/expense-app/app/src/server.ts; checked by apps/expense-app/verify.ts
+masks: [expense.huge-amount-breaks-list]

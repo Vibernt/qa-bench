@@ -100,6 +100,38 @@
               }
             ],
             "default": "*"
+          },
+          "traps": {
+            "oneOf": [
+              {
+                "const": "*"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "$ref": "defs.schema.json#/$defs/labelId"
+                }
+              }
+            ]
+          },
+          "recipes_only": {
+            "type": "object",
+            "additionalProperties": false,
+            "description": "Additional labels allowed only in explicit recipes; never part of the seeded random pool.",
+            "properties": {
+              "mutations": {
+                "type": "array",
+                "items": {
+                  "$ref": "defs.schema.json#/$defs/labelId"
+                }
+              },
+              "traps": {
+                "type": "array",
+                "items": {
+                  "$ref": "defs.schema.json#/$defs/labelId"
+                }
+              }
+            }
           }
         }
       }
@@ -141,6 +173,36 @@
           "type": "integer",
           "minimum": 0,
           "description": "At most this many labels with difficulty 'blatant' in one mixed episode"
+        },
+        "recipes": {
+          "type": "array",
+          "description": "Explicit appended episodes, included in count; generated after the seeded random plan.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "app",
+              "mutations",
+              "traps"
+            ],
+            "properties": {
+              "app": {
+                "type": "string"
+              },
+              "mutations": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "traps": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
         }
       }
     },

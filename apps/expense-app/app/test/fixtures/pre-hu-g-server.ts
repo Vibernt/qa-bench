@@ -1,0 +1,414 @@
+// Frozen unmodified HU-G input for byte-compatibility tests; only import paths relocated.
+import { createServer as createHttpServer, type IncomingMessage, type Server, type ServerResponse } from 'node:http';
+import { randomBytes } from 'node:crypto';
+import { realpathSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { DatabaseSync } from 'node:sqlite';
+import { createDatabase, findExpense, findUser, verifyPassword, type Expense, type Role } from '../../src/db.js';
+import { variantLabels, type Variant } from '../../src/variant.js';
+import { themeCss } from '../../src/theme.js';
+import { FixtureError } from '../../src/catalogue/entry.js';
+import { hostileRoute } from '../../src/hostile.js';
+import type { FixtureIsolation } from '../../src/isolation.js';
+import { AuthLifecycle, type AuthLifecycleOptions } from '../../src/auth-lifecycle/routes.js';
+
+export const defects = [
+  'missing_persistence',
+  'duplicate_write',
+  'misleading_success',
+  'permission_bypass',
+  'ignored_filter',
+  'wrong_total',
+  'stale_state',
+  'total_under_filter',
+  'delete_open_to_viewer',
+  'edit_drops_cents',
+  'long_title_truncated',
+  'title_not_escaped',
+  'edit_resets_category',
+  // Visual and accessibility defects: CSS only (theme.ts), the markup is unchanged.
+  'layout_phone_overflow',
+  'total_covers_last_row',
+  'alert_text_invisible',
+  'long_title_overflows',
+  'muted_text_low_contrast',
+  'focus_ring_removed',
+  'amounts_misaligned',
+] as const;
+
+export type Defect = (typeof defects)[number] | '';
+
+/**
+ * Planted defects to switch on: one name, a comma-separated list ("wrong_total,edit_drops_cents") or an array.
+ * Empty entries are ignored; an unknown name throws, so a typo can't silently run the clean build.
+ */
+export function parseDefects(value: string | readonly string[] | undefined): Set<Exclude<Defect, ''>> {
+  const names = (typeof value === 'string' ? value.split(',') : [...(value ?? [])]).map((name) => name.trim()).filter(Boolean);
+  for (const name of names) if (!(defects as readonly string[]).includes(name)) throw new Error(`Unknown DEFECT: ${name}`);
+  return new Set(names as Exclude<Defect, ''>[]);
+}
+
+export interface ServerOptions {
+  dbPath: string;
+  /** Legacy S1 alias; absent preserves existing behavior. */
+  experimentalIsolation?: FixtureIsolation;
+  /** Reviewed catalogue lifecycle; defaults remain unchanged. */
+  isolation?: FixtureIsolation;
+  authenticate?: (username: string, password: string) => { id: number; username: string; role: Role; expiresAt: number } | undefined;
+  /** One defect, a comma-separated list of them, or an array; absent or empty is the clean build. */
+  defect?: Defect | string | readonly Defect[];
+  variant?: Variant;
+  /** Reviewed idempotency and commit barrier opt-ins; disabled by default. */
+  idempotency?: boolean;
+  afterCreateCommit?: () => Promise<void>;
+  /** Auth-lifecycle probe only; absent leaves the released authentication routes unchanged. */
+  authLifecycle?: AuthLifecycleOptions;
+}
+
+interface Session {
+  userId: number;
+  username: string;
+  role: Role;
+  expiresAt?: number;
+  displayName?: string;
+}
+
+interface CachedList {
+  rows: Expense[];
+  expiresAt: number;
+}
+
+const categories = ['travel', 'meals', 'office'];
+const cookieName = 'expense_session';
+
+function escapeHtml(value: string): string {
+  return value.replace(/[&<>"']/g, (character) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+  })[character] ?? character);
+}
+
+function page(title: string, body: string): string {
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${escapeHtml(title)}</title><link rel="stylesheet" href="/theme.css"></head><body><main><h1>${escapeHtml(title)}</h1>${body}</main></body></html>`;
+}
+
+function sendHtml(response: ServerResponse, status: number, html: string): void {
+  response.writeHead(status, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' });
+  response.end(html);
+}
+
+function redirect(response: ServerResponse, location: string): void {
+  response.writeHead(303, { location, 'cache-control': 'no-store' });
+  response.end();
+}
+
+async function readForm(request: IncomingMessage): Promise<URLSearchParams> {
+  const chunks: Buffer[] = [];
+  for await (const chunk of request) chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
+  return new URLSearchParams(Buffer.concat(chunks).toString('utf8'));
+}
+
+function formatMoney(cents: number): string {
+  return `$${(cents / 100).toFixed(2)}`;
+}
+
+function parseAmount(value: string): number | undefined {
+  if (!/^\d+(?:\.\d{1,2})?$/.test(value.trim())) return undefined;
+  const amount = Number(value);
+  return Number.isFinite(amount) ? Math.round(amount * 100) : undefined;
+}
+
+function forbidden(response: ServerResponse): void {
+  sendHtml(response, 403, page('Forbidden', '<p>Forbidden</p>'));
+}
+
+function loginPage(error = false): string {
+  const alert = error ? '<p role="alert">Invalid credentials</p>' : '';
+  return page('Sign in', `${alert}<form method="post" action="/login">
+    <label>Username <input name="username" autocomplete="username" required></label>
+    <label>Password <input name="password" type="password" autocomplete="current-password" required></label>
+    <button type="submit">Sign in</button>
+  </form>`);
+}
+
+function expenseForm(expense?: Expense, variant: Variant = '', token = '', preselectCategory = true): string {
+  const labels = variantLabels(variant);
+  const editing = expense !== undefined;
+  const action = editing ? `/expenses/${expense.id}` : '/expenses';
+  const fields = `<label>${labels.title} <input name="title" value="${escapeHtml(expense?.title ?? '')}" required></label>
+    <label>Category <select name="category" aria-label="Category">${categories.map((category) =>
+      `<option value="${category}"${preselectCategory && expense?.category === category ? ' selected' : ''}>${category}</option>`).join('')}</select></label>
+    <label>Amount <input name="amount" type="number" min="0" step="0.01" value="${expense ? (expense.amount_cents / 100).toFixed(2) : ''}" required></label>`;
+  return page(editing ? 'Edit expense' : labels.add, `<form method="post" action="${action}">${fields}${token ? `<input type="hidden" name="idempotency_token" value="${escapeHtml(token)}">` : ''}<button type="submit">${labels.save}</button></form>`);
+}
+
+function cookieValue(request: IncomingMessage): string | undefined {
+  const cookie = request.headers.cookie;
+  if (!cookie) return undefined;
+  for (const part of cookie.split(';')) {
+    const [name, ...value] = part.trim().split('=');
+    if (name === cookieName) return value.join('=');
+  }
+  return undefined;
+}
+
+export function createServer(options: ServerOptions): Server {
+  if (options.isolation && options.experimentalIsolation) throw new FixtureError('STATE', 'Supply only one isolation capability');
+  const authLifecycle = options.authLifecycle ? new AuthLifecycle(options.authLifecycle) : undefined;
+  const db: DatabaseSync = createDatabase(options.dbPath);
+  const active = parseDefects(options.defect);
+  const has = (name: Exclude<Defect, ''>): boolean => active.has(name);
+  const storedTitle = (title: string): string => has('long_title_truncated') ? title.slice(0, 20) : title;
+  const variant = options.variant ?? '';
+  const labels = variantLabels(variant);
+  const css = themeCss(active, variant);
+  const idempotency = options.idempotency ?? process.env.IDEMPOTENCY === '1';
+  if (idempotency) db.exec('CREATE TABLE IF NOT EXISTS idempotency_keys (token TEXT PRIMARY KEY, user_id INTEGER NOT NULL, payload TEXT NOT NULL)');
+  const isolation = options.isolation ?? options.experimentalIsolation;
+  const sessions = new Map<string, Session>();
+  const listCache = new Map<string, CachedList>();
+  isolation?.bind(() => { sessions.clear(); listCache.clear(); authLifecycle?.clear(); },
+    () => ({ sessions: sessions.size, cache: listCache.size }));
+
+  function currentSession(request: IncomingMessage): Session | undefined {
+    const token = cookieValue(request);
+    const session = token ? sessions.get(token) : undefined;
+    if (session && (authLifecycle?.options.invalidSession || (session.expiresAt !== undefined && session.expiresAt <= (authLifecycle?.now() ?? Date.now())))) {
+      sessions.delete(token!); return undefined;
+    }
+    if (session && authLifecycle?.options.changedRole) session.role = authLifecycle.options.changedRole;
+    return session;
+  }
+
+  /** `bypass` names the planted defect that lets a viewer through this route. */
+  function requireEditor(request: IncomingMessage, response: ServerResponse, bypass?: Exclude<Defect, ''>): Session | undefined {
+    const session = currentSession(request);
+    if (!session) {
+      redirect(response, '/login');
+      return undefined;
+    }
+    if (session.role !== 'editor' && !(bypass && has(bypass))) {
+      forbidden(response);
+      return undefined;
+    }
+    return session;
+  }
+
+  function loadExpenses(category: string): Expense[] {
+    const cacheKey = category;
+    const cached = listCache.get(cacheKey);
+    if (has('stale_state') && cached && cached.expiresAt > Date.now()) return cached.rows;
+    const effectiveCategory = has('ignored_filter') ? '' : category;
+    const rows = (effectiveCategory
+      ? db.prepare('SELECT id, title, category, amount_cents, created_by, updated_at FROM expenses WHERE category = ? ORDER BY id').all(effectiveCategory)
+      : db.prepare('SELECT id, title, category, amount_cents, created_by, updated_at FROM expenses ORDER BY id').all()) as unknown as Expense[];
+    if (has('stale_state')) listCache.set(cacheKey, { rows, expiresAt: Date.now() + 60_000 });
+    return rows;
+  }
+
+  function renderList(request: IncomingMessage, response: ServerResponse, url: URL, flash = ''): void {
+    const session = currentSession(request);
+    if (!session) {
+      redirect(response, '/login');
+      return;
+    }
+    const category = url.searchParams.get('category') ?? '';
+    const rows = loadExpenses(category);
+    const summed = has('total_under_filter') && category ? loadExpenses('') : rows;
+    const totalRows = has('wrong_total') ? summed.slice(0, -1) : summed;
+    const total = totalRows.reduce((sum, row) => sum + row.amount_cents, 0);
+    const tableRows = rows.map((row) => `<tr><td>${has('title_not_escaped') ? row.title : escapeHtml(row.title)}</td><td>${escapeHtml(row.category)}</td><td>${formatMoney(row.amount_cents)}</td><td>${session.role === 'editor' ? `<a href="/expenses/${row.id}/edit">Edit</a><form method="post" action="/expenses/${row.id}/delete"><button type="submit">Delete</button></form>` : ''}</td></tr>`).join('');
+    const editorLinks = session.role === 'editor' ? `<p><a href="/expenses/new">${labels.add}</a></p>` : '';
+    const status = flash ? `<p role="status">${escapeHtml(flash)}</p>` : '';
+    const html = page('Expenses', `${status}${options.authenticate || authLifecycle ? `<span data-testid="session-account">${escapeHtml(session.username)}</span><span data-testid="session-role">${session.role}</span>` : ''}<p>Signed in as ${escapeHtml(session.displayName ?? session.username)}</p>
+      ${authLifecycle ? `<p data-testid="session-identity" data-account="${escapeHtml(session.username)}" data-role="${session.role}" data-tenant="${escapeHtml(authLifecycle.options.tenant)}">Account: ${escapeHtml(session.username)}; Role: ${session.role}</p>` : ''}
+      <form method="get" action="/expenses"><label>Category <select aria-label="Category" name="category"><option value="">All categories</option>${categories.map((value) => `<option value="${value}"${category === value ? ' selected' : ''}>${value}</option>`).join('')}</select></label><button type="submit">Apply</button></form>
+      <table aria-label="Expenses"><thead><tr><th>Title</th><th>Category</th><th>Amount</th><th>Actions</th></tr></thead><tbody>${tableRows}</tbody></table>
+      <p data-testid="total">Total: ${formatMoney(total)}</p>${editorLinks}<form method="post" action="/logout"><button type="submit">Sign out</button></form>`);
+    sendHtml(response, 200, html);
+  }
+
+  async function handle(request: IncomingMessage, response: ServerResponse): Promise<void> {
+    const url = new URL(request.url ?? '/', 'http://localhost');
+    const path = url.pathname;
+    if (authLifecycle && await authLifecycle.handle(request, response, path, (username, password) => {
+      if (options.authenticate) return options.authenticate(username, password);
+      const user = findUser(db, username);
+      return user && verifyPassword(password, user.password_hash) ? user : undefined;
+    }, (account) => {
+      const actual = authLifecycle.options.wrongUser ?? account;
+      const token = randomBytes(32).toString('hex');
+      const expiresAt = Math.min(account.expiresAt ?? Infinity, authLifecycle.now() + authLifecycle.ttlMs);
+      sessions.set(token, { userId: actual.id, username: actual.username, role: actual.role, expiresAt,
+        ...(authLifecycle.options.wrongUser ? { displayName: account.username } : {}) });
+      response.setHeader('set-cookie', [`${cookieName}=${token}; HttpOnly; SameSite=Lax; Path=/`, 'auth_challenge=; HttpOnly; SameSite=Strict; Path=/auth; Max-Age=0']);
+      redirect(response, '/expenses');
+    }, () => {
+      const session = currentSession(request);
+      return session ? { id: session.userId, username: session.username, role: session.role, expiresAt: session.expiresAt } : undefined;
+    })) return;
+    if (variant === 'hostile' && request.method === 'GET' && hostileRoute(url, response)) return;
+    if (request.method === 'GET' && path === '/theme.css') {
+      response.writeHead(200, { 'content-type': 'text/css; charset=utf-8', 'cache-control': 'no-store' });
+      response.end(css);
+      return;
+    }
+    if (request.method === 'GET' && path === '/login') {
+      sendHtml(response, 200, loginPage());
+      return;
+    }
+    if (request.method === 'POST' && path === '/login') {
+      const form = await readForm(request);
+      const username = form.get('username') ?? ''; const password = form.get('password') ?? '';
+      const stored = options.authenticate ? undefined : findUser(db, username);
+      const user = options.authenticate ? options.authenticate(username, password)
+        : stored && verifyPassword(password, stored.password_hash) ? stored : undefined;
+      if (!user) {
+        sendHtml(response, 401, loginPage(true));
+        return;
+      }
+      const token = randomBytes(32).toString('hex');
+      sessions.set(token, { userId: user.id, username: user.username, role: user.role, ...('expiresAt' in user ? { expiresAt: user.expiresAt } : {}) });
+      response.setHeader('set-cookie', `${cookieName}=${token}; HttpOnly; SameSite=Lax; Path=/`);
+      redirect(response, '/expenses');
+      return;
+    }
+    if (request.method === 'POST' && path === '/logout') {
+      const token = cookieValue(request);
+      if (token) sessions.delete(token);
+      response.setHeader('set-cookie', `${cookieName}=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0`);
+      redirect(response, '/login');
+      return;
+    }
+    if (request.method === 'GET' && path === '/expenses') {
+      const flash = url.searchParams.get('flash') === 'saved'
+        ? 'Expense saved'
+        : url.searchParams.get('flash') === 'updated' ? 'Expense updated' : '';
+      renderList(request, response, url, flash);
+      return;
+    }
+    if (request.method === 'GET' && path === '/expenses/new') {
+      if (!requireEditor(request, response)) return;
+      sendHtml(response, 200, expenseForm(undefined, variant, idempotency ? (url.searchParams.get('idempotency') ?? randomBytes(24).toString('hex')) : ''));
+      return;
+    }
+    if (request.method === 'POST' && path === '/expenses') {
+      const session = requireEditor(request, response);
+      if (!session) return;
+      const form = await readForm(request);
+      const title = storedTitle((form.get('title') ?? '').trim());
+      const category = form.get('category') ?? '';
+      const amount = parseAmount(form.get('amount') ?? '');
+      if (!title || !categories.includes(category) || amount === undefined) {
+        sendHtml(response, 400, expenseForm(undefined, variant));
+        return;
+      }
+      const token = form.get('idempotency_token') ?? '';
+      const payload = JSON.stringify([title, category, amount]);
+      if (idempotency) {
+        if (!token || token.length > 256) { sendHtml(response, 400, page('Invalid token', 'Idempotency token required')); return; }
+        const prior = db.prepare('SELECT user_id, payload FROM idempotency_keys WHERE token = ?').get(token) as { user_id: number; payload: string } | undefined;
+        if (prior) {
+          if (prior.user_id !== session.userId || prior.payload !== payload) { sendHtml(response, 409, page('Conflict', 'Token payload mismatch')); return; }
+          redirect(response, '/expenses?flash=saved'); return;
+        }
+      }
+      if (idempotency) db.exec('BEGIN IMMEDIATE');
+      try {
+        if (!has('missing_persistence')) {
+          const insert = db.prepare('INSERT INTO expenses (title, category, amount_cents, created_by, updated_at) VALUES (?, ?, ?, ?, ?)');
+          const writeCount = has('duplicate_write') ? 2 : 1;
+          for (let index = 0; index < writeCount; index += 1) insert.run(title, category, amount, session.userId, new Date().toISOString());
+          if (idempotency) db.prepare('INSERT INTO idempotency_keys VALUES (?, ?, ?)').run(token, session.userId, payload);
+        }
+        if (idempotency) db.exec('COMMIT');
+      } catch (error) { if (idempotency) db.exec('ROLLBACK'); throw error; }
+      isolation?.created(title, (jobTitle) => {
+        db.prepare('INSERT INTO expenses (title, category, amount_cents, created_by, updated_at) VALUES (?, ?, ?, ?, ?)')
+          .run(jobTitle, category, amount, session.userId, new Date().toISOString());
+      });
+      if (options.afterCreateCommit) await options.afterCreateCommit();
+      redirect(response, '/expenses?flash=saved');
+      return;
+    }
+    const editMatch = path.match(/^\/expenses\/(\d+)\/edit$/);
+    if (request.method === 'GET' && editMatch) {
+      if (!requireEditor(request, response, 'permission_bypass')) return;
+      const expense = findExpense(db, Number(editMatch[1]));
+      if (!expense) {
+        sendHtml(response, 404, page('Not found', '<p>Expense not found</p>'));
+        return;
+      }
+      sendHtml(response, 200, expenseForm(expense, variant, '', !has('edit_resets_category')));
+      return;
+    }
+    const updateMatch = path.match(/^\/expenses\/(\d+)$/);
+    if (request.method === 'POST' && updateMatch) {
+      const session = requireEditor(request, response, 'permission_bypass');
+      if (!session) return;
+      const id = Number(updateMatch[1]);
+      const existing = findExpense(db, id);
+      if (!existing) {
+        sendHtml(response, 404, page('Not found', '<p>Expense not found</p>'));
+        return;
+      }
+      const form = await readForm(request);
+      const title = storedTitle((form.get('title') ?? '').trim());
+      const category = form.get('category') ?? '';
+      const amount = parseAmount(form.get('amount') ?? '');
+      if (!title || !categories.includes(category) || amount === undefined) {
+        sendHtml(response, 400, expenseForm(existing, variant, '', !has('edit_resets_category')));
+        return;
+      }
+      if (!has('misleading_success')) {
+        const saved = has('edit_drops_cents') ? Math.trunc(amount / 100) * 100 : amount;
+        db.prepare('UPDATE expenses SET title = ?, category = ?, amount_cents = ?, updated_at = ? WHERE id = ?')
+          .run(title, category, saved, new Date().toISOString(), id);
+      }
+      redirect(response, `/expenses?flash=updated`);
+      return;
+    }
+    const deleteMatch = path.match(/^\/expenses\/(\d+)\/delete$/);
+    if (request.method === 'POST' && deleteMatch) {
+      if (!requireEditor(request, response, 'delete_open_to_viewer')) return;
+      db.prepare('DELETE FROM expenses WHERE id = ?').run(Number(deleteMatch[1]));
+      redirect(response, '/expenses');
+      return;
+    }
+    if (request.method === 'GET' && path.startsWith('/expenses/')) {
+      if (!currentSession(request)) redirect(response, '/login');
+      else sendHtml(response, 404, page('Not found', '<p>Not found</p>'));
+      return;
+    }
+    sendHtml(response, 404, page('Not found', '<p>Not found</p>'));
+  }
+
+  const server = createHttpServer((request, response) => {
+    void handle(request, response).catch(() => {
+      if (!response.headersSent) sendHtml(response, 500, page('Server error', '<p>Something went wrong</p>'));
+      else response.destroy();
+    });
+  });
+  server.on('close', () => { authLifecycle?.clear(); isolation?.reset(); db.close(); });
+  return server;
+}
+
+export { createDatabase, seed, resetDatabase } from '../../src/db.js';
+
+// Compare real paths so a launch through a workspace symlink still counts as the entry point.
+function isEntryPoint(): boolean {
+  if (!process.argv[1]) return false;
+  try { return realpathSync(resolve(process.argv[1])) === realpathSync(fileURLToPath(import.meta.url)); }
+  catch { return false; }
+}
+
+if (isEntryPoint()) {
+  const port = Number(process.env.PORT ?? 3000);
+  const dbPath = process.env.DB_PATH;
+  if (!dbPath) throw new Error('DB_PATH is required');
+  const server = createServer({ dbPath, defect: process.env.DEFECT ?? '', variant: (process.env.VARIANT ?? '') as Variant });
+  server.listen(port, () => {
+    const address = server.address();
+    if (address && typeof address !== 'string') process.stdout.write(`LISTENING ${address.port}\n`);
+  });
+}

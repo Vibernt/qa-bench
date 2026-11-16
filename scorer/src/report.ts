@@ -93,6 +93,7 @@ export function renderMarkdown(report: Report): string {
   ]), '');
 
   L.push('## By track', '');
+  L.push('### Trap false alarms', '', `Total: ${m.trap_false_alarms ?? 0}`, '', table(['Trap', 'False alarms'], Object.entries(m.trap_false_alarms_by_label ?? {}).map(([id, n]) => [id, String(n)])), '');
   L.push(table(['Track', ...METRIC_HEAD.slice(1)], Object.entries(report.metrics.by_track).map(([k, v]) => metricRow(k, v))), '');
 
   L.push('## By category and class', '');
