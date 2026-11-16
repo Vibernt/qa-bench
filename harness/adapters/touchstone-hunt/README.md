@@ -48,7 +48,7 @@ npx tsx bin/qa-bench.ts run --adapter touchstone-hunt --episodes exploration-018
   --findings runs/hunt-one/exploration-018/out/findings.json --run-id hunt-one-import
 ```
 
-Both policies `hunt-0.1` and `hunt-0.2` are accepted. Personas are `default`, `skeptic`, `fuzzer`. A fresh output
+Policies `hunt-0.1`, `hunt-0.2` and `hunt-0.3` are accepted. Personas are `default`, `skeptic`, `fuzzer`. A fresh output
 path is required each time. Every invocation saves `<out>.hunt/plan.json`; the live CLI's `result.json`,
 `triage.json`, `usage.json`, `overhead.json` and captures remain in `<out>.hunt/artifacts/`. `<out>.cost.json`
 contains model USD, calls, total input/output tokens and adapter wall seconds. Failures expose the same meter

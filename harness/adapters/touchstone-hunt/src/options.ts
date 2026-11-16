@@ -1,6 +1,6 @@
 import { parseArgs } from 'node:util';
 export interface HuntOptions {
-  briefPath: string; root: string; out: string; policy: 'hunt-0.1' | 'hunt-0.2';
+  briefPath: string; root: string; out: string; policy: 'hunt-0.1' | 'hunt-0.2' | 'hunt-0.3';
   persona: 'default' | 'skeptic' | 'fuzzer'; model: string; maxUsd: number; maxCalls: number; operator: string; live: boolean;
   /** Overrides the brief's wall time for the hunt (a slower model needs longer); the brief is not changed. */
   wallS?: number;
@@ -22,7 +22,7 @@ export function parseOptions(args: string[], set = false): HuntOptions & { set: 
     if (typeof values[key] !== 'string' || !String(values[key]).trim()) throw new Error(`Required --${key}`);
   }
   const policy = values.policy; const persona = values.persona ?? 'default';
-  if (policy !== 'hunt-0.1' && policy !== 'hunt-0.2') throw new Error('Unsupported policy');
+  if (policy !== 'hunt-0.1' && policy !== 'hunt-0.2' && policy !== 'hunt-0.3') throw new Error('Unsupported policy');
   if (!['default', 'skeptic', 'fuzzer'].includes(String(persona))) throw new Error('Unsupported persona');
   if (!/^(anthropic:[a-zA-Z0-9._-]+|codex-cli:gpt-6\.1-sol)$/.test(String(values.model))) throw new Error('Touchstone CLI supports anthropic:<model> and codex-cli:gpt-6.1-sol only');
   const maxUsd = positive(values['max-usd'], '--max-usd');
