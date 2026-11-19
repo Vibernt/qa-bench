@@ -6,6 +6,10 @@
 // Builds the image unless --image is given. Most probes are plain HTTP (the app is server-rendered); the visual and
 // accessibility probes use Chromium (Playwright) and measure what a person would see: element geometry, the element
 // actually painted at a point, contrast ratios and focus styles.
+import YAML from 'yaml';
+import type { Label } from '../../lib/contracts.ts';
+import { maskedLabelIds } from '../../lib/masking.ts';
+import { kindProbes, kindSwitches, kindCombinations } from './verification/kinds.ts';
 import { execFileSync } from 'node:child_process';
 import { chromium, type Browser, type Page } from 'playwright';
 import { readdirSync, readFileSync } from 'node:fs';
@@ -25,7 +29,7 @@ const VIEWER = { username: 'viewer-verify', password: 'verify-viewer-pw' };
 const EDITOR = { username: 'editor-verify', password: 'verify-editor-pw' };
 
 interface Row { title: string; category: string; cents: number }
-interface App { base: string; stop(): void }
+interface App { base: string; env: Record<string, string>; stop(): void }
 
 function start(env: Record<string, string>): App {
   const args = ['run', '-d', '--rm', '-p', '127.0.0.1::3000',
@@ -34,7 +38,7 @@ function start(env: Record<string, string>): App {
   for (const [k, v] of Object.entries(env)) args.push('-e', `${k}=${v}`);
   const id = execFileSync('docker', [...args, image], { encoding: 'utf8' }).trim();
   const port = execFileSync('docker', ['port', id, '3000/tcp'], { encoding: 'utf8' }).trim().split('\n')[0]!.split(':').pop();
-  return { base: `http://127.0.0.1:${port}`, stop: () => { execFileSync('docker', ['rm', '-f', id], { stdio: 'ignore' }); } };
+  return { base: `http://127.0.0.1:${port}`, env, stop: () => { execFileSync('docker', ['rm', '-f', id], { stdio: 'ignore' }); } };
 }
 
 async function waitUp(app: App): Promise<void> {
@@ -64,12 +68,12 @@ async function post(app: App, cookie: string, path: string, form: Record<string,
 
 function rows(html: string): Row[] {
   const body = html.match(/<tbody>([\s\S]*?)<\/tbody>/)?.[1] ?? '';
-  return [...body.matchAll(/<tr><td>(.*?)<\/td><td>([a-z]+)<\/td><td>\$([\d.]+)<\/td>/g)].map((m) => ({
+  return [...body.matchAll(/<tr><td>(.*?)<\/td><td>([a-z]+)<\/td><td>\$(-?[\d.]+)<\/td>/g)].map((m) => ({
     title: m[1]!, category: m[2]!, cents: Math.round(Number(m[3]) * 100),
   }));
 }
 function total(html: string): number {
-  const m = html.match(/data-testid="total">Total: \$([\d.]+)/);
+  const m = html.match(/data-testid="total">Total: \$(-?[\d.]+)/);
   if (!m) throw new Error('no total');
   return Math.round(Number(m[1]) * 100);
 }
@@ -132,6 +136,13 @@ const LONG_TITLE = 'Annual partner conference registration and workshop fees';
 // Each probe returns true when its symptom is present. Probes touch different rows, so the members of a
 // combination can run one after another in the same container.
 const probes: Record<string, (app: App) => Promise<boolean>> = {
+  ...Object.fromEntries(Object.entries(kindProbes).map(([id, probe]) => [id, async (app: App) => {
+    const cookie = await login(app, EDITOR);
+    return probe({ get: path => get(app, cookie, path), post: async (path, form) => {
+      const res = await fetch(app.base + path, { method: 'POST', headers: { cookie }, redirect: 'manual', body: new URLSearchParams(form) });
+      return { status: res.status, location: res.headers.get('location') ?? '', html: await res.text() };
+    } });
+  }])),
   'expense.wrong-total': async (app) => {
     const { html } = await get(app, await login(app, VIEWER), '/expenses');
     return total(html) !== rows(html).reduce((s, r) => s + r.cents, 0);
@@ -314,8 +325,9 @@ const naturalProbes: Record<string, (app: App) => Promise<boolean>> = {
     const c = await login(app, EDITOR);
     const saved = await post(app, c, '/expenses', { title: 'Zero amount', category: 'office', amount: '0' });
     const negative = await post(app, c, '/expenses', { title: 'Negative amount', category: 'office', amount: '-5' });
+    const negativeStatus = app.env.DEFECT?.split(',').includes('negative_amount_accepted') ? 303 : 400;
     const list = (await get(app, c, '/expenses?category=office')).html;
-    return saved.status === 303 && negative.status === 400 && rows(list).some((r) => r.title === 'Zero amount' && r.cents === 0);
+    return saved.status === 303 && negative.status === negativeStatus && rows(list).some((r) => r.title === 'Zero amount' && r.cents === 0);
   },
   'expense.no-security-headers': async (app) => {
     const c = await login(app, VIEWER);
@@ -399,6 +411,7 @@ const naturalProbes: Record<string, (app: App) => Promise<boolean>> = {
 };
 
 const switches: Record<string, Record<string, string>> = {
+  ...kindSwitches,
   'expense.wrong-total': { DEFECT: 'wrong_total' },
   'expense.ignored-filter': { DEFECT: 'ignored_filter' },
   'expense.permission-bypass': { DEFECT: 'permission_bypass' },
@@ -430,6 +443,7 @@ const VISUAL = ['expense.phone-layout-overflow', 'expense.total-covers-last-row'
 // Multi-defect episodes: every member's symptom shows in one container, probed one after another. No two members
 // share an exclusive group (expense-create, expense-update, expense-filter).
 const combinations: string[][] = [
+  ...kindCombinations,
   ['expense.wrong-total', 'expense.edit-drops-cents', 'expense.title-not-escaped'],
   ['expense.total-under-filter', 'expense.delete-open-to-viewer', 'expense.long-title-truncated'],
   ['expense.permission-bypass', 'expense.edit-resets-category', 'expense.duplicate-write'],
@@ -470,7 +484,8 @@ for (const [id, env] of Object.entries(switches)) {
 }
 
 for (const members of combinations) {
-  const env = { DEFECT: members.map((id) => switches[id]!.DEFECT).join(',') };
+  const env: Record<string, string> = {};
+  for (const id of members) for (const [key, value] of Object.entries(switches[id]!)) env[key] = env[key] ? `${env[key]},${value}` : value;
   const app = start(env);
   try {
     await waitUp(app);
@@ -483,7 +498,7 @@ for (const members of combinations) {
 
 // Every planted defect and deliberate change has a switch and a probe, and nothing else does.
 {
-  const ids = ['mutations', 'changes'].flatMap((k) => readdirSync(join(here, k)).map((d) => (readFileSync(join(here, k, d, 'label.yaml'), 'utf8').match(/^id: (\S+)/m) ?? [])[1])).sort();
+  const ids = ['mutations', 'changes', 'traps'].flatMap((k) => readdirSync(join(here, k)).map((d) => (readFileSync(join(here, k, d, 'label.yaml'), 'utf8').match(/^id: (\S+)/m) ?? [])[1])).sort();
   const same = JSON.stringify(ids) === JSON.stringify(Object.keys(switches).sort()) && JSON.stringify(ids) === JSON.stringify(Object.keys(probes).sort());
   console.log(`${same ? 'ok  ' : 'FAIL'} every planted and change label has a switch and a probe`);
   if (!same) failures++;
@@ -520,21 +535,16 @@ for (const [id, probe] of Object.entries(naturalProbes)) {
   } finally { app.stop(); }
 }
 
-// Masking matrix: with each planted defect on, every natural defect still shows, unless its label lists that defect
-// in masked_by (then it must not show, and the generator leaves it out of that episode's answer key). One container per
-// defect; the probes run in an order where the destructive ones (deletes, the huge amount that breaks the list) go last.
+// Masking matrix: with each planted defect on, every natural defect still shows unless declared hidden
+// through masked_by or masks (then it must not show and is omitted from the answer key). One container per defect; the probes run in an order where the destructive ones (deletes, the huge amount that breaks the list) go last.
 {
-  const naturalDir = join(here, 'natural');
-  const maskedBy = new Map(readdirSync(naturalDir).map((d) => {
-    const text = readFileSync(join(naturalDir, d, 'label.yaml'), 'utf8');
-    const id = text.match(/^id: (\S+)/m)![1]!;
-    const masked = (text.match(/^masked_by: \[([^\]]*)\]/m)?.[1] ?? '').split(',').map((x) => x.trim()).filter(Boolean);
-    return [id, new Set(masked)] as const;
-  }));
+  const labels: Label[] = ['natural', 'mutations', 'traps'].flatMap(kind =>
+    readdirSync(join(here, kind)).map(d => YAML.parse(readFileSync(join(here, kind, d, 'label.yaml'), 'utf8')) as Label));
   const last = ['expense.silent-delete', 'expense.delete-missing-id', 'expense.huge-amount-breaks-list'];
   const order = [...Object.keys(naturalProbes).filter((id) => !last.includes(id)), ...last];
   for (const [defectId, env] of Object.entries(switches)) {
     if (!env.DEFECT) continue;
+    const maskedIds = maskedLabelIds(labels, [defectId]);
     const app = start(env);
     const wrong: string[] = [];
     try {
@@ -547,8 +557,8 @@ for (const [id, probe] of Object.entries(naturalProbes)) {
           await new Promise((r) => setTimeout(r, 61_000));
           try { shown = await naturalProbes[id]!(app); } catch { shown = false; }
         }
-        const masked = maskedBy.get(id)?.has(defectId) ?? false;
-        if (shown === masked) wrong.push(`${id} ${shown ? 'shows although masked_by lists it' : 'is masked but not in masked_by'}`);
+        const masked = maskedIds.has(id);
+        if (shown === masked) wrong.push(`${id} ${shown ? 'shows although declared masked' : 'is masked without a declared relation'}`);
       }
     } finally { app.stop(); }
     console.log(`${wrong.length ? 'FAIL' : 'ok  '} naturals with ${defectId} on${wrong.length ? `: ${wrong.join('; ')}` : ''}`);

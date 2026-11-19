@@ -1,3 +1,4 @@
+import { maskedLabelIds } from '../../../lib/masking.ts';
 import { mkdtempSync, readFileSync, readdirSync, rmSync, existsSync, mkdirSync, statSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -308,8 +309,8 @@ describe('repo tracks', () => {
   it('generates the regression track for the expense app with every defect and the change covered', () => {
     const r = generateTrack(join(REPO_ROOT, 'tracks', 'regression.yaml'), { write: false, onlyApps: ['expense-app'] });
     const eps = r.episodes.map((g) => g.episode);
-    expect(eps.length).toBe(24);
-    expect(eps.filter((e) => e.kind === 'clean').length).toBe(2);
+    expect(eps.length).toBe(36);
+    expect(eps.filter((e) => e.kind === 'clean').length).toBe(4);
     expect(eps.filter((e) => e.kind === 'twin').length).toBe(3);
     const apps = loadApps();
     const expense = apps.get('expense-app')!;
@@ -336,8 +337,8 @@ describe('repo tracks', () => {
     expect(r.track.episodes.mutations_per_episode).toEqual(reg.episodes.mutations_per_episode);
     expect(r.track.episodes.seed).not.toBe(reg.episodes.seed);
     const eps = r.episodes.map((g) => g.episode);
-    expect(eps.length).toBe(17);
-    expect(eps.filter((e) => e.kind === 'clean').length).toBe(2);
+    expect(eps.length).toBe(29);
+    expect(eps.filter((e) => e.kind === 'clean').length).toBe(4);
     expect(eps.filter((e) => e.kind === 'twin').length).toBe(2);
   });
 
@@ -362,7 +363,7 @@ describe('repo tracks', () => {
       for (const g of generateTrack(join(REPO_ROOT, 'tracks', `${track}.yaml`), { write: false }).episodes) {
         const ids = new Set(g.answerKey.labels.map((l) => l.id));
         for (const n of natural.filter((x) => x.app === g.episode.app)) {
-          const masked = n.masked_by!.some((m) => g.episode.active.mutations.includes(m));
+          const masked = maskedLabelIds([...apps.values()].flatMap(a => [...a.mutations, ...a.natural, ...a.traps]), [...g.episode.active.mutations, ...(g.episode.active.traps ?? [])]).has(n.id);
           expect(ids.has(n.id), `${g.episode.id} ${n.id}`).toBe(!masked);
           if (masked) checked++;
         }

@@ -260,7 +260,8 @@
                   "defect",
                   "change",
                   "baseline",
-                  "natural"
+                  "natural",
+                  "trap"
                 ]
               },
               "category": {
@@ -492,6 +493,17 @@
             "null"
           ],
           "description": "Mean times the system looked at an image per episode, over episodes_with_activity"
+        },
+        "trap_false_alarms": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "trap_false_alarms_by_label": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
         }
       }
     }

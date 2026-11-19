@@ -1,0 +1,15 @@
+id: v0.4-kinds-12
+description: Ten mixed exploration episodes cover all HU-G defects; two clean controls carry all four traps. Generate the current exploration track first.
+episodes:
+  - exploration-018
+  - exploration-019
+  - exploration-020
+  - exploration-021
+  - exploration-022
+  - exploration-023
+  - exploration-024
+  - exploration-025
+  - exploration-026
+  - exploration-027
+  - exploration-028
+  - exploration-029

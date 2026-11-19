@@ -44,6 +44,14 @@ Playwright, a dependency of the playwright-suite adapter (not vendored)
   Folder:   none. Installed at image build time by harness/adapters/playwright-suite/Dockerfile.
   Changed:  nothing.
 
+Anthropic TypeScript SDK, dependency (not vendored)
+  Source:   https://github.com/anthropics/anthropic-sdk-typescript
+            npm @anthropic-ai/sdk@1.6.0 (harness/judges/upstream.json)
+  Licence:  Apache-2.0 (package LICENSE read on 9 Nov 2026).
+            LICENSE-MIT retains MIT for pre-1.0.0 versions/contributions (also read).
+  Folder:   node_modules/@anthropic-ai/sdk, installed by npm ci.
+  Changed:  nothing.
+
 Planned entries (see docs/REFERENCES.md and docs/APPS.md for the licence checks):
 - WebTestBench (Apache-2.0): apps and labels for the natural-defects track.
 - W3C ACT rules test cases (W3C Software and Document License): accessibility ground truth.

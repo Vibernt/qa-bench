@@ -10,6 +10,7 @@ import { DEFAULT_APPS_ROOT, DEFAULT_TRACKS_ROOT, generateTrack, listTrackFiles }
 import { buildAppImage, downEpisode, runEpisodes, upEpisode } from '../harness/runner/src/index.ts';
 import { finishSession, loadConfigs, prepareSession, type UsageFile } from '../harness/agents/src/index.ts';
 import { auditTranscriptFile } from '../harness/agents/src/audit.ts';
+import { judgeMain } from '../harness/judges/src/cli.ts';
 
 const USAGE = `usage: qa-bench <command> [options]
 
@@ -29,6 +30,11 @@ const USAGE = `usage: qa-bench <command> [options]
   agents audit <transcript…>                 sealed-path hits, tool calls, screenshots taken and looked at (claude-code-subagent)
   score <runDir> [--episodes-root D]         score a run: writes score.json, report.json, report.md
   report <runDir> [--episodes-root D]        score a run and print report.md
+  judge plan --out plan.json                 write the hashed 60-case recipe manifest (no browser)
+  judge generate --out D                     render track 7.9 fixtures natively into a fresh directory
+  judge run --manifest M --model ID --max-usd USD [--dry-run | --out D]
+                                             plan or run the capped screenshot judge (live calls only when requested)
+  judge score run.json… --manifest M --out D  judge metrics, per-kind stages and cross-model agreement
 
 env: QA_BENCH_BUILD_CA=<pem>  build behind a TLS-intercepting proxy;  QA_BENCH_ALLOW_LIVE=1  run live episodes;
      QA_BENCH_HELDOUT_DIR=<dir>  held-out episodes root (outside the repo)`;
@@ -60,6 +66,7 @@ function trackFile(arg: string): string {
 
 async function main(argv: string[]): Promise<number> {
   const [cmd, ...rest] = argv;
+  if (cmd === 'judge') return judgeMain(rest);
   const { values: o, positionals } = parseArgs({
     args: rest,
     allowPositionals: true,

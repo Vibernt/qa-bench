@@ -12,7 +12,7 @@ API (`scorer/src/index.ts`): `MATCHER_VERSION`, `matchFinding`, `scoreEpisode`, 
 `out/findings.json` (invalid → `invalid_findings`, scored with zero findings), and validates the report.
 A missing `runner.json` is scored as `skipped`.
 
-## Matching rules (`deterministic-3`)
+## Matching rules (`deterministic-4`)
 A finding is compared with every label in the episode's answer key (which holds only active defects and changes,
 plus baselines). Any one `found_by` entry may match. Per entry, the effective route, role and category are the
 entry's own value, else the label's.
@@ -33,7 +33,7 @@ entry's own value, else the label's.
 4. **Description pattern** (optional, per entry). When an entry has `description_pattern`, the finding's
    description must match that case-insensitive regex, and a match ranks two points higher. It is for labels that
    share a route and category with others, and every natural defect uses one. Natural defects are present in every
-   episode, except where an active planted defect removes the symptom (the label's `masked_by`, checked by each
+   episode, except where an active planted defect removes the symptom (the natural label's `masked_by` or the active defect/trap's `masks`, checked by each
    app's `verify.ts`), so without it they would claim unrelated findings on the same page (`deterministic-2` let a stale-list
    finding count as the "huge amount" crash). It is still deterministic and applies the same to every system.
 5. **Locator.** Selectors are compared after removing quotes and collapsing whitespace
@@ -48,7 +48,7 @@ entry's own value, else the label's.
 
 ## Decisions
 Each finding gets exactly one decision, in order of preference:
-active `defect` label → `true_positive` (first finding to hit it) or `duplicate` (later ones); else a `natural` label (a
+a narrowly identified active `trap` label → `false_alarm_change`; else an active `defect` label → `true_positive` (first finding to hit it) or `duplicate` (later ones); else a `natural` label (a
 verified real bug present in every build unless masked by an active defect; same decisions, reported as natural recall); else `change` label →
 `false_alarm_change`; else `baseline` label → `excused`; else `unmatched`. Among several matching labels of the
 preferred kind the highest score wins (label order breaks ties). Findings are processed in file order. A finding that
@@ -113,3 +113,15 @@ Metrics that use it:
   does.
 
 `SEVERITY_WEIGHTS` in `src/metrics.ts` holds the weights.
+
+## Trap labels (HU-G)
+
+A `kind: trap` label describes correct content that resembles a bug. It uses `false_alarm_change` and contributes
+to change false-alarm counters, flagged rates and the precision denominator, without contributing to recall.
+Metrics add `trap_false_alarms` and `trap_false_alarms_by_label` (one entry, including zero, per active trap).
+Markdown lists them separately. Repeated findings count separately; flagged-label rates still count once.
+
+Specific trap identity/context patterns are checked before planted labels in deterministic-4. This disambiguates
+seeded repeated purchases from broad duplicate-write patterns without editing legacy labels. A correct paired
+planted-defect report must not match the trap's pattern. `apps/expense-app/kinds-patterns.test.ts` tests both
+scoring directions, metric counts, JSON schema and Markdown output for each trap.

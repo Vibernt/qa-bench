@@ -15,7 +15,7 @@ switch:
   exclusive: expense-update   # misleading_success skips the update, so this cannot show
 found_by:
   - kind: value
-    description_pattern: '^(?=[\s\S]*(\bedit|updat|re-?sav|chang\w* (an|the|its) (expense|amount)|modif))(?=[\s\S]*(cents?\b|decimal|fraction|pennies|paise|whole (number|unit|dollar|amount|euro|rupee)|integer|round(ed|s|ing)? (down|off|to)|(amount|value|price)s? (is |are |gets? |was )?(truncat|round|floor)|truncat\w* (the )?(amount|value|cents|decimal)|\bfloor|\d+\.(?!00)\d{2}\W{0,3} ?(->|→|becomes?|became|is saved as|was saved as|saved as|shows? (up )?as|turns? into|turned into|changes? to|changed to|(is |was )?stored as|ended up as|is now|to|into) \$?\d+(\.00)?\b(?!\.\d)))'
+    description_pattern: '^(?=[\s\S]*(\bedit|updat|re-?sav|chang\w* (an|the|its) (expense|amount)|modif))(?=[\s\S]*(cents?\b|decimal|fraction|pennies|paise|whole (number|unit|dollar|amount|euro|rupee)|integer|round(ed|s|ing)? (down|off|to)|(amount|value|price)s? (is |are |gets? |was )?(truncat|round|floor)|truncat\w* (the )?(amount|value|cents|decimal)|\bfloor|\d+\.(?!00)\d{2}\W{0,3} ?(->|→|becomes?|became|is saved as|was saved as|saved as|shows? (up )?as|turns? into|turned into|changes? to|changed to|(is |was )?stored as|ended up as|is now|to|into) \$?\d+(\.00)?\b(?!\.\d)|\d+\.(?!00)\d{2}\b[^.\n]{0,60}?\b(saved|stored|shown|displayed|listed|appears?)\b[^.\n]{0,30}?\bas \$?\d+(\.00)?\b(?!\.\d)))'
     note: "After an edit to 12.50 the list (and total) show 12.00"
 tolerance: { route: prefix }
 split: public

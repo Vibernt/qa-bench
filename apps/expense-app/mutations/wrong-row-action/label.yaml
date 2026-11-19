@@ -1,0 +1,25 @@
+id: expense.wrong-row-action
+app: expense-app
+title: Later row Edit links target the first expense
+description: Later row Edit links target the first expense.
+track: exploration
+kind: defect
+category: functional
+class: deterministic
+severity: major
+difficulty: subtle
+exposure: novel
+where:
+  route: /expenses
+switch:
+  env:
+    DEFECT: wrong_row_action
+found_by:
+  - kind: behaviour
+    description_pattern: ^(?=[\s\S]*(edit|saving))(?=[\s\S]*(first (row|expense|record)|row (one|1)|\b(all|every|each)\b[^\n]{0,80}/expenses/\d+/edit|instead of its own (record|expense|row)))
+    note: Later row Edit links target the first expense
+tolerance:
+  route: prefix
+  role: any
+split: public
+upstream_ref: apps/expense-app/app/src/server.ts; checked by apps/expense-app/verify.ts

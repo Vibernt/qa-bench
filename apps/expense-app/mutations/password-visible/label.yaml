@@ -1,0 +1,25 @@
+id: expense.password-visible
+app: expense-app
+title: Sign-in password is a visible text input
+description: Sign-in password is a visible text input.
+track: exploration
+kind: defect
+category: security-hygiene
+class: deterministic
+severity: major
+difficulty: blatant
+exposure: novel
+where:
+  route: /login
+switch:
+  env:
+    DEFECT: password_visible
+found_by:
+  - kind: behaviour
+    description_pattern: ^(?=[\s\S]*password)(?=[\s\S]*(type=.?text|plain.?text|visible (as|while)|unmasked|shows (each|every) character))
+    note: Sign-in password is a visible text input
+tolerance:
+  route: prefix
+  role: any
+split: public
+upstream_ref: apps/expense-app/app/src/server.ts; checked by apps/expense-app/verify.ts

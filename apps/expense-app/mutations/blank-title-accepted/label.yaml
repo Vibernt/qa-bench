@@ -1,0 +1,26 @@
+id: expense.blank-title-accepted
+app: expense-app
+title: Whitespace-only titles are accepted and saved as an empty title
+description: Whitespace-only titles are accepted and saved as an empty title.
+track: exploration
+kind: defect
+category: error-handling
+class: deterministic
+severity: major
+difficulty: subtle
+exposure: novel
+where:
+  route: /expenses
+switch:
+  env:
+    DEFECT: blank_title_accepted
+found_by:
+  - kind: behaviour
+    description_pattern: ^(?=[\s\S]*(whitespace|only spaces|spaces.only))(?=[\s\S]*title)(?=[\s\S]*(accept|sav|persist|creat))
+    note: Whitespace-only titles are accepted and saved as an empty title
+tolerance:
+  route: prefix
+  role: any
+split: public
+upstream_ref: apps/expense-app/app/src/server.ts; checked by apps/expense-app/verify.ts
+masks: [expense.rejected-form-loses-input]

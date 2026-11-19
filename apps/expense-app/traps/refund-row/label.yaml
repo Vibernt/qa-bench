@@ -1,0 +1,25 @@
+id: expense.refund-row
+app: expense-app
+title: Legitimate refund lowers the total
+description: Legitimate refund lowers the total. Reporting this seeded content as a problem is a false alarm.
+track: exploration
+kind: trap
+category: error-handling
+class: deterministic
+severity: minor
+difficulty: subtle
+exposure: novel
+where:
+  route: /expenses
+switch:
+  env:
+    TRAP: refund_row
+found_by:
+  - kind: behaviour
+    description_pattern: ^(?![\s\S]*(correct|legitimate|valid refund|accept|allow|persist|submit|sav|edit|form|entered|omits?|omitted|last row|final row))(?=[\s\S]*((negative|minus|-\$?25\.00)[\s\S]*(amount|row|list|expense|refund)|negative amount|total[\s\S]*(lower|less)[\s\S]*sum[\s\S]*positive))
+    note: Legitimate refund lowers the total
+tolerance:
+  route: prefix
+  role: any
+split: public
+upstream_ref: apps/expense-app/app/src/switches/traps.ts; checked by apps/expense-app/verify.ts

@@ -1,0 +1,26 @@
+id: expense.non-ascii-mangled
+app: expense-app
+title: Saving replaces accented letters and emoji with question marks
+description: Saving replaces accented letters and emoji with question marks.
+track: exploration
+kind: defect
+category: functional
+class: deterministic
+severity: major
+difficulty: subtle
+exposure: novel
+where:
+  route: /expenses
+switch:
+  env:
+    DEFECT: non_ascii_mangled
+found_by:
+  - kind: behaviour
+    also_categories: [l10n]
+    description_pattern: ^(?=[\s\S]*(title|name))(?=[\s\S]*(accent|emoji|non.ascii|unicode))(?=[\s\S]*(question marks?|\?|mangl|replac))
+    note: Saving replaces accented letters and emoji with question marks
+tolerance:
+  route: prefix
+  role: any
+split: public
+upstream_ref: apps/expense-app/app/src/server.ts; checked by apps/expense-app/verify.ts

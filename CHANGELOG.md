@@ -3,6 +3,16 @@
 Versions follow `bench vMAJOR.MINOR.PATCH-phase`. A version pins the apps, labels, tracks, matcher and scorer, so
 scores are comparable only within one version. Every report records it.
 
+## 16 Nov 2026: HU-G kinds and traps (unreleased)
+- Ten new opt-in expense defects and four comma-selectable trap seeds/options; clean response compatibility test
+  against the frozen pre-change implementation. No new runtime dependency or upstream material.
+- `kind: trap`, generator/validator/schema support, `deterministic-4` trap disambiguation, aggregate and per-label
+  trap false alarms in JSON and Markdown. Existing change false-alarm counters include traps.
+- Exploration 29 episodes and regression 36, including twelve explicit appended recipes each; new twelve-episode
+  exploration agent set. Seeds/id derivation retained, episode composition changes; artifacts not regenerated.
+- New label matcher cases, native shared route probes, app tests and four old/new/trap combinations. Native
+  qualification pending: sandbox denies the existing app listeners and tsx IPC; no Docker/browser run here.
+
 ## Unreleased (0.2.0-dev): a harder bench
 Episodes and answer keys changed, so scores aren't comparable with 0.1.0-b0. The B0 leaderboard stays as recorded,
 with its answer-key hashes.

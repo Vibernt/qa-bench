@@ -39,9 +39,10 @@
         "defect",
         "change",
         "baseline",
-        "natural"
+        "natural",
+        "trap"
       ],
-      "description": "defect: planted bug (recall). change: deliberate change, reporting it is a false alarm. baseline: intended quirk of the unmutated app (e.g. a demo page that is broken on purpose); matching findings are excused. natural: a real bug present in every build of the app (found by a system, verified by apps/<app>/verify.ts); finding it counts like finding a planted defect, reported separately as natural recall"
+      "description": "defect: planted bug (recall). change: deliberate change, reporting it is a false alarm. baseline: intended quirk of the unmutated app (e.g. a demo page that is broken on purpose); matching findings are excused. natural: a real bug present in every build of the app (found by a system, verified by apps/<app>/verify.ts); finding it counts like finding a planted defect, reported separately as natural recall. trap: correct seeded content that resembles a defect; reporting it is a false alarm."
     },
     "category": {
       "$ref": "defs.schema.json#/$defs/category"
@@ -202,6 +203,14 @@
     "upstream_ref": {
       "type": "string",
       "description": "Where the behaviour lives upstream (file or doc), for reviewers"
+    },
+    "masks": {
+      "type": "array",
+      "items": {
+        "$ref": "defs.schema.json#/$defs/labelId"
+      },
+      "description": "Defect or trap labels only: label ids (same app) whose symptoms this switch hides while active. Equivalent to listing this id in the target label masked_by.",
+      "uniqueItems": true
     }
   },
   "allOf": [
@@ -211,7 +220,8 @@
           "kind": {
             "enum": [
               "defect",
-              "change"
+              "change",
+              "trap"
             ]
           }
         }
@@ -220,6 +230,23 @@
         "required": [
           "switch"
         ]
+      }
+    },
+    {
+      "if": {
+        "required": [
+          "masks"
+        ]
+      },
+      "then": {
+        "properties": {
+          "kind": {
+            "enum": [
+              "defect",
+              "trap"
+            ]
+          }
+        }
       }
     }
   ]

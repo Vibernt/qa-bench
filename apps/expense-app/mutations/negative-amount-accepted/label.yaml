@@ -1,0 +1,25 @@
+id: expense.negative-amount-accepted
+app: expense-app
+title: Negative amounts submitted through add and edit are saved
+description: Negative amounts submitted through add and edit are saved.
+track: exploration
+kind: defect
+category: error-handling
+class: deterministic
+severity: major
+difficulty: subtle
+exposure: novel
+where:
+  route: /expenses
+switch:
+  env:
+    DEFECT: negative_amount_accepted
+found_by:
+  - kind: behaviour
+    description_pattern: ^(?![\s\S]*(refund|negative amounts? (are |is )?(reject|refus)))(?=[\s\S]*(negative|minus|-[1-9]))(?=[\s\S]*(sav|accept|allow|persist))
+    note: Negative amounts submitted through add and edit are saved
+tolerance:
+  route: prefix
+  role: any
+split: public
+upstream_ref: apps/expense-app/app/src/server.ts; checked by apps/expense-app/verify.ts

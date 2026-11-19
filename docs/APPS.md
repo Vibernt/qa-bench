@@ -82,6 +82,18 @@ We may run these unmodified if one becomes useful (BD7).
   - `fixture-credentials.json`: generate test accounts per episode instead.
 - **In the bench** since 5 Nov: `bench-entry.mjs` generates accounts per episode; `verify.ts` checks all 8 labels.
 
+### Expense app HU-G additions (16 Nov 2026)
+
+The expense app now has 30 planted defects and four opt-in traps. Ten new `DEFECT` names cover copy, dead logout,
+wrong-row navigation, a mistyped add URL, invalid input acceptance, a visible password and mangled Unicode.
+`TRAP=refund_row,braces_title,empty_category,legit_duplicate` adds correct content that resembles bugs. Unknown names
+stop startup. No switch changes the clean response bytes when disabled. See the [full switch table, masking notes,
+track composition and native checks](../apps/expense-app/README.md#hu-g-defect-kinds-and-traps-16-nov-2026).
+
+Traps use `kind: trap` and count like deliberate changes for false alarms, with separate total/per-label trap
+counts. Exploration and regression cover all ten new kinds, with paired traps and clean/twin controls. No upstream
+code or text was copied; no dependency was added. Native qualification is pending; offline evidence is in HANDOFF.
+
 ### Survey site (ours)
 - **Source:** `apps/survey-site/app`.
 - **Contents:**

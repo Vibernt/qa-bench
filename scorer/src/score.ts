@@ -1,6 +1,7 @@
 import type {
   AnswerKey, Decision, Episode, EpisodeScore, EpisodeStatus, Finding, FindingDecision, FindingsFile, Label, LabelOutcome,
 } from '../../lib/contracts.ts';
+import { maskedLabelIds } from '../../lib/masking.ts';
 import { matchFinding } from './matcher.ts';
 
 interface Candidate { label: Label; score: number; reason: string }
@@ -22,12 +23,15 @@ export function scoreEpisode(input: {
   status: EpisodeStatus; status_reason?: string; wall_time_s?: number | null;
 }): EpisodeScore {
   const { episode, answerKey, status } = input;
+  const masked = maskedLabelIds(answerKey.labels, [...episode.active.mutations, ...episode.active.changes, ...(episode.active.traps ?? [])]);
+  const visibleLabels = answerKey.labels.filter(l => !masked.has(l.id));
   const scored = status === 'scored';
   const findings: Finding[] = scored && input.findings ? input.findings.findings : [];
-  const defects = answerKey.labels.filter((l) => l.kind === 'defect');
-  const changes = answerKey.labels.filter((l) => l.kind === 'change');
-  const baselines = answerKey.labels.filter((l) => l.kind === 'baseline');
-  const naturals = answerKey.labels.filter((l) => l.kind === 'natural');
+  const defects = visibleLabels.filter((l) => l.kind === 'defect');
+  const changes = visibleLabels.filter((l) => l.kind === 'change');
+  const traps = visibleLabels.filter(l => l.kind === 'trap');
+  const baselines = visibleLabels.filter((l) => l.kind === 'baseline');
+  const naturals = visibleLabels.filter((l) => l.kind === 'natural');
 
   const hits = new Map<string, string[]>(); // label id -> finding ids
   const addHit = (labelId: string, fid: string) => hits.set(labelId, [...(hits.get(labelId) ?? []), fid]);
@@ -38,6 +42,13 @@ export function scoreEpisode(input: {
     const mk = (decision: Decision, reason: string, label?: Label): FindingDecision => ({
       finding_id: f.id, decision, ...(label ? { label_id: label.id } : {}), category: f.category, reason,
     });
+    // Seed identity + initial-state context disambiguate traps from legacy broad defect patterns.
+    const trap = best(f, traps);
+    if (trap.hit) {
+      addHit(trap.hit.label.id, f.id);
+      decisions.push(mk('false_alarm_change', `flags correct trap ${trap.hit.label.id}: ${trap.hit.reason}`, trap.hit.label));
+      continue;
+    }
     // Planted defects first; a verified natural defect counts the same way when no planted one matches.
     const planted = best(f, defects);
     const d = planted.hit ? planted : best(f, naturals);
@@ -73,7 +84,7 @@ export function scoreEpisode(input: {
     decisions.push(mk('unmatched', reason));
   }
 
-  const labels: LabelOutcome[] = answerKey.labels.map((l) => ({
+  const labels: LabelOutcome[] = visibleLabels.map((l) => ({
     label_id: l.id, kind: l.kind, category: l.category, class: l.class, severity: l.severity,
     exposure: l.exposure ?? 'novel', difficulty: l.difficulty ?? 'blatant',
     hit: hits.has(l.id), ...(hits.has(l.id) ? { finding_ids: hits.get(l.id) } : {}),

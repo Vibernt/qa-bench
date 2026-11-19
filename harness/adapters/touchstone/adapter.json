@@ -1,0 +1,7 @@
+{
+  "name": "touchstone",
+  "version": "0.1.0",
+  "description": "Native local deterministic-check runner with a strict findings import. Receives only a bench brief and loads operator-supplied installed check modules; no fixture switches or labels.",
+  "mode": "manual",
+  "network": "host"
+}

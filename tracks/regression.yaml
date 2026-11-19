@@ -3,8 +3,8 @@
 #   npx tsx bin/qa-bench.ts generate regression
 # Mixed episodes carry 2-3 planted defects, at most one of them blatant (docs/DECISIONS.md, 5 Nov). Swag Labs'
 # faulty users share one exclusive group, so its mixed episodes carry one (the generator warns once).
-# count 24 leaves slack over what covering every defect needs (expense app: one episode per blatant defect;
-# Swag Labs: one per faulty user), so every defect of both apps is switched on at least once.
+# HU-G: 36 episodes: 24 random-plan slots plus 12 appended recipes (10 mixed, 2 clean-with-traps).
+# The original random pools are unchanged; new labels are allowed only in appended recipes.
 id: regression
 number: "7.1"
 title: Regression
@@ -34,13 +34,29 @@ apps:
       - expense.title-not-escaped
       - expense.total-under-filter
       - expense.wrong-total
+    recipes_only:
+      mutations: [expense.template-token, expense.misspelled-label, expense.sign-out-dead, expense.wrong-row-action, expense.add-link-404, expense.negative-amount-accepted, expense.password-visible, expense.raw-error, expense.blank-title-accepted, expense.non-ascii-mangled]
+      traps: [expense.refund-row, expense.braces-title, expense.empty-category, expense.legit-duplicate]
     changes: [expense.relabel]
   - { app: swag-labs, weight: 1, mutations: '*', changes: '*' }
 episodes:
-  count: 24
+  count: 36
   seed: 20261105
   mutations_per_episode: { min: 2, max: 3 }
   max_blatant_per_episode: 1
   changes_per_episode: { min: 0, max: 2 }
   clean_episodes: 2
   twin_episodes: 3
+  recipes:
+    - { app: expense-app, mutations: [expense.template-token, expense.edit-drops-cents], traps: [expense.braces-title] }
+    - { app: expense-app, mutations: [expense.misspelled-label, expense.long-title-truncated], traps: [expense.braces-title] }
+    - { app: expense-app, mutations: [expense.sign-out-dead, expense.edit-resets-category], traps: [expense.empty-category] }
+    - { app: expense-app, mutations: [expense.wrong-row-action, expense.total-under-filter], traps: [expense.legit-duplicate] }
+    - { app: expense-app, mutations: [expense.add-link-404, expense.edit-drops-cents], traps: [expense.refund-row] }
+    - { app: expense-app, mutations: [expense.negative-amount-accepted, expense.long-title-truncated], traps: [expense.refund-row] }
+    - { app: expense-app, mutations: [expense.password-visible, expense.edit-resets-category], traps: [expense.empty-category] }
+    - { app: expense-app, mutations: [expense.raw-error, expense.total-under-filter], traps: [expense.legit-duplicate] }
+    - { app: expense-app, mutations: [expense.blank-title-accepted, expense.edit-drops-cents], traps: [expense.refund-row] }
+    - { app: expense-app, mutations: [expense.non-ascii-mangled, expense.long-title-truncated], traps: [expense.braces-title] }
+    - { app: expense-app, mutations: [], traps: [expense.refund-row, expense.braces-title, expense.empty-category, expense.legit-duplicate] }
+    - { app: expense-app, mutations: [], traps: [expense.refund-row, expense.braces-title, expense.empty-category, expense.legit-duplicate] }

@@ -6,7 +6,7 @@ export type Category =
   | 'a11y' | 'perf' | 'usability' | 'email' | 'security-hygiene' | 'l10n';
 export type LabelClass = 'deterministic' | 'judged' | 'human';
 export type Severity = 'critical' | 'major' | 'minor';
-export type LabelKind = 'defect' | 'change' | 'baseline' | 'natural';
+export type LabelKind = 'defect' | 'change' | 'baseline' | 'natural' | 'trap';
 export type Split = 'public' | 'heldout';
 
 export interface Region { x: number; y: number; w: number; h: number; viewport?: string }
@@ -114,6 +114,8 @@ export interface Label {
   upstream_ref?: string;
   /** natural labels only: planted defects (same app) that remove this symptom when active. */
   masked_by?: string[];
+  /** Defect or trap labels only: same-app symptoms hidden while this switch is active. */
+  masks?: string[];
 }
 
 // ---- tracks/<track>.yaml --------------------------------------------------
@@ -125,7 +127,7 @@ export interface Rules {
   min_interval_ms?: number;
   max_pages?: number;
 }
-export interface TrackApp { app: string; weight?: number; mutations?: '*' | string[]; changes?: '*' | string[] }
+export interface TrackApp { app: string; weight?: number; mutations?: '*' | string[]; changes?: '*' | string[]; traps?: '*' | string[]; recipes_only?: { mutations?: string[]; traps?: string[] } }
 export interface Track {
   id: string;
   number: string;
@@ -141,6 +143,7 @@ export interface Track {
     clean_episodes?: number;
     twin_episodes?: number;
     max_blatant_per_episode?: number;
+    recipes?: { app: string; mutations: string[]; traps: string[] }[];
   };
   live?: { name: string; url: string; pages?: string[]; rules: Rules }[];
 }
@@ -155,7 +158,7 @@ export interface Episode {
   split: Split;
   seed: number;
   kind?: 'mixed' | 'clean' | 'twin';
-  active: { mutations: string[]; changes: string[] };
+  active: { mutations: string[]; changes: string[]; traps?: string[] };
   env: Record<string, string>;
   accounts: Account[];
   upstream?: Record<string, unknown>;
@@ -300,6 +303,8 @@ export interface Metrics {
   changes_flagged?: number;
   change_flag_rate?: number | null;
   false_alarms_on_changes?: number;
+  trap_false_alarms?: number;
+  trap_false_alarms_by_label?: Record<string, number>;
   false_alarms_per_100_episodes?: number | null;
   unmatched_findings?: number;
   unmatched_per_episode?: number | null;

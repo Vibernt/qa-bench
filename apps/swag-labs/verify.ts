@@ -10,6 +10,8 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import YAML from 'yaml';
+import type { Label } from '../../lib/contracts.ts';
+import { maskedLabelIds } from '../../lib/masking.ts';
 import { chromium, type Browser, type Page } from 'playwright';
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -574,14 +576,14 @@ async function fullCheckout(base: string): Promise<string[]> {
 }
 
 // ---- run ---------------------------------------------------------------------------------------------------------
-function labels(): { id: string; entries: number; env: Record<string, string>; natural?: boolean; maskedBy: string[]; defect: boolean }[] {
+function labels(): { id: string; entries: number; env: Record<string, string>; natural?: boolean; label: Label; defect: boolean }[] {
   const out = [];
   for (const kind of ['mutations', 'changes', 'natural']) {
     if (!existsSync(join(here, kind))) continue;
     for (const dir of readdirSync(join(here, kind))) {
       const l = YAML.parse(readFileSync(join(here, kind, dir, 'label.yaml'), 'utf8'));
       out.push({ id: l.id as string, entries: (l.found_by as unknown[]).length, env: (l.switch?.env ?? {}) as Record<string, string>, natural: kind === 'natural',
-        maskedBy: (l.masked_by ?? []) as string[], defect: kind === 'mutations' });
+        label: l as Label, defect: kind === 'mutations' });
     }
   }
   return out.filter((l) => !only || l.id === only);
@@ -638,10 +640,11 @@ try {
   }
 
   if (!only) {
-    // Masking matrix: with each faulty-user mutation on, every natural defect still shows, unless its label lists that
-    // mutation in masked_by (then it must not show; the generator leaves it out of that episode's answer key).
+    // Masking matrix: every natural symptom still shows unless masked_by or masks declares it hidden.
+    // Hidden symptoms must not show and are omitted from the episode answer key.
     const all = labels();
     for (const m of all.filter((l) => l.defect)) {
+      const maskedIds = maskedLabelIds(all.map(l => l.label), [m.id]);
       const app = start(m.env);
       const wrong: string[] = [];
       try {
@@ -649,8 +652,8 @@ try {
         for (const n of all.filter((l) => l.natural)) {
           let shown = true;
           for (const c of checks[n.id]!) { try { shown = shown && await session(app.base, c); } catch { shown = false; } }
-          const masked = n.maskedBy.includes(m.id);
-          if (shown === masked) wrong.push(`${n.id} ${shown ? 'shows although masked_by lists it' : 'is masked but not in masked_by'}`);
+          const masked = maskedIds.has(n.id);
+          if (shown === masked) wrong.push(`${n.id} ${shown ? 'shows although declared masked' : 'is masked without a declared relation'}`);
         }
       } finally { app.stop(); }
       report(wrong.length === 0, `naturals with ${m.id} on${wrong.length ? `: ${wrong.join('; ')}` : ''}`);

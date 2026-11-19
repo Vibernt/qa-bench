@@ -1,0 +1,25 @@
+id: expense.braces-title
+app: expense-app
+title: User-entered braces in an expense title
+description: User-entered braces in an expense title. Reporting this seeded content as a problem is a false alarm.
+track: exploration
+kind: trap
+category: copy
+class: deterministic
+severity: minor
+difficulty: subtle
+exposure: novel
+where:
+  route: /expenses
+switch:
+  env:
+    TRAP: braces_title
+found_by:
+  - kind: behaviour
+    description_pattern: ^(?![\s\S]*(username|signed[ -]in|account line|literal user|correct))(?=[\s\S]*(title|expense name|lunch \{team offsite\}))(?=[\s\S]*(braces|\{[^}]+\}|template|placeholder|token))(?=[\s\S]*(unresolved|unfilled|placeholder|template|token|bug|broken))
+    note: User-entered braces in an expense title
+tolerance:
+  route: prefix
+  role: any
+split: public
+upstream_ref: apps/expense-app/app/src/switches/traps.ts; checked by apps/expense-app/verify.ts

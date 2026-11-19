@@ -1,0 +1,25 @@
+id: expense.misspelled-label
+app: expense-app
+title: Category is misspelt as Catagory on the list and forms
+description: Category is misspelt as Catagory on the list and forms.
+track: exploration
+kind: defect
+category: copy
+class: deterministic
+severity: minor
+difficulty: subtle
+exposure: novel
+where:
+  route: /expenses
+switch:
+  env:
+    DEFECT: misspelled_label
+found_by:
+  - kind: behaviour
+    description_pattern: \bcatagory\b
+    note: Category is misspelt as Catagory on the list and forms
+tolerance:
+  route: prefix
+  role: any
+split: public
+upstream_ref: apps/expense-app/app/src/server.ts; checked by apps/expense-app/verify.ts

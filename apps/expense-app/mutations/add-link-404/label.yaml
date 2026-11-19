@@ -1,0 +1,25 @@
+id: expense.add-link-404
+app: expense-app
+title: Add expense link has a mistyped URL and returns 404
+description: Add expense link has a mistyped URL and returns 404.
+track: exploration
+kind: defect
+category: functional
+class: deterministic
+severity: major
+difficulty: blatant
+exposure: novel
+where:
+  route: /expenses
+switch:
+  env:
+    DEFECT: add_link_404
+found_by:
+  - kind: behaviour
+    description_pattern: ^(?=[\s\S]*(add expense|new expense|add link))(?=[\s\S]*(404|not found|expneses))
+    note: Add expense link has a mistyped URL and returns 404
+tolerance:
+  route: prefix
+  role: any
+split: public
+upstream_ref: apps/expense-app/app/src/server.ts; checked by apps/expense-app/verify.ts

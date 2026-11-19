@@ -70,3 +70,22 @@ refuses to run live episodes unless `QA_BENCH_ALLOW_LIVE=1`.
 
 ## Tests
 `npx vitest run harness/generator` uses the fixture apps and tracks in `test/fixtures/`.
+
+## Trap controls and explicit recipes (HU-G)
+
+Track app entries can select `traps: '*'` or a list (default empty). The loader reads `traps/*/label.yaml` as
+`kind: trap`. Active trap ids are recorded in optional `episode.active.traps`, included in the sealed answer key,
+and their env switches are comma-joined normally. No trap RNG calls are made: random mixed episodes rotate one
+trap; clean/twin controls get all allowed traps. Tracks without traps retain their existing output shape.
+
+`episodes.recipes` appends explicit public `{ app, mutations, traps }` episodes. Total `count` includes these
+recipes; the random plan receives `count - recipes.length` slots. Random selection uses only the app entry’s ordinary pools. Additional labels in
+`apps[].recipes_only: { mutations, traps }` are allowed only in recipes; recipes may also reuse ordinary labels.
+Neither recipe coverage nor recipe-only switches change the random pool or its environment keys. Exclusive groups and the blatant cap are checked. Recipes with no
+mutations are clean even when traps are present. Their index derives ids/account seeds exactly like any other
+episode. Existing tracks with no recipes are unchanged. Coverage warnings include traps. Recipes must leave at
+least one random episode; the validator checks this and each recipe's references. HU-G tracks do not change the
+held-out recipe policy: recipes are public only; ordinary held-out generation still applies to held-out pools.
+
+The pre-kinds digest test checks all 82 original episode/key files against the parent fixture. New masking
+relationships live on new defects (`masks`), preserving existing natural-label bytes.

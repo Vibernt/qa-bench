@@ -134,8 +134,11 @@ const samples: Record<string, S[]> = {
     ['/expenses/2/edit', 'editor', 'functional', 'Editing an expense to 12.50 saves it as 12.00; the cents are dropped. Adding a new expense with 12.50 keeps it.'],
     ['/expenses', 'editor', 'functional', 'After an edit the amount is rounded down to a whole number.'],
     ['/expenses/5/edit', 'editor', 'consistency', 'Updating the amount loses the decimal part: 15.75 becomes 15.00 in the list and the total.'],
+    ['/expenses', 'editor', 'functional', 'Edited amount 12.35 is saved and shown as $12.00\nExpected: The row shows the amount 12.35 that was typed and saved.\nActual: After save, the Expenses table row shows "$12.00".'],
   ],
   'expense.long-title-truncated': [
+    ["/expenses", "editor", "consistency", "Saved expense title drops its last word: typed 'QA Test Crème Brûlée Ledger', listed as 'QA Test Crème Brûlée'"],
+    ["/expenses", "editor", "consistency", "Saved expense title drops trailing words of the typed title\nExpected: Row titled 'Quarterly Mixed Case Test' in category office.\nActual: Row shows 'Quarterly Mixed Case' in office; the word 'Test' is gone from the title"],
     ['/expenses/new', 'editor', 'functional', 'Expense titles are limited to 20 characters on save; the rest is silently dropped.'],
     ['/expenses', 'editor', 'functional', 'A long title such as "Conference registration fee" is saved as "Conference registrat": titles are cut to 20 characters without warning.'],
     ['/expenses/2/edit', 'editor', 'functional', 'Editing the name to a longer text truncates it; the end of the title is lost.'],
@@ -149,6 +152,8 @@ const samples: Record<string, S[]> = {
     ['/expenses', 'editor', 'functional', 'The list interprets the title as HTML; the edit form shows it escaped.'],
   ],
   'expense.edit-resets-category': [
+    ['/expenses', 'editor', 'functional', 'Title-only edit changes the record category from meals to travel\nExpected: After a title-only edit the record stays in category meals with amount $12.34'],
+    ["/expenses/6/edit", "editor", "consistency", "Edit form shows Printer paper as travel while the expense list shows office\nExpected: The Category field on the edit page for Printer paper shows office, the same category the expenses list shows for that row.\nActual: The Category field on /expenses/6/edit shows travel for Printer paper."],
     ['/expenses/3/edit', 'editor', 'functional', 'When editing an office expense the Category dropdown shows travel, so saving changes its category.'],
     ['/expenses/2/edit', 'editor', 'functional', 'The edit form does not preselect the current category; saving an edit of "Team lunch" without touching the select changes its category from meals to travel.'],
     ['/expenses', 'editor', 'functional', 'After editing only the amount of a meals expense, it is now listed as travel: the category resets to the first option.'],
