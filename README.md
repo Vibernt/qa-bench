@@ -41,12 +41,16 @@ tracks/*.yaml ──generate──▶ episodes/<track>/<id>/episode.json + answe
 
 - **App** (`apps/<app>/`): a web app pinned to an exact upstream commit, with a `compose.yaml`. Every episode
   starts it fresh, so the seed data resets every time.
-- **Label** (`label.yaml`): one entry in the ground truth. There are three kinds:
+- **Label** (`label.yaml`): one entry in the ground truth. There are five kinds:
   - **defect**: a planted bug that can be switched on. Finding it counts towards recall.
   - **change**: a deliberate change, such as reworded copy, a seasonal banner or a price change. Reporting it as a
     problem is a false alarm.
+  - **trap**: correct seeded content that looks like a bug. Reporting it is a false alarm.
   - **baseline**: something broken on purpose in the unmutated app, such as a demo page of broken images. Findings
     that match it are excused.
+  - **natural**: a real bug present in every build, found by a system and verified by the app's `verify.ts`. It is
+    left out of an episode when an active planted defect hides it (`masked_by`), and it is reported apart, as
+    natural recall.
 
   Every label also says:
   - its **category** (functional, consistency, permission, error-handling, visual, copy, a11y, perf, usability,
@@ -257,10 +261,15 @@ Every report records:
 
 ## Results
 
-Track **7.9 judge calibration** has a [60-case hashed recipe manifest and capped model harness](judge-sets/README.md).
-The [judge leaderboard](leaderboard/judges/README.md) is pending native rendering and model runs. A
-[native deterministic-check adapter](harness/adapters/touchstone/README.md) maps installed checks into the ordinary
-findings/scoring path. Native browser verification was blocked by the execution sandbox; no model quality is claimed.
+Newer results, each with its own disclosures:
+- **Judge calibration (track 7.9):** a 60-case visual judge set run through a capped harness. In the first live run
+  on 9 Nov, Haiku 5.5 reached 100% precision and 93–97% recall, with no false alarms on deliberate changes
+  ([leaderboard/2026-11-09-judge/](leaderboard/2026-11-09-judge/README.md), set and commands in
+  [judge-sets/](judge-sets/README.md)).
+- **Bug kinds and traps (`v0.4-kinds-12`):** three model-led hunt prompts reached 25%, 40% and 65% planted recall,
+  and a bare Haiku 5.5 agent reached 70% ([leaderboard/touchstone-hunt/](leaderboard/touchstone-hunt/README.md)).
+- **Deterministic page checks on the visual track:** 17.6% recall
+  ([leaderboard/2026-11-10-touchstone-checks/](leaderboard/2026-11-10-touchstone-checks/README.md)).
 
 These are the B0 exit-check results, on 17 regression and 6 noise episodes. Details are in
 [leaderboard/README.md](leaderboard/README.md).
