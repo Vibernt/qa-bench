@@ -347,4 +347,4 @@ export interface Report {
   };
 }
 
-export const BENCH_VERSION = '0.2.0-dev';
+export const BENCH_VERSION = '0.2.0';

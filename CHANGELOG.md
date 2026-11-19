@@ -3,19 +3,9 @@
 Versions follow `bench vMAJOR.MINOR.PATCH-phase`. A version pins the apps, labels, tracks, matcher and scorer, so
 scores are comparable only within one version. Every report records it.
 
-## 16 Nov 2026: HU-G kinds and traps (unreleased)
-- Ten new opt-in expense defects and four comma-selectable trap seeds/options; clean response compatibility test
-  against the frozen pre-change implementation. No new runtime dependency or upstream material.
-- `kind: trap`, generator/validator/schema support, `deterministic-4` trap disambiguation, aggregate and per-label
-  trap false alarms in JSON and Markdown. Existing change false-alarm counters include traps.
-- Exploration 29 episodes and regression 36, including twelve explicit appended recipes each; new twelve-episode
-  exploration agent set. Seeds/id derivation retained, episode composition changes; artifacts not regenerated.
-- New label matcher cases, native shared route probes, app tests and four old/new/trap combinations. Native
-  qualification pending: sandbox denies the existing app listeners and tsx IPC; no Docker/browser run here.
-
-## Unreleased (0.2.0-dev): a harder bench
-Episodes and answer keys changed, so scores aren't comparable with 0.1.0-b0. The B0 leaderboard stays as recorded,
-with its answer-key hashes.
+## 0.2.0 (19 Nov 2026): a harder bench, visual and judge tracks, traps
+The first public release. Episodes and answer keys changed, so scores aren't comparable with 0.1.0-b0. Leaderboards
+run during development record `0.2.0-dev` and their answer-key hashes, and stay as recorded.
 - **Defect mix:** mixed regression episodes carry 2-3 planted bugs, at most one blatant (`max_blatant_per_episode`).
   The regression track has 24 episodes, so episode ids now mean different builds.
 - **Expense app:** 6 new subtle defects (a total wrong only under a filter, a delete endpoint open to the viewer,
@@ -58,6 +48,17 @@ with its answer-key hashes.
 - **Activity:** findings and reports carry tool calls, screenshots taken and screenshots looked at per episode. This
   is reported, never scored. The report adds visual and accessibility recall rows. `agents audit` (harness 0.4.0)
   counts activity from transcripts, along with the sealed-path audit.
+- **Bug kinds and traps:** ten more opt-in expense defects, and `kind: trap` labels. A trap is correct seeded content
+  that looks like a bug, and reporting it is a false alarm. The matcher is now `deterministic-4`, with trap
+  disambiguation, and reports count trap false alarms. The exploration track has 29 episodes and regression 36. Every
+  label is checked by `verify.ts` in CI.
+- **Track 7.9, judge calibration:** a 60-case visual judge set (`judge-sets/visual-v1`), pinned by SHA-256, and a capped
+  judge harness (`harness/judges`) with its own scorer. A unit test keeps the checked-in plan in step with its
+  sources.
+- **Adapters:** `touchstone` (deterministic page checks) and `touchstone-hunt` (a model-led hunt with spend and call
+  caps). Both run against a separately built checkout and are instruction-sealed.
+- **Leaderboard:** judge calibration (`2026-11-09-judge/`), page checks on the visual track
+  (`2026-11-10-touchstone-checks/`), and hunt prompts against a bare agent on `v0.4-kinds-12` (`touchstone-hunt/`).
 
 ## 0.1.0-b0 (5 Nov 2026): skeleton
 **Apps**, each with a `verify.ts` that proves every label against the running app:

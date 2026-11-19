@@ -87,5 +87,6 @@ episode. Existing tracks with no recipes are unchanged. Coverage warnings includ
 least one random episode; the validator checks this and each recipe's references. HU-G tracks do not change the
 held-out recipe policy: recipes are public only; ordinary held-out generation still applies to held-out pools.
 
-The pre-kinds digest test checks all 82 original episode/key files against the parent fixture. New masking
+The pre-kinds digest test checks all 82 original episode/key files against the parent fixture. Its digests were
+refreshed once, for the 0.2.0 release, when `bench_version` was the only field that changed. New masking
 relationships live on new defects (`masks`), preserving existing natural-label bytes.

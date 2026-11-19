@@ -88,7 +88,7 @@ also been scored on a 10-episode sample, and their runs fed the first quality ro
 - precise deliberate-change labels;
 - natural defects.
 
-**0.2.0-dev (a harder bench) is in progress on `main`.** It has exploratory briefs, 2–3 bugs per mixed episode,
+**0.2.0 (a harder bench) is released (19 Nov 2026, the first public version).** It has exploratory briefs, 2–3 bugs per mixed episode,
 subtle and known/novel defects, and 14 natural defects. The four configurations and the scripted suite were re-run on
 `v0.2-sample-12` ([leaderboard/v0.2-agents/](../leaderboard/v0.2-agents/README.md)). Planted recall now ranges from
 35% to 100%, and subtle defects separate the systems.
