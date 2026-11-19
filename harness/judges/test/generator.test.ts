@@ -5,7 +5,8 @@ import { recipes } from '../src/catalogue.ts';
 import { artifactBytes, loadSet } from '../src/fixtures.ts';
 import { makeRequest } from '../src/request.ts';
 import { fixtureSet } from './helpers.ts';
-import { fixturePlan } from '../src/plan.ts';
+import { fixturePlan, loadPlan } from '../src/plan.ts';
+import { REPO_ROOT } from '../../../lib/io.ts';
 
 const dirs: string[] = [];
 afterEach(() => dirs.splice(0).forEach(p => rmSync(p, { recursive: true, force: true })));
@@ -32,6 +33,10 @@ describe('judge generator contract', () => {
     expect(plan.sources.length).toBeGreaterThan(10);
     expect(plan.sources.every(s => /^[a-f0-9]{64}$/.test(s.sha256))).toBe(true);
     expect(plan.sources.some(s => /node_modules|\/build\//.test(s.path))).toBe(false);
+  });
+  it('the checked-in judge-sets/visual-v1/plan.json matches the current sources (regenerate with `judge plan`)', () => {
+    // loadPlan refuses a stale plan, so a stale checked-in plan breaks every documented dry run.
+    expect(() => loadPlan(join(REPO_ROOT, 'judge-sets', 'visual-v1', 'plan.json'))).not.toThrow();
   });
   it('validates all SHA-256s and refuses changed bytes or escaping paths', () => {
     const f = fixtureSet(); dirs.push(f.root);

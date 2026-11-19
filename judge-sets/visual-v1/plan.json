@@ -4,7 +4,7 @@
   "generator": "bench-render/v1",
   "status": "requires-native-render",
   "seed": "judge-fixture/v1",
-  "source_sha256": "c188c99996679e505150d1600b0889c1cef79a777343907a97c1274cf2bcb9cc",
+  "source_sha256": "0e07b1eac21b8ae554e400404baf4c83a2091383304ccca81dfe84d9167a9c4b",
   "sources": [
     {
       "path": "apps/expense-app/app/fixture-credentials.json",
@@ -76,7 +76,15 @@
     },
     {
       "path": "apps/expense-app/app/src/server.ts",
-      "sha256": "87af123f20ab03d2e125b40aaa701cd1a1bc2bd657fe05f0c9952007e4c4705b"
+      "sha256": "0a1fe9f68f1fa227a0eb094a0f99b68ad7c652191102c94cbede15656c27fcfe"
+    },
+    {
+      "path": "apps/expense-app/app/src/switches/defects.ts",
+      "sha256": "48febfd582bba4ad4a486365c68a7afacae062004cb02a356f7fc4baa343d210"
+    },
+    {
+      "path": "apps/expense-app/app/src/switches/traps.ts",
+      "sha256": "43a032884f4e0b761602496d18b7d6bc387614a0296108543c9cf5f1d7710f1c"
     },
     {
       "path": "apps/expense-app/app/src/theme.ts",
@@ -95,6 +103,10 @@
       "sha256": "9e569a02850166a2b748f6cfd256e3516014920e59bf568eb21a55a3cfaf2147"
     },
     {
+      "path": "apps/expense-app/app/test/clean-pages.test.ts",
+      "sha256": "40a60b6ad710b30ced922697e6656f6411ca73fe37b434a17b96227c8e00148d"
+    },
+    {
       "path": "apps/expense-app/app/test/db.test.ts",
       "sha256": "e54bf91c287003e4ccbf7c6c363c5ecd1a045e0362cfb1e6de95a328cd59af74"
     },
@@ -107,16 +119,32 @@
       "sha256": "bb6a2ea69fa1183c6dd5b4b27d4c972cdaa2cd3f983ae5110e7093e926ae6193"
     },
     {
+      "path": "apps/expense-app/app/test/fixtures/pre-hu-g-server.ts",
+      "sha256": "5f111b60e4cb92c9d577d34d8a94819c19d815cf8e420f5fdb8739228860cc4e"
+    },
+    {
       "path": "apps/expense-app/app/test/helpers.ts",
-      "sha256": "ab23513ce26172a92e89f4e14ce1bb846f535e559a588e733de2de3e2f0150e8"
+      "sha256": "cfe8fc51c115c9bf228a070d3c1b605555a372040bbbbd75a9efe93eded1afee"
     },
     {
       "path": "apps/expense-app/app/test/hostile.test.ts",
       "sha256": "f87e8e91652efd959d878298c332170c5ab1c6a6351b999e6219a30e851815e4"
     },
     {
+      "path": "apps/expense-app/app/test/kinds.test.ts",
+      "sha256": "5a7d6777ba90401a1123437e58bcb703298b8f13fb58177cd8e831c0a40047cc"
+    },
+    {
       "path": "apps/expense-app/app/test/server.test.ts",
       "sha256": "703a9d1e52c00af37de421a57be155c3b31af3b756b1373fa29698c8352333f6"
+    },
+    {
+      "path": "apps/expense-app/app/test/switch-inputs.test.ts",
+      "sha256": "53d933a14b51198de46497ed2b8e0ccf35694d7cf1bc55f44c75c1e006c4f613"
+    },
+    {
+      "path": "apps/expense-app/app/test/trap-seed.test.ts",
+      "sha256": "4a765426632c601f0fcb50362774b2f7b407a4076fac2379135ff179b3ce616a"
     },
     {
       "path": "apps/expense-app/app/tsconfig.json",
@@ -532,19 +560,19 @@
     },
     {
       "path": "harness/judges/src/request.ts",
-      "sha256": "30079c74efa19cc897ee0396d333c08fa1c113a753f7fec270ccb7af9af5c5ab"
+      "sha256": "181ce94f2c247a3392ce9e11d29e955dec88713b552645c0a2f3fcda7e8c5828"
     },
     {
       "path": "harness/judges/src/run.ts",
-      "sha256": "d2967c94667caa3b40d5763b94fb3735f3f25341df5b08e683d403f8ed4ddd85"
+      "sha256": "ed1fc0fafe3cebb8397acfb7302460ba594a9ca5c1986c5e00799e4cb726754f"
     },
     {
       "path": "harness/judges/src/types.ts",
-      "sha256": "268112d72c2ff4fbf01880b2630e4aaddb35a1683220d507028832b29159e8bb"
+      "sha256": "c41a69e35cce5903801c97b9be8d0fcf27083a3190ebd6cad2fcb8dbf61de6d9"
     },
     {
       "path": "harness/judges/test/generator.test.ts",
-      "sha256": "41920706644b331f6926bf9a638f8f93febe4a32d9339e93165ab2be6ecde7b1"
+      "sha256": "89b5b8f2da8db005e0f106d2c2e398a402f38f97a83ceec5ffb3d055a2077fe9"
     },
     {
       "path": "harness/judges/test/helpers.ts",
@@ -552,7 +580,7 @@
     },
     {
       "path": "harness/judges/test/run.test.ts",
-      "sha256": "f2876353f167852f39eafa31a4340868ab560bb67d1cc88e8c79be30b9d52cd4"
+      "sha256": "cf56bbc77958e7530ed5c0fb14f36c720f07aff34a6693e989f1ba952ddfbc26"
     },
     {
       "path": "harness/judges/upstream.json",
@@ -560,7 +588,7 @@
     },
     {
       "path": "harness/judges/verify.ts",
-      "sha256": "8d7b2a093b83909520426604e165a7d0f0e0e0b753286b4b9ec2f0c7201fb042"
+      "sha256": "6a63c0bf535705c367654b24b6629301b8fa47606b0468fdef51438220195881"
     }
   ],
   "cases": [
